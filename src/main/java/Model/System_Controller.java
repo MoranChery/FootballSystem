@@ -14,7 +14,6 @@ public class System_Controller {
 
     public static void main(String[] args){
         System.out.println("try");
-
     }
 
 }
