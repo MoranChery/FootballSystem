@@ -1,6 +1,5 @@
 package Data;
 
-import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 
 import java.util.HashMap;

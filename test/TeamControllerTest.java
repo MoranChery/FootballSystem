@@ -1,7 +1,4 @@
 import Controller.PlayerController;
-import Model.Team;
-import Model.UsersTypes.Player;
-import Controller.TeamController;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
