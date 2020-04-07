@@ -1,21 +1,41 @@
 package Model.UsersTypes;
 
+import Model.Enums.AlertWay;
 import Model.PersonalPage;
+import Model.System_Controller;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Fan extends Subscriber {
 
-
     private ArrayList<PersonalPage> myPages;
-    private Integer id;
+    private Integer idInTheSystem;
+    System_Controller myController;
+    // personal data
+    private String firstName;
+    private String lastName;
+    private String password;
+    private String emailAddress;
+
+
+    public Fan(Integer idInTheSystem, String firstName, String lastName, String password, String emailAddress) {
+        this.idInTheSystem = idInTheSystem;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.emailAddress = emailAddress;
+        myController = System_Controller.getInstance();
+        myPages = new ArrayList<>();
+    }
+
 
     @Override
     public Integer getId() {
-        return id;
+        return idInTheSystem;
     }
     public void setId(Integer id) {
-        this.id = id;
+        this.idInTheSystem = id;
     }
 
 
@@ -33,8 +53,17 @@ public class Fan extends Subscriber {
     }
 
 
+    private void askForAlertsAboutGames(){
 
+        myController.displayAlertsTypes();
 
+        Scanner myObj = new Scanner(System.in);
+        String myChoise;
+        System.out.println("Enter username");
+        myChoise = myObj.nextLine();
+        AlertWay alertWay = AlertWay.valueOf(myChoise);
+        myController.AddFanToGetAlerts(alertWay,this);
+    }
 
 
     public ArrayList<PersonalPage> getMyPages() {
@@ -44,4 +73,20 @@ public class Fan extends Subscriber {
     public void setMyPages(ArrayList<PersonalPage> myPages) {
         this.myPages = myPages;
     }
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
 }
