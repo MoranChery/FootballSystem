@@ -1,6 +1,8 @@
 package Data;
 
+import Model.Court;
 import Model.Team;
+import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 
@@ -50,6 +52,24 @@ public class TeamDbInMemory implements TeamDb {
             throw new Exception("Player already part of the team");
         }
         players.put(id, player);
+        player.setTeam(team);
+    }
+
+    @Override
+    public void addTeamManager(String teamName, TeamManager teamManager) throws Exception {
+        Team team = teams.get(teamName);
+        if(team == null) {
+            throw new Exception("Team not found");
+        }
+
+        Map<Integer, TeamManager> teamManagers = team.getTeamManagers();
+        Integer id = teamManager.getId();
+
+        if(teamManagers.containsKey(id)) {
+            throw new Exception("Player already part of the team");
+        }
+        teamManagers.put(id, teamManager);
+        teamManager.setTeam(team);
     }
 
     /**
@@ -74,11 +94,6 @@ public class TeamDbInMemory implements TeamDb {
         player.setTeam(null);
     }
 
-    @Override
-    public void addTeamManager(String teamName, TeamManager player) throws Exception {
-
-    }
-
     /**
      * "pull" the team from DB
      * @param teamName
@@ -94,4 +109,24 @@ public class TeamDbInMemory implements TeamDb {
         return team;
     }
 
+    @Override
+    public void addCourt(String teamName, Court court) throws Exception {
+        teams.get(teamName).setCourt(court);
+    }
+
+    @Override
+    public void addCoach(String teamName, Coach coach) throws Exception {
+        Team team = teams.get(teamName);
+        if(team == null) {
+            throw new Exception("Team not found");
+        }
+
+        Map<Integer, Coach> coaches = team.getCoaches();
+        Integer id = coach.getId();
+
+        if(coaches.containsKey(id)) {
+            throw new Exception("Coach already part of the team");
+        }
+        coaches.put(id, coach);
+    }
 }

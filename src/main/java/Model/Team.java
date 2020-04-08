@@ -9,16 +9,26 @@ import java.util.*;
 public class Team {
    private String teamName;
    private Map<Integer, Player> players;
-   private List<Coach> coaches;
-   private List<TeamManager> teamManagers;
-   private Court court;
+   private  Map<Integer,Coach> coaches;
+   private Map<Integer, TeamManager> teamManagers;
+   private HashMap<Integer, FinancialActivity> financialActivities;
+
+    public Court getCourt() {
+        return court;
+    }
+
+    public void setCourt(Court court) {
+        this.court = court;
+    }
+
+    private Court court;
    private PersonalPage teamPage;
    private List<Game> games;
 
     public Team() {
         players = new HashMap<>();
-        coaches = new ArrayList<>();
-        teamManagers = new ArrayList<>();
+        coaches = new HashMap<>();
+        teamManagers = new HashMap<>();
         games = new ArrayList<>();
     }
 
@@ -38,28 +48,20 @@ public class Team {
         this.players = players;
     }
 
-    public List<Coach> getCoaches() {
-        return coaches;
-    }
-
-    public void setCoaches(List<Coach> coaches) {
+    public void setCoaches(Map<Integer, Coach> coaches) {
         this.coaches = coaches;
     }
 
-    public List<TeamManager> getTeamManagers() {
+    public Map<Integer, Coach> getCoaches() {
+        return coaches;
+    }
+
+    public Map<Integer, TeamManager> getTeamManagers() {
         return teamManagers;
     }
 
-    public void setTeamManagers(List<TeamManager> teamManagers) {
+    public void setTeamManagers(Map<Integer, TeamManager> teamManagers) {
         this.teamManagers = teamManagers;
-    }
-
-    public Court getCourt() {
-        return court;
-    }
-
-    public void setCourt(Court court) {
-        this.court = court;
     }
 
     public PersonalPage getTeamPage() {
