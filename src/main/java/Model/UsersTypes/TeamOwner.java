@@ -11,6 +11,15 @@ public class TeamOwner extends Subscriber {
     private Team team;
     private String firstName;
     private String lastName;
+    private HashMap<Integer,TeamOwner> teamOwnersByThis;
+
+    public TeamOwner(Integer id, Team team, String firstName, String lastName, HashMap<Integer, TeamOwner> teamOwnersByThis) {
+        this.id = id;
+        this.team = team;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.teamOwnersByThis = teamOwnersByThis;
+    }
 
     @Override
     public Integer getId() {
@@ -43,5 +52,13 @@ public class TeamOwner extends Subscriber {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public HashMap<Integer, TeamOwner> getTeamOwnersByThis() {
+        return teamOwnersByThis;
+    }
+
+    public void setTeamOwnersByThis(HashMap<Integer, TeamOwner> teamOwnersByThis) {
+        this.teamOwnersByThis = teamOwnersByThis;
     }
 }

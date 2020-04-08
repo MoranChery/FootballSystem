@@ -11,19 +11,11 @@ public class Team {
    private Map<Integer, Player> players;
    private  Map<Integer,Coach> coaches;
    private Map<Integer, TeamManager> teamManagers;
-   private HashMap<Integer, FinancialActivity> financialActivities;
-
-    public Court getCourt() {
-        return court;
-    }
-
-    public void setCourt(Court court) {
-        this.court = court;
-    }
-
-    private Court court;
+   private HashMap<String, FinancialActivity> financialActivities;
+   private Court court;
    private PersonalPage teamPage;
    private List<Game> games;
+   private Double budget;
 
     public Team() {
         players = new HashMap<>();
@@ -79,4 +71,31 @@ public class Team {
     public void setGames(List<Game> games) {
         this.games = games;
     }
+
+    public Court getCourt() {
+        return court;
+    }
+
+    public void setCourt(Court court) {
+        this.court = court;
+    }
+
+    public HashMap<String, FinancialActivity> getFinancialActivities() {
+        return financialActivities;
+    }
+
+    public void setFinancialActivities(HashMap<String, FinancialActivity> financialActivities) {
+        this.financialActivities = financialActivities;
+    }
+
+    public Double getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Double budget) {
+        this.budget = budget;
+    }
+
+
+
 }

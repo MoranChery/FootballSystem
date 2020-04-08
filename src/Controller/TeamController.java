@@ -3,14 +3,17 @@ package Controller;
 import Data.*;
 import Model.Court;
 import Model.Enums.CoachRole;
+import Model.Enums.FinancialActivityType;
 import Model.Enums.PlayerRole;
 import Model.Enums.Qualification;
+import Model.FinancialActivity;
 import Model.Team;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class TeamController {
     private TeamDb teamDb;
@@ -18,13 +21,14 @@ public class TeamController {
     private TeamManagerDb teamManagerDb;
     private CourtDb courtDb;
     private CoachDb coachDb;
-
+    private TeamOwnerDb teamOwnerDb;
     public TeamController() {
         teamDb = new TeamDbInMemory();
         playerDb = new PlayerDbInMemory();
         teamManagerDb = new TeamManagerDbInMemory();
         coachDb = new CoachDbInMemory();
         courtDb = new CourtDbInMemory();
+        teamOwnerDb = new TeamOwnerDbInMemory();
     }
 
     public void createTeam(String teamName) throws Exception {
@@ -42,7 +46,7 @@ public class TeamController {
     }
 
     /**
-     * add player to team - now it's only with player that exists in DB (will continue)
+     * add player to team
      * @param teamName
      * @param playerId
      * @throws Exception
@@ -153,10 +157,13 @@ public class TeamController {
     }
 
     public void removePlayer(String teamName, Integer playerId) throws Exception {
+        /*check if one of the inputs null*/
         if(teamName == null || playerId == null) {
             throw new NullPointerException();
         }
+        /* get the player from the database*/
         Player player = playerDb.getPlayer(playerId);
+        /*check if the team that associated with the player match to the player want to delete*/
         Team team = player.getTeam();
         if(team == null || !teamName.equals(team.getTeamName())) {
             throw new Exception("Player is not part of the team");
@@ -164,11 +171,69 @@ public class TeamController {
         teamDb.removePlayer(teamName, playerId);
     }
 
-
-    public void addFinancialActivity(String teamName, Double financialActivityAmount, String description){
-        if(teamName == null || financialActivityAmount == null || description == null) {
+    public void removeTeamManager(String teamName, Integer teamManagerId) throws Exception {
+        /*check if one of the inputs null*/
+        if(teamName == null || teamManagerId == null) {
             throw new NullPointerException();
         }
+        /* get the teamManager from the database*/
+        TeamManager teamManager = teamManagerDb.getTeamManager(teamManagerId);
+        /*check if the team that associated with the teamManager match to the teamManager want to delete*/
+        Team team = teamManager.getTeam();
+        if(team == null || !teamName.equals(team.getTeamName())) {
+            throw new Exception("TeamManager is not part of the team");
+        }
+        teamDb.removeTeamManager(teamName, teamManagerId);
+    }
+    public void removeCoach(String teamName, Integer coachId) throws Exception {
+        /*check if one of the inputs null*/
+        if(teamName == null || coachId == null) {
+            throw new NullPointerException();
+        }
+        /* get the coach from the database*/
+        Coach coach = coachDb.getCoach(coachId);
+        /*check if the team that associated with the coach match to the coach want to delete*/
+        Team team = coach.getTeam();
+        if(team == null || !teamName.equals(team.getTeamName())) {
+            throw new Exception("coachId is not part of the team");
+        }
+        teamDb.removeCoach(teamName, coachId);
+    }
 
+    public void removeCourt(String teamName, String courtName) throws Exception {
+        /*check if one of the inputs null*/
+        if(teamName == null || courtName == null) {
+            throw new NullPointerException();
+        }
+        Court court = courtDb.getCourt(courtName);
+        /*check if one of the teams that associated with the court match to the court want to delete*/
+        Team team = court.getTeam(courtName);
+        if(team == null || !teamName.equals(team.getTeamName())) {
+            throw new Exception("coachId is not part of the team");
+        }
+        teamDb.removeCourt(teamName, courtName);
+    }
+
+    public void addTeamOwner(String teamName, Integer teamOwnerId) {
+        if(teamName == null || teamOwnerId == null) {
+            throw new NullPointerException();
+        }
+    }
+
+
+    public void addFinancialActivity(String teamName, Double financialActivityAmount, String description, FinancialActivityType financialActivityType) throws Exception {
+        if(teamName == null || financialActivityAmount == null || description == null || financialActivityType == null) {
+            throw new NullPointerException();
+        }
+        Team team = teamDb.getTeam(teamName);
+        if(financialActivityType.equals(FinancialActivityType.OUTCOME) ){
+            if(team.getBudget() - financialActivityAmount < 0){
+                throw new Exception("The financial outcome exceeds from the budget");
+            }
+        }
+        /*for security and unique id*/
+        String financialActivityId = UUID.randomUUID().toString();
+        FinancialActivity financialActivity = new FinancialActivity(financialActivityId,financialActivityAmount,description,financialActivityType,team);
+        teamDb.addFinancialActivity(team,financialActivityId,financialActivity);
     }
 }

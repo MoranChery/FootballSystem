@@ -35,4 +35,8 @@ public class Court {
     public void setTeams(HashMap<String, Team> teams) {
         this.teams = teams;
     }
+
+    public Team getTeam(String teamName) {
+        return teams.get(teamName);
+    }
 }
