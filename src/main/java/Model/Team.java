@@ -1,27 +1,35 @@
 package Model;
 
+import Model.Enums.TeamStatus;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
+import Model.UsersTypes.TeamOwner;
 
 import java.util.*;
 
 public class Team {
    private String teamName;
+   private Map <Integer, TeamOwner> teamOwners;
    private Map<Integer, Player> players;
-   private  Map<Integer,Coach> coaches;
+   private Map<Integer,Coach> coaches;
    private Map<Integer, TeamManager> teamManagers;
-   private HashMap<String, FinancialActivity> financialActivities;
+   private Map<String, FinancialActivity> financialActivities;
    private Court court;
    private PersonalPage teamPage;
    private List<Game> games;
    private Double budget;
+   private TeamStatus teamStatus;
 
     public Team() {
+        teamOwners = new HashMap<>();
         players = new HashMap<>();
         coaches = new HashMap<>();
         teamManagers = new HashMap<>();
         games = new ArrayList<>();
+        teamStatus = TeamStatus.ACTIVE;
+        financialActivities = new HashMap<>();
+
     }
 
     public String getTeamName() {
@@ -80,11 +88,19 @@ public class Team {
         this.court = court;
     }
 
-    public HashMap<String, FinancialActivity> getFinancialActivities() {
+    public Map<Integer, TeamOwner> getTeamOwners() {
+        return teamOwners;
+    }
+
+    public void setTeamOwners(Map<Integer, TeamOwner> teamOwners) {
+        this.teamOwners = teamOwners;
+    }
+
+    public Map<String, FinancialActivity> getFinancialActivities() {
         return financialActivities;
     }
 
-    public void setFinancialActivities(HashMap<String, FinancialActivity> financialActivities) {
+    public void setFinancialActivities(Map<String, FinancialActivity> financialActivities) {
         this.financialActivities = financialActivities;
     }
 
@@ -96,6 +112,11 @@ public class Team {
         this.budget = budget;
     }
 
+    public TeamStatus getTeamStatus() {
+        return teamStatus;
+    }
 
-
+    public void setTeamStatus(TeamStatus teamStatus) {
+        this.teamStatus = teamStatus;
+    }
 }

@@ -13,6 +13,7 @@ import java.util.Date;
 public class TeamService {
     TeamController teamController;
 
+
     /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
     public void addPlayer(String teamName, Integer playerId, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
         teamController.addPlayer(teamName, playerId, firstName, lastName, birthDate, playerRole);
@@ -46,12 +47,19 @@ public class TeamService {
         teamController.removeCourt(teamName, courtName);
     }
 
-    public void addTeamOwner(String teamName, Integer teamOwnerId) {
-        teamController.addTeamOwner(teamName, teamOwnerId);
+    public void addTeamOwner(String teamName, Integer teamOwnerId, Integer ownerToAdd){
+        teamController.addTeamOwner(teamName,teamOwnerId,ownerToAdd);
     }
-
 
     public void addFinancialActivity(String teamName, Double financialActivityAmount, String description, FinancialActivityType financialActivityType) throws Exception {
         teamController.addFinancialActivity(teamName, financialActivityAmount, description, financialActivityType);
+    }
+
+    public void changeStatusToInActive(String teamName) throws Exception {
+        teamController.changeStatusToInActive(teamName);
+    }
+
+    public void changeStatusToActive(String teamName) throws Exception {
+        teamController.changeStatusToActive(teamName);
     }
 }

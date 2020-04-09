@@ -2,12 +2,14 @@ package Data;
 
 import Model.Court;
 import Model.Enums.FinancialActivityType;
+import Model.Enums.TeamStatus;
 import Model.FinancialActivity;
 import Model.Team;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 import com.sun.xml.internal.bind.v2.TODO;
+import org.omg.PortableInterceptor.ACTIVE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -194,7 +196,7 @@ public class TeamDbInMemory implements TeamDb {
         if(team == null) {
             throw new Exception("Team not found");
         }
-        HashMap<String, FinancialActivity> financialActivities = team.getFinancialActivities();
+        Map<String, FinancialActivity> financialActivities = team.getFinancialActivities();
         financialActivities.put(financialActivityId,financialActivity);
         team.setBudget(team.getBudget() + transferTheAmountPerType(financialActivity));
     }
@@ -204,6 +206,26 @@ public class TeamDbInMemory implements TeamDb {
             return (-financialActivity.getFinancialActivityAmount());
         }else{
             return financialActivity.getFinancialActivityAmount();
+        }
+    }
+
+   public void changeStatusToInActive(Team team) throws Exception {
+        team = teams.get(team.getTeamName());
+       if(team.getTeamStatus().equals(TeamStatus.ACTIVE)){
+            team.setTeamStatus(TeamStatus.INACTIVE);
+        }else{
+           throw new Exception("The team already inactive");
+       }
+   }
+
+
+    @Override
+    public void changeStatusToActive(Team team) throws Exception{
+        team = teams.get(team.getTeamName());
+        if(team.getTeamStatus().equals(TeamStatus.INACTIVE)){
+            team.setTeamStatus(TeamStatus.ACTIVE);
+        }else{
+            throw new Exception("The team already active");
         }
     }
 

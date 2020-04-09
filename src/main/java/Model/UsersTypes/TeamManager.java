@@ -11,12 +11,9 @@ public class TeamManager extends Subscriber {
     private String lastName;
 
     public TeamManager(Integer id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+     super(id,firstName,lastName);
     }
 
-    @Override
     public Integer getId() {
         return id;
     }

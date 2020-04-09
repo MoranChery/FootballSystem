@@ -8,9 +8,7 @@ import Model.Enums.PlayerRole;
 import Model.Enums.Qualification;
 import Model.FinancialActivity;
 import Model.Team;
-import Model.UsersTypes.Coach;
-import Model.UsersTypes.Player;
-import Model.UsersTypes.TeamManager;
+import Model.UsersTypes.*;
 
 import java.util.Date;
 import java.util.UUID;
@@ -22,6 +20,7 @@ public class TeamController {
     private CourtDb courtDb;
     private CoachDb coachDb;
     private TeamOwnerDb teamOwnerDb;
+    private SubscriberDb subscriberDb;
     public TeamController() {
         teamDb = new TeamDbInMemory();
         playerDb = new PlayerDbInMemory();
@@ -29,6 +28,7 @@ public class TeamController {
         coachDb = new CoachDbInMemory();
         courtDb = new CourtDbInMemory();
         teamOwnerDb = new TeamOwnerDbInMemory();
+        subscriberDb = new SubscriberDbInMemory();
     }
 
     public void createTeam(String teamName) throws Exception {
@@ -209,15 +209,30 @@ public class TeamController {
         /*check if one of the teams that associated with the court match to the court want to delete*/
         Team team = court.getTeam(courtName);
         if(team == null || !teamName.equals(team.getTeamName())) {
-            throw new Exception("coachId is not part of the team");
+            throw new Exception("coach is not part of the team");
         }
         teamDb.removeCourt(teamName, courtName);
     }
 
-    public void addTeamOwner(String teamName, Integer teamOwnerId) {
-        if(teamName == null || teamOwnerId == null) {
+    public void addTeamOwner(String teamName, Integer teamOwnerId, Integer ownerToAdd) throws Exception {
+        if(teamName == null || teamOwnerId == null || ownerToAdd == null) {
             throw new NullPointerException();
         }
+        TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerId);
+        Team team = teamDb.getTeam(teamName);
+        if(!team.equals(teamOwner.getTeam())){
+            throw new Exception("Team owner and team don't match");
+        }
+        Subscriber subscriber = subscriberDb.getSubscriber(ownerToAdd);
+        try {
+            teamOwnerDb.getTeamOwner(ownerToAdd);
+
+        }catch (Exception e){
+
+            teamOwnerDb.addTeamOwner(team,teamOwnerId,subscriber);
+        }
+        throw new Exception("TeamOwner to add is already teamOwner");
+
     }
 
 
@@ -235,5 +250,21 @@ public class TeamController {
         String financialActivityId = UUID.randomUUID().toString();
         FinancialActivity financialActivity = new FinancialActivity(financialActivityId,financialActivityAmount,description,financialActivityType,team);
         teamDb.addFinancialActivity(team,financialActivityId,financialActivity);
+    }
+
+    public void changeStatusToInActive(String teamName) throws Exception {
+        if(teamName == null) {
+            throw new NullPointerException();
+        }
+        Team team = teamDb.getTeam(teamName);
+        teamDb.changeStatusToInActive(team);
+    }
+
+    public void changeStatusToActive(String teamName) throws Exception {
+        if(teamName == null) {
+            throw new NullPointerException();
+        }
+        Team team = teamDb.getTeam(teamName);
+        teamDb.changeStatusToActive(team);
     }
 }

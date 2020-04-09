@@ -15,9 +15,7 @@ public class Player extends Subscriber {
     private PlayerRole playerRole;
 
     public Player(Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        super(id,firstName,lastName);
         this.birthDate = birthDate;
         this.playerRole = playerRole;
     }
