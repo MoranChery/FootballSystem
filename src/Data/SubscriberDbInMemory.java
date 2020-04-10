@@ -24,7 +24,7 @@ public class SubscriberDbInMemory implements SubscriberDb{
     @Override
     public Subscriber getSubscriber(Integer id) throws Exception {
         if(id == null || !subscribers.containsKey(id)){
-            throw new Exception("TeamOwner to add isn't subscriber");
+            throw new Exception("subscriber not found");
         }
         return subscribers.get(id);
     }

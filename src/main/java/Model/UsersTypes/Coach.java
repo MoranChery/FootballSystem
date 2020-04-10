@@ -5,28 +5,14 @@ import Model.Enums.Qualification;
 import Model.Team;
 
 public class Coach extends Subscriber {
-    private Integer id;
     private Team team;
-    private String firstName;
-    private String lastName;
     private CoachRole coachRole;
     private Qualification qualification;
 
     public Coach(Integer id, String firstName, String lastName, CoachRole coachRole, Qualification qualification) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        super(id,firstName,lastName);
         this.coachRole = coachRole;
         this.qualification = qualification;
-    }
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Team getTeam() {
@@ -35,22 +21,6 @@ public class Coach extends Subscriber {
 
     public void setTeam(Team team) {
         this.team = team;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public CoachRole getCoachRole() {

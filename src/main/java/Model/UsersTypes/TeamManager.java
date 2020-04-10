@@ -5,21 +5,16 @@ import Model.Team;
 import java.util.Objects;
 
 public class TeamManager extends Subscriber {
-    private Integer id;
     private Team team;
-    private String firstName;
-    private String lastName;
+    private Integer ownedById;
 
     public TeamManager(Integer id, String firstName, String lastName) {
-     super(id,firstName,lastName);
+        super(id,firstName,lastName);
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public TeamManager(Team team,Subscriber subscriber, Integer ownedById) {
+        super(subscriber);
+        this.ownedById = ownedById;
     }
 
     public Team getTeam() {
@@ -30,34 +25,25 @@ public class TeamManager extends Subscriber {
         this.team = team;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public Integer getOwnedById() {
+        return ownedById;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setOwnedById(Integer ownedById) {
+        this.ownedById = ownedById;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TeamManager)) return false;
+        if (!super.equals(o)) return false;
         TeamManager that = (TeamManager) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(firstName, that.firstName) &&
-                Objects.equals(lastName, that.lastName);
+        return Objects.equals(team, that.team);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName);
+        return Objects.hash(super.hashCode(), team);
     }
 }

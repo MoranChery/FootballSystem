@@ -1,6 +1,5 @@
 package Model.UsersTypes;
 
-import Model.FinancialActivity;
 import Model.Team;
 
 import java.util.HashMap;
@@ -9,9 +8,8 @@ import java.util.Map;
 public class TeamOwner extends Subscriber {
 
     private Team team;
-
     private Map<Integer,TeamOwner> teamOwnersByThis;
-    private Integer ownedBy;
+    private Integer ownedById;
 
     public TeamOwner(Integer id, Team team, String firstName, String lastName) {
         super(id,firstName,lastName);
@@ -22,7 +20,7 @@ public class TeamOwner extends Subscriber {
     public TeamOwner(Team team, Subscriber subscriber, Integer teamOwnerId) {
         super(subscriber);
         this.team = team;
-        this.ownedBy = teamOwnerId;
+        this.ownedById = teamOwnerId;
     }
 
     public Team getTeam() {
@@ -41,11 +39,11 @@ public class TeamOwner extends Subscriber {
         this.teamOwnersByThis = teamOwnersByThis;
     }
 
-    public Integer getOwnedBy() {
-        return ownedBy;
+    public Integer getOwnedById() {
+        return ownedById;
     }
 
-    public void setOwnedBy(Integer ownedBy) {
-        this.ownedBy = ownedBy;
+    public void setOwnedById(Integer ownedById) {
+        this.ownedById = ownedById;
     }
 }

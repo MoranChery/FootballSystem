@@ -2,15 +2,13 @@ package Controller;
 
 import Data.*;
 import Model.Court;
-import Model.Enums.CoachRole;
-import Model.Enums.FinancialActivityType;
-import Model.Enums.PlayerRole;
-import Model.Enums.Qualification;
+import Model.Enums.*;
 import Model.FinancialActivity;
 import Model.Team;
 import Model.UsersTypes.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class TeamController {
@@ -21,6 +19,8 @@ public class TeamController {
     private CoachDb coachDb;
     private TeamOwnerDb teamOwnerDb;
     private SubscriberDb subscriberDb;
+    private TeamRoleDb teamRoleDb;
+
     public TeamController() {
         teamDb = new TeamDbInMemory();
         playerDb = new PlayerDbInMemory();
@@ -29,6 +29,7 @@ public class TeamController {
         courtDb = new CourtDbInMemory();
         teamOwnerDb = new TeamOwnerDbInMemory();
         subscriberDb = new SubscriberDbInMemory();
+        teamRoleDb = new TeamRoleDbInMemory();
     }
 
     public void createTeam(String teamName) throws Exception {
@@ -89,7 +90,7 @@ public class TeamController {
             /*get the team of the teamManager if there is a team already, will throw exception*/
             Team team = teamManager.getTeam();
             if (team != null) {
-                throw new Exception("TeamManager associated with a team");
+                throw new Exception("Team Manager associated with a team");
             }
             /*check if the teamManager's details match with the DB details*/
             if(!teamManager.equals(currTeamManager)){
@@ -214,25 +215,29 @@ public class TeamController {
         teamDb.removeCourt(teamName, courtName);
     }
 
-    public void addTeamOwner(String teamName, Integer teamOwnerId, Integer ownerToAdd) throws Exception {
+    public void subscriptionTeamOwner(String teamName, Integer teamOwnerId, Integer ownerToAdd) throws Exception {
         if(teamName == null || teamOwnerId == null || ownerToAdd == null) {
             throw new NullPointerException();
         }
+        /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerId);
         Team team = teamDb.getTeam(teamName);
         if(!team.equals(teamOwner.getTeam())){
             throw new Exception("Team owner and team don't match");
         }
+        /*check if the subscriber exists*/
         Subscriber subscriber = subscriberDb.getSubscriber(ownerToAdd);
-        try {
-            teamOwnerDb.getTeamOwner(ownerToAdd);
-
-        }catch (Exception e){
-
-            teamOwnerDb.addTeamOwner(team,teamOwnerId,subscriber);
+        List<TeamRole> teamRolesOfOwnerToAdd = teamRoleDb.getTeamRoles(ownerToAdd);
+        for (TeamRole tr: teamRolesOfOwnerToAdd) {
+            if(!teamName.equals(tr.getTeamName())){
+                throw new Exception("Owner to Add already associated with other team");
+            }
+            if(TeamRoleType.OWNER.equals(tr.getTeamRoleType())){
+                throw new Exception("This subscriber already teamOwner");
+            }
         }
-        throw new Exception("TeamOwner to add is already teamOwner");
-
+        teamOwnerDb.subscriptionTeamOwner(team,teamOwnerId,subscriber);
+        teamRoleDb.createTeamRole(ownerToAdd,teamName,TeamRoleType.OWNER);
     }
 
 
@@ -266,5 +271,83 @@ public class TeamController {
         }
         Team team = teamDb.getTeam(teamName);
         teamDb.changeStatusToActive(team);
+    }
+
+    public void subscriptionTeamManager(String teamName, Integer teamOwnerId, Integer managerToAdd) throws Exception {
+        if(teamName == null || teamOwnerId == null || managerToAdd == null) {
+            throw new NullPointerException();
+        }
+        /*check if the major team owner in db*/
+        TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerId);
+        Team team = teamDb.getTeam(teamName);
+        if(!team.equals(teamOwner.getTeam())){
+            throw new Exception("Team owner and team don't match");
+        }
+        Subscriber subscriber = subscriberDb.getSubscriber(managerToAdd);
+        List<TeamRole> teamRolesOfTeamManagerToAdd = teamRoleDb.getTeamRoles(managerToAdd);
+        for (TeamRole tr: teamRolesOfTeamManagerToAdd) {
+            if(!teamName.equals(tr.getTeamName())){
+                throw new Exception("Manager to Add already associated with other team");
+            }
+            TeamRoleType teamRoleType = tr.getTeamRoleType();
+            if(TeamRoleType.OWNER.equals(teamRoleType)){
+                throw new Exception("This subscriber already teamOwner");
+            }
+            if(TeamRoleType.MANAGER.equals(teamRoleType)){
+                throw new Exception("This subscriber already teamManager");
+            }
+        }
+        teamManagerDb.subscriptionTeamManager(team,teamOwnerId,subscriber);
+        teamRoleDb.createTeamRole(managerToAdd,teamName,TeamRoleType.MANAGER);
+    }
+
+    public void removeSubscriptionTeamOwner(String teamName, Integer teamOwnerId, Integer ownerToRemove) throws Exception {
+        if(teamName == null || teamOwnerId == null || ownerToRemove == null) {
+            throw new NullPointerException();
+        }
+        /*check if the major team owner in db*/
+        TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerId);
+        Team team = teamDb.getTeam(teamName);
+        if(!team.equals(teamOwner.getTeam())){
+            throw new Exception("Team owner and team don't match");
+        }
+        TeamOwner teamOwnerToRemove = teamOwnerDb.getTeamOwner(ownerToRemove);
+        if(!team.equals(teamOwnerToRemove.getTeam())){
+            throw new Exception("TeamOwnerToRemove associated with other team");
+        }
+        if(!teamOwnerId.equals(teamOwnerToRemove.getOwnedById())){
+            throw new Exception("TeamOwnerToRemove owned by another teamOwner");
+        }
+        // todo - move foreach to db
+        List<Integer> allTeamOwnersOwnedBy = teamOwnerDb.getAllTeamOwnersOwnedBy(ownerToRemove);
+        for (Integer idToRemove: allTeamOwnersOwnedBy) {
+            teamOwnerDb.removeSubscriptionTeamOwner(idToRemove);
+            teamRoleDb.removeTeamRole(idToRemove,teamName,TeamRoleType.OWNER);
+        }
+        teamOwnerDb.removeSubscriptionTeamOwner(ownerToRemove);
+        teamRoleDb.removeTeamRole(ownerToRemove,teamName,TeamRoleType.OWNER);
+    }
+
+    public void removeSubscriptionTeamManager(String teamName, Integer teamOwnerId, Integer managerToRemove) throws Exception {
+        if(teamName == null || teamOwnerId == null || managerToRemove == null) {
+            throw new NullPointerException();
+        }
+        /*check if the major team owner in db*/
+        TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerId);
+        Team team = teamDb.getTeam(teamName);
+        if(!team.equals(teamOwner.getTeam())){
+            throw new Exception("Team owner and team don't match");
+        }
+        TeamManager teamManagerToRemove = teamManagerDb.getTeamManager(managerToRemove);
+        if(!team.equals(teamManagerToRemove.getTeam())){
+            throw new Exception("TeamManagerToRemove associated with other team");
+        }
+        if(!teamOwnerId.equals(teamManagerToRemove.getOwnedById())){
+            throw new Exception("TeamManagerToRemove owned by another teamOwner");
+        }
+
+        teamManagerDb.removeSubscriptionTeamManager(managerToRemove);
+        teamRoleDb.removeTeamRole(managerToRemove,teamName,TeamRoleType.MANAGER);
+
     }
 }

@@ -7,10 +7,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Player extends Subscriber {
-    private Integer id;
     private Team team;
-    private String firstName;
-    private String lastName;
     private Date birthDate;
     private PlayerRole playerRole;
 
@@ -18,14 +15,6 @@ public class Player extends Subscriber {
         super(id,firstName,lastName);
         this.birthDate = birthDate;
         this.playerRole = playerRole;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Team getTeam() {
@@ -39,17 +28,15 @@ public class Player extends Subscriber {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Player)) return false;
+        if (!super.equals(o)) return false;
         Player player = (Player) o;
-        return Objects.equals(id, player.id) &&
-                Objects.equals(firstName, player.firstName) &&
-                Objects.equals(lastName, player.lastName) &&
-                Objects.equals(birthDate, player.birthDate) &&
+        return Objects.equals(birthDate, player.birthDate) &&
                 playerRole == player.playerRole;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, birthDate, playerRole);
+        return Objects.hash(super.hashCode(), team, birthDate, playerRole);
     }
 }

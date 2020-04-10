@@ -6,12 +6,14 @@ import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamManager;
 import Model.UsersTypes.TeamOwner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TeamOwnerDbInMemory implements TeamOwnerDb{
 
-    /*structure like the DB of players*/
+    /*structure like the DB of teamOwners*/
     private Map<Integer, TeamOwner> teamOwners;
 
     public TeamOwnerDbInMemory() {
@@ -23,7 +25,7 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
     public void createTeamOwner(TeamOwner teamOwner) throws Exception {
         Integer teamOwnerId = teamOwner.getId();
         if (teamOwners.containsKey(teamOwnerId)) {
-            throw new Exception("teamOwner already exists");
+            throw new Exception("TeamOwner already exists");
         }
         teamOwners.put(teamOwnerId, teamOwner);
     }
@@ -37,7 +39,7 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
     }
 
     @Override
-    public void addTeamOwner(Team team, Integer teamOwnerId, Subscriber subscriber) throws Exception {
+    public void subscriptionTeamOwner(Team team, Integer teamOwnerId, Subscriber subscriber) throws Exception {
         if(team == null || teamOwnerId == null || subscriber == null){
             throw new NullPointerException();
         }
@@ -52,7 +54,28 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         TeamOwner teamOwnerMajor = teamOwners.get(teamOwnerId);
         teamOwnerMajor.getTeamOwnersByThis().put(ownerId,teamOwner);
         teamOwners.put(ownerId,teamOwner);
+    }
 
+    @Override
+    public void removeSubscriptionTeamOwner(Integer ownerToRemove) throws Exception {
+        if(ownerToRemove == null){
+            throw new NullPointerException();
+        }
+        if(!teamOwners.containsKey(ownerToRemove)){
+            throw new Exception("TeamOwner not found");
+        }
+        teamOwners.remove(ownerToRemove);
+   }
+
+    @Override
+    public List<Integer> getAllTeamOwnersOwnedBy(Integer teamOwner) {
+        List<Integer> teamOwnersOwnedBy = new ArrayList<>();
+        for (TeamOwner tOwner: teamOwners.values()) {
+            if(teamOwner.equals(tOwner.getOwnedById())){
+                teamOwnersOwnedBy.add(tOwner.getId());
+            }
+        }
+        return teamOwnersOwnedBy;
     }
 
 }

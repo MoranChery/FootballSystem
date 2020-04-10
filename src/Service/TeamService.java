@@ -13,6 +13,9 @@ import java.util.Date;
 public class TeamService {
     TeamController teamController;
 
+    public TeamService(TeamController teamController) {
+        this.teamController = teamController;
+    }
 
     /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
     public void addPlayer(String teamName, Integer playerId, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
@@ -47,8 +50,20 @@ public class TeamService {
         teamController.removeCourt(teamName, courtName);
     }
 
-    public void addTeamOwner(String teamName, Integer teamOwnerId, Integer ownerToAdd){
-        teamController.addTeamOwner(teamName,teamOwnerId,ownerToAdd);
+    public void subscriptionTeamOwner(String teamName, Integer teamOwnerId, Integer ownerToAdd) throws Exception {
+        teamController.subscriptionTeamOwner(teamName,teamOwnerId,ownerToAdd);
+    }
+
+    public void subscriptionTeamManager(String teamName, Integer teamOwnerId, Integer managerToAdd) throws Exception {
+        teamController.subscriptionTeamManager(teamName,teamOwnerId,managerToAdd);
+    }
+
+    public void removeSubscriptionTeamOwner(String teamName, Integer teamOwnerId, Integer ownerToRemove) throws Exception {
+        teamController.removeSubscriptionTeamOwner(teamName,teamOwnerId,ownerToRemove);
+    }
+
+    public void removeSubscriptionTeamManager(String teamName, Integer teamOwnerId, Integer managerToRemove) throws Exception {
+        teamController.removeSubscriptionTeamManager(teamName,teamOwnerId,managerToRemove);
     }
 
     public void addFinancialActivity(String teamName, Double financialActivityAmount, String description, FinancialActivityType financialActivityType) throws Exception {
