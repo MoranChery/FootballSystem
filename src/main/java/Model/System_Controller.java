@@ -16,24 +16,24 @@ public class System_Controller {
 
     private HashMap<Fan,AlertWay> fansToGetAlert;
 
-    /**
-     * this function adds fan to the list of fan that want to get alerts about games
-     * @param choosenWay the type of the way to get alerts that the fan wants
-     * @param fanWantsAlerts the fan
-     */
-    public void AddFanToGetAlerts(AlertWay choosenWay, Fan fanWantsAlerts){
-        if(choosenWay != null && fanWantsAlerts != null){
-            if(!(fansToGetAlert.containsKey(fanWantsAlerts))){
-                fansToGetAlert.put(fanWantsAlerts,choosenWay);
-                // write to log
-                System.out.println(fanWantsAlerts.getFirstName() + " Now you will get alerts about games");
-            }
-            else {
-                System.out.println("You are already registered to get alerts about games");
-            }
-
-        }
-    }
+//    /**
+//     * this function adds fan to the list of fan that want to get alerts about games
+//     * @param choosenWay the type of the way to get alerts that the fan wants
+//     * @param fanWantsAlerts the fan
+//     */
+//    public void AddFanToGetAlerts(AlertWay choosenWay, Fan fanWantsAlerts){
+//        if(choosenWay != null && fanWantsAlerts != null){
+//            if(!(fansToGetAlert.containsKey(fanWantsAlerts))){
+//                fansToGetAlert.put(fanWantsAlerts,choosenWay);
+//                // write to log
+//                System.out.println(fanWantsAlerts.getFirstName() + " Now you will get alerts about games");
+//            }
+//            else {
+//                System.out.println("You are already registered to get alerts about games");
+//            }
+//
+//        }
+//    }
 
     public void displayAlertsTypes(){
         // test this later to see if it works-after the commit because of all the errors
