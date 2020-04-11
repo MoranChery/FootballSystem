@@ -19,8 +19,8 @@ public class TeamService {
         teamController.addPlayer(teamName, playerId, firstName, lastName, birthDate, playerRole);
     }
 
-    public void addTeamManager(String teamName, Integer teamManagerId, String firstName, String lastName) throws Exception {
-        teamController.addTeamManager(teamName, teamManagerId, firstName, lastName);
+    public void addTeamManager(String teamName, Integer teamManagerId, String firstName, String lastName,Integer ownedById) throws Exception {
+        teamController.addTeamManager(teamName, teamManagerId, firstName, lastName,ownedById);
     }
 
     public void addCoach(String teamName, Integer coachId, String firstName, String lastName, CoachRole coachRole, Qualification qualification) throws Exception {

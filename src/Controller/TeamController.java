@@ -84,13 +84,14 @@ public class TeamController {
         teamRoleDb.createTeamRole(playerId,teamName,TeamRoleType.PLAYER);
     }
 
-    public void addTeamManager(String teamName, Integer teamManagerId, String firstName ,String lastName) throws Exception {
-        if(teamName == null || teamManagerId == null || firstName == null || lastName == null) {
+    public void addTeamManager(String teamName, Integer teamManagerId, String firstName ,String lastName,Integer ownedById) throws Exception {
+        if(teamName == null || teamManagerId == null || firstName == null || lastName == null || ownedById == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
-        TeamManager currTeamManager = new TeamManager(teamManagerId, firstName, lastName);
+        TeamOwner teamOwner = teamOwnerDb.getTeamOwner(ownedById);
+        TeamManager currTeamManager = new TeamManager(teamManagerId, firstName, lastName,ownedById);
         /*get the teamManager from DB*/
         TeamManager teamManager;
         try{
@@ -103,13 +104,16 @@ public class TeamController {
             if(!teamManager.equals(currTeamManager)){
                 throw new Exception("One or more of the details incorrect");
             }
+            if(teamManager.getOwnedById() != null){
+                throw new Exception("Team Manager owned by another teamOwner");
+            }
         }catch (NotFoundException e){
             /*teamManager doesnt exist in the db - add to teamManagers's db*/
             teamManagerDb.createTeamManager(currTeamManager);
             teamManager = currTeamManager;
         }
         /*add to DB the teamManager to the team*/
-        teamDb.addTeamManager(teamName, teamManager);
+        teamDb.addTeamManager(teamName, teamManager,ownedById);
         teamRoleDb.createTeamRole(teamManagerId,teamName,TeamRoleType.MANAGER);
     }
 

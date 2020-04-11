@@ -8,8 +8,9 @@ public class TeamManager extends Subscriber {
     private Team team;
     private Integer ownedById;
 
-    public TeamManager(Integer id, String firstName, String lastName) {
+    public TeamManager(Integer id, String firstName, String lastName,Integer ownedById) {
         super(id,firstName,lastName);
+        this.ownedById = ownedById;
     }
 
     public TeamManager(Team team,Subscriber subscriber, Integer ownedById) {

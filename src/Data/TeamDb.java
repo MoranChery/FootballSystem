@@ -11,7 +11,7 @@ import Model.UsersTypes.TeamManager;
 public interface TeamDb {
     void createTeam(String teamName) throws Exception;
     void addPlayer(String teamName, Player player) throws Exception;
-    void addTeamManager(String teamName, TeamManager player) throws Exception;
+    void addTeamManager(String teamName, TeamManager player,Integer ownedById) throws Exception;
 
     Team getTeam(String teamName) throws Exception;
     

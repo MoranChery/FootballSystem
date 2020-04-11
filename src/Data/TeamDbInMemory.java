@@ -83,20 +83,20 @@ public class TeamDbInMemory implements TeamDb {
     }
 
     @Override
-    public void addTeamManager(String teamName, TeamManager teamManager) throws Exception {
+    public void addTeamManager(String teamName, TeamManager teamManager, Integer ownedById) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
         }
-
         Map<Integer, TeamManager> teamManagers = team.getTeamManagers();
         Integer id = teamManager.getId();
 
         if(teamManagers.containsKey(id)) {
-            throw new Exception("Player already part of the team");
+            throw new Exception("TeamManager already part of the team");
         }
         teamManagers.put(id, teamManager);
         teamManager.setTeam(team);
+        teamManager.setOwnedById(ownedById);
     }
 
     @Override

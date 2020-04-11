@@ -1,5 +1,7 @@
+import Controller.CoachController;
 import Controller.PlayerController;
 import Controller.TeamManagerController;
+import Controller.TeamOwnerController;
 import Data.NotFoundException;
 import Data.TeamRole;
 import Model.Enums.PlayerRole;
@@ -7,6 +9,7 @@ import Model.Enums.TeamStatus;
 import Model.Team;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
+import Model.UsersTypes.TeamOwner;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,12 +22,16 @@ public class TeamControllerTest {
     private Controller.TeamController teamController;
     private PlayerController playerController;
     private TeamManagerController teamManagerController;
+    private TeamOwnerController teamOwnerController;
+    private CoachController coachController;
 
     @Before
     public void init() {
         teamController = new Controller.TeamController();
         playerController = new PlayerController();
         teamManagerController = new TeamManagerController();
+        coachController = new CoachController();
+        teamOwnerController = new TeamOwnerController();
     }
 
     @Test
@@ -129,11 +136,11 @@ public class TeamControllerTest {
     }
 
 
-    //////////////////////////////////// addTeamOwner/////////////////////////////////////////////
+    //////////////////////////////////// addTeamManager/////////////////////////////////////////////
     @Test
     public void testAddTeamManagerInvalidInputs() {
         try{
-            teamController.addTeamManager(null,1,"Noy","Harari");
+            teamController.addTeamManager(null,1,"Noy","Harari",2);
             Assert.fail("Should throw NullPointerException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NullPointerException);
@@ -144,7 +151,7 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerTeamNotFound(){
         try{
-            teamController.addTeamManager("notExists",1,"Noy","Harari");
+            teamController.addTeamManager("notExists",1,"Noy","Harari",2);
             Assert.fail("Should throw NotFoundException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NotFoundException);
@@ -158,7 +165,7 @@ public class TeamControllerTest {
         teamController.createTeam(teamName);
         teamController.changeStatus(teamName, TeamStatus.INACTIVE);
         try{
-            teamController.addTeamManager(teamName,1,"Noy","Harari");
+            teamController.addTeamManager(teamName,1,"Noy","Harari",2);
             Assert.fail("Should throw Exception");
         }catch (Exception e){
             Assert.assertEquals("This Team's status - Inactive",e.getMessage());
@@ -169,7 +176,8 @@ public class TeamControllerTest {
     public void testAddTeamManagerNotExistsPlayer() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        teamController.addTeamManager(teamName,1,"Noy","Harari");
+        teamOwnerController.createTeamOwner(new TeamOwner(2,teamController.getTeam(teamName),"firstTeamOwnerName","firstTeamOwnerName"));
+        teamController.addTeamManager(teamName,1,"Noy","Harari",2);
         Team team = teamController.getTeam(teamName);
         Map<Integer, TeamManager> teamManagers = team.getTeamManagers();
         Assert.assertEquals(1,teamManagers.size());
@@ -185,9 +193,10 @@ public class TeamControllerTest {
     public void testAddTeamManagerExistsTeamManagerAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        teamController.addTeamManager(teamName,1,"Noy","Harari");
+        teamOwnerController.createTeamOwner(new TeamOwner(2,teamController.getTeam(teamName),"firstTeamOwnerName","firstTeamOwnerName"));
+        teamController.addTeamManager(teamName,1,"Noy","Harari",2);
         try{
-            teamController.addTeamManager(teamName,1,"Noy","Harari");
+            teamController.addTeamManager(teamName,1,"Noy","Harari",2);
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("Team Manager associated with a team",e.getMessage());
@@ -198,21 +207,37 @@ public class TeamControllerTest {
     public void testAddTeamManagerExistsTeamManagerIdDifferentDetails() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        teamManagerController.createTeamManager(new TeamManager(1,"Noy","Harari"));
+        teamOwnerController.createTeamOwner(new TeamOwner(2,teamController.getTeam(teamName),"firstTeamOwnerName","firstTeamOwnerName"));
+        teamManagerController.createTeamManager(new TeamManager(1,"Noy","Harari",2));
         try{
-            teamController.addTeamManager(teamName,1,"Hila","Harari");
+            teamController.addTeamManager(teamName,1,"Hila","Harari",2);
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("One or more of the details incorrect",e.getMessage());
         }
     }
 
+
+    @Test
+    public void testAddTeamManagerExistsTeamManagerIdAssociatedWithOwnedBy() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        teamOwnerController.createTeamOwner(new TeamOwner(2,teamController.getTeam(teamName),"firstTeamOwnerName","firstTeamOwnerName"));
+        teamManagerController.createTeamManager(new TeamManager(1,"Noy","Harari",3));
+        try{
+            teamController.addTeamManager(teamName,1,"Noy","Harari",2);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e){
+            Assert.assertEquals("Team Manager owned by another teamOwner",e.getMessage());
+        }
+    }
     @Test
     public void testAddTeamManagerExistsTeamManager() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        teamManagerController.createTeamManager(new TeamManager(1,"Noy","Harari"));
-        teamController.addTeamManager(teamName,1,"Noy","Harari");
+        teamOwnerController.createTeamOwner(new TeamOwner(2,teamController.getTeam(teamName),"firstTeamOwnerName","firstTeamOwnerName"));
+        teamManagerController.createTeamManager(new TeamManager(1,"Noy","Harari",null));
+        teamController.addTeamManager(teamName,1,"Noy","Harari",2);
         Team team = teamController.getTeam(teamName);
         Map<Integer, TeamManager> teamManagers = team.getTeamManagers();
         Assert.assertEquals(1,teamManagers.size());
@@ -221,10 +246,10 @@ public class TeamControllerTest {
         Assert.assertEquals(1,teamManager.getId().intValue());
         Assert.assertEquals("Noy",teamManager.getFirstName());
         Assert.assertEquals("Harari",teamManager.getLastName());
-        Assert.assertEquals(null,teamManager.getOwnedById());
+        Assert.assertEquals(2,teamManager.getOwnedById().intValue());
         Assert.assertEquals(team,teamManager.getTeam());
     }
 
-
+    //////////////////////////////////// addCoach/////////////////////////////////////////////
 
 }
