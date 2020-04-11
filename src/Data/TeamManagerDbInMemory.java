@@ -17,6 +17,12 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
         teamManagers = new HashMap<>();
     }
 
+    private static TeamManagerDbInMemory ourInstance = new TeamManagerDbInMemory();
+
+    public static TeamManagerDbInMemory getInstance() {
+        return ourInstance;
+    }
+
     /**
      * for the tests - create TeamManager in DB
      * @param teamManager

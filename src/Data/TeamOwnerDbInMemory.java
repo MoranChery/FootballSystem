@@ -20,7 +20,11 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         teamOwners = new HashMap<>();
     }
 
+    private static TeamOwnerDbInMemory ourInstance = new TeamOwnerDbInMemory();
 
+    public static TeamOwnerDbInMemory getInstance() {
+        return ourInstance;
+    }
     @Override
     public void createTeamOwner(TeamOwner teamOwner) throws Exception {
         Integer teamOwnerId = teamOwner.getId();

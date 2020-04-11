@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerDbInMemory implements PlayerDb {
+
     private static PlayerDbInMemory ourInstance = new PlayerDbInMemory();
 
     public static PlayerDbInMemory getInstance() {

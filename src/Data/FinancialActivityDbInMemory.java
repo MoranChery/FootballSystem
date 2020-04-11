@@ -10,6 +10,12 @@ public class FinancialActivityDbInMemory implements FinancialActivityDb {
 
     Map<String, FinancialActivity> financialActivities;
 
+    private static FinancialActivityDbInMemory ourInstance = new FinancialActivityDbInMemory();
+
+    public static FinancialActivityDbInMemory getInstance() {
+        return ourInstance;
+    }
+
     public FinancialActivityDbInMemory() {
         this.financialActivities = new HashMap<>();
     }

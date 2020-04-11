@@ -24,15 +24,15 @@ public class TeamController {
     private FinancialActivityDb financialActivityDb;
 
     public TeamController() {
-        teamDb = new TeamDbInMemory();
+        teamDb =  TeamDbInMemory.getInstance();
         playerDb = PlayerDbInMemory.getInstance();
-        teamManagerDb = new TeamManagerDbInMemory();
-        coachDb = new CoachDbInMemory();
-        courtDb = new CourtDbInMemory();
-        teamOwnerDb = new TeamOwnerDbInMemory();
-        subscriberDb = new SubscriberDbInMemory();
-        teamRoleDb = new TeamRoleDbInMemory();
-        financialActivityDb = new FinancialActivityDbInMemory();
+        teamManagerDb = TeamManagerDbInMemory.getInstance();
+        coachDb =  CoachDbInMemory.getInstance();
+        courtDb =  CourtDbInMemory.getInstance();
+        teamOwnerDb =  TeamOwnerDbInMemory.getInstance();
+        subscriberDb =  SubscriberDbInMemory.getInstance();
+        teamRoleDb =  TeamRoleDbInMemory.getInstance();
+        financialActivityDb =  FinancialActivityDbInMemory.getInstance();
     }
 
     public void createTeam(String teamName) throws Exception {
@@ -86,7 +86,7 @@ public class TeamController {
 
     public void addTeamManager(String teamName, Integer teamManagerId, String firstName ,String lastName) throws Exception {
         if(teamName == null || teamManagerId == null || firstName == null || lastName == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);

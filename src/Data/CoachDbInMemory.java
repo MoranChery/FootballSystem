@@ -6,7 +6,21 @@ import Model.UsersTypes.TeamManager;
 import java.util.HashMap;
 
 public class CoachDbInMemory implements CoachDb {
+
+
+
+
+    private static CoachDbInMemory ourInstance = new CoachDbInMemory();
+
+    public static CoachDbInMemory getInstance() {
+        return ourInstance;
+    }
+
     HashMap<Integer,Coach> coaches;
+
+    public CoachDbInMemory() {
+        coaches = new HashMap<>();
+    }
 
     @Override
     public Coach getCoach(Integer coachId) throws Exception {

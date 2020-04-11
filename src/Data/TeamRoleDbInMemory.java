@@ -14,6 +14,12 @@ public class TeamRoleDbInMemory implements TeamRoleDb {
         this.teamRoles = new HashMap<>();
     }
 
+    private static TeamRoleDbInMemory ourInstance = new TeamRoleDbInMemory();
+
+    public static TeamRoleDbInMemory getInstance() {
+        return ourInstance;
+    }
+
     @Override
     public void createTeamRole(Integer id, String teamName, TeamRoleType teamRoleType){
         TeamRole teamRole = new TeamRole(teamName,teamRoleType);

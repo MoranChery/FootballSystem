@@ -13,6 +13,12 @@ public class SubscriberDbInMemory implements SubscriberDb{
         this.subscribers = new HashMap<>();
     }
 
+    private static SubscriberDbInMemory ourInstance = new SubscriberDbInMemory();
+
+    public static SubscriberDbInMemory getInstance() {
+        return ourInstance;
+    }
+
     @Override
     public void createSubscriber(Subscriber subscriber) throws Exception {
         Integer subscriberId = subscriber.getId();

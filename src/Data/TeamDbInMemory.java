@@ -23,6 +23,12 @@ public class TeamDbInMemory implements TeamDb {
         teams = new HashMap<>();
     }
 
+    private static TeamDbInMemory ourInstance = new TeamDbInMemory();
+
+    public static TeamDbInMemory getInstance() {
+        return ourInstance;
+    }
+
     /**
      * create team in DB
      * @param teamName
