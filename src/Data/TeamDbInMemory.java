@@ -113,6 +113,7 @@ public class TeamDbInMemory implements TeamDb {
             throw new Exception("Coach already part of the team");
         }
         coaches.put(id, coach);
+        coach.setTeam(team);
     }
 
     @Override

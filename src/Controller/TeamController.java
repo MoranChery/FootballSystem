@@ -120,7 +120,7 @@ public class TeamController {
 
     public void addCoach(String teamName, Integer coachId, String firstName, String lastName, CoachRole coachRole, Qualification qualification) throws Exception {
         if(teamName == null || coachId == null || firstName == null || lastName == null || coachRole == null|| qualification == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);

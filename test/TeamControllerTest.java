@@ -1,12 +1,12 @@
-import Controller.CoachController;
-import Controller.PlayerController;
-import Controller.TeamManagerController;
-import Controller.TeamOwnerController;
+import Controller.*;
 import Data.NotFoundException;
 import Data.TeamRole;
+import Model.Enums.CoachRole;
 import Model.Enums.PlayerRole;
+import Model.Enums.Qualification;
 import Model.Enums.TeamStatus;
 import Model.Team;
+import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 import Model.UsersTypes.TeamOwner;
@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class TeamControllerTest {
-    private Controller.TeamController teamController;
+    private TeamController teamController;
     private PlayerController playerController;
     private TeamManagerController teamManagerController;
     private TeamOwnerController teamOwnerController;
@@ -250,6 +250,104 @@ public class TeamControllerTest {
         Assert.assertEquals(team,teamManager.getTeam());
     }
 
-    //////////////////////////////////// addCoach/////////////////////////////////////////////
+    ////////////////////////////////////addCoach/////////////////////////////////////////////
+    @Test
+    public void testAddCoachInvalidInputs() {
+        try{
+            teamController.addCoach(null,1,"Noy","Harari", CoachRole.MAJOR, Qualification.UEFA_A);
+            Assert.fail("Should throw NullPointerException");
+        }catch (Exception e){
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input",e.getMessage());
+        }
+    }
 
+    @Test
+    public void testAddCoachTeamNotFound(){
+        try{
+            teamController.addCoach("notExists",1,"Noy","Harari", CoachRole.MAJOR, Qualification.UEFA_A);
+            Assert.fail("Should throw NotFoundException");
+        }catch (Exception e){
+            Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("Team not found",e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddCoachTeamInactive() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        teamController.changeStatus(teamName, TeamStatus.INACTIVE);
+        try{
+            teamController.addCoach(teamName,1,"Noy","Harari", CoachRole.MAJOR, Qualification.UEFA_A);
+            Assert.fail("Should throw Exception");
+        }catch (Exception e){
+            Assert.assertEquals("This Team's status - Inactive",e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddCoachNotExistsCoach() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        teamController.addCoach(teamName,1,"Noy","Harari", CoachRole.MAJOR, Qualification.UEFA_A);
+        Team team = teamController.getTeam(teamName);
+        Map<Integer, Coach> coaches = team.getCoaches();
+        Assert.assertEquals(1,coaches.size());
+        Assert.assertTrue(coaches.containsKey(1));
+        Coach coach = coaches.get(1);
+        Assert.assertEquals(1,coach.getId().intValue());
+        Assert.assertEquals("Noy",coach.getFirstName());
+        Assert.assertEquals("Harari",coach.getLastName());
+        Assert.assertEquals(CoachRole.MAJOR,coach.getCoachRole());
+        Assert.assertEquals(Qualification.UEFA_A,coach.getQualification());
+        Assert.assertEquals(team,coach.getTeam());
+    }
+    @Test
+    public void testAddCoachExistsCoachAssociatedWithOtherTeam() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        teamController.addCoach(teamName,1,"Noy","Harari", CoachRole.MAJOR, Qualification.UEFA_A);
+        try{
+            teamController.addCoach(teamName,1,"Noy","Harari", CoachRole.MAJOR, Qualification.UEFA_A);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e){
+            Assert.assertEquals("Coach associated with a team",e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddCoachExistsCoachIdDifferentDetails() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+        teamController.createTeam(teamName);
+        coachController.createCoach(new Coach(1,"Noy","Harari", CoachRole.MAJOR, Qualification.UEFA_A));
+        try{
+            teamController.addCoach(teamName,1,"OtherFirst","Harari", CoachRole.MAJOR, Qualification.UEFA_A);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e){
+            Assert.assertEquals("One or more of the details incorrect",e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddCoachExistsCoach() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        coachController.createCoach(new Coach(1,"Noy","Harari", CoachRole.MAJOR, Qualification.UEFA_A));
+        teamController.addCoach(teamName,1,"Noy","Harari", CoachRole.MAJOR, Qualification.UEFA_A);
+        Team team = teamController.getTeam(teamName);
+        Map<Integer, Coach> coaches = team.getCoaches();
+        Assert.assertEquals(1,coaches.size());
+        Assert.assertTrue(coaches.containsKey(1));
+        Coach coach = coaches.get(1);
+        Assert.assertEquals(1,coach.getId().intValue());
+        Assert.assertEquals("Noy",coach.getFirstName());
+        Assert.assertEquals("Harari",coach.getLastName());
+        Assert.assertEquals(CoachRole.MAJOR,coach.getCoachRole());
+        Assert.assertEquals(Qualification.UEFA_A,coach.getQualification());
+        Assert.assertEquals(team,coach.getTeam());
+    }
+
+    ///////////////////////////addCourt///////////////////////////////
 }
