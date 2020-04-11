@@ -10,6 +10,7 @@ import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 import com.sun.xml.internal.bind.v2.TODO;
 import org.omg.PortableInterceptor.ACTIVE;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class TeamDbInMemory implements TeamDb {
     public Team getTeam(String teamName) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
-            throw new Exception("Team not found");
+            throw new NotFoundException("Team not found");
         }
         return team;
     }
@@ -192,41 +193,36 @@ public class TeamDbInMemory implements TeamDb {
     }
 
     @Override
-    public void addFinancialActivity(Team team, String financialActivityId, FinancialActivity financialActivity) throws Exception {
-        if(team == null) {
+    public void addFinancialActivity(String teamName, FinancialActivity financialActivity) throws Exception {
+        if(teamName == null || !teams.containsKey(teamName)) {
             throw new Exception("Team not found");
         }
+        Team team = teams.get(teamName);
         Map<String, FinancialActivity> financialActivities = team.getFinancialActivities();
-        financialActivities.put(financialActivityId,financialActivity);
-        team.setBudget(team.getBudget() + transferTheAmountPerType(financialActivity));
+        financialActivities.put(financialActivity.getFinancialActivityId(),financialActivity);
+        team.setBudget(transferTheAmountPerType(team.getBudget(),financialActivity));
     }
 
-    public double transferTheAmountPerType(FinancialActivity financialActivity){
+    public double transferTheAmountPerType(Double teamBudget,FinancialActivity financialActivity){
         if (financialActivity.getFinancialActivityType().equals(FinancialActivityType.OUTCOME)) {
-            return (-financialActivity.getFinancialActivityAmount());
+            return teamBudget - financialActivity.getFinancialActivityAmount();
         }else{
-            return financialActivity.getFinancialActivityAmount();
+            return teamBudget + financialActivity.getFinancialActivityAmount();
         }
     }
-
-   public void changeStatusToInActive(Team team) throws Exception {
-        team = teams.get(team.getTeamName());
-       if(team.getTeamStatus().equals(TeamStatus.ACTIVE)){
-            team.setTeamStatus(TeamStatus.INACTIVE);
+    @Override
+    public void changeStatus(String teamName, TeamStatus teamStatus) throws Exception {
+        if(teamName == null || !teams.containsKey(teamName)) {
+            throw new Exception("Team not found");
+        }
+        Team team = teams.get(teamName);
+       if(!teamStatus.equals(team.getTeamStatus())){
+            team.setTeamStatus(teamStatus);
         }else{
-           throw new Exception("The team already inactive");
+           throw new Exception("The team already " + teamStatus.toString());
        }
    }
 
 
-    @Override
-    public void changeStatusToActive(Team team) throws Exception{
-        team = teams.get(team.getTeamName());
-        if(team.getTeamStatus().equals(TeamStatus.INACTIVE)){
-            team.setTeamStatus(TeamStatus.ACTIVE);
-        }else{
-            throw new Exception("The team already active");
-        }
-    }
 
 }

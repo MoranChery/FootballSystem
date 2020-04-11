@@ -1,6 +1,7 @@
 package Data;
 
 import Model.Court;
+import Model.Enums.TeamStatus;
 import Model.FinancialActivity;
 import Model.Team;
 import Model.UsersTypes.Coach;
@@ -26,9 +27,8 @@ public interface TeamDb {
 
     void removeCourt(String teamName, String courtName) throws Exception;
 
-    void addFinancialActivity(Team team, String financialActivityId, FinancialActivity financialActivity) throws Exception;
+    void addFinancialActivity(String teamName, FinancialActivity financialActivity) throws Exception;
 
-    void changeStatusToInActive(Team team) throws Exception;
+    void changeStatus(String teamName, TeamStatus teamStatus) throws Exception;
 
-    void changeStatusToActive(Team team) throws Exception;
 }

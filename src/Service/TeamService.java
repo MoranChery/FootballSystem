@@ -2,10 +2,7 @@ package Service;
 
 import Controller.PlayerController;
 import Controller.TeamController;
-import Model.Enums.CoachRole;
-import Model.Enums.FinancialActivityType;
-import Model.Enums.PlayerRole;
-import Model.Enums.Qualification;
+import Model.Enums.*;
 import Model.Team;
 
 import java.util.Date;
@@ -13,8 +10,8 @@ import java.util.Date;
 public class TeamService {
     TeamController teamController;
 
-    public TeamService(TeamController teamController) {
-        this.teamController = teamController;
+    public TeamService() {
+        this.teamController = new TeamController();
     }
 
     /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
@@ -71,10 +68,10 @@ public class TeamService {
     }
 
     public void changeStatusToInActive(String teamName) throws Exception {
-        teamController.changeStatusToInActive(teamName);
+        teamController.changeStatus(teamName, TeamStatus.INACTIVE);
     }
 
     public void changeStatusToActive(String teamName) throws Exception {
-        teamController.changeStatusToActive(teamName);
+        teamController.changeStatus(teamName,TeamStatus.ACTIVE);
     }
 }

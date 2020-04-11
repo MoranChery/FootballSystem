@@ -17,6 +17,22 @@ public class Player extends Subscriber {
         this.playerRole = playerRole;
     }
 
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public PlayerRole getPlayerRole() {
+        return playerRole;
+    }
+
+    public void setPlayerRole(PlayerRole playerRole) {
+        this.playerRole = playerRole;
+    }
+
     public Team getTeam() {
         return team;
     }

@@ -8,7 +8,7 @@ public class PlayerController {
     private PlayerDb playerDb;
 
     public PlayerController() {
-        playerDb = new PlayerDbInMemory();
+        playerDb = PlayerDbInMemory.getInstance();
     }
 
     public void createPlayer(Player player) throws Exception {

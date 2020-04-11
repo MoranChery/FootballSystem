@@ -1,15 +1,21 @@
 package Data;
 
+import Model.System_Controller;
 import Model.UsersTypes.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerDbInMemory implements PlayerDb {
+    private static PlayerDbInMemory ourInstance = new PlayerDbInMemory();
+
+    public static PlayerDbInMemory getInstance() {
+        return ourInstance;
+    }
     /*structure like the DB of players*/
     private Map<Integer, Player> players;
 
-    public PlayerDbInMemory() {
+    private PlayerDbInMemory() {
         players = new HashMap<>();
     }
 
@@ -36,7 +42,7 @@ public class PlayerDbInMemory implements PlayerDb {
     @Override
     public Player getPlayer(Integer playerId) throws Exception {
         if (!players.containsKey(playerId)) {
-            throw new Exception("Player not found");
+            throw new NotFoundException("Player not found");
         }
         return players.get(playerId);
     }

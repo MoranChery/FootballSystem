@@ -11,7 +11,7 @@ public class CoachDbInMemory implements CoachDb {
     @Override
     public Coach getCoach(Integer coachId) throws Exception {
         if (!coaches.containsKey(coachId)) {
-            throw new Exception("Team Manager not found");
+            throw new NotFoundException("Coach not found");
         }
         return coaches.get(coachId);
     }
@@ -20,7 +20,7 @@ public class CoachDbInMemory implements CoachDb {
     public void createCoach(Coach coach) throws Exception {
         Integer id = coach.getId();
         if(coaches.containsKey(id)) {
-            throw new Exception("Team Manager already exists");
+            throw new Exception("Coach already exists");
         }
         coaches.put(id, coach);
     }

@@ -17,7 +17,7 @@ public class CourtDbInMemory implements CourtDb {
     @Override
     public Court getCourt(String courtName) throws Exception {
         if (!courts.containsKey(courtName)) {
-            throw new Exception("Court not found");
+            throw new NotFoundException("Court not found");
         }
         return courts.get(courtName);
     }
