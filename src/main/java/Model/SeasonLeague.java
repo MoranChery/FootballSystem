@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.List;
+
 public class SeasonLeague
 {
     static int seasonLeagueIdCounter = 0;
@@ -9,6 +11,7 @@ public class SeasonLeague
     private Integer leagueId;
     private Integer calculateLeaguePointsId;
     private Integer inlayGamesId;
+    private List<Integer> inlayJudgeIdList;
 
     public SeasonLeague(Integer seasonId, Integer leagueId, Integer calculateLeaguePointsId, Integer inlayGamesId)
     {
@@ -37,6 +40,8 @@ public class SeasonLeague
     public Integer getCalculateLeaguePointsId() { return calculateLeaguePointsId; }
 
     public Integer getInlayGamesId() { return inlayGamesId; }
+
+    public List<Integer> getInlayJudgeIdList() { return inlayJudgeIdList; }
     //endregion
 
     //region Setters
@@ -49,6 +54,8 @@ public class SeasonLeague
     public void setCalculateLeaguePointsId(Integer calculateLeaguePointsId) { this.calculateLeaguePointsId = calculateLeaguePointsId; }
 
 //    public void setInlayGamesId(Integer inlayGamesId) { this.inlayGamesId = inlayGamesId; }
+
+//    public void setInlayJudgeIdList(List<Integer> inlayJudgeIdList) { this.inlayJudgeIdList = inlayJudgeIdList; }
     //endregion
 
 

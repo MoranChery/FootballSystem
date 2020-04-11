@@ -10,15 +10,19 @@ public class LeagueDbInMemory implements LeagueDb
     /*structure like the DB of Leagues*/
     private Map<Integer, League> leagueMap;
 
-    public LeagueDbInMemory()
-    {
-        leagueMap = new HashMap<Integer, League>();
-    }
+    private static LeagueDbInMemory ourInstance = new LeagueDbInMemory();
+
+    public static LeagueDbInMemory getInstance() { return ourInstance; }
+
+    public LeagueDbInMemory() { leagueMap = new HashMap<Integer, League>(); }
 
     /**
+     * Will receive from the Controller the league's name, want to create League.
+     *
      * for the tests - create League in DB
-     * @param leagueName
-     * @throws Exception
+     *
+     * @param leagueName-name of the new League.
+     * @throws Exception-if details are incorrect.
      */
     public void createLeague(String leagueName) throws Exception
     {
@@ -34,10 +38,13 @@ public class LeagueDbInMemory implements LeagueDb
     }
 
     /**
-     * "pull" League from DB
-     * @param leagueId
-     * @return
-     * @throws Exception
+     * Will receive from the Controller the league's id, return the League.
+     *
+     * "pull" League from DB.
+     *
+     * @param leagueId-id of the League.
+     * @return the League.
+     * @throws Exception-if details are incorrect.
      */
     public League getLeague(Integer leagueId) throws Exception
     {
@@ -47,5 +54,4 @@ public class LeagueDbInMemory implements LeagueDb
         }
         return leagueMap.get(leagueId);
     }
-
 }

@@ -10,12 +10,19 @@ public class SeasonDbInMemory implements SeasonDb
     /*structure like the DB of Seasons*/
     private Map<Integer, Season> seasonMap;
 
+    private static SeasonDbInMemory ourInstance = new SeasonDbInMemory();
+
+    public static SeasonDbInMemory getInstance() { return ourInstance; }
+
     public SeasonDbInMemory() { seasonMap = new HashMap<Integer, Season>(); }
 
     /**
+     * Will receive from the Controller the season's name, want to create Season.
+     *
      * for the tests - create Season in DB
-     * @param seasonName
-     * @throws Exception
+     *
+     * @param seasonName-name of the new Season.
+     * @throws Exception-if details are incorrect.
      */
     public void createSeason(String seasonName) throws Exception
     {
@@ -31,10 +38,13 @@ public class SeasonDbInMemory implements SeasonDb
     }
 
     /**
-     * "pull" Season from DB
-     * @param seasonId
-     * @return
-     * @throws Exception
+     * Will receive from the Controller the season's id, return the Season.
+     *
+     * "pull" Season from DB.
+     *
+     * @param seasonId-id of the Season.
+     * @return the Season.
+     * @throws Exception-if details are incorrect.
      */
     public Season getSeason(Integer seasonId) throws Exception
     {
