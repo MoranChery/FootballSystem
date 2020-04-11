@@ -32,7 +32,7 @@ public class SeasonLeagueDbInMemory implements SeasonLeagueDb
     {
         for (SeasonLeague seasonLeague : seasonLeagueMap.values())
         {
-            if(seasonLeague.getLeagueId() == leagueId && seasonLeague.getSeasonId() == seasonId)
+            if(seasonLeague.getLeagueId().equals(leagueId) && seasonLeague.getSeasonId().equals(seasonId))
             {
                 throw new Exception("SeasonLeague already exist in the system");
             }
@@ -73,7 +73,7 @@ public class SeasonLeagueDbInMemory implements SeasonLeagueDb
     {
         for (SeasonLeague seasonLeague : seasonLeagueMap.values())
         {
-            if(seasonLeague.getSeasonId() == seasonId && seasonLeague.getLeagueId() == leagueId)
+            if(seasonLeague.getSeasonId().equals(seasonId) && seasonLeague.getLeagueId().equals(leagueId))
             {
                 return seasonLeague.getSeasonLeagueId();
             }
@@ -93,6 +93,10 @@ public class SeasonLeagueDbInMemory implements SeasonLeagueDb
      */
     public void inlayJudgeToSeasonLeague(Integer seasonLeagueId, Integer judgeId) throws Exception
     {
+        if(!seasonLeagueMap.containsKey(seasonLeagueId))
+        {
+            throw new Exception("SeasonLeague not found");
+        }
         SeasonLeague seasonLeague = seasonLeagueMap.get(seasonLeagueId);
         seasonLeague.getInlayJudgeIdList().add(judgeId);
     }
@@ -103,10 +107,13 @@ public class SeasonLeagueDbInMemory implements SeasonLeagueDb
      *
      * @param seasonLeagueId-id of the SeasonLeague.
      * @param calculateLeaguePointsId-id of the new Policy CalculateLeaguePoints.
-     * @throws Exception-if details are incorrect.
      */
-    public void changeCalculateLeaguePointsPolicy(Integer seasonLeagueId, Integer calculateLeaguePointsId)
+    public void changeCalculateLeaguePointsPolicy(Integer seasonLeagueId, Integer calculateLeaguePointsId) throws Exception
     {
+        if(!seasonLeagueMap.containsKey(seasonLeagueId))
+        {
+            throw new Exception("SeasonLeague not found");
+        }
         SeasonLeague seasonLeague = seasonLeagueMap.get(seasonLeagueId);
         seasonLeague.setCalculateLeaguePointsId(calculateLeaguePointsId);
     }

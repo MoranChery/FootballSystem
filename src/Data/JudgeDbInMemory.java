@@ -68,20 +68,26 @@ public class JudgeDbInMemory implements JudgeDb
      */
     public void removeJudge(Integer judgeId) throws Exception
     {
-        if (judgeMap.containsKey(judgeId))
+        if(!judgeMap.containsKey(judgeId))
         {
-            judgeMap.remove(judgeId);
+            throw new Exception("Judge not found");
         }
+        judgeMap.remove(judgeId);
     }
 
     /**
-     * combine seasonLeague to the judge
-     * @param seasonLeagueId
-     * @param judgeId
-     * @throws Exception
+     * Will receive from the Controller the seasonLeague's id and the judge's id,
+     * want to inlay Judge to SeasonLeague.
+     * @param seasonLeagueId-id of the SeasonLeague.
+     * @param judgeId-id of the Judge.
+     * @throws Exception-if details are incorrect.
      */
     public void inlayJudgeToSeasonLeague(Integer seasonLeagueId, Integer judgeId) throws Exception
     {
+        if(!judgeMap.containsKey(judgeId))
+        {
+            throw new Exception("Judge not found");
+        }
         Judge judge = judgeMap.get(judgeId);
         judge.getInlaySeasonLeagueIdList().add(seasonLeagueId);
     }

@@ -47,7 +47,6 @@ public interface SeasonLeagueDb
      * Will continue to Data.
      * @param seasonLeagueId-id of the SeasonLeague.
      * @param calculateLeaguePointsId-id of the new Policy CalculateLeaguePoints.
-     * @throws Exception-if details are incorrect.
      */
-    void changeCalculateLeaguePointsPolicy(Integer seasonLeagueId, Integer calculateLeaguePointsId);
+    void changeCalculateLeaguePointsPolicy(Integer seasonLeagueId, Integer calculateLeaguePointsId) throws Exception;
 }
