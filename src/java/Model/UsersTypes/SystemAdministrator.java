@@ -1,7 +1,7 @@
 package Model.UsersTypes;
 
 public class SystemAdministrator extends Subscriber {
-    public SystemAdministrator(Integer id, String firstName, String lastName) {
-        super(id, firstName, lastName);
+    public SystemAdministrator(String username, String password,Integer id, String firstName, String lastName) {
+        setRegisteringDetails(username,password,id,firstName,lastName);
     }
 }

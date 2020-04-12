@@ -8,8 +8,8 @@ public class TeamManager extends Subscriber {
     private Team team;
     private Integer ownedById;
 
-    public TeamManager(Integer id, String firstName, String lastName,Integer ownedById) {
-        super(id,firstName,lastName);
+    public TeamManager(String username, String password,Integer id, String firstName, String lastName,Integer ownedById) {
+        setRegisteringDetails(username,password,id,firstName,lastName);
         this.ownedById = ownedById;
     }
 

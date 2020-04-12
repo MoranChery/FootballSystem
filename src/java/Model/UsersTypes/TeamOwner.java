@@ -11,8 +11,8 @@ public class TeamOwner extends Subscriber {
     private Map<Integer,TeamOwner> teamOwnersByThis;
     private Integer ownedById;
 
-    public TeamOwner(Integer id, Team team, String firstName, String lastName) {
-        super(id,firstName,lastName);
+    public TeamOwner(String username, String password, Integer id,String firstName, String lastName, Team team ) {
+        setRegisteringDetails(username,password,id,firstName,lastName);
         this.team = team;
         this.teamOwnersByThis = new HashMap<>();
     }

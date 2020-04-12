@@ -2,8 +2,8 @@ package Model.UsersTypes;
 
 public class Fan extends Subscriber {
 
-    public Fan(Integer id, String firstName, String lastName) {
-        super(id, firstName, lastName);
+    public Fan(String username, String password,Integer id,String firstName,String lastName) {
+        setRegisteringDetails(username, password, id, firstName, lastName);
     }
 
 }

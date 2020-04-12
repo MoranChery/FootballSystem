@@ -9,8 +9,8 @@ public class Coach extends Subscriber {
     private CoachRole coachRole;
     private QualificationCoach qualificationCoach;
 
-    public Coach(Integer id, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) {
-        super(id,firstName,lastName);
+    public Coach(String username,String password,Integer id, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) {
+        setRegisteringDetails(username,password,id,firstName,lastName);
         this.coachRole = coachRole;
         this.qualificationCoach = qualificationCoach;
     }
