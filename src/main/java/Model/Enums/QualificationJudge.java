@@ -1,4 +1,6 @@
 package Model.Enums;
 
-public enum QualificationJudge {
+public enum QualificationJudge
+{
+
 }
