@@ -18,7 +18,7 @@ public class Fan extends Subscriber {
     private String emailAddress;
 
 
-    public Fan(Integer id, String firstName, String lastName, String password, String emailAddress) {
+    public Fan(Integer id, String firstName, String lastName, String emailAddress, String password) {
         super(id, firstName, lastName);
         this.password = password;
         this.emailAddress = emailAddress;
