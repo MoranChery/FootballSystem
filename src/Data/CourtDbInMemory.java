@@ -10,6 +10,9 @@ public class CourtDbInMemory implements CourtDb {
     private Map<String,Court> courts;
 
     private static CourtDbInMemory ourInstance = new CourtDbInMemory();
+    private CourtDbInMemory() {
+        courts = new HashMap<>();
+    }
 
     public static CourtDbInMemory getInstance() {
         return ourInstance;
@@ -33,5 +36,10 @@ public class CourtDbInMemory implements CourtDb {
             throw new Exception("Court already exists");
         }
         courts.put(court.getCourtName(), court);
+    }
+
+    @Override
+    public void deleteAll() {
+        courts.clear();
     }
 }

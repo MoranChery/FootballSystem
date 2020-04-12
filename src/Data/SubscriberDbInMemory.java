@@ -34,4 +34,9 @@ public class SubscriberDbInMemory implements SubscriberDb{
         }
         return subscribers.get(id);
     }
+
+    @Override
+    public void deleteAll() {
+        subscribers.clear();
+    }
 }

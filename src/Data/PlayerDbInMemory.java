@@ -47,4 +47,9 @@ public class PlayerDbInMemory implements PlayerDb {
         }
         return players.get(playerId);
     }
+
+    @Override
+    public void deleteAll() {
+        players.clear();
+    }
 }

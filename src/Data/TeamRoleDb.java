@@ -4,7 +4,7 @@ import Model.Enums.TeamRoleType;
 
 import java.util.List;
 
-public interface TeamRoleDb {
+public interface TeamRoleDb extends Db {
 
     void createTeamRole(Integer id, String teamName, TeamRoleType teamRoleType);
     List<TeamRole> getTeamRoles(Integer id) throws Exception;

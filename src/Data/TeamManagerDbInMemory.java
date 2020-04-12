@@ -68,4 +68,9 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
         }
         teamManagers.remove(managerToRemove);
     }
+
+    @Override
+    public void deleteAll() {
+        teamManagers.clear();
+    }
 }

@@ -8,7 +8,7 @@ import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 
-public interface TeamDb {
+public interface TeamDb extends Db {
     void createTeam(String teamName) throws Exception;
     void addPlayer(String teamName, Player player) throws Exception;
     void addTeamManager(String teamName, TeamManager player,Integer ownedById) throws Exception;

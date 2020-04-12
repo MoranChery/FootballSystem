@@ -82,4 +82,9 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         return teamOwnersOwnedBy;
     }
 
+    @Override
+    public void deleteAll() {
+        teamOwners.clear();
+    }
+
 }

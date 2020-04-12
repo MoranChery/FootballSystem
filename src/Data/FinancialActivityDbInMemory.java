@@ -28,4 +28,9 @@ public class FinancialActivityDbInMemory implements FinancialActivityDb {
         }
         financialActivities.put(financialActivityId, financialActivity);
     }
+
+    @Override
+    public void deleteAll() {
+        financialActivities.clear();
+    }
 }

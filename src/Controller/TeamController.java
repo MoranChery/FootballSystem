@@ -149,7 +149,7 @@ public class TeamController {
 
     public void addCourt(String teamName, String courtName, String courtCity) throws Exception {
         if (teamName == null || courtName == null || courtCity == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         /*check if the team exists*/
         Team team = teamDb.getTeam(teamName);
@@ -178,7 +178,7 @@ public class TeamController {
     public void removePlayer(String teamName, Integer playerId) throws Exception {
         /*check if one of the inputs null*/
         if(teamName == null || playerId == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
@@ -187,7 +187,7 @@ public class TeamController {
         /*check if the team that associated with the player match to the player want to delete*/
         Team teamPlayer = player.getTeam();
         if(teamPlayer == null || !teamName.equals(teamPlayer.getTeamName())) {
-            throw new Exception("Player is not part of the team");
+            throw new Exception("Player is not part with associated team");
         }
         teamDb.removePlayer(teamName, playerId);
         teamRoleDb.removeTeamRole(playerId,teamName,TeamRoleType.PLAYER);
@@ -214,7 +214,7 @@ public class TeamController {
     public void removeCoach(String teamName, Integer coachId) throws Exception {
         /*check if one of the inputs null*/
         if(teamName == null || coachId == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
@@ -223,7 +223,7 @@ public class TeamController {
         /*check if the team that associated with the coach match to the coach want to delete*/
         Team coachTeam = coach.getTeam();
         if(coachTeam == null || !teamName.equals(coachTeam.getTeamName())) {
-            throw new Exception("coachId is not part of the team");
+            throw new Exception("Coach is not part with associated team");
         }
         teamDb.removeCoach(teamName, coachId);
         teamRoleDb.removeTeamRole(coachId,teamName,TeamRoleType.COACH);
@@ -232,7 +232,7 @@ public class TeamController {
     public void removeCourt(String teamName, String courtName) throws Exception {
         /*check if one of the inputs null*/
         if(teamName == null || courtName == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
@@ -240,7 +240,7 @@ public class TeamController {
         /*check if one of the teams that associated with the court match to the court want to delete*/
         Team courtTeam = court.getTeam(teamName);
         if(courtTeam == null || !teamName.equals(courtTeam.getTeamName())) {
-            throw new Exception("Court is not part of the team");
+            throw new Exception("Court is not part of the with associated team");
         }
         teamDb.removeCourt(teamName, courtName);
     }
@@ -384,5 +384,4 @@ public class TeamController {
             throw new Exception("This Team's status - Inactive");
         }
     }
-
 }

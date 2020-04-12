@@ -6,7 +6,7 @@ import Model.UsersTypes.TeamOwner;
 
 import java.util.List;
 
-public interface TeamOwnerDb {
+public interface TeamOwnerDb extends Db {
     void createTeamOwner(TeamOwner teamOwner) throws Exception;
 
     TeamOwner getTeamOwner(Integer teamOwnerId) throws Exception;

@@ -230,6 +230,11 @@ public class TeamDbInMemory implements TeamDb {
        }
    }
 
+    @Override
+    public void deleteAll() {
+        teams.clear();
+    }
+
 
 
 }

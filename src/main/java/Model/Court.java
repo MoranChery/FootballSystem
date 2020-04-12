@@ -10,6 +10,7 @@ public class Court {
     public Court(String courtName, String courtCity) {
         this.courtName = courtName;
         this.courtCity = courtCity;
+        this.teams = new HashMap<>();
     }
 
     public String getCourtName() {

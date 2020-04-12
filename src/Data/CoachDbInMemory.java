@@ -38,4 +38,9 @@ public class CoachDbInMemory implements CoachDb {
         }
         coaches.put(id, coach);
     }
+
+    @Override
+    public void deleteAll() {
+        coaches.clear();
+    }
 }

@@ -57,4 +57,9 @@ public class TeamRoleDbInMemory implements TeamRoleDb {
         }
     }
 
+    @Override
+    public void deleteAll() {
+        teamRoles.clear();
+    }
+
 }
