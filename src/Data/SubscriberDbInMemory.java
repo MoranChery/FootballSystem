@@ -1,18 +1,25 @@
 package Data;
-import Model.UsersTypes.Subscriber;
 
 import java.util.HashMap;
 import java.util.Map;
+import Model.UsersTypes.Subscriber;
 
 public class SubscriberDbInMemory implements SubscriberDb {
     /*structure like the DB of subscriber*/
     //key: username
     //value: subscriber class
-    private Map<String, Model.UsersTypes.Subscriber> subscriberMap;
+    private Map<String, Model.UsersTypes.Subscriber> subscribers;
 
     public SubscriberDbInMemory() {
-        subscriberMap = new HashMap<>();
+        this.subscribers = new HashMap<>();
     }
+
+    private static SubscriberDbInMemory ourInstance = new SubscriberDbInMemory();
+
+    public static SubscriberDbInMemory getInstance() {
+        return ourInstance;
+    }
+
 
     /**
      * for the tests - create player in DB
@@ -21,18 +28,24 @@ public class SubscriberDbInMemory implements SubscriberDb {
      */
     @Override
     public void createSubscriber(Subscriber subscriber) throws Exception {
-        if(subscriberMap.containsKey(subscriber.getUsername())) {
+        if(subscribers.containsKey(subscriber.getUsername())) {
             throw new Exception("subscriber already exists");
         }
-        subscriberMap.put(subscriber.getUsername(), subscriber);
+        subscribers.put(subscriber.getUsername(), subscriber);
     }
 
 
     @Override
     public Subscriber getSubscriber(String username) throws Exception {
-        if (!subscriberMap.containsKey(username)) {
+        if (!subscribers.containsKey(username)) {
             throw new Exception("Subscriber not found");
         }
-        return subscriberMap.get(username);
+        return subscribers.get(username);
+    }
+
+    @Override
+    public void deleteAll() {
+
+        subscribers.clear();
     }
 }

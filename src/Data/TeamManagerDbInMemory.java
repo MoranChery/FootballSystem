@@ -1,6 +1,9 @@
 package Data;
 
+import Model.Team;
+import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamManager;
+import Model.UsersTypes.TeamOwner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +15,12 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
 
     public TeamManagerDbInMemory() {
         teamManagers = new HashMap<>();
+    }
+
+    private static TeamManagerDbInMemory ourInstance = new TeamManagerDbInMemory();
+
+    public static TeamManagerDbInMemory getInstance() {
+        return ourInstance;
     }
 
     /**
@@ -31,8 +40,37 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
     @Override
     public TeamManager getTeamManager(Integer teamManagerId) throws Exception {
         if (!teamManagers.containsKey(teamManagerId)) {
-                throw new Exception("Team Manager not found");
+                throw new NotFoundException("Team Manager not found");
         }
         return teamManagers.get(teamManagerId);
+    }
+
+    @Override
+    public void subscriptionTeamManager(Team team, Integer teamOwnerId, Subscriber subscriber) throws Exception {
+        if(team == null || teamOwnerId == null || subscriber == null){
+            throw new NullPointerException();
+        }
+        if(teamManagers.containsKey(subscriber.getId())){
+            throw new Exception("Team Manager to add already exists");
+        }
+        TeamManager teamManager = new TeamManager(team,subscriber,teamOwnerId);
+        Integer managerId = teamManager.getId();
+        teamManagers.put(managerId,teamManager);
+    }
+
+    @Override
+    public void removeSubscriptionTeamManager(Integer managerToRemove) throws Exception {
+        if (managerToRemove == null) {
+            throw new NullPointerException();
+        }
+        if (!teamManagers.containsKey(managerToRemove)) {
+            throw new Exception("TeamManager not found");
+        }
+        teamManagers.remove(managerToRemove);
+    }
+
+    @Override
+    public void deleteAll() {
+        teamManagers.clear();
     }
 }

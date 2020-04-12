@@ -1,25 +1,35 @@
 package Model;
 
+import Model.Enums.TeamStatus;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
+import Model.UsersTypes.TeamOwner;
 
 import java.util.*;
 
 public class Team {
    private String teamName;
+   private Map <Integer, TeamOwner> teamOwners;
    private Map<Integer, Player> players;
-   private List<Coach> coaches;
-   private List<TeamManager> teamManagers;
+   private Map<Integer,Coach> coaches;
+   private Map<Integer, TeamManager> teamManagers;
+   private Map<String, FinancialActivity> financialActivities;
    private Court court;
    private PersonalPage teamPage;
    private List<Game> games;
+   private Double budget;
+   private TeamStatus teamStatus;
 
     public Team() {
+        teamOwners = new HashMap<>();
         players = new HashMap<>();
-        coaches = new ArrayList<>();
-        teamManagers = new ArrayList<>();
+        coaches = new HashMap<>();
+        teamManagers = new HashMap<>();
         games = new ArrayList<>();
+        teamStatus = TeamStatus.ACTIVE;
+        financialActivities = new HashMap<>();
+
     }
 
     public String getTeamName() {
@@ -38,28 +48,20 @@ public class Team {
         this.players = players;
     }
 
-    public List<Coach> getCoaches() {
-        return coaches;
-    }
-
-    public void setCoaches(List<Coach> coaches) {
+    public void setCoaches(Map<Integer, Coach> coaches) {
         this.coaches = coaches;
     }
 
-    public List<TeamManager> getTeamManagers() {
+    public Map<Integer, Coach> getCoaches() {
+        return coaches;
+    }
+
+    public Map<Integer, TeamManager> getTeamManagers() {
         return teamManagers;
     }
 
-    public void setTeamManagers(List<TeamManager> teamManagers) {
+    public void setTeamManagers(Map<Integer, TeamManager> teamManagers) {
         this.teamManagers = teamManagers;
-    }
-
-    public Court getCourt() {
-        return court;
-    }
-
-    public void setCourt(Court court) {
-        this.court = court;
     }
 
     public PersonalPage getTeamPage() {
@@ -76,5 +78,45 @@ public class Team {
 
     public void setGames(List<Game> games) {
         this.games = games;
+    }
+
+    public Court getCourt() {
+        return court;
+    }
+
+    public void setCourt(Court court) {
+        this.court = court;
+    }
+
+    public Map<Integer, TeamOwner> getTeamOwners() {
+        return teamOwners;
+    }
+
+    public void setTeamOwners(Map<Integer, TeamOwner> teamOwners) {
+        this.teamOwners = teamOwners;
+    }
+
+    public Map<String, FinancialActivity> getFinancialActivities() {
+        return financialActivities;
+    }
+
+    public void setFinancialActivities(Map<String, FinancialActivity> financialActivities) {
+        this.financialActivities = financialActivities;
+    }
+
+    public Double getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Double budget) {
+        this.budget = budget;
+    }
+
+    public TeamStatus getTeamStatus() {
+        return teamStatus;
+    }
+
+    public void setTeamStatus(TeamStatus teamStatus) {
+        this.teamStatus = teamStatus;
     }
 }

@@ -4,8 +4,14 @@ import Data.SubscriberDb;
 import Data.SubscriberDbInMemory;
 
 import java.Model.Enums.Status;
+import java.util.Date;
 
-import Model.UsersTypes.Subscriber;
+import Model.Enums.CoachRole;
+import Model.Enums.PlayerRole;
+import Model.Enums.QualificationCoach;
+import Model.Enums.QualificationJudge;
+import Model.Team;
+import Model.UsersTypes.*;
 
 public class SubscriberController {
     private SubscriberDb subscriberDb;
@@ -14,45 +20,104 @@ public class SubscriberController {
         subscriberDb = new SubscriberDbInMemory();
     }
 
-    //use case 2.2
-    public void registerSubscriber(String username, String password, Integer id, String firstName, String lastName, String userType) throws Exception {
+    //todo: call use case 2.2 from UI
+    public void registerSubscriber(String userType) throws Exception {
         Subscriber subscriber = null;
         switch (userType) {
             case "Coach":
-                subscriber = new Model.UsersTypes.Coach();
                 break;
             case "Fan":
-                subscriber = new Model.UsersTypes.Fan();
                 break;
             case "Judge":
-                subscriber = new Model.UsersTypes.Judge();
                 break;
             case "MajorJudge":
-                subscriber = new Model.UsersTypes.MajorJudge();
                 break;
             case "Player":
-                subscriber = new Model.UsersTypes.Player();
                 break;
             case "RepresentativeAssociation":
-                subscriber = new Model.UsersTypes.RepresentativeAssociation();
                 break;
             case "SystemAdministrator":
-                subscriber = new Model.UsersTypes.SystemAdministrator();
                 break;
             case "TeamManager":
-                subscriber = new Model.UsersTypes.TeamManager();
                 break;
             case "TeamOwner":
-                subscriber = new Model.UsersTypes.TeamOwner();
                 break;
         }
-        //the password/username is not include only letters and numbers
+    }
+
+    public void registerCoach(String username, String password, Integer id, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
         if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        subscriber.setRegisteringDetails(username, password, id, firstName, lastName);
-        subscriberDb.createSubscriber(subscriber);
+        Coach coach = new Coach(username, password, id, firstName, lastName, coachRole, qualificationCoach);
+        subscriberDb.createSubscriber(coach);
     }
+
+    public void registerFan(String username, String password, Integer id, String firstName, String lastName) throws Exception {
+        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+            throw new Exception("you should use only letters and numbers!");
+        }
+        Fan fan = new Fan(username, password, id, firstName, lastName);
+        subscriberDb.createSubscriber(fan);
+    }
+
+
+    public void registerJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
+        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+            throw new Exception("you should use only letters and numbers!");
+        }
+        Judge judge = new Judge(username, password, id, firstName, lastName, qualificationJudge);
+        subscriberDb.createSubscriber(judge);
+    }
+
+    public void registerMajorJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
+        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+            throw new Exception("you should use only letters and numbers!");
+        }
+        MajorJudge majorJudge = new MajorJudge(username, password, id, firstName, lastName, qualificationJudge);
+        subscriberDb.createSubscriber(majorJudge);
+    }
+
+    public void registerPlayer(String username, String password, Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+            throw new Exception("you should use only letters and numbers!");
+        }
+        Player player = new Player(username, password, id, firstName, lastName, birthDate, playerRole);
+        subscriberDb.createSubscriber(player);
+    }
+
+    public void registerRepresentativeAssociation(String username, String password, Integer id, String firstName, String lastName) throws Exception {
+        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+            throw new Exception("you should use only letters and numbers!");
+        }
+        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation(username, password, id, firstName, lastName);
+        subscriberDb.createSubscriber(representativeAssociation);
+    }
+
+    public void registerSystemAdministrator(String username, String password, Integer id, String firstName, String lastName) throws Exception {
+        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+            throw new Exception("you should use only letters and numbers!");
+        }
+        SystemAdministrator systemAdministrator = new SystemAdministrator(username, password, id, firstName, lastName);
+        subscriberDb.createSubscriber(systemAdministrator);
+    }
+
+    public void registerTeamManager(String username, String password, Integer id, String firstName, String lastName, Integer ownedById) throws Exception {
+        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+            throw new Exception("you should use only letters and numbers!");
+        }
+        TeamManager teamManager = new TeamManager(username, password, id, firstName, lastName, ownedById);
+        subscriberDb.createSubscriber(teamManager);
+    }
+
+    public void registerTeamOwner(String username, String password, Integer id, String firstName, String lastName, Team team) throws Exception {
+        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+            throw new Exception("you should use only letters and numbers!");
+        }
+        TeamOwner teamOwner = new TeamOwner(username, password, id, firstName, lastName, team);
+        subscriberDb.createSubscriber(teamOwner);
+    }
+
 
     public Subscriber getSubscriber(String username) throws Exception {
         if (username == null) {
