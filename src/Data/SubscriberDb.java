@@ -1,9 +1,6 @@
 package Data;
 
-import Model.UsersTypes.Subscriber;
-
-public interface SubscriberDb extends Db {
-    void createSubscriber(Subscriber subscriber) throws Exception;
-
-    Subscriber getSubscriber(Integer ownerToAdd) throws Exception;
+public interface SubscriberDb {
+        void createSubscriber(Model.UsersTypes.Subscriber subscriber) throws Exception;
+        Model.UsersTypes.Subscriber getSubscriber(String username) throws Exception;
 }
