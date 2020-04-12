@@ -355,7 +355,7 @@ public class TeamController {
 
     public void addFinancialActivity(String teamName, Double financialActivityAmount, String description, FinancialActivityType financialActivityType) throws Exception {
         if(teamName == null || financialActivityAmount == null || description == null || financialActivityType == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
@@ -373,7 +373,7 @@ public class TeamController {
 
     public void changeStatus(String teamName,TeamStatus teamStatus) throws Exception {
         if(teamName == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         teamDb.changeStatus(teamName,teamStatus);

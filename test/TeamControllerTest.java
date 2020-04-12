@@ -2,6 +2,7 @@ import Controller.*;
 import Data.*;
 import Model.Court;
 import Model.Enums.*;
+import Model.FinancialActivity;
 import Model.Team;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
@@ -745,6 +746,137 @@ public class TeamControllerTest {
         Assert.assertFalse(teams.containsKey(court.getCourtName()));
     }
 
+////////////////////////////////// addFinancialActivity //////////////////////////////////////////
+        @Test
+        public void testAddFinancialActivityInvalidInputs() {
+            try{
+                teamController.addFinancialActivity(null,1000.0,"Description",FinancialActivityType.OUTCOME);
+                Assert.fail("Should throw NullPointerException");
+            }catch (Exception e){
+                Assert.assertTrue(e instanceof NullPointerException);
+                Assert.assertEquals("bad input",e.getMessage());
+            }
+        }
 
+    @Test
+    public void testAddFinancialActivityTeamNotFound(){
+        try{
+            teamController.addFinancialActivity("NotExists",1000.0,"Description",FinancialActivityType.OUTCOME);
+            Assert.fail("Should throw NotFoundException");
+        }catch (Exception e){
+            Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("Team not found",e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddFinancialActivityWithOutcomeExceedsBudget() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        Team team = teamController.getTeam(teamName);
+        team.setBudget(800.0);
+        try{
+            teamController.addFinancialActivity(teamName,1000.0,"Description",FinancialActivityType.OUTCOME);
+            Assert.fail("Should throw Exception");
+        }catch (Exception e){
+            Assert.assertEquals("The financial outcome exceeds from the budget",e.getMessage());
+        }
+        Assert.assertEquals(800.0, team.getBudget(),0);
+    }
+
+    @Test
+    public void testAddFinancialActivityWithOutcomeUnderBudget() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        Team team = teamController.getTeam(teamName);
+        team.setBudget(1001.0);
+        teamController.addFinancialActivity(teamName,1000.0,"Description",FinancialActivityType.OUTCOME);
+        Assert.assertEquals(1.0, team.getBudget(),0);
+    }
+
+    @Test
+    public void testAddFinancialActivityWithOutcomeEqualBudget() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        Team team = teamController.getTeam(teamName);
+        team.setBudget(1000.0);
+        teamController.addFinancialActivity(teamName,1000.0,"Description",FinancialActivityType.OUTCOME);
+        Assert.assertEquals(0.0, team.getBudget(),0);
+        Map<String, FinancialActivity> financialActivities = team.getFinancialActivities();
+        Assert.assertEquals(1,financialActivities.size());
+        Set<String> keySet = financialActivities.keySet();
+        Assert.assertEquals(1000.0,financialActivities.get(keySet.iterator().next()).getFinancialActivityAmount(),0);
+        Assert.assertEquals(FinancialActivityType.OUTCOME,financialActivities.get(keySet.iterator().next()).getFinancialActivityType());
+    }
+
+
+    @Test
+    public void testAddFinancialActivityWithIncomeEqualBudget() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        Team team = teamController.getTeam(teamName);
+        team.setBudget(1000.0);
+        teamController.addFinancialActivity(teamName,1000.0,"Description",FinancialActivityType.INCOME);
+        Map<String, FinancialActivity> financialActivities = team.getFinancialActivities();
+        Assert.assertEquals(1,financialActivities.size());
+        Set<String> keySet = financialActivities.keySet();
+        Assert.assertEquals(1000.0,financialActivities.get(keySet.iterator().next()).getFinancialActivityAmount(),0);
+        Assert.assertEquals(FinancialActivityType.INCOME,financialActivities.get(keySet.iterator().next()).getFinancialActivityType());
+        Assert.assertEquals(2000.0, team.getBudget(),0);
+    }
+
+    @Test
+    public void testAddFinancialActivityWithIncomeUnderBudget() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        Team team = teamController.getTeam(teamName);
+        team.setBudget(800.0);
+        teamController.addFinancialActivity(teamName,1000.0,"Description",FinancialActivityType.INCOME);
+        Assert.assertEquals(1800.0, team.getBudget(),0);
+    }
+
+    ////////////////////////////////////////////changeStatus/////////////////////////////////////////////////////
+
+    @Test
+    public void testChangeStatusInvalidInputs() {
+        try{
+            teamController.changeStatus(null,TeamStatus.ACTIVE);
+            Assert.fail("Should throw NullPointerException");
+        }catch (Exception e){
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input",e.getMessage());
+        }
+    }
+
+    @Test
+    public void testChangeStatusTeamNotFound(){
+        try{
+            teamController.changeStatus("NotExists",TeamStatus.ACTIVE);
+            Assert.fail("Should throw NotFoundException");
+        }catch (Exception e){
+            Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("Team not found",e.getMessage());
+        }
+    }
+
+    @Test
+    public void testChangeStatusFromActiveToInactive() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        Team team = teamController.getTeam(teamName);
+        team.setTeamStatus(TeamStatus.ACTIVE);
+        teamController.changeStatus(teamName,TeamStatus.INACTIVE);
+        Assert.assertEquals(TeamStatus.INACTIVE,team.getTeamStatus());
+    }
+
+    @Test
+    public void testChangeStatusFromInactiveToActive() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        Team team = teamController.getTeam(teamName);
+        team.setTeamStatus(TeamStatus.ACTIVE);
+        teamController.changeStatus(teamName,TeamStatus.INACTIVE);
+        Assert.assertEquals(TeamStatus.INACTIVE,team.getTeamStatus());
+    }
 
 }
