@@ -1,9 +1,7 @@
 package Service;
 
-import Controller.PlayerController;
 import Controller.TeamController;
 import Model.Enums.*;
-import Model.Team;
 
 import java.util.Date;
 
@@ -23,8 +21,8 @@ public class TeamService {
         teamController.addTeamManager(teamName, teamManagerId, firstName, lastName,ownedById);
     }
 
-    public void addCoach(String teamName, Integer coachId, String firstName, String lastName, CoachRole coachRole, Qualification qualification) throws Exception {
-        teamController.addCoach(teamName, coachId, firstName, lastName, coachRole, qualification);
+    public void addCoach(String teamName, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
+        teamController.addCoach(teamName, coachId, firstName, lastName, coachRole, qualificationCoach);
     }
 
     public void addCourt(String teamName, String courtName, String courtCity) throws Exception {

@@ -1,18 +1,18 @@
 package Model.UsersTypes;
 
 import Model.Enums.CoachRole;
-import Model.Enums.Qualification;
+import Model.Enums.QualificationCoach;
 import Model.Team;
 
 public class Coach extends Subscriber {
     private Team team;
     private CoachRole coachRole;
-    private Qualification qualification;
+    private QualificationCoach qualificationCoach;
 
-    public Coach(Integer id, String firstName, String lastName, CoachRole coachRole, Qualification qualification) {
+    public Coach(Integer id, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) {
         super(id,firstName,lastName);
         this.coachRole = coachRole;
-        this.qualification = qualification;
+        this.qualificationCoach = qualificationCoach;
     }
 
     public Team getTeam() {
@@ -31,11 +31,11 @@ public class Coach extends Subscriber {
         this.coachRole = coachRole;
     }
 
-    public Qualification getQualification() {
-        return qualification;
+    public QualificationCoach getQualificationCoach() {
+        return qualificationCoach;
     }
 
-    public void setQualification(Qualification qualification) {
-        this.qualification = qualification;
+    public void setQualificationCoach(QualificationCoach qualificationCoach) {
+        this.qualificationCoach = qualificationCoach;
     }
 }

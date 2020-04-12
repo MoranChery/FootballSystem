@@ -6,7 +6,6 @@ import Model.Enums.*;
 import Model.FinancialActivity;
 import Model.Team;
 import Model.UsersTypes.*;
-import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.Date;
 import java.util.List;
@@ -118,13 +117,13 @@ public class TeamController {
     }
 
 
-    public void addCoach(String teamName, Integer coachId, String firstName, String lastName, CoachRole coachRole, Qualification qualification) throws Exception {
-        if(teamName == null || coachId == null || firstName == null || lastName == null || coachRole == null|| qualification == null) {
+    public void addCoach(String teamName, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
+        if(teamName == null || coachId == null || firstName == null || lastName == null || coachRole == null|| qualificationCoach == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
-        Coach currCoach = new Coach(coachId, firstName, lastName, coachRole, qualification);
+        Coach currCoach = new Coach(coachId, firstName, lastName, coachRole, qualificationCoach);
         /*get the coach from DB*/
         Coach coach;
         try {
