@@ -1,7 +1,6 @@
 package Data;
 
-import Model.Season;
-import Model.SeasonLeague;
+import Model.Enums.QualificationJudge;
 import Model.UsersTypes.Judge;
 
 import java.util.HashMap;
@@ -24,10 +23,10 @@ public class JudgeDbInMemory implements JudgeDb
      * for the tests - create Judge in DB
      *
      * @param judgeName-name of the new Judge.
-     * @param judgeQualification-qualification of the new Judge.
+     * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudge(String judgeName, String judgeQualification) throws Exception
+    public void createJudge(String judgeName, QualificationJudge qualificationJudge) throws Exception
     {
         for (Judge judge : judgeMap.values())
         {
@@ -36,7 +35,7 @@ public class JudgeDbInMemory implements JudgeDb
                 throw new Exception("Judge already exist in the system");
             }
         }
-        Judge judge = new Judge(judgeName, judgeQualification);
+        Judge judge = new Judge(judgeName, qualificationJudge);
         judgeMap.put(judge.getId(), judge);
     }
 

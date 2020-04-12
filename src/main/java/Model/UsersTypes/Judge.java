@@ -1,5 +1,7 @@
 package Model.UsersTypes;
 
+import Model.Enums.QualificationJudge;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +11,14 @@ public class Judge extends Subscriber
 
     private Integer id;
     private String judgeName;
-    private String judgeQualification;
+    private QualificationJudge qualificationJudge;
     private List<Integer> inlaySeasonLeagueIdList;
 
-    public Judge(String judgeName, String judgeQualification)
+    public Judge(String judgeName, QualificationJudge qualificationJudge)
     {
         this.judgeName = judgeName;
         this.id = judgeIdCounter;
-        this.judgeQualification = judgeQualification;
+        this.qualificationJudge = qualificationJudge;
         this.inlaySeasonLeagueIdList = new ArrayList<Integer>();
 
         judgeIdCounter++;
@@ -29,7 +31,7 @@ public class Judge extends Subscriber
 
     public String getJudgeName() { return judgeName; }
 
-    public String getJudgeQualification() { return judgeQualification; }
+    public QualificationJudge getQualificationJudge() { return qualificationJudge; }
 
     public List<Integer> getInlaySeasonLeagueIdList() { return inlaySeasonLeagueIdList; }
     //endregion
@@ -39,7 +41,7 @@ public class Judge extends Subscriber
 
 //    public void setJudgeName(String judgeName) { this.judgeName = judgeName; }
 
-//    public void setJudgeQualification(String judgeQualification) { this.judgeQualification = judgeQualification; }
+//    public void setQualification(Qualification qualificationJudge) { this.qualificationJudge = qualificationJudge; }
 
 //    public void setInlaySeasonLeagueId(List<Integer> inlaySeasonLeagueId) { this.inlaySeasonLeagueId = inlaySeasonLeagueId; }
     //endregion

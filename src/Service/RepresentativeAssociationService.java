@@ -1,6 +1,7 @@
 package Service;
 
 import Controller.RepresentativeAssociationController;
+import Model.Enums.QualificationJudge;
 
 public class RepresentativeAssociationService
 {
@@ -47,12 +48,12 @@ public class RepresentativeAssociationService
      * Will receive from the UI the judge's name, want to create Judge.
      * Will continue to Controller.
      * @param judgeName-name of the new Judge.
-     * @param judgeQualification-qualification of the new Judge.
+     * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudge(String judgeName, String judgeQualification) throws Exception
+    public void createJudge(String judgeName, QualificationJudge qualificationJudge) throws Exception
     {
-        representativeAssociationController.createJudge(judgeName, judgeQualification);
+        representativeAssociationController.createJudge(judgeName, qualificationJudge);
     }
 
     /**

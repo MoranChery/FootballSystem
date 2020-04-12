@@ -10,10 +10,10 @@ public class CalculateLeaguePoints extends Policy
 
     public CalculateLeaguePoints(String calculateLeaguePointsName, Integer seasonLeagueId)
     {
-        super(calculateLeaguePointsIdCounter, calculateLeaguePointsName, seasonLeagueId);
+        super(calculateLeaguePointsName, seasonLeagueId);
 //        this.inlayGamesName = inlayGamesName;
 //        this.seasonLeagueId = seasonLeagueId;
-//        this.calculateLeaguePointsId = calculateLeaguePointsIdCounter;
+        this.calculateLeaguePointsId = calculateLeaguePointsIdCounter;
 
         calculateLeaguePointsIdCounter++;
     }

@@ -4,22 +4,22 @@ public abstract class Policy
 {
 //    static int policyIdCounter = 0;
 
-    private Integer policyId;
+//    private Integer policyId;
     private String policyName;
     private Integer seasonLeagueId;
 
 //    private Integer calculateLeaguePointsId;
 //    private Integer inlayGamesId;
 
-    public Policy(Integer policyId, String policyName, Integer seasonLeagueId)
+    public Policy(String policyName, Integer seasonLeagueId)
     {
-        this.policyId = policyId;
+//        this.policyId = policyId;
         this.policyName = policyName;
         this.seasonLeagueId = seasonLeagueId;
     }
 
     //region Getters
-    public Integer getPolicyId() { return policyId; }
+//    public Integer getPolicyId() { return policyId; }
 
     public Integer getSeasonLeagueId() { return seasonLeagueId; }
 

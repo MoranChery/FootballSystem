@@ -1,6 +1,7 @@
 package Controller;
 
 import Data.*;
+import Model.Enums.QualificationJudge;
 
 public class RepresentativeAssociationController
 {
@@ -75,16 +76,16 @@ public class RepresentativeAssociationController
      * Will receive from the Service the judge's name, want to create Judge.
      * Will continue to Data.
      * @param judgeName-name of the new Judge.
-     * @param judgeQualification-qualification of the new Judge.
+     * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudge(String judgeName, String judgeQualification) throws Exception
+    public void createJudge(String judgeName, QualificationJudge qualificationJudge) throws Exception
     {
-        if(judgeName == null || judgeQualification == null)
+        if(judgeName == null || qualificationJudge == null)
         {
             throw new NullPointerException();
         }
-        judgeDb.createJudge(judgeName, judgeQualification);
+        judgeDb.createJudge(judgeName, qualificationJudge);
     }
 
     /**

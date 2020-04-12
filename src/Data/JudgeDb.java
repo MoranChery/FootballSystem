@@ -1,5 +1,6 @@
 package Data;
 
+import Model.Enums.QualificationJudge;
 import Model.UsersTypes.Judge;
 
 public interface JudgeDb
@@ -7,10 +8,10 @@ public interface JudgeDb
     /**
      * Will receive from the Controller the judge's name, want to create Judge.
      * @param judgeName-name of the new Judge.
-     * @param judgeQualification-qualification of the new Judge.
+     * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    void createJudge(String judgeName, String judgeQualification) throws Exception;
+    void createJudge(String judgeName, QualificationJudge qualificationJudge) throws Exception;
 
     /**
      * Will receive from the Controller the judge's id, return the Judge.

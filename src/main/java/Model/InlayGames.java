@@ -10,10 +10,10 @@ public class InlayGames extends Policy
 
     public InlayGames(String inlayGamesName, Integer seasonLeagueId)
     {
-        super(inlayGamesIdCounter, inlayGamesName, seasonLeagueId);
+        super(inlayGamesName, seasonLeagueId);
 //        this.inlayGamesName = inlayGamesName;
 //        this.seasonLeagueId = seasonLeagueId;
-//        this.inlayGamesId = inlayGamesIdCounter;
+        this.inlayGamesId = inlayGamesIdCounter;
 
         inlayGamesIdCounter++;
     }
