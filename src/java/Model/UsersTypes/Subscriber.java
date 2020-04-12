@@ -10,6 +10,7 @@ public abstract class Subscriber extends Model.UsersTypes.User {
     protected String LastName;
     protected Status status=Status.OFFLINE;
 
+
     public void setRegisteringDetails(String username, String password, Integer id, String firstName, String lastName){
         setFirstName(firstName);
         setId(id);
@@ -18,6 +19,11 @@ public abstract class Subscriber extends Model.UsersTypes.User {
         setUsername(username);
     }
 
+    public void setRegisteringDetails(Integer id, String firstName, String lastName){
+        setFirstName(firstName);
+        setId(id);
+        setLastName(lastName);
+    }
     public void setId(Integer id) {
         this.id = id;
     }

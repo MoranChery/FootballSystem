@@ -8,7 +8,7 @@ public class SubscriberDbInMemory implements SubscriberDb {
     /*structure like the DB of subscriber*/
     //key: username
     //value: subscriber class
-    private Map<String, Model.UsersTypes.Subscriber> subscribers;
+    private Map<Integer, Model.UsersTypes.Subscriber> subscribers;
 
     public SubscriberDbInMemory() {
         this.subscribers = new HashMap<>();
@@ -28,10 +28,10 @@ public class SubscriberDbInMemory implements SubscriberDb {
      */
     @Override
     public void createSubscriber(Subscriber subscriber) throws Exception {
-        if(subscribers.containsKey(subscriber.getUsername())) {
+        if(subscribers.containsKey(subscriber.getId())) {
             throw new Exception("subscriber already exists");
         }
-        subscribers.put(subscriber.getUsername(), subscriber);
+        subscribers.put(subscriber.getId(), subscriber);
     }
 
 

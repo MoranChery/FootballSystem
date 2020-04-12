@@ -17,6 +17,14 @@ public class Player extends Subscriber {
         this.playerRole = playerRole;
     }
 
+
+
+    public Player(Integer playerId, String firstName, String lastName, Date birthDate, PlayerRole playerRole) {
+        setRegisteringDetails(id,firstName,lastName);
+        this.birthDate = birthDate;
+        this.playerRole = playerRole;
+    }
+
     public Date getBirthDate() {
         return birthDate;
     }
