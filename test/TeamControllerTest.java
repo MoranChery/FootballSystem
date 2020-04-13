@@ -82,7 +82,7 @@ public class TeamControllerTest {
         Team team = teamController.getTeam(teamName);
         Map<String, Player> players = team.getPlayers();
         Assert.assertEquals(1,players.size());
-        Assert.assertTrue(players.containsKey(1));
+        Assert.assertTrue(players.containsKey("email@gmail.com"));
         Player player = players.get("email@gmail.com");
         Assert.assertEquals(1,player.getId().intValue());
         Assert.assertEquals("email@gmail.com",player.getEmailAddress());
@@ -319,7 +319,7 @@ public class TeamControllerTest {
         Team team = teamController.getTeam(teamName);
         Map<String, Coach> coaches = team.getCoaches();
         Assert.assertEquals(1,coaches.size());
-        Assert.assertTrue(coaches.containsKey(1));
+        Assert.assertTrue(coaches.containsKey("email@gmail.com"));
         Coach coach = coaches.get("email@gmail.com");
         Assert.assertEquals("email@gmail.com",coach.getEmailAddress());
         Assert.assertEquals(1,coach.getId().intValue());
