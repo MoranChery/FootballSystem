@@ -72,6 +72,7 @@ public class RepresentativeAssociationController
     /**
      * Will receive from the Service the judge's name, want to create Judge.
      * Will continue to Data.
+     * 
      * @param judgeName-name of the new Judge.
      * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
