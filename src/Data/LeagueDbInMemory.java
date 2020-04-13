@@ -17,19 +17,23 @@ public class LeagueDbInMemory implements LeagueDb
     public LeagueDbInMemory() { leagueMap = new HashMap<Integer, League>(); }
 
     /**
-     * Will receive from the Controller the League, add it to Data.
+     * Will receive from the Controller the league's name, want to create League.
      *
      * for the tests - create League in DB
      *
-     * @param league-the new League.
-     * @throws Exception
+     * @param leagueName-name of the new League.
+     * @throws Exception-if details are incorrect.
      */
-    public void createLeague(League league) throws Exception
+    public void createLeague(String leagueName) throws Exception
     {
-        if(leagueMap.containsKey(league.getLeagueId()))
+        for (League league : leagueMap.values())
         {
-            throw new Exception("League already exist in the system");
+            if(leagueName.equals(league.getLeagueName()))
+            {
+                throw new Exception("League already exist in the system");
+            }
         }
+        League league = new League(leagueName);
         leagueMap.put(league.getLeagueId(), league);
     }
 

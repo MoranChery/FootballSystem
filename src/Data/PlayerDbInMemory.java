@@ -14,7 +14,7 @@ public class PlayerDbInMemory implements PlayerDb {
         return ourInstance;
     }
     /*structure like the DB of players*/
-    private Map<String, Player> players;
+    private Map<Integer, Player> players;
 
     private PlayerDbInMemory() {
         players = new HashMap<>();
@@ -27,34 +27,25 @@ public class PlayerDbInMemory implements PlayerDb {
      */
     @Override
     public void createPlayer(Player player) throws Exception {
-        String playerEmailAddress = player.getEmailAddress();
-        if(players.containsKey(playerEmailAddress)) {
+        Integer id = player.getId();
+        if(players.containsKey(id)) {
             throw new Exception("Player already exists");
         }
-        players.put(playerEmailAddress, player);
+        players.put(id, player);
     }
 
     /**
      * "pull" player from DB
-     * @param playerEmailAddress
+     * @param playerId
      * @return
      * @throws Exception
      */
     @Override
-    public Player getPlayer(String playerEmailAddress) throws Exception {
-        if (!players.containsKey(playerEmailAddress)) {
+    public Player getPlayer(Integer playerId) throws Exception {
+        if (!players.containsKey(playerId)) {
             throw new NotFoundException("Player not found");
         }
-        return players.get(playerEmailAddress);
-    }
-
-    public void updatePlayer(Player player) throws NotFoundException {
-        String emailAddress = player.getEmailAddress();
-        if(!players.containsKey(emailAddress)){
-            throw new NotFoundException("Player not found");
-        }
-        Player playerFromDb = players.get(emailAddress);
-        playerFromDb = player;
+        return players.get(playerId);
     }
 
     @Override

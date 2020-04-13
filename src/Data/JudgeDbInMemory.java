@@ -9,47 +9,52 @@ import java.util.Map;
 public class JudgeDbInMemory implements JudgeDb
 {
     /*structure like the DB of Judges*/
-    private Map<String, Judge> judgeMap;
+    private Map<Integer, Judge> judgeMap;
 
     private static JudgeDbInMemory ourInstance = new JudgeDbInMemory();
 
     public static JudgeDbInMemory getInstance() { return ourInstance; }
 
-    public JudgeDbInMemory() { judgeMap = new HashMap<>(); }
+    public JudgeDbInMemory() { judgeMap = new HashMap<Integer, Judge>(); }
 
     /**
-     * Will receive from the Controller the Judge, add Judge to Data.
+     * Will receive from the Controller the judge's name, want to create Judge.
      *
      * for the tests - create Judge in DB
      *
-     * @param judge-the new Judge.
+     * @param judgeName-name of the new Judge.
+     * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudge(Judge judge) throws Exception
+    public void createJudge(String judgeName, QualificationJudge qualificationJudge) throws Exception
     {
-        if(judgeMap.containsKey(judge.getEmailAddress()))
+        for (Judge judge : judgeMap.values())
         {
-            throw new Exception("Judge already exist in the system");
+            if(judgeName.equals(judge.getJudgeName()))
+            {
+                throw new Exception("Judge already exist in the system");
+            }
         }
-        judgeMap.put(judge.getEmailAddress(), judge);
+        Judge judge = new Judge(judgeName, qualificationJudge);
+        judgeMap.put(judge.getId(), judge);
     }
 
     /**
-     * Will receive from the Controller the judge's emailAddress, return the Judge.
+     * Will receive from the Controller the judge's id, return the Judge.
      *
      * "pull" Judge from DB.
      *
-     * @param judgeEmailAddress-emailAddress of the Judge.
+     * @param judgeId-id of the Judge.
      * @return the Judge.
      * @throws Exception-if details are incorrect.
      */
-    public Judge getJudge(String judgeEmailAddress) throws Exception
+    public Judge getJudge(Integer judgeId) throws Exception
     {
-        if (!judgeMap.containsKey(judgeEmailAddress))
+        if (!judgeMap.containsKey(judgeId))
         {
             throw new Exception("Judge not found");
         }
-        return judgeMap.get(judgeEmailAddress);
+        return judgeMap.get(judgeId);
     }
 
     /**
@@ -57,32 +62,32 @@ public class JudgeDbInMemory implements JudgeDb
      *
      * "delete" Judge from DB
      *
-     * @param judgeEmailAddress-id of the Judge.
+     * @param judgeId-id of the Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void removeJudge(String judgeEmailAddress) throws Exception
+    public void removeJudge(Integer judgeId) throws Exception
     {
-        if(!judgeMap.containsKey(judgeEmailAddress))
+        if(!judgeMap.containsKey(judgeId))
         {
             throw new Exception("Judge not found");
         }
-        judgeMap.remove(judgeEmailAddress);
+        judgeMap.remove(judgeId);
     }
 
-//    /**
-//     * Will receive from the Controller the seasonLeague's id and the judge's id,
-//     * want to inlay Judge to SeasonLeague.
-//     * @param seasonLeagueId-id of the SeasonLeague.
-//     * @param judgeId-id of the Judge.
-//     * @throws Exception-if details are incorrect.
-//     */
-//    public void inlayJudgeToSeasonLeague(Integer seasonLeagueId, String judgeEmailAddress) throws Exception
-//    {
-//        if(!judgeMap.containsKey(judgeId))
-//        {
-//            throw new Exception("Judge not found");
-//        }
-//        Judge judge = judgeMap.get(judgeId);
-//        judge.getInlaySeasonLeagueIdList().add(seasonLeagueId);
-//    }
+    /**
+     * Will receive from the Controller the seasonLeague's id and the judge's id,
+     * want to inlay Judge to SeasonLeague.
+     * @param seasonLeagueId-id of the SeasonLeague.
+     * @param judgeId-id of the Judge.
+     * @throws Exception-if details are incorrect.
+     */
+    public void inlayJudgeToSeasonLeague(Integer seasonLeagueId, Integer judgeId) throws Exception
+    {
+        if(!judgeMap.containsKey(judgeId))
+        {
+            throw new Exception("Judge not found");
+        }
+        Judge judge = judgeMap.get(judgeId);
+        judge.getInlaySeasonLeagueIdList().add(seasonLeagueId);
+    }
 }

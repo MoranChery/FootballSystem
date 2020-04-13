@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import Model.UsersTypes.Subscriber;
 
-public class SubscriberDbInMemory implements SubscriberDb, Db {
+public class SubscriberDbInMemory implements SubscriberDb {
     /*structure like the DB of subscriber*/
     //key: username
     //value: subscriber class
-    private Map<Integer, Model.UsersTypes.Subscriber> subscribers;
+    private Map<String, Subscriber> subscribers;
 
     public SubscriberDbInMemory() {
         this.subscribers = new HashMap<>();
@@ -20,7 +20,19 @@ public class SubscriberDbInMemory implements SubscriberDb, Db {
         return ourInstance;
     }
 
-
+    /**
+     *
+     * @param email of the Subscriber
+     * @return true- If the removal was successful
+     */
+    @Override
+   public boolean removeSubscriberFromDB(String email){
+        if(subscribers.containsKey(email)){
+            subscribers.remove(email);
+            return true;
+        }
+        return false;
+   }
     /**
      * for the tests - create player in DB
      * @param subscriber
@@ -28,19 +40,19 @@ public class SubscriberDbInMemory implements SubscriberDb, Db {
      */
     @Override
     public void createSubscriber(Subscriber subscriber) throws Exception {
-        if(subscribers.containsKey(subscriber.getId())) {
+        if(subscribers.containsKey(subscriber.getUsername())) {
             throw new Exception("subscriber already exists");
         }
-        subscribers.put(subscriber.getId(), subscriber);
+        subscribers.put(subscriber.getUsername(), subscriber);
     }
 
 
     @Override
-    public Subscriber getSubscriber(String emailAddress) throws Exception {
-        if (!subscribers.containsKey(emailAddress)) {
+    public Subscriber getSubscriber(String username) throws Exception {
+        if (!subscribers.containsKey(username)) {
             throw new Exception("Subscriber not found");
         }
-        return subscribers.get(emailAddress);
+        return subscribers.get(username);
     }
 
     @Override

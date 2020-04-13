@@ -2,8 +2,6 @@ package Controller;
 
 import Data.*;
 import Model.Enums.QualificationJudge;
-import Model.League;
-import Model.UsersTypes.Judge;
 
 public class RepresentativeAssociationController
 {
@@ -12,8 +10,13 @@ public class RepresentativeAssociationController
     private SeasonLeagueDb seasonLeagueDb;
     private JudgeDb judgeDb;
 
-    public RepresentativeAssociationController()
+    public RepresentativeAssociationController(/*LeagueDb leagueDb, SeasonDb seasonDb, SeasonLeagueDb seasonLeagueDb, JudgeDb judgeDb*/)
     {
+//        this.leagueDb = leagueDb;
+//        this.seasonDb = seasonDb;
+//        this.seasonLeagueDb = seasonLeagueDb;
+//        this.judgeDb = judgeDb;
+//
         this.leagueDb = LeagueDbInMemory.getInstance();
         this.seasonDb = SeasonDbInMemory.getInstance();
         this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
@@ -21,7 +24,7 @@ public class RepresentativeAssociationController
     }
 
     /**
-     * Will receive from the Service the league's name, create the League.
+     * Will receive from the Service the league's name, want to create League.
      * Will continue to Data.
      * @param leagueName-name of the new League.
      * @throws Exception-if details are incorrect.
@@ -30,10 +33,9 @@ public class RepresentativeAssociationController
     {
         if(leagueName == null)
         {
-            throw new NullPointerException("One or more of the League details incorrect");
+            throw new NullPointerException();
         }
-        League league = new League(leagueName);
-        leagueDb.createLeague(league);
+        leagueDb.createLeague(leagueName);
     }
 
     /**
@@ -70,67 +72,56 @@ public class RepresentativeAssociationController
         seasonLeagueDb.createSeasonLeague(leagueId, seasonId, calculateLeaguePointsId, inlayGamesId);
     }
 
-//    /**
-//     * Will receive from the Service the judge's name, want to create Judge.
-//     * Will continue to Data.
-//     * @param judgeName-name of the new Judge.
-//     * @param qualificationJudge-qualification of the new Judge.
-//     * @throws Exception-if details are incorrect.
-//     */
     /**
-     *
-     * @param username
-     * @param password
-     * @param id
-     * @param firstName
-     * @param lastName
-     * @param qualificationJudge
-     * @throws Exception
-     */
-    public void createJudge(String username, String password,Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception
-    {
-        if(username == null || password == null || id == null || firstName == null || lastName == null || qualificationJudge == null)
-        {
-            throw new NullPointerException("One or more of the Judge details incorrect");
-        }
-        Judge judge = new Judge(username,password,id,firstName,lastName, qualificationJudge);
-        judgeDb.createJudge(judge);
-    }
-
-    /**
-     * Will receive from the Service the judge's emailAddress, want to remove Judge.
+     * Will receive from the Service the judge's name, want to create Judge.
      * Will continue to Data.
-     * @param judgeEmailAddress-emailAddress of the Judge.
+     * @param judgeName-name of the new Judge.
+     * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void removeJudge(String judgeEmailAddress) throws Exception
+    public void createJudge(String judgeName, QualificationJudge qualificationJudge) throws Exception
     {
-        if(judgeEmailAddress == null)
+        if(judgeName == null || qualificationJudge == null)
         {
             throw new NullPointerException();
         }
-        judgeDb.removeJudge(judgeEmailAddress);
+        judgeDb.createJudge(judgeName, qualificationJudge);
     }
-//
-//    /**
-//     * Will receive from the Service the season's id, the league's id and the judge's id,
-//     * want to inlay Judge to SeasonLeague.
-//     * Will continue to Data.
-//     * @param seasonId-id of the Season.
-//     * @param leagueId-id of the League.
-//     * @param judgeId-id of the Judge.
-//     * @throws Exception-if details are incorrect.
-//     */
-//    public void inlayJudgeToSeasonLeague(Integer seasonId, Integer leagueId, Integer judgeId) throws Exception
-//    {
-//        if(seasonId == null || leagueId == null || judgeId == null)
-//        {
-//            throw new NullPointerException();
-//        }
-//        Integer seasonLeagueId = seasonLeagueDb.getSeasonLeagueIdBySeasonAndByLeague(seasonId,leagueId);
-//        seasonLeagueDb.inlayJudgeToSeasonLeague(seasonLeagueId, judgeId);
-//        judgeDb.inlayJudgeToSeasonLeague(seasonLeagueId, judgeId);
-//    }
+
+    /**
+     * Will receive from the Service the judge's id, want to remove Judge.
+     * Will continue to Data.
+     * @param judgeId-id of the Judge.
+     * @throws Exception-if details are incorrect.
+     */
+    public void removeJudge(Integer judgeId) throws Exception
+    {
+        if(judgeId == null)
+        {
+            throw new NullPointerException();
+        }
+        judgeDb.removeJudge(judgeId);
+    }
+
+    /**
+     * Will receive from the Service the season's id, the league's id and the judge's id,
+     * want to inlay Judge to SeasonLeague.
+     * Will continue to Data.
+     * @param seasonId-id of the Season.
+     * @param leagueId-id of the League.
+     * @param judgeId-id of the Judge.
+     * @throws Exception-if details are incorrect.
+     */
+    public void inlayJudgeToSeasonLeague(Integer seasonId, Integer leagueId, Integer judgeId) throws Exception
+    {
+        if(seasonId == null || leagueId == null || judgeId == null)
+        {
+            throw new NullPointerException();
+        }
+        Integer seasonLeagueId = seasonLeagueDb.getSeasonLeagueIdBySeasonAndByLeague(seasonId,leagueId);
+        seasonLeagueDb.inlayJudgeToSeasonLeague(seasonLeagueId, judgeId);
+        judgeDb.inlayJudgeToSeasonLeague(seasonLeagueId, judgeId);
+    }
 
     /**
      * Will receive from the Service the season's id, the league's id and the calculateLeaguePoints's id,

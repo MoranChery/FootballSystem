@@ -3,9 +3,13 @@ package Controller;
 import Data.SubscriberDb;
 import Data.SubscriberDbInMemory;
 
+import Model.Enums.Status;
 import java.util.Date;
 
-import Model.Enums.*;
+import Model.Enums.CoachRole;
+import Model.Enums.PlayerRole;
+import Model.Enums.QualificationCoach;
+import Model.Enums.QualificationJudge;
 import Model.Team;
 import Model.UsersTypes.*;
 
@@ -13,31 +17,20 @@ public class SubscriberController {
     private SubscriberDb subscriberDb;
 
     public SubscriberController() {
-        subscriberDb = new SubscriberDbInMemory();
+        subscriberDb =  SubscriberDbInMemory.getInstance();;
     }
 
     //todo: call use case 2.2 from UI
-    public void registerSubscriber(String userType) throws Exception {
-        Subscriber subscriber = null;
-        switch (userType) {
-            case "Coach":
-                break;
-            case "Fan":
-                break;
-            case "Judge":
-                break;
-            case "MajorJudge":
-                break;
-            case "Player":
-                break;
-            case "RepresentativeAssociation":
-                break;
-            case "SystemAdministrator":
-                break;
-            case "TeamManager":
-                break;
-            case "TeamOwner":
-                break;
+    public void registerSubscriber(String userType) {
+        if ("Coach".equals(userType)) {
+        } else if ("Fan".equals(userType)) {
+        } else if ("Judge".equals(userType)) {
+        } else if ("MajorJudge".equals(userType)) {
+        } else if ("Player".equals(userType)) {
+        } else if ("RepresentativeAssociation".equals(userType)) {
+        } else if ("SystemAdministrator".equals(userType)) {
+        } else if ("TeamManager".equals(userType)) {
+        } else if ("TeamOwner".equals(userType)) {
         }
     }
 
@@ -98,11 +91,11 @@ public class SubscriberController {
         subscriberDb.createSubscriber(systemAdministrator);
     }
 
-    public void registerTeamManager(String username, String password, Integer id, String firstName, String lastName, String ownedByEmail) throws Exception {
+    public void registerTeamManager(String username, String password, Integer id, String firstName, String lastName, Integer ownedById) throws Exception {
         if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        TeamManager teamManager = new TeamManager(username, password, id, firstName, lastName, ownedByEmail);
+        TeamManager teamManager = new TeamManager(username, password, id, firstName, lastName, ownedById);
         subscriberDb.createSubscriber(teamManager);
     }
 
@@ -115,11 +108,11 @@ public class SubscriberController {
     }
 
 
-    public Subscriber getSubscriber(String emailAddress) throws Exception {
-        if (emailAddress == null) {
+    public Subscriber getSubscriber(String username) throws Exception {
+        if (username == null) {
             throw new NullPointerException();
         }
-        return subscriberDb.getSubscriber(emailAddress);
+        return subscriberDb.getSubscriber(username);
     }
 
     //use case 2.3

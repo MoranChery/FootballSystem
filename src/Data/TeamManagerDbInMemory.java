@@ -11,7 +11,7 @@ import java.util.Map;
 public class TeamManagerDbInMemory implements TeamManagerDb{
 
     /*structure like the DB of players*/
-    private Map<String, TeamManager> teamManagers;
+    private Map<Integer, TeamManager> teamManagers;
 
     public TeamManagerDbInMemory() {
         teamManagers = new HashMap<>();
@@ -30,43 +30,43 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
      */
     @Override
     public void createTeamManager(TeamManager teamManager) throws Exception {
-        String emailAddress = teamManager.getEmailAddress();
-        if(teamManagers.containsKey(emailAddress)) {
+        Integer id = teamManager.getId();
+        if(teamManagers.containsKey(id)) {
             throw new Exception("Team Manager already exists");
         }
-        teamManagers.put(emailAddress, teamManager);
+        teamManagers.put(id, teamManager);
     }
 
     @Override
-    public TeamManager getTeamManager(String teamManagerEmailAddress) throws Exception {
-        if (!teamManagers.containsKey(teamManagerEmailAddress)) {
+    public TeamManager getTeamManager(Integer teamManagerId) throws Exception {
+        if (!teamManagers.containsKey(teamManagerId)) {
                 throw new NotFoundException("Team Manager not found");
         }
-        return teamManagers.get(teamManagerEmailAddress);
+        return teamManagers.get(teamManagerId);
     }
 
     @Override
-    public void subscriptionTeamManager(Team team, String teamOwnerEmail, Subscriber subscriber) throws Exception {
-        if(team == null || teamOwnerEmail == null || subscriber == null){
+    public void subscriptionTeamManager(Team team, Integer teamOwnerId, Subscriber subscriber) throws Exception {
+        if(team == null || teamOwnerId == null || subscriber == null){
             throw new NullPointerException();
         }
-        if(teamManagers.containsKey(subscriber.getEmailAddress())){
+        if(teamManagers.containsKey(subscriber.getId())){
             throw new Exception("Team Manager to add already exists");
         }
-        TeamManager teamManager = new TeamManager(team,subscriber,teamOwnerEmail);
-        String managerEmailAddress = teamManager.getEmailAddress();
-        teamManagers.put(managerEmailAddress,teamManager);
+        TeamManager teamManager = new TeamManager(team,subscriber,teamOwnerId);
+        Integer managerId = teamManager.getId();
+        teamManagers.put(managerId,teamManager);
     }
 
     @Override
-    public void removeSubscriptionTeamManager(String managerToRemoveEmail) throws Exception {
-        if (managerToRemoveEmail == null) {
+    public void removeSubscriptionTeamManager(Integer managerToRemove) throws Exception {
+        if (managerToRemove == null) {
             throw new NullPointerException();
         }
-        if (!teamManagers.containsKey(managerToRemoveEmail)) {
+        if (!teamManagers.containsKey(managerToRemove)) {
             throw new Exception("TeamManager not found");
         }
-        teamManagers.remove(managerToRemoveEmail);
+        teamManagers.remove(managerToRemove);
     }
 
     @Override
