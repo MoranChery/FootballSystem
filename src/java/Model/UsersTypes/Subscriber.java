@@ -1,7 +1,9 @@
 package Model.UsersTypes;
 
-import java.Model.Enums.Status;
+import Model.Enums.Status;
+
 import java.util.Objects;
+
 
 public abstract class Subscriber extends Model.UsersTypes.User {
     protected String emailAddress;

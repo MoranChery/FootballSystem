@@ -1,4 +1,4 @@
-package java.Model.Enums;
+package Model.Enums;
 
 public enum Status {
     ONLINE,
