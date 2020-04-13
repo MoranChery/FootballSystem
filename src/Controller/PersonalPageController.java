@@ -25,7 +25,7 @@ public class PersonalPageController {
             throw new NullPointerException("bad input");
         }
         PersonalPage page = pageDb.getPage(pageID);
-        Fan fanToAdd = new Fan(fanId, firstName,lastName,fanPassword,fanMail);
+        Fan fanToAdd = new Fan(fanMail,fanPassword,fanId, firstName,lastName);
         Map<Integer, Fan> fanOfThisPage = page.getFansFollowingThisPage();
         Fan testFan = fanDb.getFan(fanId);
         if(!testFan.equals(fanToAdd)){

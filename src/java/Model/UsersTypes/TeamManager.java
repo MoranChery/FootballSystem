@@ -1,27 +1,26 @@
 package Model.UsersTypes;
 
 import Model.Team;
-import com.sun.org.apache.xpath.internal.objects.XString;
 
 import java.util.Objects;
 
 public class TeamManager extends Subscriber {
     private Team team;
-    private String ownedByIdEmail;
+    private String ownedByEmail;
 
     public TeamManager(String emailAddress, String password,Integer id, String firstName, String lastName,String ownedByEmail) {
         setRegisteringDetails(emailAddress,password,id,firstName,lastName);
-        this.ownedByIdEmail = ownedByEmail;
+        this.ownedByEmail = ownedByEmail;
     }
 
     public TeamManager(Team team,Subscriber subscriber, String ownedById) {
         setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),subscriber.getLastName());
-        this.ownedByIdEmail = ownedById;
+        this.ownedByEmail = ownedById;
     }
 
     public TeamManager(String emailAddress,Integer teamManagerId, String firstName, String lastName, String ownedById) {
         setRegisteringDetails(emailAddress,teamManagerId,firstName,lastName);
-        this.ownedByIdEmail = ownedById;
+        this.ownedByEmail = ownedById;
     }
 
     public Team getTeam() {
@@ -32,12 +31,12 @@ public class TeamManager extends Subscriber {
         this.team = team;
     }
 
-    public String getOwnedByIdEmail() {
-        return ownedByIdEmail;
+    public String getOwnedByEmail() {
+        return ownedByEmail;
     }
 
-    public void setOwnedByIdEmail(String  ownedByIdEmail) {
-        this.ownedByIdEmail = ownedByIdEmail;
+    public void setOwnedByEmail(String ownedByEmail) {
+        this.ownedByEmail = ownedByEmail;
     }
 
     @Override

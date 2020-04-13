@@ -102,11 +102,11 @@ public class SubscriberController {
         subscriberDb.createSubscriber(systemAdministrator);
     }
 
-    public void registerTeamManager(String username, String password, Integer id, String firstName, String lastName, Integer ownedById) throws Exception {
+    public void registerTeamManager(String username, String password, Integer id, String firstName, String lastName, String ownedByEmail) throws Exception {
         if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        TeamManager teamManager = new TeamManager(username, password, id, firstName, lastName, ownedById);
+        TeamManager teamManager = new TeamManager(username, password, id, firstName, lastName, ownedByEmail);
         subscriberDb.createSubscriber(teamManager);
     }
 

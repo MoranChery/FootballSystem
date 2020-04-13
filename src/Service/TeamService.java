@@ -17,8 +17,8 @@ public class TeamService {
         teamController.addPlayer(teamName,emailAddress,playerId, firstName, lastName, birthDate, playerRole);
     }
 
-    public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName, String lastName,Integer ownedById) throws Exception {
-        teamController.addTeamManager(teamName,emailAddress, teamManagerId, firstName, lastName,ownedById);
+    public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName, String lastName,String ownedByEmail) throws Exception {
+        teamController.addTeamManager(teamName,emailAddress, teamManagerId, firstName, lastName,ownedByEmail);
     }
 
     public void addCoach(String teamName,  String emailAddress, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
@@ -49,16 +49,16 @@ public class TeamService {
         teamController.subscriptionTeamOwner(teamName,teamOwnerEmail,ownerToAddEmail);
     }
 
-    public void subscriptionTeamManager(String teamName, Integer teamOwnerId, Integer managerToAdd) throws Exception {
-        teamController.subscriptionTeamManager(teamName,teamOwnerId,managerToAdd);
+    public void subscriptionTeamManager(String teamName, String teamOwnerId, String managerToAddEmail) throws Exception {
+        teamController.subscriptionTeamManager(teamName,teamOwnerId,managerToAddEmail);
     }
 
-    public void removeSubscriptionTeamOwner(String teamName, Integer teamOwnerId, Integer ownerToRemove) throws Exception {
+    public void removeSubscriptionTeamOwner(String teamName, String teamOwnerId, String ownerToRemove) throws Exception {
         teamController.removeSubscriptionTeamOwner(teamName,teamOwnerId,ownerToRemove);
     }
 
-    public void removeSubscriptionTeamManager(String teamName, Integer teamOwnerId, Integer managerToRemove) throws Exception {
-        teamController.removeSubscriptionTeamManager(teamName,teamOwnerId,managerToRemove);
+    public void removeSubscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToRemoveEmail) throws Exception {
+        teamController.removeSubscriptionTeamManager(teamName,teamOwnerEmail,managerToRemoveEmail);
     }
 
     public void addFinancialActivity(String teamName, Double financialActivityAmount, String description, FinancialActivityType financialActivityType) throws Exception {

@@ -118,7 +118,7 @@ public class TeamController {
             if(!equalsDetailsTeamManager(teamManager,currTeamManager)){
                 throw new Exception("One or more of the details incorrect");
             }
-            if(teamManager.getOwnedByIdEmail() != null){
+            if(teamManager.getOwnedByEmail() != null){
                 throw new Exception("Team Manager owned by another teamOwner");
             }
         }catch (NotFoundException e){
@@ -373,7 +373,7 @@ public class TeamController {
         if(!team.equals(teamManagerToRemove.getTeam())){
             throw new Exception("TeamManagerToRemove associated with other team");
         }
-        if(!teamOwnerEmail.equals(teamManagerToRemove.getOwnedByIdEmail())){
+        if(!teamOwnerEmail.equals(teamManagerToRemove.getOwnedByEmail())){
             throw new Exception("TeamManagerToRemove owned by another teamOwner");
         }
 

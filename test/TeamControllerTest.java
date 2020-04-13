@@ -66,7 +66,7 @@ public class TeamControllerTest {
         teamController.createTeam(teamName);
         teamController.changeStatus(teamName, TeamStatus.INACTIVE);
         try{
-            teamController.addPlayer(teamName,1,"firstPlayer","lastPlayer",new Date(), PlayerRole.GOALKEEPER);
+            teamController.addPlayer(teamName,"email@gmail.com",1,"firstPlayer","lastPlayer",new Date(), PlayerRole.GOALKEEPER);
             Assert.fail("Should throw Exception");
         }catch (Exception e){
             Assert.assertEquals("This Team's status - Inactive",e.getMessage());
@@ -78,13 +78,14 @@ public class TeamControllerTest {
         String teamName = "Exists";
         teamController.createTeam(teamName);
         Date birthDate = new Date();
-        teamController.addPlayer(teamName,1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        teamController.addPlayer(teamName,"email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         Team team = teamController.getTeam(teamName);
-        Map<Integer, Player> players = team.getPlayers();
+        Map<String, Player> players = team.getPlayers();
         Assert.assertEquals(1,players.size());
         Assert.assertTrue(players.containsKey(1));
-        Player player = players.get(1);
+        Player player = players.get("email@gmail.com");
         Assert.assertEquals(1,player.getId().intValue());
+        Assert.assertEquals("email@gmail.com",player.getEmailAddress());
         Assert.assertEquals("firstPlayer",player.getFirstName());
         Assert.assertEquals("lastPlayer",player.getLastName());
         Assert.assertEquals(birthDate,player.getBirthDate());
@@ -97,9 +98,9 @@ public class TeamControllerTest {
         String teamName = "Exists";
         Date birthDate = new Date();
         teamController.createTeam(teamName);
-        teamController.addPlayer(teamName,1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        teamController.addPlayer(teamName,"email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         try{
-            teamController.addPlayer(teamName,1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+            teamController.addPlayer(teamName,"email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("Player associated with a team",e.getMessage());
@@ -111,9 +112,9 @@ public class TeamControllerTest {
         String teamName = "Exists";
         Date birthDate = new Date();
         teamController.createTeam(teamName);
-        playerController.createPlayer(new Player(1,"firstPlayer","lastPlayer",birthDate,PlayerRole.GOALKEEPER));
+        playerController.createPlayer(new Player("email@gmail.com",1,"firstPlayer","lastPlayer",birthDate,PlayerRole.GOALKEEPER));
         try{
-            teamController.addPlayer(teamName,1,"firstPlayerOther","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+            teamController.addPlayer(teamName,"email@gmail.com",1,"firstPlayerOther","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("One or more of the details incorrect",e.getMessage());
@@ -125,13 +126,14 @@ public class TeamControllerTest {
         String teamName = "Exists";
         teamController.createTeam(teamName);
         Date birthDate = new Date();
-        playerController.createPlayer(new Player(1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER));
-        teamController.addPlayer(teamName,1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        playerController.createPlayer(new Player("email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        teamController.addPlayer(teamName,"email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         Team team = teamController.getTeam(teamName);
-        Map<Integer, Player> players = team.getPlayers();
+        Map<String, Player> players = team.getPlayers();
         Assert.assertEquals(1,players.size());
-        Assert.assertTrue(players.containsKey(1));
-        Player player = players.get(1);
+        Assert.assertTrue(players.containsKey("email@gmail.com"));
+        Player player = players.get("email@gmail.com");
+        Assert.assertEquals("email@gmail.com",player.getEmailAddress());
         Assert.assertEquals(1,player.getId().intValue());
         Assert.assertEquals("firstPlayer",player.getFirstName());
         Assert.assertEquals("lastPlayer",player.getLastName());
@@ -141,11 +143,11 @@ public class TeamControllerTest {
     }
 
 
-    //////////////////////////////////// addTeamManager/////////////////////////////////////////////
+    //////////////////////////////////// addTeamManager /////////////////////////////////////////////
     @Test
     public void testAddTeamManagerInvalidInputs() {
         try{
-            teamController.addTeamManager(null,1,"firstTeamManager","lastTeamManager",2);
+            teamController.addTeamManager(null,"email@gmail.com",1,"firstTeamManager","lastTeamManager","email2@gmail.com");
             Assert.fail("Should throw NullPointerException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NullPointerException);
@@ -156,7 +158,7 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerTeamNotFound(){
         try{
-            teamController.addTeamManager("notExists",1,"firstTeamManager","lastTeamManager",2);
+            teamController.addTeamManager("notExists","email@gmail.com",1,"firstTeamManager","lastTeamManager","email2@gmail.com");
             Assert.fail("Should throw NotFoundException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NotFoundException);
@@ -170,7 +172,7 @@ public class TeamControllerTest {
         teamController.createTeam(teamName);
         teamController.changeStatus(teamName, TeamStatus.INACTIVE);
         try{
-            teamController.addTeamManager(teamName,1,"firstTeamManager","lastTeamManager",2);
+            teamController.addTeamManager(teamName,"email@gmail.com",1,"firstTeamManager","lastTeamManager","email2@gmail.com");
             Assert.fail("Should throw Exception");
         }catch (Exception e){
             Assert.assertEquals("This Team's status - Inactive",e.getMessage());
@@ -182,7 +184,7 @@ public class TeamControllerTest {
         String teamName = "Exists";
         teamController.createTeam(teamName);
         try{
-            teamController.addTeamManager(teamName,1,"firstTeamManager","lastTeamManager",2);
+            teamController.addTeamManager(teamName,"email@gmail.com",1,"firstTeamManager","lastTeamManager","email2@gmail.com");
             Assert.fail("Should throw Exception");
         }catch (Exception e){
             Assert.assertEquals("TeamOwner not found",e.getMessage());
@@ -193,16 +195,18 @@ public class TeamControllerTest {
     public void testAddTeamManagerNotExistsTeamManager() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        teamOwnerController.createTeamOwner(new TeamOwner(2,teamController.getTeam(teamName),"firstTeamOwnerName","lastTeamOwnerName"));
-        teamController.addTeamManager(teamName,1,"firstTeamManager","lastTeamManager",2);
+        teamOwnerController.createTeamOwner(new TeamOwner("email2@gmail.com","1234",2,"firstTeamOwnerName","lastTeamOwnerName",teamController.getTeam(teamName)));
+        teamController.addTeamManager(teamName,"email@gmail.com",1,"firstTeamManager","lastTeamManager","email2@gmail.com");
         Team team = teamController.getTeam(teamName);
-        Map<Integer, TeamManager> teamManagers = team.getTeamManagers();
+        Map<String, TeamManager> teamManagers = team.getTeamManagers();
         Assert.assertEquals(1,teamManagers.size());
-        Assert.assertTrue(teamManagers.containsKey(1));
-        TeamManager teamManager = teamManagers.get(1);
+        Assert.assertTrue(teamManagers.containsKey("email@gmail.com"));
+        TeamManager teamManager = teamManagers.get("email@gmail.com");
         Assert.assertEquals(1,teamManager.getId().intValue());
+        Assert.assertEquals("email@gmail.com",teamManager.getEmailAddress());
         Assert.assertEquals("firstTeamManager",teamManager.getFirstName());
         Assert.assertEquals("lastTeamManager",teamManager.getLastName());
+        Assert.assertEquals("email2@gmail.com",teamManager.getOwnedByEmail());
         Assert.assertEquals(team,teamManager.getTeam());
     }
 
@@ -212,10 +216,11 @@ public class TeamControllerTest {
     public void testAddTeamManagerExistsTeamManagerAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        teamOwnerController.createTeamOwner(new TeamOwner(2,teamController.getTeam(teamName),"firstTeamOwnerName","lastTeamOwnerName"));
-        teamController.addTeamManager(teamName,1,"firstTeamManager","lastTeamManager",2);
+
+        teamOwnerController.createTeamOwner(new TeamOwner("email2@gmail.com","1234",2,"firstTeamOwnerName","lastTeamOwnerName",teamController.getTeam(teamName)));
+        teamController.addTeamManager(teamName,"email@gmail.com",1,"firstTeamManager","lastTeamManager","email2@gmail.com");
         try{
-            teamController.addTeamManager(teamName,1,"firstTeamManager","lastTeamManager",2);
+            teamController.addTeamManager(teamName,"email@gmail.com",1,"firstTeamManager","lastTeamManager","email2@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("Team Manager associated with a team",e.getMessage());
@@ -226,10 +231,10 @@ public class TeamControllerTest {
     public void testAddTeamManagerExistsTeamManagerIdDifferentDetails() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        teamOwnerController.createTeamOwner(new TeamOwner(2,teamController.getTeam(teamName),"firstTeamOwnerName","lastTeamOwnerName"));
-        teamManagerController.createTeamManager(new TeamManager(1,"firstTeamManager","lastTeamManager",2));
+        teamOwnerController.createTeamOwner(new TeamOwner("email2@gmail.com","1234",2,"firstTeamOwnerName","lastTeamOwnerName",teamController.getTeam(teamName)));
+        teamManagerController.createTeamManager(new TeamManager("email@gmail.com",1,"firstTeamManager","lastTeamManager","email2@gmail.com"));
         try{
-            teamController.addTeamManager(teamName,1,"firstTeamManagerOther","lastTeamManager",2);
+            teamController.addTeamManager(teamName,"email@gmail.com",1,"firstTeamManagerOther","lastTeamManager","email2@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("One or more of the details incorrect",e.getMessage());
@@ -241,10 +246,10 @@ public class TeamControllerTest {
     public void testAddTeamManagerExistsTeamManagerIdAssociatedWithOwnedBy() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        teamOwnerController.createTeamOwner(new TeamOwner(2,teamController.getTeam(teamName),"firstTeamOwnerName","lastTeamOwnerName4"));
-        teamManagerController.createTeamManager(new TeamManager(1,"firstTeamManager","lastTeamManager",3));
+        teamOwnerController.createTeamOwner(new TeamOwner("email2@gmail.com","1234",2,"firstTeamOwnerName","lastTeamOwnerName", teamController.getTeam(teamName)));
+        teamManagerController.createTeamManager(new TeamManager("email@gmail.com",1,"firstTeamManager","lastTeamManager","email3@gmail.com"));
         try{
-            teamController.addTeamManager(teamName,1,"firstTeamManager","lastTeamManager",2);
+            teamController.addTeamManager(teamName,"email@gmail.com",1,"firstTeamManager","lastTeamManager","email2@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("Team Manager owned by another teamOwner",e.getMessage());
@@ -254,18 +259,19 @@ public class TeamControllerTest {
     public void testAddTeamManagerExistsTeamManager() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        teamOwnerController.createTeamOwner(new TeamOwner(2,teamController.getTeam(teamName),"firstTeamOwnerName","firstTeamOwnerName"));
-        teamManagerController.createTeamManager(new TeamManager(1,"firstTeamManager","lastTeamManager",null));
-        teamController.addTeamManager(teamName,1,"firstTeamManager","lastTeamManager",2);
+        teamOwnerController.createTeamOwner(new TeamOwner("email2@gmail.com","1234",2,"firstTeamOwnerName","lastTeamOwnerName", teamController.getTeam(teamName)));
+        teamManagerController.createTeamManager(new TeamManager("email@gmail.com",1,"firstTeamManager","lastTeamManager",null));
+        teamController.addTeamManager(teamName,"email@gmail.com",1,"firstTeamManager","lastTeamManager","email2@gmail.com");
         Team team = teamController.getTeam(teamName);
-        Map<Integer, TeamManager> teamManagers = team.getTeamManagers();
+        Map<String, TeamManager> teamManagers = team.getTeamManagers();
         Assert.assertEquals(1,teamManagers.size());
-        Assert.assertTrue(teamManagers.containsKey(1));
-        TeamManager teamManager = teamManagers.get(1);
+        Assert.assertTrue(teamManagers.containsKey("email@gmail.com"));
+        TeamManager teamManager = teamManagers.get("email@gmail.com");
+        Assert.assertEquals("email@gmail.com",teamManager.getEmailAddress());
         Assert.assertEquals(1,teamManager.getId().intValue());
         Assert.assertEquals("firstTeamManager",teamManager.getFirstName());
         Assert.assertEquals("lastTeamManager",teamManager.getLastName());
-        Assert.assertEquals(2,teamManager.getOwnedByIdEmail().intValue());
+        Assert.assertEquals("email2@gmail.com",teamManager.getOwnedByEmail());
         Assert.assertEquals(team,teamManager.getTeam());
     }
 
@@ -273,7 +279,7 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachInvalidInputs() {
         try{
-            teamController.addCoach(null,1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            teamController.addCoach(null,"email@gmail.com", 1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
             Assert.fail("Should throw NullPointerException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NullPointerException);
@@ -284,7 +290,7 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachTeamNotFound(){
         try{
-            teamController.addCoach("notExists",1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            teamController.addCoach("notExists","email@gmail.com", 1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
             Assert.fail("Should throw NotFoundException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NotFoundException);
@@ -298,7 +304,7 @@ public class TeamControllerTest {
         teamController.createTeam(teamName);
         teamController.changeStatus(teamName, TeamStatus.INACTIVE);
         try{
-            teamController.addCoach(teamName,1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            teamController.addCoach(teamName,"email@gmail.com",1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
             Assert.fail("Should throw Exception");
         }catch (Exception e){
             Assert.assertEquals("This Team's status - Inactive",e.getMessage());
@@ -309,12 +315,13 @@ public class TeamControllerTest {
     public void testAddCoachNotExistsCoach() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        teamController.addCoach(teamName,1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        teamController.addCoach(teamName,"email@gmail.com",1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         Team team = teamController.getTeam(teamName);
-        Map<Integer, Coach> coaches = team.getCoaches();
+        Map<String, Coach> coaches = team.getCoaches();
         Assert.assertEquals(1,coaches.size());
         Assert.assertTrue(coaches.containsKey(1));
-        Coach coach = coaches.get(1);
+        Coach coach = coaches.get("email@gmail.com");
+        Assert.assertEquals("email@gmail.com",coach.getEmailAddress());
         Assert.assertEquals(1,coach.getId().intValue());
         Assert.assertEquals("firstCoach",coach.getFirstName());
         Assert.assertEquals("lastCoach",coach.getLastName());
@@ -327,10 +334,10 @@ public class TeamControllerTest {
     public void testAddCoachExistsCoachAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        coachController.createCoach(new Coach(1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
-        teamController.addCoach(teamName,1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        coachController.createCoach(new Coach("email2@gmail.com",1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
+        teamController.addCoach(teamName,"email@gmail.com",1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         try{
-            teamController.addCoach(teamName,1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            teamController.addCoach(teamName,"email@gmail.com",1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("Coach associated with a team",e.getMessage());
@@ -341,9 +348,9 @@ public class TeamControllerTest {
     public void testAddCoachExistsCoachIdDifferentDetails() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        coachController.createCoach(new Coach(1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
+        coachController.createCoach(new Coach("email@gmail.com",1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
         try{
-            teamController.addCoach(teamName,1,"firstCoachOther","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            teamController.addCoach(teamName,"email@gmail.com", 1,"firstCoachOther","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("One or more of the details incorrect",e.getMessage());
@@ -354,13 +361,14 @@ public class TeamControllerTest {
     public void testAddCoachExistsCoach() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        coachController.createCoach(new Coach(1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
-        teamController.addCoach(teamName,1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        coachController.createCoach(new Coach("email@gmail.com",1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
+        teamController.addCoach(teamName,"email@gmail.com",1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         Team team = teamController.getTeam(teamName);
-        Map<Integer, Coach> coaches = team.getCoaches();
+        Map<String, Coach> coaches = team.getCoaches();
         Assert.assertEquals(1,coaches.size());
-        Assert.assertTrue(coaches.containsKey(1));
-        Coach coach = coaches.get(1);
+        Assert.assertTrue(coaches.containsKey("email@gmail.com"));
+        Coach coach = coaches.get("email@gmail.com");
+        Assert.assertEquals("email@gmail.com",coach.getEmailAddress());
         Assert.assertEquals(1,coach.getId().intValue());
         Assert.assertEquals("firstCoach",coach.getFirstName());
         Assert.assertEquals("lastCoach",coach.getLastName());
@@ -465,7 +473,7 @@ public class TeamControllerTest {
     @Test
     public void testRemovePlayerInvalidInputs() {
         try{
-            teamController.removePlayer(null,1);
+            teamController.removePlayer(null,"email@gmail.com");
             Assert.fail("Should throw NullPointerException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NullPointerException);
@@ -476,7 +484,7 @@ public class TeamControllerTest {
     @Test
     public void testRemovePlayerTeamNotFound(){
         try{
-            teamController.removePlayer("notExists",1);
+            teamController.removePlayer("notExists","email@gmail.com");
             Assert.fail("Should throw NotFoundException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NotFoundException);
@@ -490,7 +498,7 @@ public class TeamControllerTest {
         teamController.createTeam(teamName);
         teamController.changeStatus(teamName, TeamStatus.INACTIVE);
         try{
-            teamController.removePlayer(teamName,1);
+            teamController.removePlayer(teamName,"email@gmail.com");
             Assert.fail("Should throw Exception");
         }catch (Exception e){
             Assert.assertEquals("This Team's status - Inactive",e.getMessage());
@@ -502,7 +510,7 @@ public class TeamControllerTest {
         String teamName = "Exists";
         teamController.createTeam(teamName);
         try{
-            teamController.removePlayer(teamName,1);
+            teamController.removePlayer(teamName,"email@gmail.com");
         }catch (NotFoundException e){
             Assert.assertEquals("Player not found",e.getMessage());
         }
@@ -514,10 +522,10 @@ public class TeamControllerTest {
         Date birthDate = new Date();
         teamController.createTeam(teamName);
         teamController.createTeam("Other");
-        playerController.createPlayer(new Player(1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER));
-        teamController.addPlayer(teamName,1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        playerController.createPlayer(new Player("email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        teamController.addPlayer(teamName,"email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         try{
-            teamController.removePlayer("Other",1);
+            teamController.removePlayer("Other","email@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("Player is not part with associated team",e.getMessage());
@@ -529,9 +537,9 @@ public class TeamControllerTest {
         String teamName = "Exists";
         Date birthDate = new Date();
         teamController.createTeam(teamName);
-        playerController.createPlayer(new Player(1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        playerController.createPlayer(new Player("email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER));
         try{
-            teamController.removePlayer(teamName,1);
+            teamController.removePlayer(teamName,"email@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("Player is not part with associated team",e.getMessage());
@@ -543,14 +551,14 @@ public class TeamControllerTest {
         String teamName = "Exists";
         Date birthDate = new Date();
         teamController.createTeam(teamName);
-        playerController.createPlayer(new Player(1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER));
-        teamController.addPlayer(teamName,1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        playerController.createPlayer(new Player("email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        teamController.addPlayer(teamName,"email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         Team team = teamController.getTeam(teamName);
         TeamRoleDbInMemory teamRoleDbInMemory = TeamRoleDbInMemory.getInstance();
-        List<TeamRole> teamRoles = teamRoleDbInMemory.getTeamRoles(1);
-        Map<Integer, Player> players = team.getPlayers();
+        List<TeamRole> teamRoles = teamRoleDbInMemory.getTeamRoles("email@gmail.com");
+        Map<String, Player> players = team.getPlayers();
         Assert.assertEquals(1,players.size());
-        Assert.assertTrue(players.containsKey(1));
+        Assert.assertTrue(players.containsKey("email@gmail.com"));
         boolean playerTeamRole = false;
         for (TeamRole tr: teamRoles) {
             if(TeamRoleType.PLAYER.equals(tr.getTeamRoleType())){
@@ -558,9 +566,9 @@ public class TeamControllerTest {
             }
         }
         Assert.assertTrue(playerTeamRole);
-        teamController.removePlayer(teamName,1);
+        teamController.removePlayer(teamName,"email@gmail.com");
         Assert.assertEquals(0,players.size());
-        Assert.assertFalse(players.containsKey(1));
+        Assert.assertFalse(players.containsKey("email@gmail.com"));
         playerTeamRole = false;
         for (TeamRole tr: teamRoles) {
             if(TeamRoleType.PLAYER.equals(tr.getTeamRoleType())){
@@ -576,7 +584,7 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCoachInvalidInputs() {
         try{
-            teamController.removeCoach(null,1);
+            teamController.removeCoach(null,"email@gmail.com");
             Assert.fail("Should throw NullPointerException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NullPointerException);
@@ -587,7 +595,7 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCoachTeamNotFound(){
         try{
-            teamController.removeCoach("notExists",1);
+            teamController.removeCoach("notExists","email@gmail.com");
             Assert.fail("Should throw NotFoundException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NotFoundException);
@@ -601,7 +609,7 @@ public class TeamControllerTest {
         teamController.createTeam(teamName);
         teamController.changeStatus(teamName, TeamStatus.INACTIVE);
         try{
-            teamController.removeCoach(teamName,1);
+            teamController.removeCoach(teamName,"email@gmail.com");
             Assert.fail("Should throw Exception");
         }catch (Exception e){
             Assert.assertEquals("This Team's status - Inactive",e.getMessage());
@@ -613,7 +621,7 @@ public class TeamControllerTest {
         String teamName = "Exists";
         teamController.createTeam(teamName);
         try{
-            teamController.removeCoach(teamName,1);
+            teamController.removeCoach(teamName,"email@gmail.com");
         }catch (NotFoundException e){
             Assert.assertEquals("Coach not found",e.getMessage());
         }
@@ -623,9 +631,9 @@ public class TeamControllerTest {
     public void testRemoveCoachNotAssociatedWithTeam() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
-        coachController.createCoach(new Coach(1,"firstPlayer","lastPlayer",CoachRole.MAJOR, QualificationCoach.UEFA_A));
+        coachController.createCoach(new Coach("email@gmail.com",1,"firstPlayer","lastPlayer",CoachRole.MAJOR, QualificationCoach.UEFA_A));
         try{
-            teamController.removeCoach(teamName,1);
+            teamController.removeCoach(teamName,"email@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e){
             Assert.assertEquals("Coach is not part with associated team",e.getMessage());
@@ -637,14 +645,14 @@ public class TeamControllerTest {
         String teamName = "Exists";
         Date birthDate = new Date();
         teamController.createTeam(teamName);
-        coachController.createCoach(new Coach(1,"firstCoach","lastCoach",CoachRole.MAJOR, QualificationCoach.UEFA_A));
-        teamController.addCoach(teamName,1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        coachController.createCoach(new Coach("email@gmail.com",1,"firstCoach","lastCoach",CoachRole.MAJOR, QualificationCoach.UEFA_A));
+        teamController.addCoach(teamName,"email@gmail.com",1,"firstCoach","lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         Team team = teamController.getTeam(teamName);
         TeamRoleDbInMemory teamRoleDbInMemory = TeamRoleDbInMemory.getInstance();
-        List<TeamRole> teamRoles = teamRoleDbInMemory.getTeamRoles(1);
-        Map<Integer, Coach> coaches = team.getCoaches();
+        List<TeamRole> teamRoles = teamRoleDbInMemory.getTeamRoles("email@gmail.com");
+        Map<String, Coach> coaches = team.getCoaches();
         Assert.assertEquals(1,coaches.size());
-        Assert.assertTrue(coaches.containsKey(1));
+        Assert.assertTrue(coaches.containsKey("email@gmail.com"));
         boolean coachTeamRole = false;
         for (TeamRole tr: teamRoles) {
             if(TeamRoleType.COACH.equals(tr.getTeamRoleType())){
@@ -652,9 +660,9 @@ public class TeamControllerTest {
             }
         }
         Assert.assertTrue(coachTeamRole);
-        teamController.removeCoach(teamName,1);
+        teamController.removeCoach(teamName,"email@gmail.com");
         Assert.assertEquals(0,coaches.size());
-        Assert.assertFalse(coaches.containsKey(1));
+        Assert.assertFalse(coaches.containsKey("email@gmail.com"));
         coachTeamRole = false;
         for (TeamRole tr: teamRoles) {
             if(TeamRoleType.COACH.equals(tr.getTeamRoleType())){
