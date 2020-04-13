@@ -6,7 +6,7 @@ import Model.UsersTypes.Judge;
 public interface JudgeDb
 {
     /**
-     * Will receive from the Controller the Judge, add it to Data.
+     * Will receive from the Controller the Judge, add Judge to Data.
      * @param judge-the new Judge.
      * @throws Exception-if details are incorrect.
      */

@@ -18,7 +18,7 @@ public class JudgeDbInMemory implements JudgeDb
     public JudgeDbInMemory() { judgeMap = new HashMap<>(); }
 
     /**
-     * Will receive from the Controller the Judge, add it to Data.
+     * Will receive from the Controller the Judge, add Judge to Data.
      *
      * for the tests - create Judge in DB
      *
