@@ -7,7 +7,7 @@ import java.util.List;
 
 public class System_Controller {
     private static boolean isInitialize = false;
-    List<SystemAdministrator> systemAdministrators;
+    private List<SystemAdministrator> systemAdministrators;
     private static System_Controller ourInstance= new System_Controller();
 
     private System_Controller() {
@@ -23,24 +23,43 @@ public class System_Controller {
         }
     }
 
-    private System_Controller startInitializeTheSystem(){
+    private static void startInitializeTheSystem() throws Exception {
+        if(connectionToExternalSystems()){
+
+//            SystemAdministrator systemAdministrator= addSystemManger(username, password,id, firstName, lastName);
+//            if(systemAdministrator!=null){
+//                systemAdministrators.add(systemAdministrator);
+//                return true;
+//            }
+        }
+        else{
+
+        }
+
+    }
+    //todo
+    private boolean addFirstSystemAdministrator(){
         String[] allDetails =getDetailsFromUser();
         if(allDetails!=null) {
-            boolean[] isDetailsCorrect = (checkDetails(allDetails));
+            boolean[] isDetailsCorrect = checkDetails(allDetails);
             boolean isProblem = false;
             for (int i = 0; i < isDetailsCorrect.length; i++) {
                 if (!isDetailsCorrect[i]) {
                     isProblem = true;
+                    break;
                 }
             }
             if (!isProblem) {
                 isInitialize = true;
+
+                //todo
+
+                return true;
             } else {
                 problemWithTheDetails(isDetailsCorrect);
-
             }
         }
-        return null;
+        return false;
     }
 
     //todo
@@ -58,22 +77,12 @@ public class System_Controller {
         return null;
     }
 
-
-    private System_Controller(String username, String password,Integer id, String firstName, String lastName) throws Exception {
-        systemAdministrators = new ArrayList<>();
-        initialization(username, password,id, firstName, lastName);
-    }
-    private boolean initialization(String username, String password,Integer id, String firstName, String lastName) throws Exception {
+    private static boolean connectionToExternalSystems() throws Exception {
         if(!logInToTheAccountingSystem()){
             throw new Exception("problem in login accounting system");
         }
         if(logInToTheTaxLawSystem()){
             throw new Exception("problem in login tax law system");
-        }
-        SystemAdministrator systemAdministrator= addSystemManger(username, password,id, firstName, lastName);
-        if(systemAdministrator!=null){
-            systemAdministrators.add(systemAdministrator);
-            return true;
         }
         else{
             throw new Exception("problem in registering system administrator");
@@ -86,15 +95,23 @@ public class System_Controller {
         return systemAdministratorToRetern;
     }
 
-    private boolean logInToTheTaxLawSystem() {
+    private static boolean logInToTheTaxLawSystem() {
         return true;
     }
 
-    private boolean logInToTheAccountingSystem() {
+    private static boolean logInToTheAccountingSystem() {
         return true;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception {
+        if(isInitialize){
+            //todo
+            // Display appropriate interface
+            // Probably a front page or something
+        }
+        else {
+            startInitializeTheSystem();
+        }
 
     }
 
