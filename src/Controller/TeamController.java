@@ -9,6 +9,7 @@ import Model.UsersTypes.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class TeamController {
@@ -90,12 +91,12 @@ public class TeamController {
      * @return
      */
     private boolean equalsDetailsPlayer(Player playerInDb, Player playerToAdd){
-        return (!(playerInDb.getEmailAddress()).equals(playerToAdd.getEmailAddress()) ||
-                !playerInDb.getId().equals(playerToAdd.getId()) ||
-                !playerInDb.getFirstName().equals(playerToAdd.getFirstName()) ||
-                !playerInDb.getLastName().equals(playerToAdd.getLastName()) ||
-                !playerInDb.getBirthDate().equals(playerToAdd.getBirthDate()) ||
-                !playerInDb.getPlayerRole().equals(playerToAdd.getPlayerRole()));
+        return Objects.equals(playerInDb.getEmailAddress(), playerToAdd.getEmailAddress()) &&
+                playerInDb.getId().equals(playerToAdd.getId()) &&
+                playerInDb.getFirstName().equals(playerToAdd.getFirstName()) &&
+                playerInDb.getLastName().equals(playerToAdd.getLastName()) &&
+                playerInDb.getBirthDate().equals(playerToAdd.getBirthDate()) &&
+                playerInDb.getPlayerRole().equals(playerToAdd.getPlayerRole());
     }
 
     public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName ,String lastName,String ownedByEmail) throws Exception {
@@ -132,10 +133,10 @@ public class TeamController {
     }
 
     private boolean equalsDetailsTeamManager(TeamManager teamManagerInDb, TeamManager teamManagerToAdd){
-        return (!teamManagerInDb.getEmailAddress().equals(teamManagerToAdd.getEmailAddress()) ||
-                !teamManagerInDb.getId().equals(teamManagerToAdd.getId()) ||
-                !teamManagerInDb.getFirstName().equals(teamManagerToAdd.getFirstName()) ||
-                !teamManagerInDb.getLastName().equals(teamManagerToAdd.getLastName()));
+        return (teamManagerInDb.getEmailAddress().equals(teamManagerToAdd.getEmailAddress()) &&
+                teamManagerInDb.getId().equals(teamManagerToAdd.getId()) &&
+                teamManagerInDb.getFirstName().equals(teamManagerToAdd.getFirstName()) &&
+                teamManagerInDb.getLastName().equals(teamManagerToAdd.getLastName()));
     }
 
     public void addCoach(String teamName, String emailAddress, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
@@ -168,12 +169,12 @@ public class TeamController {
     }
 
     private boolean equalsDetailsCoach(Coach coachInDb, Coach coachToAdd){
-        return (!coachInDb.getEmailAddress().equals(coachToAdd.getEmailAddress()) ||
-                !coachInDb.getId().equals(coachToAdd.getId()) ||
-                !coachInDb.getFirstName().equals(coachToAdd.getFirstName()) ||
-                !coachInDb.getLastName().equals(coachToAdd.getLastName()) ||
-                !coachInDb.getCoachRole().equals(coachToAdd.getCoachRole()) ||
-                !coachInDb.getQualificationCoach().equals(coachToAdd.getQualificationCoach()));
+        return (coachInDb.getEmailAddress().equals(coachToAdd.getEmailAddress()) &&
+                coachInDb.getId().equals(coachToAdd.getId()) &&
+                coachInDb.getFirstName().equals(coachToAdd.getFirstName()) &&
+                coachInDb.getLastName().equals(coachToAdd.getLastName()) &&
+                coachInDb.getCoachRole().equals(coachToAdd.getCoachRole()) &&
+                coachInDb.getQualificationCoach().equals(coachToAdd.getQualificationCoach()));
     }
 
     public void addCourt(String teamName, String courtName, String courtCity) throws Exception {

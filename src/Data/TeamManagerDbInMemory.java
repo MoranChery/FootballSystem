@@ -11,7 +11,7 @@ import java.util.Map;
 public class TeamManagerDbInMemory implements TeamManagerDb{
 
     /*structure like the DB of players*/
-    private Map<Integer, TeamManager> teamManagers;
+    private Map<String, TeamManager> teamManagers;
 
     public TeamManagerDbInMemory() {
         teamManagers = new HashMap<>();
@@ -30,11 +30,11 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
      */
     @Override
     public void createTeamManager(TeamManager teamManager) throws Exception {
-        Integer id = teamManager.getId();
-        if(teamManagers.containsKey(id)) {
+        String emailAddress = teamManager.getEmailAddress();
+        if(teamManagers.containsKey(emailAddress)) {
             throw new Exception("Team Manager already exists");
         }
-        teamManagers.put(id, teamManager);
+        teamManagers.put(emailAddress, teamManager);
     }
 
     @Override
@@ -50,12 +50,12 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
         if(team == null || teamOwnerEmail == null || subscriber == null){
             throw new NullPointerException();
         }
-        if(teamManagers.containsKey(subscriber.getId())){
+        if(teamManagers.containsKey(subscriber.getEmailAddress())){
             throw new Exception("Team Manager to add already exists");
         }
         TeamManager teamManager = new TeamManager(team,subscriber,teamOwnerEmail);
-        Integer managerId = teamManager.getId();
-        teamManagers.put(managerId,teamManager);
+        String managerEmailAddress = teamManager.getEmailAddress();
+        teamManagers.put(managerEmailAddress,teamManager);
     }
 
     @Override
