@@ -54,23 +54,23 @@ public class TeamController {
      * @param playerId
      * @throws Exception
      */
-    public void addPlayer(String teamName, Integer playerId, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
-        if(teamName == null || playerId == null || firstName == null || lastName == null || birthDate == null || playerRole == null) {
+    public void addPlayer(String teamName, String emailAddress, Integer playerId, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+        if(teamName == null || emailAddress == null || playerId == null || firstName == null || lastName == null || birthDate == null || playerRole == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
-        Player currPlayer = new Player(playerId,firstName,lastName,birthDate,playerRole);
+        Player currPlayer = new Player(emailAddress,playerId,firstName,lastName,birthDate,playerRole);
         Player player;
         try{
             /*get the player from DB*/
-            player = playerDb.getPlayer(playerId);
+            player = playerDb.getPlayer(emailAddress);
             /*get the team of the player if there is a team already, will throw exception*/
             if (player.getTeam() != null) {
                 throw new Exception("Player associated with a team");
             }
             /*check if the player's details match with the DB details*/
-            if(!player.equals(currPlayer)){
+            if(!equalsDetailsPlayer(player,currPlayer)){
                 throw new Exception("One or more of the details incorrect");
             }
         }catch(NotFoundException e){
@@ -83,24 +83,39 @@ public class TeamController {
         teamRoleDb.createTeamRole(playerId,teamName,TeamRoleType.PLAYER);
     }
 
-    public void addTeamManager(String teamName, Integer teamManagerId, String firstName ,String lastName,Integer ownedById) throws Exception {
-        if(teamName == null || teamManagerId == null || firstName == null || lastName == null || ownedById == null) {
+    /**
+     * check if all the information about the play want to add match with the db details
+     * @param playerInDb
+     * @param playerToAdd
+     * @return
+     */
+    private boolean equalsDetailsPlayer(Player playerInDb, Player playerToAdd){
+        return (!(playerInDb.getEmailAddress()).equals(playerToAdd.getEmailAddress()) ||
+                !playerInDb.getId().equals(playerToAdd.getId()) ||
+                !playerInDb.getFirstName().equals(playerToAdd.getFirstName()) ||
+                !playerInDb.getLastName().equals(playerToAdd.getLastName()) ||
+                !playerInDb.getBirthDate().equals(playerToAdd.getBirthDate()) ||
+                !playerInDb.getPlayerRole().equals(playerToAdd.getPlayerRole()));
+    }
+
+    public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName ,String lastName,Integer ownedById) throws Exception {
+        if(teamName == null || emailAddress == null ||teamManagerId == null || firstName == null || lastName == null || ownedById == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(ownedById);
-        TeamManager currTeamManager = new TeamManager(teamManagerId, firstName, lastName,ownedById);
+        TeamManager currTeamManager = new TeamManager(emailAddress,teamManagerId, firstName, lastName,ownedById);
         /*get the teamManager from DB*/
         TeamManager teamManager;
         try{
-            teamManager = teamManagerDb.getTeamManager(teamManagerId);
+            teamManager = teamManagerDb.getTeamManager(emailAddress);
             /*get the team of the teamManager if there is a team already, will throw exception*/
             if (teamManager.getTeam() != null) {
                 throw new Exception("Team Manager associated with a team");
             }
             /*check if the teamManager's details match with the DB details*/
-            if(!teamManager.equals(currTeamManager)){
+            if(!equalsDetailsTeamManager(teamManager,currTeamManager)){
                 throw new Exception("One or more of the details incorrect");
             }
             if(teamManager.getOwnedById() != null){
@@ -116,24 +131,30 @@ public class TeamController {
         teamRoleDb.createTeamRole(teamManagerId,teamName,TeamRoleType.MANAGER);
     }
 
+    private boolean equalsDetailsTeamManager(TeamManager teamManagerInDb, TeamManager teamManagerToAdd){
+        return (!teamManagerInDb.getEmailAddress().equals(teamManagerToAdd.getEmailAddress()) ||
+                !teamManagerInDb.getId().equals(teamManagerToAdd.getId()) ||
+                !teamManagerInDb.getFirstName().equals(teamManagerToAdd.getFirstName()) ||
+                !teamManagerInDb.getLastName().equals(teamManagerToAdd.getLastName()));
+    }
 
-    public void addCoach(String teamName, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
-        if(teamName == null || coachId == null || firstName == null || lastName == null || coachRole == null|| qualificationCoach == null) {
+    public void addCoach(String teamName, String emailAddress, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
+        if(teamName == null || emailAddress == null || coachId == null || firstName == null || lastName == null || coachRole == null|| qualificationCoach == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
-        Coach currCoach = new Coach(coachId, firstName, lastName, coachRole, qualificationCoach);
+        Coach currCoach = new Coach(emailAddress, coachId, firstName, lastName, coachRole, qualificationCoach);
         /*get the coach from DB*/
         Coach coach;
         try {
-            coach = coachDb.getCoach(coachId);
+            coach = coachDb.getCoach(emailAddress);
             /*get the team of the coach if there is a team already, will throw exception*/
             if (coach.getTeam() != null) {
                 throw new Exception("Coach associated with a team");
             }
             /*check if the coach's details match with the DB details*/
-            if(!coach.equals(currCoach)){
+            if(!equalsDetailsCoach(coach,currCoach)){
                 throw new Exception("One or more of the details incorrect");
             }
         }catch (NotFoundException e){
@@ -144,6 +165,15 @@ public class TeamController {
         /* add to DB the player to the team*/
         teamDb.addCoach(teamName, coach);
         teamRoleDb.createTeamRole(coachId,teamName,TeamRoleType.COACH);
+    }
+
+    private boolean equalsDetailsCoach(Coach coachInDb, Coach coachToAdd){
+        return (!coachInDb.getEmailAddress().equals(coachToAdd.getEmailAddress()) ||
+                !coachInDb.getId().equals(coachToAdd.getId()) ||
+                !coachInDb.getFirstName().equals(coachToAdd.getFirstName()) ||
+                !coachInDb.getLastName().equals(coachToAdd.getLastName()) ||
+                !coachInDb.getCoachRole().equals(coachToAdd.getCoachRole()) ||
+                !coachInDb.getQualificationCoach().equals(coachToAdd.getQualificationCoach()));
     }
 
     public void addCourt(String teamName, String courtName, String courtCity) throws Exception {
@@ -174,22 +204,22 @@ public class TeamController {
         teamDb.addCourt(teamName, court);
     }
 
-    public void removePlayer(String teamName, Integer playerId) throws Exception {
+    public void removePlayer(String teamName, String playerEmailAddress) throws Exception {
         /*check if one of the inputs null*/
-        if(teamName == null || playerId == null) {
+        if(teamName == null || playerEmailAddress == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
         /* get the player from the database*/
-        Player player = playerDb.getPlayer(playerId);
+        Player player = playerDb.getPlayer(playerEmailAddress);
         /*check if the team that associated with the player match to the player want to delete*/
         Team teamPlayer = player.getTeam();
         if(teamPlayer == null || !teamName.equals(teamPlayer.getTeamName())) {
             throw new Exception("Player is not part with associated team");
         }
-        teamDb.removePlayer(teamName, playerId);
-        teamRoleDb.removeTeamRole(playerId,teamName,TeamRoleType.PLAYER);
+        teamDb.removePlayer(teamName, playerEmailAddress);
+        teamRoleDb.removeTeamRole(playerEmailAddress,teamName,TeamRoleType.PLAYER);
     }
 
     public void removeTeamManager(String teamName, Integer teamManagerId) throws Exception {

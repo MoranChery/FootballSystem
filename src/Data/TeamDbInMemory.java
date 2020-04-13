@@ -129,21 +129,21 @@ public class TeamDbInMemory implements TeamDb {
     /**
      * remove the player from the team in DB
      * @param teamName
-     * @param playerId
+     * @param playerEmailAddress
      * @throws Exception
      */
     @Override
-    public void removePlayer(String teamName, Integer playerId) throws Exception {
+    public void removePlayer(String teamName, String playerEmailAddress) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
         }
 
         Map<Integer, Player> players = team.getPlayers();
-        if(!players.containsKey(playerId)) {
+        if(!players.containsKey(playerEmailAddress)) {
             throw new Exception("Player not part of the team");
         }
-        Player player = players.remove(playerId);
+        Player player = players.remove(playerEmailAddress);
         //TODO check if needed
         player.setTeam(null);
     }

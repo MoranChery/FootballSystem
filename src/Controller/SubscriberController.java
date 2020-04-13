@@ -119,11 +119,11 @@ public class SubscriberController {
     }
 
 
-    public Subscriber getSubscriber(String username) throws Exception {
-        if (username == null) {
+    public Subscriber getSubscriber(String emailAddress) throws Exception {
+        if (emailAddress == null) {
             throw new NullPointerException();
         }
-        return subscriberDb.getSubscriber(username);
+        return subscriberDb.getSubscriber(emailAddress);
     }
 
     //use case 2.3

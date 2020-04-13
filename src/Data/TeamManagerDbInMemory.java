@@ -38,11 +38,11 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
     }
 
     @Override
-    public TeamManager getTeamManager(Integer teamManagerId) throws Exception {
-        if (!teamManagers.containsKey(teamManagerId)) {
+    public TeamManager getTeamManager(String teamManagerEmailAddress) throws Exception {
+        if (!teamManagers.containsKey(teamManagerEmailAddress)) {
                 throw new NotFoundException("Team Manager not found");
         }
-        return teamManagers.get(teamManagerId);
+        return teamManagers.get(teamManagerEmailAddress);
     }
 
     @Override

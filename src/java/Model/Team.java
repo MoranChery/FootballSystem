@@ -29,7 +29,6 @@ public class Team {
         games = new ArrayList<>();
         teamStatus = TeamStatus.ACTIVE;
         financialActivities = new HashMap<>();
-
     }
 
     public String getTeamName() {

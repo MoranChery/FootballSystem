@@ -23,11 +23,11 @@ public class CoachDbInMemory implements CoachDb {
     }
 
     @Override
-    public Coach getCoach(Integer coachId) throws Exception {
-        if (!coaches.containsKey(coachId)) {
+    public Coach getCoach(String coachEmailAddress) throws Exception {
+        if (!coaches.containsKey(coachEmailAddress)) {
             throw new NotFoundException("Coach not found");
         }
-        return coaches.get(coachId);
+        return coaches.get(coachEmailAddress);
     }
 
     @Override

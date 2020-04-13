@@ -36,11 +36,11 @@ public class SubscriberDbInMemory implements SubscriberDb {
 
 
     @Override
-    public Subscriber getSubscriber(String username) throws Exception {
-        if (!subscribers.containsKey(username)) {
+    public Subscriber getSubscriber(String emailAddress) throws Exception {
+        if (!subscribers.containsKey(emailAddress)) {
             throw new Exception("Subscriber not found");
         }
-        return subscribers.get(username);
+        return subscribers.get(emailAddress);
     }
 
     @Override

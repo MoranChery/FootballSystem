@@ -19,7 +19,7 @@ public interface TeamDb extends Db {
 
     void addCoach(String teamName, Coach coach) throws Exception;
 
-    void removePlayer(String teamName, Integer playerId) throws Exception;
+    void removePlayer(String teamName, String playerEmailAddress) throws Exception;
 
     void removeTeamManager(String teamName, Integer teamManagerId) throws Exception;
 

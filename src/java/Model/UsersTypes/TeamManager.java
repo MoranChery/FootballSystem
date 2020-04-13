@@ -14,12 +14,12 @@ public class TeamManager extends Subscriber {
     }
 
     public TeamManager(Team team,Subscriber subscriber, Integer ownedById) {
-        setRegisteringDetails(subscriber.getId(),subscriber.getFirstName(),subscriber.getLastName());
+        setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),subscriber.getLastName());
         this.ownedById = ownedById;
     }
 
-    public TeamManager(Integer teamManagerId, String firstName, String lastName, Integer ownedById) {
-        setRegisteringDetails(teamManagerId,firstName,lastName);
+    public TeamManager(String emailAddress,Integer teamManagerId, String firstName, String lastName, Integer ownedById) {
+        setRegisteringDetails(emailAddress,teamManagerId,firstName,lastName);
         this.ownedById = ownedById;
     }
 

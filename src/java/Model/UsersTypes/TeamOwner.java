@@ -18,7 +18,7 @@ public class TeamOwner extends Subscriber {
     }
 
     public TeamOwner(Team team, Subscriber subscriber, Integer teamOwnerId) {
-        super(subscriber);
+        setRegisteringDetails(subscriber.getId(),subscriber.getFirstName(),getLastName());
         this.team = team;
         this.ownedById = teamOwnerId;
     }
