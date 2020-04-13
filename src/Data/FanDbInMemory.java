@@ -70,7 +70,6 @@ public class FanDbInMemory implements FanDb{
     }
 
     public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
-
         if(fanMail == null){
             throw new Exception("Fan not found");
         }
@@ -91,5 +90,87 @@ public class FanDbInMemory implements FanDb{
         theFan.setGamesAlert(alert);
         // alert that the fan registered to get alerts about games succesfully
     }
+
+    @Override
+    public void wantToEditMail(String fanMail, String newMailAddress) throws Exception {
+        if(fanMail == null || newMailAddress == null){
+            throw new Exception("Somthing went wrong");
+        }
+        Fan theFan = allFans.get(fanMail);
+        if(theFan == null){
+            throw new NullPointerException("Coudn't get this fan");
+        }
+        if(theFan.getEmailAddress().equals(newMailAddress)){
+            throw new Exception("You are already using this mail address");
+        }
+        theFan.setEmailAddress(newMailAddress);
+    }
+
+    @Override
+    public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
+        if(fanMail == null || newPassword == null){
+            throw new Exception("Somthing went wrong");
+        }
+        Fan theFan = allFans.get(fanMail);
+        if(theFan == null){
+            throw new NullPointerException("Coudn't get this fan");
+        }
+        if(theFan.getPassword().equals(newPassword)){
+            throw new Exception("You are already using password");
+        }
+        theFan.setPassword(newPassword);
+    }
+
+    @Override
+    public void wantToEditID(String fanMail, Integer newID) throws Exception {
+        if(fanMail == null || newID == null){
+            throw new Exception("Somthing went wrong");
+        }
+        Fan theFan = allFans.get(fanMail);
+        if(theFan == null){
+            throw new NullPointerException("Coudn't get this fan");
+        }
+        if(theFan.getId().equals(newID)){
+            throw new Exception("You are already using this ID");
+        }
+        theFan.setId(newID);
+    }
+
+    @Override
+    public void wantToEditFirstName(String fanMail, String newFirstName) throws Exception {
+        if(fanMail == null || newFirstName == null){
+            throw new Exception("Somthing went wrong");
+        }
+        Fan theFan = allFans.get(fanMail);
+        if(theFan == null){
+            throw new NullPointerException("Coudn't get this fan");
+        }
+        if(theFan.getFirstName().equals(newFirstName)){
+            throw new Exception("You are already using this name as first name");
+        }
+        theFan.setFirstName(newFirstName);
+    }
+
+    @Override
+    public void wantToEditLastName(String fanMail, String newLastName) throws Exception {
+        if(fanMail == null || newLastName == null){
+            throw new Exception("Somthing went wrong");
+        }
+        Fan theFan = allFans.get(fanMail);
+        if(theFan == null){
+            throw new NullPointerException("Coudn't get this fan");
+        }
+        if(theFan.getLastName().equals(newLastName)){
+            throw new Exception("You are already using this name as last name");
+        }
+        theFan.setLastName(newLastName);
+    }
+
+//    public void editPersonalDetails(String fanMail,String password, Integer id, String firstName, String lastName) throws Exception {
+//        if(fanMail == null || password == null || id == null || firstName == null || lastName == null){
+//            throw new Exception("bad input");
+//        }
+//
+//    }
 
 }

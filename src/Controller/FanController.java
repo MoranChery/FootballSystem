@@ -66,4 +66,89 @@ public class FanController {
         fanDb.askToGetAlerts(fanMail,alert,alertWay);
     }
 
+
+    public void wantToEditMail(String fanMail, String newMailAddress) throws Exception {
+        if(fanMail == null || newMailAddress == null){
+            throw new NullPointerException("bad input");
+        }
+        Fan fan = fanDb.getFan(fanMail);
+        if(fan == null){
+            throw new NotFoundException("Fan not found");
+        }
+        if(fan.getPassword().equals(newMailAddress)){
+            throw new Exception("This E-mail address is the same as the old one");
+        }
+        fanDb.wantToEditMail(fanMail, newMailAddress);
+
+
+    }
+    public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
+        if(fanMail == null || newPassword == null){
+            throw new NullPointerException("bad input");
+        }
+        Fan fan = fanDb.getFan(fanMail);
+        if(fan == null){
+            throw new NotFoundException("Fan not found");
+        }
+        if(fan.getPassword().equals(newPassword)){
+            throw new Exception("This password is the same as the old one");
+        }
+        fanDb.wantToEditPassword(fanMail, newPassword);
+    }
+    public void wantToEditID(String fanMail, Integer newID) throws Exception {
+        if(fanMail == null || newID == null){
+            throw new NullPointerException("bad input");
+        }
+        Fan fan = fanDb.getFan(fanMail);
+        if(fan == null){
+            throw new NotFoundException("Fan not found");
+        }
+        if(fan.getId().equals(newID)){
+            throw new Exception("This id is the same as the old one");
+        }
+        fanDb.wantToEditID(fanMail, newID);
+    }
+    public void wantToEditFirstName(String fanMail, String newFirstName) throws Exception {
+        if(fanMail == null || newFirstName == null){
+            throw new NullPointerException("bad input");
+        }
+        Fan fan = fanDb.getFan(fanMail);
+        if(fan == null){
+            throw new NotFoundException("Fan not found");
+        }
+        if(fan.getFirstName().equals(newFirstName)){
+            throw new Exception("This name is the same as the old one");
+        }
+        fanDb.wantToEditFirstName(fanMail, newFirstName);
+    }
+    public void wantToEditLastName(String fanMail, String newLastName) throws Exception {
+        if(fanMail == null || newLastName == null){
+            throw new NullPointerException("bad input");
+        }
+        Fan fan = fanDb.getFan(fanMail);
+        if(fan == null){
+            throw new NotFoundException("Fan not found");
+        }
+        if(fan.getLastName().equals(newLastName)){
+            throw new Exception("This password is the same as the old one");
+        }
+        fanDb.wantToEditLastName(fanMail, newLastName);
+    }
+
+
+
+
+
+
+//    public void editPersonalDetails(String fanMail,String password, Integer id, String firstName, String lastName) throws Exception {
+//        if(fanMail == null || password == null || id == null || firstName == null || lastName == null){
+//            throw new Exception("bad input");
+//        }
+//        Fan fan = fanDb.getFan(fanMail);
+//        if(fan == null){
+//            throw new NotFoundException("Fan not found");
+//        }
+//
+//    }
+
 }
