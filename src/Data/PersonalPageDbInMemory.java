@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class PersonalPageDbInMemory implements PersonalPageDb {
 
-    private Map<Integer, PersonalPage> allPages;
+    private Map<String, PersonalPage> allPages;
 
 
     private static PersonalPageDbInMemory ourInstance = new PersonalPageDbInMemory();
@@ -23,7 +23,7 @@ public class PersonalPageDbInMemory implements PersonalPageDb {
 
 
     @Override
-    public void addPageToFanList(Integer pageID, Fan fanToAdd) throws Exception {
+    public void addPageToFanList(String pageID, Fan fanToAdd) throws Exception {
         if(fanToAdd == null){
             throw new Exception("Fan not found");
         }
@@ -31,19 +31,19 @@ public class PersonalPageDbInMemory implements PersonalPageDb {
         if(page == null){
             throw new Exception("Page not found");
         }
-        Map<Integer, Fan> fansFollowingThisPage = page.getFansFollowingThisPage();
-        Integer fanID = fanToAdd.getId();
-        if(fansFollowingThisPage.containsKey(fanID)){
+        Map<String, Fan> fansFollowingThisPage = page.getFansFollowingThisPage();
+        String fanToAddEmailAddress = fanToAdd.getEmailAddress();
+        if(fansFollowingThisPage.containsKey(fanToAddEmailAddress)){
             throw new Exception("You are already follow this page");
         }
-        fansFollowingThisPage.put(fanID,fanToAdd);
+        fansFollowingThisPage.put(fanToAddEmailAddress,fanToAdd);
     }
 
     @Override
-    public PersonalPage getPage(Integer pageId) {
+    public PersonalPage getPage(String pageId) throws NotFoundException {
         PersonalPage page = allPages.get(pageId);
         if(page == null){
-            //throw new NotFoundException("Page not found");
+            throw new NotFoundException("Page not found");
         }
         return page;
     }

@@ -11,8 +11,8 @@ import java.util.Scanner;
 
 public class Fan extends Subscriber {
 
-    private HashMap<Integer, PersonalPage> myPages;
-    // personal data
+    private HashMap<String, PersonalPage> myPages;
+
 
     public Fan(String emailAddress,String password, Integer id, String firstName, String lastName) {
         setRegisteringDetails(emailAddress, password, id, firstName, lastName);
@@ -37,26 +37,13 @@ public class Fan extends Subscriber {
 //        myController.AddFanToGetAlerts(alertWay, this);
 //    }
 
-
-    @Override
-    public Integer getId() {
-        return null;
-    }
-
     // getters & setters
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public HashMap<Integer, PersonalPage> getMyPages() {
+    public HashMap<String, PersonalPage> getMyPages() {
         return myPages;
     }
 
-    public void setMyPages(HashMap<Integer, PersonalPage> myPages) {
+    public void setMyPages(HashMap<String, PersonalPage> myPages) {
         this.myPages = myPages;
     }
 }

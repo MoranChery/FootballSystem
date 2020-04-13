@@ -1,15 +1,18 @@
 package Data;
 
+import Model.Enums.Status;
 import Model.PersonalPage;
 import Model.UsersTypes.Fan;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static Model.Enums.Status.OFFLINE;
+import static Model.Enums.Status.ONLINE;
+
 public class FanDbInMemory implements FanDb{
 
-    private Map<Integer, Fan> allFans;
+    private Map<String, Fan> allFans;
 
     private static FanDbInMemory ourInstance = new FanDbInMemory();
     public FanDbInMemory() {
@@ -20,16 +23,16 @@ public class FanDbInMemory implements FanDb{
     }
 
     @Override
-    public void addPageToFanList(Integer fanId, PersonalPage pageToAdd) throws Exception {
+    public void addPageToFanList(String fanMail, PersonalPage pageToAdd) throws Exception {
         if(pageToAdd == null){
             throw new Exception("Page not found");
         }
-        Fan theFan = allFans.get(fanId);
+        Fan theFan = allFans.get(fanMail);
         if(theFan == null){
             throw new Exception("Fan not found");
         }
-        Map<Integer, PersonalPage> theFanPages = theFan.getMyPages();
-        Integer pageToAddId = pageToAdd.getPageID();
+        Map<String, PersonalPage> theFanPages = theFan.getMyPages();
+        String pageToAddId = pageToAdd.getPageID();
         if(theFanPages.containsKey(pageToAddId)){
             throw new Exception("You are already follow this page");
         }
@@ -37,12 +40,31 @@ public class FanDbInMemory implements FanDb{
     }
 
     @Override
-    public Fan getFan(Integer fanId) {
-        Fan fan = allFans.get(fanId);
+    public Fan getFan(String fanMail) throws NotFoundException {
+        Fan fan = allFans.get(fanMail);
         if(fan == null){
-            //throw new NotFoundException("Fan not found");
-
+            throw new NotFoundException("Fan not found");
         }
         return fan;
     }
+
+    @Override
+    public void logOut(String fanMail, Status status) throws Exception{
+        if(fanMail == null){
+            throw new Exception("Fan not found");
+        }
+        if(status == null || status.equals(ONLINE)){
+            throw new Exception("bad status");
+        }
+        Fan theFan = allFans.get(fanMail);
+        if(theFan == null){
+            throw new Exception("Fan not found");
+        }
+        if(theFan.getStatus().equals(OFFLINE)){
+            throw new Exception("You are already out of the system");
+        }
+        theFan.setStatus(OFFLINE);
+        // alert
+    }
+
 }

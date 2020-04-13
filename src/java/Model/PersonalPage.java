@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PersonalPage {
-    private Map<Integer, Fan> fansFollowingThisPage;
+    private Map<String, Fan> fansFollowingThisPage;
     private System_Controller myController;
-    private Integer pageID;
+    private String pageID;
     private String name;
 
-    public PersonalPage(Integer ownerID, String pageOwnerName) {
+    public PersonalPage(String ownerID, String pageOwnerName) {
         myController = System_Controller.getInstance();
         fansFollowingThisPage = new HashMap<>();
         pageID = ownerID;
@@ -26,19 +26,19 @@ public class PersonalPage {
 //        }
 //    }
 
-    public Map<Integer, Fan> getFansFollowingThisPage() {
+    public Map<String, Fan> getFansFollowingThisPage() {
         return fansFollowingThisPage;
     }
 
-    public void setFansFollowingThisPage(Map<Integer, Fan> fansFollowingThisPage) {
+    public void setFansFollowingThisPage(Map<String, Fan> fansFollowingThisPage) {
         this.fansFollowingThisPage = fansFollowingThisPage;
     }
 
-    public Integer getPageID() {
+    public String getPageID() {
         return pageID;
     }
 
-    public void setPageID(Integer pageID) {
+    public void setPageID(String pageID) {
         this.pageID = pageID;
     }
 

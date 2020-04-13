@@ -1,9 +1,7 @@
 package Controller;
 
-import Data.FanDb;
-import Data.FanDbInMemory;
-import Data.PersonalPageDb;
-import Data.PersonalPageDbInMemory;
+import Data.*;
+import Model.Enums.Status;
 import Model.PersonalPage;
 import Model.UsersTypes.Fan;
 
@@ -20,13 +18,13 @@ public class FanController {
         personalPageDb = PersonalPageDbInMemory.getInstance();
     }
 
-    public void addPageToFanList(Integer pageId, String pageName, Integer fanId) throws Exception {
-        if(pageId == null || pageName == null || fanId == null){
+    public void addPageToFanList(String pageId, String pageName, String fanMail) throws Exception {
+        if(pageId == null || pageName == null || fanMail == null){
             throw new NullPointerException("bad input");
         }
-        Fan fan = fanDb.getFan(fanId);
+        Fan fan = fanDb.getFan(fanMail);
         PersonalPage pageToAdd = new PersonalPage(pageId,pageName);
-        Map<Integer, PersonalPage> fansPages = fan.getMyPages();
+        Map<String, PersonalPage> fansPages = fan.getMyPages();
         PersonalPage testPage = personalPageDb.getPage(pageId);
         if(!testPage.equals(pageToAdd)){
             throw new Exception("One or more of the details incorrect");
@@ -34,8 +32,21 @@ public class FanController {
         if(fansPages.containsKey(pageId)){
             throw new Exception("You are already follow this page");
         }
-        fanDb.addPageToFanList(fanId, pageToAdd);
+        fanDb.addPageToFanList(fanMail, pageToAdd);
+    }
 
+    public void logOut(String fanMail, Status status) throws Exception {
+        if(status == null || fanMail == null){
+            throw new NullPointerException("bad input");
+        }
+        Fan fan = fanDb.getFan(fanMail);
+        if (fan == null){
+            throw new NotFoundException("Fan not found");
+        }
+        if(fan.getStatus().equals(Status.OFFLINE)){
+            throw new Exception("You are not connected to the system");
+        }
+        fanDb.logOut(fanMail, status);
 
     }
 }
