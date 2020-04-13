@@ -414,4 +414,10 @@ public class TeamController {
             throw new Exception("This Team's status - Inactive");
         }
     }
+
+    public void editPlayerDetails(String emailAddress,Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+        Player playerWithNewDetails = new Player(emailAddress,id,firstName,lastName,birthDate,playerRole);
+        Player playerFromDb = playerDb.getPlayer(emailAddress);
+        playerDb.updatePlayer(playerWithNewDetails);
+    }
 }
