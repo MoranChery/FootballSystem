@@ -885,4 +885,18 @@ public class TeamControllerTest {
         Assert.assertEquals(TeamStatus.INACTIVE,team.getTeamStatus());
     }
 
+    @Test
+    public void testUpdatePlayer() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        Date birthDate = new Date();
+        playerController.createPlayer(new Player("email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        teamController.addPlayer(teamName,"email@gmail.com",1,"firstPlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        teamController.updatePlayerDetails("email@gmail.com","changePlayer","lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        Team team = teamController.getTeam(teamName);
+        Map<String, Player> players = team.getPlayers();
+        Player player = players.get("email@gmail.com");
+        Assert.assertEquals("changePlayer", player.getFirstName());
+    }
+
 }

@@ -72,4 +72,9 @@ public class TeamService {
     public void changeStatusToActive(String teamName) throws Exception {
         teamController.changeStatus(teamName,TeamStatus.ACTIVE);
     }
-}
+
+    public void updatePlayerDetails(String emailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+        teamController.updatePlayerDetails(emailAddress,firstName,lastName, birthDate, playerRole);
+        }
+
+    }

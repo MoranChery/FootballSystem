@@ -415,9 +415,12 @@ public class TeamController {
         }
     }
 
-    public void editPlayerDetails(String emailAddress,Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
-        Player playerWithNewDetails = new Player(emailAddress,id,firstName,lastName,birthDate,playerRole);
+    public void updatePlayerDetails(String emailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
         Player playerFromDb = playerDb.getPlayer(emailAddress);
-        playerDb.updatePlayer(playerWithNewDetails);
+        playerFromDb.setFirstName(firstName);
+        playerFromDb.setLastName(lastName);
+        playerFromDb.setBirthDate(birthDate);
+        playerFromDb.setPlayerRole(playerRole);
+        playerDb.updatePlayer(playerFromDb);
     }
 }

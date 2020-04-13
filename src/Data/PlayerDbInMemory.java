@@ -1,6 +1,7 @@
 package Data;
 
 import Model.System_Controller;
+import Model.Team;
 import Model.UsersTypes.Player;
 
 import java.util.HashMap;
@@ -53,8 +54,7 @@ public class PlayerDbInMemory implements PlayerDb {
         if(!players.containsKey(emailAddress)){
             throw new NotFoundException("Player not found");
         }
-        Player playerFromDb = players.get(emailAddress);
-        playerFromDb = player;
+        players.put(player.getEmailAddress(),player);
     }
 
     @Override
