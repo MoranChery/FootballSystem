@@ -19,15 +19,15 @@ public class PersonalPageController {
         pageDb = PersonalPageDbInMemory.getInstance();
     }
 
-    public void addPageToFanList(Integer pageID, Integer fanId, String firstName, String lastName, String fanMail, String fanPassword) throws Exception {
+    public void addPageToFanList(String pageID, Integer fanId, String firstName, String lastName, String fanMail, String fanPassword) throws Exception {
 
         if(pageID == null || fanId == null || firstName == null || lastName == null || fanMail == null || fanPassword == null){
             throw new NullPointerException("bad input");
         }
         PersonalPage page = pageDb.getPage(pageID);
         Fan fanToAdd = new Fan(fanMail,fanPassword,fanId, firstName,lastName);
-        Map<Integer, Fan> fanOfThisPage = page.getFansFollowingThisPage();
-        Fan testFan = fanDb.getFan(fanId);
+        Map<String, Fan> fanOfThisPage = page.getFansFollowingThisPage();
+        Fan testFan = fanDb.getFan(fanMail);
         if(!testFan.equals(fanToAdd)){
             throw new Exception("One or more of the details incorrect");
         }
