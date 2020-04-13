@@ -1,8 +1,8 @@
 package Model;
 
+import Controller.System_Controller;
 import Model.UsersTypes.Fan;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

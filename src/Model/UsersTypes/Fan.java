@@ -1,13 +1,8 @@
 package Model.UsersTypes;
 
-import Model.Enums.AlertWay;
 import Model.PersonalPage;
-import Model.System_Controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 
 public class Fan extends Subscriber {
 

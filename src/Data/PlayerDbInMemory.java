@@ -1,6 +1,5 @@
 package Data;
 
-import Model.System_Controller;
 import Model.UsersTypes.Player;
 
 import java.util.HashMap;
