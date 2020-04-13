@@ -24,6 +24,10 @@ public class Fan extends Subscriber {
         this.emailAddress = emailAddress;
         myController = System_Controller.getInstance();
         myPages = new HashMap<>();
+
+
+        // test
+        System.out.println("test");
     }
 
     //    private void AddPageToMyList(PersonalPage pageToAdd) {
