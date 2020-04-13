@@ -15,6 +15,10 @@ public class RepresentativeAssociationService
      */
     public void createLeague(String leagueName) throws Exception
     {
+        if(leagueName == null)
+        {
+            throw new NullPointerException("One or more of the League details incorrect");
+        }
         representativeAssociationController.createLeague(leagueName);
     }
 

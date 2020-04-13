@@ -7,7 +7,6 @@ import java.util.List;
 
 public class Judge extends Subscriber
 {
-
     private QualificationJudge qualificationJudge;
     private List<Integer> inlaySeasonLeagueIdList;
 
