@@ -48,42 +48,53 @@ public class RepresentativeAssociationService
         representativeAssociationController.createSeasonLeague(leagueId, seasonId, calculateLeaguePointsId, inlayGamesId);
     }
 
+//    /**
+//     * Will receive from the UI the judge's name, want to create Judge.
+//     * Will continue to Controller.
+//     * @param judgeName-name of the new Judge.
+//     * @param qualificationJudge-qualification of the new Judge.
+//     * @throws Exception-if details are incorrect.
+//     */
     /**
-     * Will receive from the UI the judge's name, want to create Judge.
+     * Will receive from the UI the judge's details, want to create Judge.
      * Will continue to Controller.
-     * @param judgeName-name of the new Judge.
-     * @param qualificationJudge-qualification of the new Judge.
-     * @throws Exception-if details are incorrect.
+     * @param username
+     * @param password
+     * @param id
+     * @param firstName
+     * @param lastName
+     * @param qualificationJudge
+     * @throws Exception
      */
-    public void createJudge(String judgeName, QualificationJudge qualificationJudge) throws Exception
+    public void createJudge(String username, String password,Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception
     {
-        representativeAssociationController.createJudge(judgeName, qualificationJudge);
+        representativeAssociationController.createJudge(username, password, id, firstName, lastName, qualificationJudge);
     }
 
     /**
      * Will receive from the UI the judge's id, want to remove Judge.
      * Will continue to Controller.
-     * @param judgeId-id of the Judge.
+     * @param judgeEmailAddress-emailAddress of the Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void removeJudge(Integer judgeId) throws Exception
+    public void removeJudge(String judgeEmailAddress) throws Exception
     {
-        representativeAssociationController.removeJudge(judgeId);
+        representativeAssociationController.removeJudge(judgeEmailAddress);
     }
-
-    /**
-     * Will receive from the UI the season's id, the league's id and the judge's id,
-     * want to inlay Judge to SeasonLeague.
-     * Will continue to Controller.
-     * @param seasonId-id of the Season.
-     * @param leagueId-id of the League.
-     * @param judgeId-id of the Judge.
-     * @throws Exception-if details are incorrect.
-     */
-    public void inlayJudgeToSeasonLeague(Integer seasonId, Integer leagueId, Integer judgeId) throws Exception
-    {
-        representativeAssociationController.inlayJudgeToSeasonLeague(seasonId, leagueId, judgeId);
-    }
+//
+//    /**
+//     * Will receive from the UI the season's id, the league's id and the judge's id,
+//     * want to inlay Judge to SeasonLeague.
+//     * Will continue to Controller.
+//     * @param seasonId-id of the Season.
+//     * @param leagueId-id of the League.
+//     * @param judgeId-id of the Judge.
+//     * @throws Exception-if details are incorrect.
+//     */
+//    public void inlayJudgeToSeasonLeague(Integer seasonId, Integer leagueId, Integer judgeId) throws Exception
+//    {
+//        representativeAssociationController.inlayJudgeToSeasonLeague(seasonId, leagueId, judgeId);
+//    }
 
     /**
      * Will receive from the UI the season's id, the league's id and the calculateLeaguePoints's id,
