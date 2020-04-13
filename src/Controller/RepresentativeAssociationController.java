@@ -2,6 +2,7 @@ package Controller;
 
 import Data.*;
 import Model.Enums.QualificationJudge;
+import Model.League;
 
 public class RepresentativeAssociationController
 {
@@ -10,13 +11,8 @@ public class RepresentativeAssociationController
     private SeasonLeagueDb seasonLeagueDb;
     private JudgeDb judgeDb;
 
-    public RepresentativeAssociationController(/*LeagueDb leagueDb, SeasonDb seasonDb, SeasonLeagueDb seasonLeagueDb, JudgeDb judgeDb*/)
+    public RepresentativeAssociationController()
     {
-//        this.leagueDb = leagueDb;
-//        this.seasonDb = seasonDb;
-//        this.seasonLeagueDb = seasonLeagueDb;
-//        this.judgeDb = judgeDb;
-//
         this.leagueDb = LeagueDbInMemory.getInstance();
         this.seasonDb = SeasonDbInMemory.getInstance();
         this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
@@ -24,7 +20,7 @@ public class RepresentativeAssociationController
     }
 
     /**
-     * Will receive from the Service the league's name, want to create League.
+     * Will receive from the Service the league's name, create the League.
      * Will continue to Data.
      * @param leagueName-name of the new League.
      * @throws Exception-if details are incorrect.
@@ -33,9 +29,10 @@ public class RepresentativeAssociationController
     {
         if(leagueName == null)
         {
-            throw new NullPointerException();
+            throw new NullPointerException("One or more of the League details incorrect");
         }
-        leagueDb.createLeague(leagueName);
+        League league = new League(leagueName);
+        leagueDb.createLeague(league);
     }
 
     /**
