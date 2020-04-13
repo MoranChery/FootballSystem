@@ -1,9 +1,7 @@
 package Data;
 
-import Model.Court;
 import Model.Team;
 import Model.UsersTypes.Subscriber;
-import Model.UsersTypes.TeamManager;
 import Model.UsersTypes.TeamOwner;
 
 import java.util.ArrayList;
@@ -14,7 +12,7 @@ import java.util.Map;
 public class TeamOwnerDbInMemory implements TeamOwnerDb{
 
     /*structure like the DB of teamOwners*/
-    private Map<Integer, TeamOwner> teamOwners;
+    private Map<String, TeamOwner> teamOwners;
 
     public TeamOwnerDbInMemory() {
         teamOwners = new HashMap<>();
@@ -27,56 +25,56 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
     }
     @Override
     public void createTeamOwner(TeamOwner teamOwner) throws Exception {
-        Integer teamOwnerId = teamOwner.getId();
-        if (teamOwners.containsKey(teamOwnerId)) {
+        String teamOwnerEmailAddress = teamOwner.getEmailAddress();
+        if (teamOwners.containsKey(teamOwnerEmailAddress)) {
             throw new Exception("TeamOwner already exists");
         }
-        teamOwners.put(teamOwnerId, teamOwner);
+        teamOwners.put(teamOwnerEmailAddress, teamOwner);
     }
 
     @Override
-    public TeamOwner getTeamOwner(Integer teamOwnerId) throws Exception {
-        if(teamOwnerId == null || !teamOwners.containsKey(teamOwnerId)){
+    public TeamOwner getTeamOwner(String teamOwnerEmailAddress) throws Exception {
+        if(teamOwnerEmailAddress == null || !teamOwners.containsKey(teamOwnerEmailAddress)){
             throw new Exception("TeamOwner not found");
         }
-        return teamOwners.get(teamOwnerId);
+        return teamOwners.get(teamOwnerEmailAddress);
     }
 
     @Override
-    public void subscriptionTeamOwner(Team team, Integer teamOwnerId, Subscriber subscriber) throws Exception {
-        if(team == null || teamOwnerId == null || subscriber == null){
+    public void subscriptionTeamOwner(Team team, String teamOwnerEmail, Subscriber subscriber) throws Exception {
+        if(team == null || teamOwnerEmail == null || subscriber == null){
             throw new NullPointerException();
         }
-        if(teamOwners.containsKey(subscriber.getId())){
+        if(teamOwners.containsKey(subscriber.getEmailAddress())){
             throw new Exception("TeamOwner to add already exists");
         }
-        if(!teamOwners.containsKey(teamOwnerId)){
+        if(!teamOwners.containsKey(teamOwnerEmail)){
             throw new Exception("Major Team Owner not found");
         }
-        TeamOwner teamOwner = new TeamOwner(team,subscriber,teamOwnerId);
+        TeamOwner teamOwner = new TeamOwner(team,subscriber,teamOwnerEmail);
         Integer ownerId = teamOwner.getId();
-        TeamOwner teamOwnerMajor = teamOwners.get(teamOwnerId);
+        TeamOwner teamOwnerMajor = teamOwners.get(teamOwnerEmail);
         teamOwnerMajor.getTeamOwnersByThis().put(ownerId,teamOwner);
-        teamOwners.put(ownerId,teamOwner);
+        teamOwners.put(teamOwnerEmail,teamOwner);
     }
 
     @Override
-    public void removeSubscriptionTeamOwner(Integer ownerToRemove) throws Exception {
-        if(ownerToRemove == null){
+    public void removeSubscriptionTeamOwner(String ownerToRemoveEmail) throws Exception {
+        if(ownerToRemoveEmail == null){
             throw new NullPointerException();
         }
-        if(!teamOwners.containsKey(ownerToRemove)){
+        if(!teamOwners.containsKey(ownerToRemoveEmail)){
             throw new Exception("TeamOwner not found");
         }
-        teamOwners.remove(ownerToRemove);
+        teamOwners.remove(ownerToRemoveEmail);
    }
 
     @Override
-    public List<Integer> getAllTeamOwnersOwnedBy(Integer teamOwner) {
-        List<Integer> teamOwnersOwnedBy = new ArrayList<>();
+    public List<String> getAllTeamOwnersOwnedBy(String teamOwnerEmail) {
+        List<String> teamOwnersOwnedBy = new ArrayList<>();
         for (TeamOwner tOwner: teamOwners.values()) {
-            if(teamOwner.equals(tOwner.getOwnedById())){
-                teamOwnersOwnedBy.add(tOwner.getId());
+            if(teamOwnerEmail.equals(tOwner.getOwnedByEmailAddress())){
+                teamOwnersOwnedBy.add(tOwner.getEmailAddress());
             }
         }
         return teamOwnersOwnedBy;

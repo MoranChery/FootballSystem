@@ -9,13 +9,13 @@ import java.util.Map;
 public class JudgeDbInMemory implements JudgeDb
 {
     /*structure like the DB of Judges*/
-    private Map<Integer, Judge> judgeMap;
+    private Map<String, Judge> judgeMap;
 
     private static JudgeDbInMemory ourInstance = new JudgeDbInMemory();
 
     public static JudgeDbInMemory getInstance() { return ourInstance; }
 
-    public JudgeDbInMemory() { judgeMap = new HashMap<Integer, Judge>(); }
+    public JudgeDbInMemory() { judgeMap = new HashMap<>(); }
 
     /**
      * Will receive from the Controller the judge's name, want to create Judge.

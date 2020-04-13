@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class CoachDbInMemory implements CoachDb {
 
 
-
+    HashMap<String,Coach> coaches;
 
     private static CoachDbInMemory ourInstance = new CoachDbInMemory();
 
@@ -16,7 +16,6 @@ public class CoachDbInMemory implements CoachDb {
         return ourInstance;
     }
 
-    HashMap<Integer,Coach> coaches;
 
     public CoachDbInMemory() {
         coaches = new HashMap<>();
@@ -32,11 +31,11 @@ public class CoachDbInMemory implements CoachDb {
 
     @Override
     public void createCoach(Coach coach) throws Exception {
-        Integer id = coach.getId();
-        if(coaches.containsKey(id)) {
+        String emailAddress = coach.getEmailAddress();
+        if(coaches.containsKey(emailAddress)) {
             throw new Exception("Coach already exists");
         }
-        coaches.put(id, coach);
+        coaches.put(emailAddress, coach);
     }
 
     @Override

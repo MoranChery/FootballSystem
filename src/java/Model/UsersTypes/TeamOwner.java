@@ -9,7 +9,7 @@ public class TeamOwner extends Subscriber {
 
     private Team team;
     private Map<Integer,TeamOwner> teamOwnersByThis;
-    private Integer ownedById;
+    private String ownedByEmailAddress;
 
     public TeamOwner(String username, String password, Integer id,String firstName, String lastName, Team team ) {
         setRegisteringDetails(username,password,id,firstName,lastName);
@@ -17,10 +17,10 @@ public class TeamOwner extends Subscriber {
         this.teamOwnersByThis = new HashMap<>();
     }
 
-    public TeamOwner(Team team, Subscriber subscriber, Integer teamOwnerId) {
-        setRegisteringDetails(subscriber.getId(),subscriber.getFirstName(),getLastName());
+    public TeamOwner(Team team, Subscriber subscriber, String teamOwnerEmail) {
+        setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),getLastName());
         this.team = team;
-        this.ownedById = teamOwnerId;
+        this.ownedByEmailAddress = teamOwnerEmail;
     }
 
     public Team getTeam() {
@@ -39,11 +39,11 @@ public class TeamOwner extends Subscriber {
         this.teamOwnersByThis = teamOwnersByThis;
     }
 
-    public Integer getOwnedById() {
-        return ownedById;
+    public String getOwnedByEmailAddress() {
+        return ownedByEmailAddress;
     }
 
-    public void setOwnedById(Integer ownedById) {
-        this.ownedById = ownedById;
+    public void setOwnedByEmailAddress(String ownedByEmailAddress) {
+        this.ownedByEmailAddress = ownedByEmailAddress;
     }
 }

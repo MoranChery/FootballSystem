@@ -46,27 +46,27 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
     }
 
     @Override
-    public void subscriptionTeamManager(Team team, Integer teamOwnerId, Subscriber subscriber) throws Exception {
-        if(team == null || teamOwnerId == null || subscriber == null){
+    public void subscriptionTeamManager(Team team, String teamOwnerEmail, Subscriber subscriber) throws Exception {
+        if(team == null || teamOwnerEmail == null || subscriber == null){
             throw new NullPointerException();
         }
         if(teamManagers.containsKey(subscriber.getId())){
             throw new Exception("Team Manager to add already exists");
         }
-        TeamManager teamManager = new TeamManager(team,subscriber,teamOwnerId);
+        TeamManager teamManager = new TeamManager(team,subscriber,teamOwnerEmail);
         Integer managerId = teamManager.getId();
         teamManagers.put(managerId,teamManager);
     }
 
     @Override
-    public void removeSubscriptionTeamManager(Integer managerToRemove) throws Exception {
-        if (managerToRemove == null) {
+    public void removeSubscriptionTeamManager(String managerToRemoveEmail) throws Exception {
+        if (managerToRemoveEmail == null) {
             throw new NullPointerException();
         }
-        if (!teamManagers.containsKey(managerToRemove)) {
+        if (!teamManagers.containsKey(managerToRemoveEmail)) {
             throw new Exception("TeamManager not found");
         }
-        teamManagers.remove(managerToRemove);
+        teamManagers.remove(managerToRemoveEmail);
     }
 
     @Override

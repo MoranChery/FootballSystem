@@ -41,7 +41,7 @@ public class TeamControllerTest {
     @Test
     public void testAddPlayerInvalidInputs() {
         try{
-            teamController.addPlayer(null,1,"firstPlayer","lastPlayer",new Date(), PlayerRole.GOALKEEPER);
+            teamController.addPlayer(null,"email@gmail.com",1,"firstPlayer","lastPlayer",new Date(), PlayerRole.GOALKEEPER);
             Assert.fail("Should throw NullPointerException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NullPointerException);
@@ -52,7 +52,7 @@ public class TeamControllerTest {
     @Test
     public void testAddPlayerTeamNotFound(){
         try{
-            teamController.addPlayer("notExists",1,"firstPlayer","lastPlayer",new Date(), PlayerRole.GOALKEEPER);
+            teamController.addPlayer("notExists","email@gmail.com",1,"firstPlayer","lastPlayer",new Date(), PlayerRole.GOALKEEPER);
             Assert.fail("Should throw NotFoundException");
         }catch (Exception e){
             Assert.assertTrue(e instanceof NotFoundException);
@@ -265,7 +265,7 @@ public class TeamControllerTest {
         Assert.assertEquals(1,teamManager.getId().intValue());
         Assert.assertEquals("firstTeamManager",teamManager.getFirstName());
         Assert.assertEquals("lastTeamManager",teamManager.getLastName());
-        Assert.assertEquals(2,teamManager.getOwnedById().intValue());
+        Assert.assertEquals(2,teamManager.getOwnedByIdEmail().intValue());
         Assert.assertEquals(team,teamManager.getTeam());
     }
 

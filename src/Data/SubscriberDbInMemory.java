@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import Model.UsersTypes.Subscriber;
 
-public class SubscriberDbInMemory implements SubscriberDb {
+public class SubscriberDbInMemory implements SubscriberDb, Db {
     /*structure like the DB of subscriber*/
     //key: username
     //value: subscriber class

@@ -1,26 +1,27 @@
 package Model.UsersTypes;
 
 import Model.Team;
+import com.sun.org.apache.xpath.internal.objects.XString;
 
 import java.util.Objects;
 
 public class TeamManager extends Subscriber {
     private Team team;
-    private Integer ownedById;
+    private String ownedByIdEmail;
 
-    public TeamManager(String username, String password,Integer id, String firstName, String lastName,Integer ownedById) {
-        setRegisteringDetails(username,password,id,firstName,lastName);
-        this.ownedById = ownedById;
+    public TeamManager(String emailAddress, String password,Integer id, String firstName, String lastName,String ownedByEmail) {
+        setRegisteringDetails(emailAddress,password,id,firstName,lastName);
+        this.ownedByIdEmail = ownedByEmail;
     }
 
-    public TeamManager(Team team,Subscriber subscriber, Integer ownedById) {
+    public TeamManager(Team team,Subscriber subscriber, String ownedById) {
         setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),subscriber.getLastName());
-        this.ownedById = ownedById;
+        this.ownedByIdEmail = ownedById;
     }
 
-    public TeamManager(String emailAddress,Integer teamManagerId, String firstName, String lastName, Integer ownedById) {
+    public TeamManager(String emailAddress,Integer teamManagerId, String firstName, String lastName, String ownedById) {
         setRegisteringDetails(emailAddress,teamManagerId,firstName,lastName);
-        this.ownedById = ownedById;
+        this.ownedByIdEmail = ownedById;
     }
 
     public Team getTeam() {
@@ -31,12 +32,12 @@ public class TeamManager extends Subscriber {
         this.team = team;
     }
 
-    public Integer getOwnedById() {
-        return ownedById;
+    public String getOwnedByIdEmail() {
+        return ownedByIdEmail;
     }
 
-    public void setOwnedById(Integer ownedById) {
-        this.ownedById = ownedById;
+    public void setOwnedByIdEmail(String  ownedByIdEmail) {
+        this.ownedByIdEmail = ownedByIdEmail;
     }
 
     @Override

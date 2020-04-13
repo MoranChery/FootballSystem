@@ -8,9 +8,6 @@ import Model.Team;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
-import com.sun.xml.internal.bind.v2.TODO;
-import org.omg.PortableInterceptor.ACTIVE;
-import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +80,7 @@ public class TeamDbInMemory implements TeamDb {
     }
 
     @Override
-    public void addTeamManager(String teamName, TeamManager teamManager, Integer ownedById) throws Exception {
+    public void addTeamManager(String teamName, TeamManager teamManager, String ownedByEmail) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
@@ -96,7 +93,7 @@ public class TeamDbInMemory implements TeamDb {
         }
         teamManagers.put(id, teamManager);
         teamManager.setTeam(team);
-        teamManager.setOwnedById(ownedById);
+        teamManager.setOwnedByIdEmail(ownedByEmail);
     }
 
     @Override
@@ -151,33 +148,33 @@ public class TeamDbInMemory implements TeamDb {
 
 
     @Override
-    public void removeTeamManager(String teamName, Integer teamManagerId) throws Exception {
+    public void removeTeamManager(String teamName, String teamManagerEmailAddress) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
         }
 
         Map<Integer, TeamManager> teamManagers = team.getTeamManagers();
-        if(!teamManagers.containsKey(teamManagerId)) {
+        if(!teamManagers.containsKey(teamManagerEmailAddress)) {
             throw new Exception("TeamManager not part of the team");
         }
-        TeamManager teamManager = teamManagers.remove(teamManagerId);
+        TeamManager teamManager = teamManagers.remove(teamManagerEmailAddress);
         //TODO check if needed
         teamManager.setTeam(null);
     }
 
     @Override
-    public void removeCoach(String teamName, Integer coachId) throws Exception {
+    public void removeCoach(String teamName, String coachEmailAddress) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
         }
 
         Map<Integer, Coach> coaches = team.getCoaches();
-        if(!coaches.containsKey(coachId)) {
+        if(!coaches.containsKey(coachEmailAddress)) {
             throw new Exception("Coach not part of the team");
         }
-        Coach coach = coaches.remove(coachId);
+        Coach coach = coaches.remove(coachEmailAddress);
         //TODO check if needed
         coach.setTeam(null);
     }

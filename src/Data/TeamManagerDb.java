@@ -10,7 +10,7 @@ public interface TeamManagerDb extends Db {
     TeamManager getTeamManager(String teamManagerEmailAddress) throws Exception;
 
 
-    void subscriptionTeamManager(Team team, Integer teamOwnerId, Subscriber subscriber) throws Exception;
+    void subscriptionTeamManager(Team team, String teamOwnerId, Subscriber subscriber) throws Exception;
 
-    void removeSubscriptionTeamManager(Integer managerToRemove) throws Exception;
+    void removeSubscriptionTeamManager(String managerToRemoveEmail) throws Exception;
 }

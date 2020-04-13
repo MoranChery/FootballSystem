@@ -45,8 +45,8 @@ public class TeamService {
         teamController.removeCourt(teamName, courtName);
     }
 
-    public void subscriptionTeamOwner(String teamName, Integer teamOwnerId, Integer ownerToAdd) throws Exception {
-        teamController.subscriptionTeamOwner(teamName,teamOwnerId,ownerToAdd);
+    public void subscriptionTeamOwner(String teamName, String teamOwnerEmail, String ownerToAddEmail) throws Exception {
+        teamController.subscriptionTeamOwner(teamName,teamOwnerEmail,ownerToAddEmail);
     }
 
     public void subscriptionTeamManager(String teamName, Integer teamOwnerId, Integer managerToAdd) throws Exception {

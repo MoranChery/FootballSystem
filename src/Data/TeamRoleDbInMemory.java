@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TeamRoleDbInMemory implements TeamRoleDb {
-    private Map<Integer, List<TeamRole>> teamRoles;
+    private Map<String, List<TeamRole>> teamRoles;
 
     public TeamRoleDbInMemory() {
         this.teamRoles = new HashMap<>();
@@ -21,34 +21,34 @@ public class TeamRoleDbInMemory implements TeamRoleDb {
     }
 
     @Override
-    public void createTeamRole(Integer id, String teamName, TeamRoleType teamRoleType){
+    public void createTeamRole(String emailAddress, String teamName, TeamRoleType teamRoleType){
         TeamRole teamRole = new TeamRole(teamName,teamRoleType);
-        if(teamRoles.containsKey(id)){
-            teamRoles.get(id).add(teamRole);
+        if(teamRoles.containsKey(emailAddress)){
+            teamRoles.get(emailAddress).add(teamRole);
         } else {
             List<TeamRole> teamRolesList = new ArrayList<>();
             teamRolesList.add(teamRole);
-            teamRoles.put(id,teamRolesList);
+            teamRoles.put(emailAddress,teamRolesList);
         }
     }
 
     @Override
-    public List<TeamRole> getTeamRoles(Integer id) throws Exception {
-        if(id == null || !teamRoles.containsKey(id)){
+    public List<TeamRole> getTeamRoles(String emailAddress) throws Exception {
+        if(emailAddress == null || !teamRoles.containsKey(emailAddress)){
             return new ArrayList<>();
         }
-        return teamRoles.get(id);
+        return teamRoles.get(emailAddress);
     }
 
     @Override
-    public void removeTeamRole(Integer idToRemove, String teamName, TeamRoleType roleType) throws Exception {
-        if(idToRemove == null || teamName == null || roleType == null) {
+    public void removeTeamRole(String emailAddressToRemove, String teamName, TeamRoleType roleType) throws Exception {
+        if(emailAddressToRemove == null || teamName == null || roleType == null) {
             throw new NullPointerException();
         }
-        if(!teamRoles.containsKey(idToRemove)){
+        if(!teamRoles.containsKey(emailAddressToRemove)){
             throw new Exception("id not found");
         }
-        List<TeamRole> teamRolesOfOwnerToRemove = teamRoles.get(idToRemove);
+        List<TeamRole> teamRolesOfOwnerToRemove = teamRoles.get(emailAddressToRemove);
         for (TeamRole tr: teamRolesOfOwnerToRemove) {
             if(roleType.equals(tr.getTeamRoleType()) && teamName.equals(tr.getTeamName())){
                 teamRolesOfOwnerToRemove.remove(tr);
