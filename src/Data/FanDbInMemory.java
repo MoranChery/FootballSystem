@@ -1,5 +1,7 @@
 package Data;
 
+import Model.Enums.AlertWay;
+import Model.Enums.GamesAlert;
 import Model.Enums.Status;
 import Model.PersonalPage;
 import Model.UsersTypes.Fan;
@@ -64,7 +66,30 @@ public class FanDbInMemory implements FanDb{
             throw new Exception("You are already out of the system");
         }
         theFan.setStatus(OFFLINE);
-        // alert
+        // alert that the fan logout succesfully
+    }
+
+    public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
+
+        if(fanMail == null){
+            throw new Exception("Fan not found");
+        }
+        if(alert == null || alert.equals(GamesAlert.ALERTS_OFF)){
+            throw new Exception("bad status");
+        }
+        if(alertWay == null){
+            throw new Exception("bad alert");
+        }
+        Fan theFan = allFans.get(fanMail);
+        if(theFan == null){
+            throw new Exception("Fan not found");
+        }
+        if(theFan.getAlertWay() != null || theFan.getGamesAlert().equals(GamesAlert.ALERTS_ON)){
+            throw new Exception("You are already registered to get alerts about games");
+        }
+        theFan.setAlertWay(alertWay);
+        theFan.setGamesAlert(alert);
+        // alert that the fan registered to get alerts about games succesfully
     }
 
 }

@@ -1,11 +1,12 @@
 package Controller;
 
 import Data.*;
+import Model.Enums.AlertWay;
+import Model.Enums.GamesAlert;
 import Model.Enums.Status;
 import Model.PersonalPage;
 import Model.UsersTypes.Fan;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class FanController {
@@ -44,9 +45,25 @@ public class FanController {
             throw new NotFoundException("Fan not found");
         }
         if(fan.getStatus().equals(Status.OFFLINE)){
-            throw new Exception("You are not connected to the system");
+            throw new Exception("You are already disconnected to the system");
         }
         fanDb.logOut(fanMail, status);
-
     }
+    public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
+        if(fanMail == null || alert == null || alertWay == null){
+            throw new NullPointerException("bad input");
+        }
+        Fan fan = fanDb.getFan(fanMail);
+        if(fan == null){
+            throw new NotFoundException("Fan not found");
+        }
+        if(fan.getAlertWay() != null){
+            throw new Exception("You are already choose the way to get alerts about games");
+        }
+        if(fan.getGamesAlert().equals(GamesAlert.ALERTS_ON)){
+            throw new Exception("You are already registered to get alerts about games");
+        }
+        fanDb.askToGetAlerts(fanMail,alert,alertWay);
+    }
+
 }
