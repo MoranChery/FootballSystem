@@ -4,6 +4,8 @@ import Model.Team;
 import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamManager;
 
+import java.util.List;
+
 public interface TeamManagerDb extends Db {
 
     void createTeamManager(TeamManager teamManager) throws Exception;
@@ -13,4 +15,6 @@ public interface TeamManagerDb extends Db {
     void subscriptionTeamManager(Team team, String teamOwnerId, Subscriber subscriber) throws Exception;
 
     void removeSubscriptionTeamManager(String managerToRemoveEmail) throws Exception;
+
+    List<String> getAllTeamManagersOwnedBy(String ownerToRemove);
 }

@@ -1,9 +1,14 @@
 package Service;
 
 import Controller.TeamController;
+import Model.Court;
 import Model.Enums.*;
+import Model.UsersTypes.Coach;
+import Model.UsersTypes.Player;
+import Model.UsersTypes.TeamManager;
 
 import java.util.Date;
+import java.util.Map;
 
 public class TeamService {
     TeamController teamController;
@@ -11,8 +16,10 @@ public class TeamService {
     public TeamService() {
         this.teamController = new TeamController();
     }
-
-    /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
+    public void createNewTeam(String teamName, String teamOwnerEmail, Map<String, Player> players, Map<String, Coach> coaches, Map<String, TeamManager> teamManagers, Court court) throws Exception {
+        teamController.createNewTeam(teamName, teamOwnerEmail, players,  coaches, teamManagers, court);
+    }
+        /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
     public void addPlayer(String teamName, String emailAddress, Integer playerId, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
         teamController.addPlayer(teamName,emailAddress,playerId, firstName, lastName, birthDate, playerRole);
     }
@@ -73,8 +80,8 @@ public class TeamService {
         teamController.changeStatus(teamName,TeamStatus.ACTIVE);
     }
 
-    public void updatePlayerDetails(String emailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
-        teamController.updatePlayerDetails(emailAddress,firstName,lastName, birthDate, playerRole);
+    public void updatePlayerDetails(String teamOwnerMail, String playerMail, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+        teamController.updatePlayerDetails(teamOwnerMail,playerMail,firstName,lastName, birthDate, playerRole);
         }
 
     }

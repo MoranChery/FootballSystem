@@ -7,10 +7,7 @@ import Model.FinancialActivity;
 import Model.Team;
 import Model.UsersTypes.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class TeamController {
     private TeamDb teamDb;
@@ -49,6 +46,25 @@ public class TeamController {
        return teamDb.getTeam(teamName);
     }
 
+
+    public void createNewTeam(String teamName, String teamOwnerEmail,Map<String,Player> players, Map<String,Coach> coaches, Map<String,TeamManager> teamManagers,Court court) throws Exception {
+        teamDb.createTeam(teamName);
+        TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
+        subscriptionTeamOwner(teamName,teamOwnerEmail,teamOwnerEmail);
+        for (Player player : players.values()) {
+            addPlayer(teamName,player.getEmailAddress(),player.getId(),player.getFirstName(),player.getLastName(),player.getBirthDate(),player.getPlayerRole());
+        }
+        for (Coach coach : coaches.values()) {
+            addCoach(teamName,coach.getEmailAddress(),coach.getId(),coach.getFirstName(),coach.getLastName(),coach.getCoachRole(),coach.getQualificationCoach());
+        }
+        for (TeamManager teamManager : teamManagers.values()) {
+            addTeamManager(teamName,teamManager.getEmailAddress(),teamManager.getId(),teamManager.getFirstName(),teamManager.getLastName(),teamManager.getOwnedByEmail());
+        }
+        addCourt(teamName,court.getCourtName(),court.getCourtCity());
+        // TODO: 14/04/2020 add new personalPage
+    }
+
+
     /**
      * add player to team
      * @param teamName
@@ -75,13 +91,23 @@ public class TeamController {
                 throw new Exception("One or more of the details incorrect");
             }
         }catch(NotFoundException e){
-            /*Player doesnt exist in the db - add to players's db*/
-            playerDb.createPlayer(currPlayer);
-            player = currPlayer;
+            try {
+                /*check if there is other subscriber already*/
+                subscriberDb.getSubscriber(emailAddress);
+                throw new Exception("The player to added already has other subscriber type");
+            } catch(NotFoundException ex) {
+                /*give random password to player when open new subscriber*/
+                currPlayer.setPassword(UUID.randomUUID().toString());
+                subscriberDb.createSubscriber(currPlayer);
+                /*Player doesnt exist in the db - add to players's db*/
+                playerDb.createPlayer(currPlayer);
+                player = currPlayer;
+                // TODO: 14/04/2020 add message to the new subscriber
+            }
         }
         /*add to DB the player to the team*/
         teamDb.addPlayer(teamName, player);
-        teamRoleDb.createTeamRole(emailAddress,teamName,TeamRoleType.PLAYER);
+        teamRoleDb.createRole(emailAddress,teamName, RoleType.PLAYER);
     }
 
     /**
@@ -123,13 +149,23 @@ public class TeamController {
                 throw new Exception("Team Manager owned by another teamOwner");
             }
         }catch (NotFoundException e){
-            /*teamManager doesnt exist in the db - add to teamManagers's db*/
-            teamManagerDb.createTeamManager(currTeamManager);
-            teamManager = currTeamManager;
+            try {
+                /*check if there is other subscriber already*/
+                subscriberDb.getSubscriber(emailAddress);
+                throw new Exception("The teamManager to added already has other subscriber type");
+            } catch(NotFoundException ex) {
+                /*give random password to player when open new subscriber*/
+                currTeamManager.setPassword(UUID.randomUUID().toString());
+                subscriberDb.createSubscriber(currTeamManager);
+                /*teamManager doesnt exist in the db - add to teamManagers's db*/
+                teamManagerDb.createTeamManager(currTeamManager);
+                teamManager = currTeamManager;
+                // TODO: 14/04/2020 add message to the new subscriber
+            }
         }
         /*add to DB the teamManager to the team*/
         teamDb.addTeamManager(teamName, teamManager,ownedByEmail);
-        teamRoleDb.createTeamRole(emailAddress,teamName,TeamRoleType.MANAGER);
+        teamRoleDb.createRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
     }
 
     private boolean equalsDetailsTeamManager(TeamManager teamManagerInDb, TeamManager teamManagerToAdd){
@@ -159,13 +195,24 @@ public class TeamController {
                 throw new Exception("One or more of the details incorrect");
             }
         }catch (NotFoundException e){
-            /*Coach doesnt exist in the db - add to coachs's db*/
-            coachDb.createCoach(currCoach);
-            coach = currCoach;
+            try {
+                /*check if there is other subscriber already*/
+                subscriberDb.getSubscriber(emailAddress);
+                throw new Exception("The teamManager to added already has other subscriber type - you can to appoint him to team manager");
+            } catch(NotFoundException ex) {
+                /*give random password to player when open new subscriber*/
+                currCoach.setPassword(UUID.randomUUID().toString());
+                /*create subscriber in db*/
+                subscriberDb.createSubscriber(currCoach);
+                /*Coach doesnt exist in the db - add to coachs's db*/
+                coachDb.createCoach(currCoach);
+                coach = currCoach;
+                // TODO: 14/04/2020 add message to the new subscriber
+            }
         }
         /* add to DB the player to the team*/
         teamDb.addCoach(teamName, coach);
-        teamRoleDb.createTeamRole(emailAddress,teamName,TeamRoleType.COACH);
+        teamRoleDb.createRole(emailAddress,teamName, RoleType.COACH);
     }
 
     private boolean equalsDetailsCoach(Coach coachInDb, Coach coachToAdd){
@@ -220,7 +267,7 @@ public class TeamController {
             throw new Exception("Player is not part with associated team");
         }
         teamDb.removePlayer(teamName, playerEmailAddress);
-        teamRoleDb.removeTeamRole(playerEmailAddress,teamName,TeamRoleType.PLAYER);
+        teamRoleDb.removeRoleFromTeam(playerEmailAddress,teamName, RoleType.PLAYER);
     }
 
     public void removeTeamManager(String teamName, String teamManagerEmailAddress) throws Exception {
@@ -238,7 +285,7 @@ public class TeamController {
             throw new Exception("TeamManager is not part of the team");
         }
         teamDb.removeTeamManager(teamName, teamManagerEmailAddress);
-        teamRoleDb.removeTeamRole(teamManagerEmailAddress,teamName,TeamRoleType.MANAGER);
+        teamRoleDb.removeRoleFromTeam(teamManagerEmailAddress,teamName, RoleType.TEAM_MANAGER);
 
     }
     public void removeCoach(String teamName, String coachEmailAddress) throws Exception {
@@ -256,7 +303,7 @@ public class TeamController {
             throw new Exception("Coach is not part with associated team");
         }
         teamDb.removeCoach(teamName, coachEmailAddress);
-        teamRoleDb.removeTeamRole(coachEmailAddress,teamName,TeamRoleType.COACH);
+        teamRoleDb.removeRoleFromTeam(coachEmailAddress,teamName, RoleType.COACH);
     }
 
     public void removeCourt(String teamName, String courtName) throws Exception {
@@ -277,58 +324,58 @@ public class TeamController {
 
     public void subscriptionTeamOwner(String teamName, String teamOwnerEmail, String ownerToAddEmail) throws Exception {
         if(teamName == null || teamOwnerEmail == null || ownerToAddEmail == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
         if(!team.equals(teamOwner.getTeam())){
-            throw new Exception("Team owner and team don't match");
+            throw new Exception("Teamowner's team does't match");
         }
         /*check if the subscriber exists*/
         Subscriber subscriber = subscriberDb.getSubscriber(ownerToAddEmail);
-        List<TeamRole> teamRolesOfOwnerToAdd = teamRoleDb.getTeamRoles(ownerToAddEmail);
-        for (TeamRole tr: teamRolesOfOwnerToAdd) {
-            if(!teamName.equals(tr.getTeamName())){
-                throw new Exception("Owner to Add already associated with other team");
+        List<Role> rolesOfOwnerToAdd = teamRoleDb.getRoles(ownerToAddEmail);
+        for (Role tr: rolesOfOwnerToAdd) {
+            if(tr.getTeamName() != null && !teamName.equals(tr.getTeamName())){
+                throw new Exception("OwnerToAdd already associated with other team");
             }
-            if(TeamRoleType.OWNER.equals(tr.getTeamRoleType())){
+            if(RoleType.TEAM_OWNER.equals(tr.getRoleType())){
                 throw new Exception("This subscriber already teamOwner");
             }
         }
         teamOwnerDb.subscriptionTeamOwner(team,teamOwnerEmail,subscriber);
-        teamRoleDb.createTeamRole(ownerToAddEmail,teamName,TeamRoleType.OWNER);
+        teamRoleDb.createRole(ownerToAddEmail,teamName, RoleType.TEAM_OWNER);
     }
 
 
     public void subscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToAddEmail) throws Exception {
         if(teamName == null || teamOwnerEmail == null || managerToAddEmail == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
         if(!team.equals(teamOwner.getTeam())){
-            throw new Exception("Team owner and team don't match");
+            throw new Exception("Teamowner's team does't match");
         }
         Subscriber subscriber = subscriberDb.getSubscriber(managerToAddEmail);
-        List<TeamRole> teamRolesOfTeamManagerToAdd = teamRoleDb.getTeamRoles(managerToAddEmail);
-        for (TeamRole tr: teamRolesOfTeamManagerToAdd) {
-            if(!teamName.equals(tr.getTeamName())){
+        List<Role> teamRolesOfManagerToAdd = teamRoleDb.getRoles(managerToAddEmail);
+        for (Role tr: teamRolesOfManagerToAdd) {
+            if(tr.getTeamName() != null && !teamName.equals(tr.getTeamName())){
                 throw new Exception("Manager to Add already associated with other team");
             }
-            TeamRoleType teamRoleType = tr.getTeamRoleType();
-            if(TeamRoleType.OWNER.equals(teamRoleType)){
+            RoleType roleType = tr.getRoleType();
+            if(RoleType.TEAM_OWNER.equals(roleType)){
                 throw new Exception("This subscriber already teamOwner");
             }
-            if(TeamRoleType.MANAGER.equals(teamRoleType)){
+            if(RoleType.TEAM_MANAGER.equals(roleType)){
                 throw new Exception("This subscriber already teamManager");
             }
         }
         teamManagerDb.subscriptionTeamManager(team,teamOwnerEmail,subscriber);
-        teamRoleDb.createTeamRole(managerToAddEmail,teamName,TeamRoleType.MANAGER);
+        teamRoleDb.createRole(managerToAddEmail,teamName, RoleType.TEAM_MANAGER);
     }
 
     public void removeSubscriptionTeamOwner(String teamName, String teamOwnerEmailAddress, String ownerToRemove) throws Exception {
@@ -353,10 +400,15 @@ public class TeamController {
         List<String> allTeamOwnersOwnedBy = teamOwnerDb.getAllTeamOwnersOwnedBy(ownerToRemove);
         for (String emailToRemove: allTeamOwnersOwnedBy) {
             teamOwnerDb.removeSubscriptionTeamOwner(emailToRemove);
-            teamRoleDb.removeTeamRole(emailToRemove,teamName,TeamRoleType.OWNER);
+            teamRoleDb.removeRoleFromTeam(emailToRemove,teamName, RoleType.TEAM_OWNER);
+        }
+        List<String> allTeamManagersOwnedBy = teamManagerDb.getAllTeamManagersOwnedBy(ownerToRemove);
+        for (String emailToRemove: allTeamManagersOwnedBy) {
+            teamManagerDb.removeSubscriptionTeamManager(emailToRemove);
+            teamRoleDb.removeRoleFromTeam(emailToRemove,teamName, RoleType.TEAM_MANAGER);
         }
         teamOwnerDb.removeSubscriptionTeamOwner(ownerToRemove);
-        teamRoleDb.removeTeamRole(ownerToRemove,teamName,TeamRoleType.OWNER);
+        teamRoleDb.removeRoleFromTeam(ownerToRemove,teamName, RoleType.TEAM_OWNER);
     }
 
     public void removeSubscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToRemoveEmail) throws Exception {
@@ -379,7 +431,7 @@ public class TeamController {
         }
 
         teamManagerDb.removeSubscriptionTeamManager(managerToRemoveEmail);
-        teamRoleDb.removeTeamRole(managerToRemoveEmail,teamName,TeamRoleType.MANAGER);
+        teamRoleDb.removeRoleFromTeam(managerToRemoveEmail,teamName, RoleType.TEAM_MANAGER);
     }
 
 
@@ -415,12 +467,19 @@ public class TeamController {
         }
     }
 
-    public void updatePlayerDetails(String emailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
-        Player playerFromDb = playerDb.getPlayer(emailAddress);
-        playerFromDb.setFirstName(firstName);
-        playerFromDb.setLastName(lastName);
-        playerFromDb.setBirthDate(birthDate);
-        playerFromDb.setPlayerRole(playerRole);
-        playerDb.updatePlayer(playerFromDb);
+    public void updatePlayerDetails(String ownerEmailAddress,String playerEmailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+        /*check if the teamOwner in Db, than check if the player want to change is in teamOwner's team*/
+        TeamOwner teamOwner = teamOwnerDb.getTeamOwner(ownerEmailAddress);
+        Map<String, Player> players = teamOwner.getTeam().getPlayers();
+        if(!players.containsKey(playerEmailAddress)) {
+            throw new Exception("Player not associated with teamOwner's team");
+        }
+            Player playerFromDb = playerDb.getPlayer(playerEmailAddress);
+            playerFromDb.setFirstName(firstName);
+            playerFromDb.setLastName(lastName);
+            playerFromDb.setBirthDate(birthDate);
+            playerFromDb.setPlayerRole(playerRole);
+            playerDb.updatePlayerDetails(playerFromDb);
     }
+
 }

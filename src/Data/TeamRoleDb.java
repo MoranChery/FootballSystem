@@ -1,12 +1,19 @@
 package Data;
 
-import Model.Enums.TeamRoleType;
+import Model.Enums.RoleType;
 
 import java.util.List;
 
 public interface TeamRoleDb extends Db {
 
-    void createTeamRole(String emailAddress, String teamName, TeamRoleType teamRoleType);
-    List<TeamRole> getTeamRoles(String emailAddress) throws Exception;
-    void removeTeamRole(String EmailAddressToRemove, String teamName, TeamRoleType roleType) throws Exception;
+    void createRole(String emailAddress, String teamName, RoleType roleType);
+
+    void createRoleInSystem(String emailAddress, RoleType roleType);
+
+    List<Role> getRoles(String emailAddress) throws Exception;
+    void removeRoleFromTeam(String EmailAddressToRemove, String teamName, RoleType roleType) throws Exception;
+
+    void removeRoleFromSystem(String emailAddressToRemove) throws Exception;
+
+    Role getRole(String emailAddress) throws Exception;
 }

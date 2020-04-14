@@ -1,14 +1,11 @@
 package Data;
 
-import Model.Enums.TeamRoleType;
+import Model.Enums.RoleType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TeamRoleDbInMemory implements TeamRoleDb {
-    private Map<String, List<TeamRole>> teamRoles;
+    private Map<String, List<Role>> teamRoles;
 
     public TeamRoleDbInMemory() {
         this.teamRoles = new HashMap<>();
@@ -20,20 +17,28 @@ public class TeamRoleDbInMemory implements TeamRoleDb {
         return ourInstance;
     }
 
+
     @Override
-    public void createTeamRole(String emailAddress, String teamName, TeamRoleType teamRoleType){
-        TeamRole teamRole = new TeamRole(teamName,teamRoleType);
+    public void createRole(String emailAddress, String teamName, RoleType roleType){
+        Role role = new Role(teamName, roleType);
         if(teamRoles.containsKey(emailAddress)){
-            teamRoles.get(emailAddress).add(teamRole);
+            List<Role> rolesList = teamRoles.get(emailAddress);
+            rolesList.removeIf(tr -> roleType.equals(tr.getRoleType()));
+            rolesList.add(role);
         } else {
-            List<TeamRole> teamRolesList = new ArrayList<>();
-            teamRolesList.add(teamRole);
-            teamRoles.put(emailAddress,teamRolesList);
+            List<Role> rolesList = new ArrayList<>();
+            rolesList.add(role);
+            teamRoles.put(emailAddress, rolesList);
         }
     }
 
     @Override
-    public List<TeamRole> getTeamRoles(String emailAddress) throws Exception {
+    public void createRoleInSystem(String emailAddress, RoleType roleType){
+        createRole(emailAddress,null, roleType);
+    }
+
+    @Override
+    public List<Role> getRoles(String emailAddress) throws Exception {
         if(emailAddress == null || !teamRoles.containsKey(emailAddress)){
             return new ArrayList<>();
         }
@@ -41,21 +46,44 @@ public class TeamRoleDbInMemory implements TeamRoleDb {
     }
 
     @Override
-    public void removeTeamRole(String emailAddressToRemove, String teamName, TeamRoleType roleType) throws Exception {
+    public void removeRoleFromTeam(String emailAddressToRemove, String teamName, RoleType roleType) throws Exception {
         if(emailAddressToRemove == null || teamName == null || roleType == null) {
             throw new NullPointerException();
         }
         if(!teamRoles.containsKey(emailAddressToRemove)){
-            throw new Exception("id not found");
+            throw new Exception("emailAddress not found");
         }
-        List<TeamRole> teamRolesOfOwnerToRemove = teamRoles.get(emailAddressToRemove);
-        for (TeamRole tr: teamRolesOfOwnerToRemove) {
-            if(roleType.equals(tr.getTeamRoleType()) && teamName.equals(tr.getTeamName())){
-                teamRolesOfOwnerToRemove.remove(tr);
+        List<Role> rolesOfOwnerToRemove = teamRoles.get(emailAddressToRemove);
+        for (Role tr: rolesOfOwnerToRemove) {
+            if(roleType.equals(tr.getRoleType()) && teamName.equals(tr.getTeamName())){
+                tr.setTeamName(null);
                 break;
             }
         }
     }
+
+    @Override
+    public void removeRoleFromSystem(String emailAddressToRemove) throws Exception {
+        if(emailAddressToRemove == null) {
+            throw new NullPointerException();
+        }
+        if(!teamRoles.containsKey(emailAddressToRemove)){
+            throw new Exception("emailAddress not found");
+        }
+        teamRoles.remove(emailAddressToRemove);
+    }
+
+    @Override
+    public Role getRole(String emailAddress) throws Exception {
+        List<Role> roles = getRoles(emailAddress);
+        if(roles.isEmpty()) {
+            return null;
+        }
+        // sort by date
+        roles.sort(Comparator.comparing(Role::getAssignedDate).reversed());
+        return roles.get(0);
+    }
+
 
     @Override
     public void deleteAll() {

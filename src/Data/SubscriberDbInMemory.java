@@ -3,12 +3,13 @@ package Data;
 import java.util.HashMap;
 import java.util.Map;
 import Model.UsersTypes.Subscriber;
+import org.omg.CORBA.NO_IMPLEMENT;
 
 public class SubscriberDbInMemory implements SubscriberDb, Db {
     /*structure like the DB of subscriber*/
     //key: username
     //value: subscriber class
-    private Map<Integer, Model.UsersTypes.Subscriber> subscribers;
+    private Map<String, Subscriber> subscribers;
 
     public SubscriberDbInMemory() {
         this.subscribers = new HashMap<>();
@@ -28,17 +29,17 @@ public class SubscriberDbInMemory implements SubscriberDb, Db {
      */
     @Override
     public void createSubscriber(Subscriber subscriber) throws Exception {
-        if(subscribers.containsKey(subscriber.getId())) {
+        if(subscribers.containsKey(subscriber.getEmailAddress())) {
             throw new Exception("subscriber already exists");
         }
-        subscribers.put(subscriber.getId(), subscriber);
+        subscribers.put(subscriber.getEmailAddress(), subscriber);
     }
 
 
     @Override
     public Subscriber getSubscriber(String emailAddress) throws Exception {
         if (!subscribers.containsKey(emailAddress)) {
-            throw new Exception("Subscriber not found");
+            throw new NotFoundException("Subscriber not found");
         }
         return subscribers.get(emailAddress);
     }

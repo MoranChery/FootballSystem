@@ -1,19 +1,25 @@
 package Data;
 
-import Model.Enums.TeamRoleType;
+import Model.Enums.RoleType;
 
 import java.util.Date;
 
-public class TeamRole {
+public class Role {
     private String teamName;
-    private TeamRoleType teamRoleType;
+    private RoleType roleType;
     private Date assignedDate;
 
-    public TeamRole(String teamName, TeamRoleType teamRoleType) {
+    public Role(String teamName, RoleType roleType) {
         this.teamName = teamName;
-        this.teamRoleType = teamRoleType;
+        this.roleType = roleType;
         this.assignedDate = new Date();
     }
+
+    public Role(RoleType roleType) {
+        this.roleType = roleType;
+        this.assignedDate = new Date();
+    }
+
 
     public String getTeamName() {
         return teamName;
@@ -23,12 +29,12 @@ public class TeamRole {
         this.teamName = teamName;
     }
 
-    public TeamRoleType getTeamRoleType() {
-        return teamRoleType;
+    public RoleType getRoleType() {
+        return roleType;
     }
 
-    public void setTeamRoleType(TeamRoleType teamRoleType) {
-        this.teamRoleType = teamRoleType;
+    public void setRoleType(RoleType roleType) {
+        this.roleType = roleType;
     }
 
     public Date getAssignedDate() {

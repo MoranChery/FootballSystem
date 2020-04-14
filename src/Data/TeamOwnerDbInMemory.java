@@ -52,10 +52,10 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
             throw new Exception("Major Team Owner not found");
         }
         TeamOwner teamOwner = new TeamOwner(team,subscriber,teamOwnerEmail);
-        Integer ownerId = teamOwner.getId();
+        String emailAddressToAdd = teamOwner.getEmailAddress();
         TeamOwner teamOwnerMajor = teamOwners.get(teamOwnerEmail);
-        teamOwnerMajor.getTeamOwnersByThis().put(ownerId,teamOwner);
-        teamOwners.put(teamOwnerEmail,teamOwner);
+        teamOwnerMajor.getTeamOwnersByThis().put(teamOwnerEmail,teamOwner);
+        teamOwners.put(emailAddressToAdd,teamOwner);
     }
 
     @Override
