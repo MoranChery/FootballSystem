@@ -4,6 +4,7 @@ import Model.Enums.AlertWay;
 import Model.Enums.GamesAlert;
 import Model.PersonalPage;
 
+
 import java.util.HashMap;
 
 public class Fan extends Subscriber {
