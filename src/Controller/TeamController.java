@@ -17,7 +17,7 @@ public class TeamController {
     private CoachDb coachDb;
     private TeamOwnerDb teamOwnerDb;
     private SubscriberDb subscriberDb;
-    private TeamRoleDb teamRoleDb;
+    private RoleDb roleDb;
     private FinancialActivityDb financialActivityDb;
 
     public TeamController() {
@@ -28,20 +28,20 @@ public class TeamController {
         courtDb =  CourtDbInMemory.getInstance();
         teamOwnerDb =  TeamOwnerDbInMemory.getInstance();
         subscriberDb =  SubscriberDbInMemory.getInstance();
-        teamRoleDb =  TeamRoleDbInMemory.getInstance();
+        roleDb =  RoleDbInMemory.getInstance();
         financialActivityDb =  FinancialActivityDbInMemory.getInstance();
     }
 
     public void createTeam(String teamName) throws Exception {
         if(teamName == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         teamDb.createTeam(teamName);
     }
 
     public Team getTeam(String teamName) throws Exception {
         if(teamName == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
        return teamDb.getTeam(teamName);
     }
@@ -107,7 +107,7 @@ public class TeamController {
         }
         /*add to DB the player to the team*/
         teamDb.addPlayer(teamName, player);
-        teamRoleDb.createRole(emailAddress,teamName, RoleType.PLAYER);
+        roleDb.createRole(emailAddress,teamName, RoleType.PLAYER);
     }
 
     /**
@@ -165,7 +165,7 @@ public class TeamController {
         }
         /*add to DB the teamManager to the team*/
         teamDb.addTeamManager(teamName, teamManager,ownedByEmail);
-        teamRoleDb.createRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
+        roleDb.createRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
     }
 
     private boolean equalsDetailsTeamManager(TeamManager teamManagerInDb, TeamManager teamManagerToAdd){
@@ -212,7 +212,7 @@ public class TeamController {
         }
         /* add to DB the player to the team*/
         teamDb.addCoach(teamName, coach);
-        teamRoleDb.createRole(emailAddress,teamName, RoleType.COACH);
+        roleDb.createRole(emailAddress,teamName, RoleType.COACH);
     }
 
     private boolean equalsDetailsCoach(Coach coachInDb, Coach coachToAdd){
@@ -267,7 +267,7 @@ public class TeamController {
             throw new Exception("Player is not part with associated team");
         }
         teamDb.removePlayer(teamName, playerEmailAddress);
-        teamRoleDb.removeRoleFromTeam(playerEmailAddress,teamName, RoleType.PLAYER);
+        roleDb.removeRoleFromTeam(playerEmailAddress,teamName, RoleType.PLAYER);
     }
 
     public void removeTeamManager(String teamName, String teamManagerEmailAddress) throws Exception {
@@ -285,7 +285,7 @@ public class TeamController {
             throw new Exception("TeamManager is not part of the team");
         }
         teamDb.removeTeamManager(teamName, teamManagerEmailAddress);
-        teamRoleDb.removeRoleFromTeam(teamManagerEmailAddress,teamName, RoleType.TEAM_MANAGER);
+        roleDb.removeRoleFromTeam(teamManagerEmailAddress,teamName, RoleType.TEAM_MANAGER);
 
     }
     public void removeCoach(String teamName, String coachEmailAddress) throws Exception {
@@ -303,7 +303,7 @@ public class TeamController {
             throw new Exception("Coach is not part with associated team");
         }
         teamDb.removeCoach(teamName, coachEmailAddress);
-        teamRoleDb.removeRoleFromTeam(coachEmailAddress,teamName, RoleType.COACH);
+        roleDb.removeRoleFromTeam(coachEmailAddress,teamName, RoleType.COACH);
     }
 
     public void removeCourt(String teamName, String courtName) throws Exception {
@@ -335,7 +335,7 @@ public class TeamController {
         }
         /*check if the subscriber exists*/
         Subscriber subscriber = subscriberDb.getSubscriber(ownerToAddEmail);
-        List<Role> rolesOfOwnerToAdd = teamRoleDb.getRoles(ownerToAddEmail);
+        List<Role> rolesOfOwnerToAdd = roleDb.getRoles(ownerToAddEmail);
         for (Role tr: rolesOfOwnerToAdd) {
             if(tr.getTeamName() != null && !teamName.equals(tr.getTeamName())){
                 throw new Exception("OwnerToAdd already associated with other team");
@@ -345,7 +345,7 @@ public class TeamController {
             }
         }
         teamOwnerDb.subscriptionTeamOwner(team,teamOwnerEmail,subscriber);
-        teamRoleDb.createRole(ownerToAddEmail,teamName, RoleType.TEAM_OWNER);
+        roleDb.createRole(ownerToAddEmail,teamName, RoleType.TEAM_OWNER);
     }
 
 
@@ -361,7 +361,7 @@ public class TeamController {
             throw new Exception("Teamowner's team does't match");
         }
         Subscriber subscriber = subscriberDb.getSubscriber(managerToAddEmail);
-        List<Role> teamRolesOfManagerToAdd = teamRoleDb.getRoles(managerToAddEmail);
+        List<Role> teamRolesOfManagerToAdd = roleDb.getRoles(managerToAddEmail);
         for (Role tr: teamRolesOfManagerToAdd) {
             if(tr.getTeamName() != null && !teamName.equals(tr.getTeamName())){
                 throw new Exception("Manager to Add already associated with other team");
@@ -375,19 +375,19 @@ public class TeamController {
             }
         }
         teamManagerDb.subscriptionTeamManager(team,teamOwnerEmail,subscriber);
-        teamRoleDb.createRole(managerToAddEmail,teamName, RoleType.TEAM_MANAGER);
+        roleDb.createRole(managerToAddEmail,teamName, RoleType.TEAM_MANAGER);
     }
 
     public void removeSubscriptionTeamOwner(String teamName, String teamOwnerEmailAddress, String ownerToRemove) throws Exception {
         if(teamName == null || teamOwnerEmailAddress == null || ownerToRemove == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmailAddress);
         if(!team.equals(teamOwner.getTeam())){
-            throw new Exception("Team owner and team don't match");
+            throw new Exception("TeamOwner's team does't match");
         }
         TeamOwner teamOwnerToRemove = teamOwnerDb.getTeamOwner(ownerToRemove);
         if(!team.equals(teamOwnerToRemove.getTeam())){
@@ -399,16 +399,17 @@ public class TeamController {
         // todo - move foreach to db
         List<String> allTeamOwnersOwnedBy = teamOwnerDb.getAllTeamOwnersOwnedBy(ownerToRemove);
         for (String emailToRemove: allTeamOwnersOwnedBy) {
-            teamOwnerDb.removeSubscriptionTeamOwner(emailToRemove);
-            teamRoleDb.removeRoleFromTeam(emailToRemove,teamName, RoleType.TEAM_OWNER);
+            removeSubscriptionTeamOwner(teamName,ownerToRemove,emailToRemove);
         }
         List<String> allTeamManagersOwnedBy = teamManagerDb.getAllTeamManagersOwnedBy(ownerToRemove);
         for (String emailToRemove: allTeamManagersOwnedBy) {
             teamManagerDb.removeSubscriptionTeamManager(emailToRemove);
-            teamRoleDb.removeRoleFromTeam(emailToRemove,teamName, RoleType.TEAM_MANAGER);
+            roleDb.removeRole(emailToRemove,RoleType.TEAM_MANAGER);
         }
         teamOwnerDb.removeSubscriptionTeamOwner(ownerToRemove);
-        teamRoleDb.removeRoleFromTeam(ownerToRemove,teamName, RoleType.TEAM_OWNER);
+//        roleDb.removeRoleFromTeam(ownerToRemove,teamName, RoleType.TEAM_OWNER);
+        roleDb.removeRole(ownerToRemove,RoleType.TEAM_OWNER);
+
     }
 
     public void removeSubscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToRemoveEmail) throws Exception {
@@ -420,7 +421,7 @@ public class TeamController {
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
         if(!team.equals(teamOwner.getTeam())){
-            throw new Exception("Team owner and team don't match");
+            throw new Exception("TeamOwner's team does't match");
         }
         TeamManager teamManagerToRemove = teamManagerDb.getTeamManager(managerToRemoveEmail);
         if(!team.equals(teamManagerToRemove.getTeam())){
@@ -431,7 +432,7 @@ public class TeamController {
         }
 
         teamManagerDb.removeSubscriptionTeamManager(managerToRemoveEmail);
-        teamRoleDb.removeRoleFromTeam(managerToRemoveEmail,teamName, RoleType.TEAM_MANAGER);
+        roleDb.removeRoleFromTeam(managerToRemoveEmail,teamName, RoleType.TEAM_MANAGER);
     }
 
 
@@ -481,5 +482,7 @@ public class TeamController {
             playerFromDb.setPlayerRole(playerRole);
             playerDb.updatePlayerDetails(playerFromDb);
     }
+
+
 
 }

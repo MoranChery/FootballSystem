@@ -4,16 +4,16 @@ import Model.Enums.RoleType;
 
 import java.util.*;
 
-public class TeamRoleDbInMemory implements TeamRoleDb {
+public class RoleDbInMemory implements RoleDb {
     private Map<String, List<Role>> teamRoles;
 
-    public TeamRoleDbInMemory() {
+    public RoleDbInMemory() {
         this.teamRoles = new HashMap<>();
     }
 
-    private static TeamRoleDbInMemory ourInstance = new TeamRoleDbInMemory();
+    private static RoleDbInMemory ourInstance = new RoleDbInMemory();
 
-    public static TeamRoleDbInMemory getInstance() {
+    public static RoleDbInMemory getInstance() {
         return ourInstance;
     }
 
@@ -71,6 +71,25 @@ public class TeamRoleDbInMemory implements TeamRoleDb {
             throw new Exception("emailAddress not found");
         }
         teamRoles.remove(emailAddressToRemove);
+    }
+
+
+
+    @Override
+    public void removeRole(String emailAddressToRemove, RoleType roleType) throws Exception {
+        if(emailAddressToRemove == null || roleType == null) {
+            throw new NullPointerException();
+        }
+        if(!teamRoles.containsKey(emailAddressToRemove)){
+            throw new Exception("emailAddress not found");
+        }
+        List<Role> rolesOfOwnerToRemove = teamRoles.get(emailAddressToRemove);
+        for (Role tr: rolesOfOwnerToRemove) {
+            if(roleType.equals(tr.getRoleType())){
+                rolesOfOwnerToRemove.remove(tr);
+                break;
+            }
+        }
     }
 
     @Override

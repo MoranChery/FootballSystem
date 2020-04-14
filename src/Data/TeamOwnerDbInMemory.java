@@ -54,7 +54,7 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         TeamOwner teamOwner = new TeamOwner(team,subscriber,teamOwnerEmail);
         String emailAddressToAdd = teamOwner.getEmailAddress();
         TeamOwner teamOwnerMajor = teamOwners.get(teamOwnerEmail);
-        teamOwnerMajor.getTeamOwnersByThis().put(teamOwnerEmail,teamOwner);
+        teamOwnerMajor.getTeamOwnersByThis().put(teamOwner.getEmailAddress(),teamOwner);
         teamOwners.put(emailAddressToAdd,teamOwner);
     }
 
@@ -66,8 +66,13 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         if(!teamOwners.containsKey(ownerToRemoveEmail)){
             throw new Exception("TeamOwner not found");
         }
-        teamOwners.remove(ownerToRemoveEmail);
-   }
+
+        TeamOwner removeTeamOwner = teamOwners.remove(ownerToRemoveEmail);
+        String ownedByEmailAddress = removeTeamOwner.getOwnedByEmailAddress();
+        TeamOwner teamOwner = getTeamOwner(ownedByEmailAddress);
+        Map<String, TeamOwner> teamOwnersByThis = teamOwner.getTeamOwnersByThis();
+        teamOwnersByThis.remove(ownerToRemoveEmail);
+    }
 
     @Override
     public List<String> getAllTeamOwnersOwnedBy(String teamOwnerEmail) {
