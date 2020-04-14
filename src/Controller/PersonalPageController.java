@@ -37,4 +37,10 @@ public class PersonalPageController {
         }
         pageDb.addPageToFanList(pageID,fanToAdd);
     }
+    public void createPage(String pageID) throws Exception {
+        if(pageID == null){
+            throw new NullPointerException("Page bad input");
+        }
+        pageDb.createPage(pageID);
+    }
 }

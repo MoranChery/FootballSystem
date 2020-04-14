@@ -19,12 +19,22 @@ public class FanController {
         personalPageDb = PersonalPageDbInMemory.getInstance();
     }
 
-    public void addPageToFanList(String pageId, String pageName, String fanMail) throws Exception {
-        if(pageId == null || pageName == null || fanMail == null){
+    public void createFan(Fan theFan) throws Exception{
+        if(theFan == null){
+            throw new NullPointerException("Can't create this fan");
+        }
+        fanDb.createFan(theFan);
+    }
+
+
+
+
+    public void addPageToFanList(String pageId, String fanMail) throws Exception {
+        if(pageId == null || fanMail == null){
             throw new NullPointerException("bad input");
         }
         Fan fan = fanDb.getFan(fanMail);
-        PersonalPage pageToAdd = new PersonalPage(pageId,pageName);
+        PersonalPage pageToAdd = new PersonalPage(pageId);
         Map<String, PersonalPage> fansPages = fan.getMyPages();
         PersonalPage testPage = personalPageDb.getPage(pageId);
         if(!testPage.equals(pageToAdd)){

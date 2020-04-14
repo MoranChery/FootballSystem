@@ -51,6 +51,18 @@ public class FanDbInMemory implements FanDb{
     }
 
     @Override
+    public void createFan(Fan theFan) throws Exception {
+        if(theFan == null){
+            throw new Exception("Something went wrong with creating this fan");
+        }
+        String fanMail = theFan.getEmailAddress();
+        if(allFans.containsKey(fanMail)){
+            throw new Exception("Fan already exists");
+        }
+        allFans.put(fanMail, theFan);
+    }
+
+    @Override
     public void logOut(String fanMail, Status status) throws Exception{
         if(fanMail == null){
             throw new Exception("Fan not found");
