@@ -40,6 +40,15 @@ public class CoachDbInMemory implements CoachDb {
     }
 
     @Override
+    public boolean removeCoach(Coach coachToRemove) throws Exception {
+        if(!coaches.containsKey(coachToRemove.getUsername())){
+           return false;
+        }
+        coaches.remove(coachToRemove);
+        return true;
+    }
+
+    @Override
     public void deleteAll() {
         coaches.clear();
     }

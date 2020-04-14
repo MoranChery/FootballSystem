@@ -49,6 +49,15 @@ public class PlayerDbInMemory implements PlayerDb {
     }
 
     @Override
+    public boolean removePlayer(Player player) {
+        if (!players.containsKey(player.getUsername())) {
+            return false;
+        }
+        players.remove(player.getId());
+        return true;
+    }
+
+    @Override
     public void deleteAll() {
         players.clear();
     }
