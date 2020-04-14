@@ -48,6 +48,15 @@ public class PlayerDbInMemory implements PlayerDb {
         return players.get(playerEmailAddress);
     }
 
+    public void updatePlayer(Player player) throws NotFoundException {
+        String emailAddress = player.getEmailAddress();
+        if(!players.containsKey(emailAddress)){
+            throw new NotFoundException("Player not found");
+        }
+        Player playerFromDb = players.get(emailAddress);
+        playerFromDb = player;
+    }
+
     @Override
     public void deleteAll() {
         players.clear();

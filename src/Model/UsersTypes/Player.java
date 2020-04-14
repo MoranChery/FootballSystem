@@ -11,8 +11,8 @@ public class Player extends Subscriber {
     private Date birthDate;
     private PlayerRole playerRole;
 
-    public Player(String username, String password,Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) {
-        setRegisteringDetails(username,password,id,firstName,lastName);
+    public Player(String emailAddress, String password,Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) {
+        setRegisteringDetails(emailAddress,password,id,firstName,lastName);
         this.birthDate = birthDate;
         this.playerRole = playerRole;
     }

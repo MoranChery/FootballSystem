@@ -10,7 +10,7 @@ public class PersonalPageService {
         pageController = new PersonalPageController();
     }
 
-    public void addPageToFanList(Integer pageID, Integer fanId, String firstName, String lastName, String fanMail, String fanPassword) throws Exception {
+    public void addPageToFanList(String pageID, Integer fanId, String firstName, String lastName, String fanMail, String fanPassword) throws Exception {
         pageController.addPageToFanList(pageID,fanId,firstName,lastName,fanMail,fanPassword);
     }
 }
