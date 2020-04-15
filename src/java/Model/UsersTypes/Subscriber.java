@@ -18,8 +18,6 @@ public abstract class Subscriber extends Model.UsersTypes.User {
         setUsername(username);
     }
 
-    public void removeMe(){}
-
     public void setId(Integer id) {
         this.id = id;
     }

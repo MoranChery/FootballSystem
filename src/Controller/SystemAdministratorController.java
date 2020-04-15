@@ -44,7 +44,6 @@ public class SystemAdministratorController {
     public void removeSubscriber(String email) {
         try {
             Subscriber subscriberToRemove = subscriberDb.getSubscriber(email);
-            subscriberToRemove.removeMe();
             subscriberDb.removeSubscriberFromDB(email);
             if (subscriberToRemove instanceof Coach) {
                 coachDb.removeCoach((Coach) subscriberToRemove);
