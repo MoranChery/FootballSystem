@@ -47,17 +47,20 @@ public class TeamController {
     }
 
 
-    public void createNewTeam(String teamName, String teamOwnerEmail,Map<String,Player> players, Map<String,Coach> coaches, Map<String,TeamManager> teamManagers,Court court) throws Exception {
-        teamDb.createTeam(teamName);
+    public void createNewTeam(String teamName, String teamOwnerEmail,List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers,Court court) throws Exception {
+       if(teamName == null || teamOwnerEmail == null || players == null || coaches == null || teamManagers == null || court == null){
+           throw new NullPointerException("bad input");
+       }
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
-        subscriptionTeamOwner(teamName,teamOwnerEmail,teamOwnerEmail);
-        for (Player player : players.values()) {
+        teamDb.createTeam(teamName);
+        teamOwnerDb.updateTeamOwnerTeam(teamDb.getTeam(teamName),teamOwnerEmail);
+        for (Player player : players) {
             addPlayer(teamName,player.getEmailAddress(),player.getId(),player.getFirstName(),player.getLastName(),player.getBirthDate(),player.getPlayerRole());
         }
-        for (Coach coach : coaches.values()) {
+        for (Coach coach : coaches) {
             addCoach(teamName,coach.getEmailAddress(),coach.getId(),coach.getFirstName(),coach.getLastName(),coach.getCoachRole(),coach.getQualificationCoach());
         }
-        for (TeamManager teamManager : teamManagers.values()) {
+        for (TeamManager teamManager : teamManagers) {
             addTeamManager(teamName,teamManager.getEmailAddress(),teamManager.getId(),teamManager.getFirstName(),teamManager.getLastName(),teamManager.getOwnedByEmail());
         }
         addCourt(teamName,court.getCourtName(),court.getCourtCity());

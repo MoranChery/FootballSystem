@@ -1826,6 +1826,178 @@ public class TeamControllerTest {
         Assert.assertEquals("teamOwner@gmail.com", teamManager.getOwnedByEmail());
         Assert.assertEquals(teamName, teamManager.getTeam().getTeamName());
     }
+/////////////////////// createNewTeam ///////////////
+@Test
+public void testsCreateNewTeamInvalidInputs() {
+    try {
+        teamController.createNewTeam("Team", null, new ArrayList<Player>(), new ArrayList<Coach>(), new ArrayList< TeamManager>(), new Court("courtName", "courtCity"));
+        Assert.fail("Should throw NullPointerException");
+    } catch (Exception e) {
+        Assert.assertTrue(e instanceof NullPointerException);
+        Assert.assertEquals("bad input", e.getMessage());
+    }
+}
+
+    @Test
+    public void testsCreateNewTeamNotExistsTeamOwnerInDb() {
+        try {
+            teamController.createNewTeam("Team", "owner@gmail.com", new ArrayList<Player>(), new ArrayList<Coach>(), new ArrayList< TeamManager>(), new Court("courtName", "courtCity"));
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("TeamOwner not found", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testsCreateNewTeamTeamAlreadyExists() {
+        try {
+            teamController.createTeam("Team");
+            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName"));
+            teamController.createNewTeam("Team", "owner@gmail.com", new ArrayList<Player>(), new ArrayList<Coach>(),new ArrayList<TeamManager>(),new Court("courtName","courtCity"));
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertEquals("Team already exist in the system", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testsCreateNewTeamTeamOwnerHasTeam() throws Exception {
+        try{
+            String teamName = "Team";
+            teamController.createTeam(teamName);
+            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+            teamController.createNewTeam("newTeam", "owner@gmail.com", new ArrayList<Player>(), new ArrayList<Coach>(),new ArrayList<TeamManager>(),new Court("courtName","courtCity"));
+        Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+        Assert.assertEquals("This teamOwner has already team", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testsCreateNewTeamTeamOwnerAssociatedWithTheTeam() throws Exception {
+        String teamName = "Team";
+        String ownerMail = "owner@gmail.com";
+        teamOwnerController.createTeamOwner(new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName"));
+        teamController.createNewTeam(teamName, ownerMail, new ArrayList<Player>(), new ArrayList<Coach>(),new ArrayList<TeamManager>(),new Court("courtName","courtCity"));
+        Assert.assertEquals(teamName,TeamOwnerDbInMemory.getInstance().getTeamOwner(ownerMail).getTeam().getTeamName());
+        Assert.assertTrue(TeamDbInMemory.getInstance().getTeam(teamName).getTeamOwners().containsKey(ownerMail));
+    }
+
+    @Test
+    public void testsCreateNewTeamTeamOwnerAddPlayers() throws Exception {
+        String teamName = "Team";
+        String ownerMail = "owner@gmail.com";
+        teamOwnerController.createTeamOwner(new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName"));
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(new Player("email1@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
+        players.add(new Player("email2@gmail.com", 2, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
+        teamController.createNewTeam(teamName, ownerMail, players, new ArrayList<Coach>(),new ArrayList<TeamManager>(),new Court("courtName","courtCity"));
+        TeamOwner teamOwner = TeamOwnerDbInMemory.getInstance().getTeamOwner(ownerMail);
+        Assert.assertEquals(teamName, teamOwner.getTeam().getTeamName());
+        Team team = TeamDbInMemory.getInstance().getTeam(teamName);
+        Assert.assertTrue(team.getTeamOwners().containsKey(ownerMail));
+        Assert.assertTrue(team.getPlayers().containsKey("email1@gmail.com"));
+        Assert.assertTrue(team.getPlayers().containsKey("email2@gmail.com"));
+    }
+
+    @Test
+    public void testsCreateNewTeamTeamOwnerAddCoaches() throws Exception {
+        String teamName = "Team";
+        String ownerMail = "owner@gmail.com";
+        teamOwnerController.createTeamOwner(new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName"));
+        ArrayList<Coach> coaches = new ArrayList<>();
+        coaches.add(new Coach("email1@gmail.com", 1, "first", "last",CoachRole.MAJOR,QualificationCoach.UEFA_A));
+        coaches.add(new Coach("email2@gmail.com", 2, "first", "last", CoachRole.MAJOR,QualificationCoach.UEFA_A));
+        teamController.createNewTeam(teamName, ownerMail, new ArrayList<Player>(), coaches,new ArrayList<TeamManager>(),new Court("courtName","courtCity"));
+        TeamOwner teamOwner = TeamOwnerDbInMemory.getInstance().getTeamOwner(ownerMail);
+        Assert.assertEquals(teamName, teamOwner.getTeam().getTeamName());
+        Team team = TeamDbInMemory.getInstance().getTeam(teamName);
+        Assert.assertTrue(team.getTeamOwners().containsKey(ownerMail));
+        Assert.assertTrue(team.getCoaches().containsKey("email1@gmail.com"));
+        Assert.assertTrue(team.getCoaches().containsKey("email2@gmail.com"));
+    }
+
+    @Test
+    public void testsCreateNewTeamTeamOwnerAddTeamManagers() throws Exception {
+        String teamName = "Team";
+        String ownerMail = "owner@gmail.com";
+        teamOwnerController.createTeamOwner(new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName"));
+        ArrayList<TeamManager> teamManagers = new ArrayList<>();
+        teamManagers.add(new TeamManager("email1@gmail.com", 1, "first", "last","owner@gmail.com"));
+        teamManagers.add(new TeamManager("email2@gmail.com", 2, "first", "last","owner@gmail.com"));
+        teamController.createNewTeam(teamName, ownerMail,new ArrayList<Player>() , new ArrayList<Coach>(),teamManagers,new Court("courtName","courtCity"));
+        TeamOwner teamOwner = TeamOwnerDbInMemory.getInstance().getTeamOwner(ownerMail);
+        Assert.assertEquals(teamName, teamOwner.getTeam().getTeamName());
+        Team team = TeamDbInMemory.getInstance().getTeam(teamName);
+        Assert.assertTrue(team.getTeamOwners().containsKey(ownerMail));
+        Assert.assertTrue(team.getTeamManagers().containsKey("email1@gmail.com"));
+        Assert.assertTrue(team.getTeamManagers().containsKey("email2@gmail.com"));
+        Assert.assertEquals(ownerMail,TeamManagerDbInMemory.getInstance().getTeamManager("email1@gmail.com").getOwnedByEmail());
+        Assert.assertEquals(ownerMail,TeamManagerDbInMemory.getInstance().getTeamManager("email2@gmail.com").getOwnedByEmail());
+    }
+
+    @Test
+    public void testsCreateNewTeamTeamOwnerAddCourt() throws Exception {
+        String teamName = "Team";
+        String ownerMail = "owner@gmail.com";
+        Court court = new Court("courtName", "courtCity");
+        CourtDbInMemory.getInstance().createCourt(court);
+        teamOwnerController.createTeamOwner(new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName"));
+        teamController.createNewTeam(teamName, ownerMail,new ArrayList<Player>() , new ArrayList<Coach>(), new ArrayList<TeamManager>(),court);
+        TeamOwner teamOwner = TeamOwnerDbInMemory.getInstance().getTeamOwner(ownerMail);
+        Assert.assertEquals(teamName, teamOwner.getTeam().getTeamName());
+        Team team = court.getTeam(teamName);
+        Assert.assertEquals("courtName",team.getCourt().getCourtName());
+        Assert.assertEquals("courtCity",team.getCourt().getCourtCity());
+    }
+
+    @Test
+    public void testsCreateNewTeamTeamOwnerAddAllAssets() throws Exception {
+        String teamName = "Team";
+        String ownerMail = "owner@gmail.com";
+        Court court = new Court("courtName", "courtCity");
+        CourtDbInMemory.getInstance().createCourt(court);
+        teamOwnerController.createTeamOwner(new TeamOwner(ownerMail, "1234", 1, "firstTeamOwnerName", "lastTeamOwnerName"));
+        ArrayList<TeamManager> teamManagers = new ArrayList<>();
+        teamManagers.add(new TeamManager("email1@gmail.com", 2, "first", "last","owner@gmail.com"));
+        teamManagers.add(new TeamManager("email2@gmail.com", 3, "first", "last","owner@gmail.com"));
+        ArrayList<Coach> coaches = new ArrayList<>();
+        coaches.add(new Coach("email3@gmail.com", 4, "first", "last",CoachRole.MAJOR,QualificationCoach.UEFA_A));
+        coaches.add(new Coach("email4@gmail.com", 5, "first", "last", CoachRole.MAJOR,QualificationCoach.UEFA_A));
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(new Player("email5@gmail.com", 6, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
+        players.add(new Player("email6@gmail.com", 7, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
+
+
+        teamController.createNewTeam(teamName, ownerMail,players ,coaches, teamManagers,court);
+        TeamOwner teamOwner = TeamOwnerDbInMemory.getInstance().getTeamOwner(ownerMail);
+
+        Assert.assertEquals(teamName, teamOwner.getTeam().getTeamName());
+        Team team = TeamDbInMemory.getInstance().getTeam(teamName);
+        Assert.assertTrue(team.getTeamOwners().containsKey(ownerMail));
+        Assert.assertTrue(team.getPlayers().containsKey("email5@gmail.com"));
+        Assert.assertTrue(team.getPlayers().containsKey("email6@gmail.com"));
+        Assert.assertEquals(teamName, teamOwner.getTeam().getTeamName());
+        team = TeamDbInMemory.getInstance().getTeam(teamName);
+        Assert.assertTrue(team.getTeamOwners().containsKey(ownerMail));
+        Assert.assertTrue(team.getCoaches().containsKey("email3@gmail.com"));
+        Assert.assertTrue(team.getCoaches().containsKey("email4@gmail.com"));
+        Assert.assertEquals(teamName, teamOwner.getTeam().getTeamName());
+        team = TeamDbInMemory.getInstance().getTeam(teamName);
+        Assert.assertTrue(team.getTeamOwners().containsKey(ownerMail));
+        Assert.assertTrue(team.getTeamManagers().containsKey("email1@gmail.com"));
+        Assert.assertTrue(team.getTeamManagers().containsKey("email2@gmail.com"));
+        Assert.assertEquals(ownerMail,TeamManagerDbInMemory.getInstance().getTeamManager("email1@gmail.com").getOwnedByEmail());
+        Assert.assertEquals(ownerMail,TeamManagerDbInMemory.getInstance().getTeamManager("email2@gmail.com").getOwnedByEmail());
+
+        Assert.assertEquals(teamName, teamOwner.getTeam().getTeamName());
+        team = court.getTeam(teamName);
+        Assert.assertEquals("courtName",team.getCourt().getCourtName());
+        Assert.assertEquals("courtCity",team.getCourt().getCourtCity());
+    }
+
+
 
 }
 
