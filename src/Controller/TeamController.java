@@ -19,6 +19,7 @@ public class TeamController {
     private SubscriberDb subscriberDb;
     private RoleDb roleDb;
     private FinancialActivityDb financialActivityDb;
+    private PersonalPageDb personalPageDb;
 
     public TeamController() {
         teamDb =  TeamDbInMemory.getInstance();
@@ -30,6 +31,7 @@ public class TeamController {
         subscriberDb =  SubscriberDbInMemory.getInstance();
         roleDb =  RoleDbInMemory.getInstance();
         financialActivityDb =  FinancialActivityDbInMemory.getInstance();
+        personalPageDb = PersonalPageDbInMemory.getInstance();
     }
 
     public void createTeam(String teamName) throws Exception {
@@ -64,7 +66,7 @@ public class TeamController {
             addTeamManager(teamName,teamManager.getEmailAddress(),teamManager.getId(),teamManager.getFirstName(),teamManager.getLastName(),teamManager.getOwnedByEmail());
         }
         addCourt(teamName,court.getCourtName(),court.getCourtCity());
-        // TODO: 14/04/2020 add new personalPage
+        personalPageDb.createPage(teamName);
     }
 
 

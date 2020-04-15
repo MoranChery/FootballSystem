@@ -20,6 +20,7 @@ public class Team {
    private List<Game> games;
    private Double budget;
    private TeamStatus teamStatus;
+   private PersonalPage personalPage;
 
     public Team() {
         teamOwners = new HashMap<>();

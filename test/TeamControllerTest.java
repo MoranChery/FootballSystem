@@ -754,7 +754,6 @@ public class TeamControllerTest {
         Assert.assertFalse(team.getTeamManagers().containsKey("email@gmail.com"));
     }
 
-
     ////////////////////////////////// removeCoach /////////////////////////////////////////
     @Test
     public void testRemoveCoachInvalidInputs() {
