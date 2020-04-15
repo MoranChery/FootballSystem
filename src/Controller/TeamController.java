@@ -273,7 +273,7 @@ public class TeamController {
     public void removeTeamManager(String teamName, String teamManagerEmailAddress) throws Exception {
         /*check if one of the inputs null*/
         if(teamName == null || teamManagerEmailAddress == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
@@ -364,7 +364,7 @@ public class TeamController {
         List<Role> teamRolesOfManagerToAdd = roleDb.getRoles(managerToAddEmail);
         for (Role tr: teamRolesOfManagerToAdd) {
             if(tr.getTeamName() != null && !teamName.equals(tr.getTeamName())){
-                throw new Exception("Manager to Add already associated with other team");
+                throw new Exception("ManagerToAdd already associated with other team");
             }
             RoleType roleType = tr.getRoleType();
             if(RoleType.TEAM_OWNER.equals(roleType)){
@@ -414,14 +414,14 @@ public class TeamController {
 
     public void removeSubscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToRemoveEmail) throws Exception {
         if(teamName == null || teamOwnerEmail == null || managerToRemoveEmail == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
         if(!team.equals(teamOwner.getTeam())){
-            throw new Exception("TeamOwner's team does't match");
+            throw new Exception("TeamOwner's team doesn't match");
         }
         TeamManager teamManagerToRemove = teamManagerDb.getTeamManager(managerToRemoveEmail);
         if(!team.equals(teamManagerToRemove.getTeam())){
@@ -432,7 +432,7 @@ public class TeamController {
         }
 
         teamManagerDb.removeSubscriptionTeamManager(managerToRemoveEmail);
-        roleDb.removeRoleFromTeam(managerToRemoveEmail,teamName, RoleType.TEAM_MANAGER);
+        roleDb.removeRole(managerToRemoveEmail, RoleType.TEAM_MANAGER);
     }
 
 

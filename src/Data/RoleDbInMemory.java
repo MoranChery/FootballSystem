@@ -83,10 +83,10 @@ public class RoleDbInMemory implements RoleDb {
         if(!teamRoles.containsKey(emailAddressToRemove)){
             throw new Exception("emailAddress not found");
         }
-        List<Role> rolesOfOwnerToRemove = teamRoles.get(emailAddressToRemove);
-        for (Role tr: rolesOfOwnerToRemove) {
+        List<Role> rolesListOfUserToRemove = teamRoles.get(emailAddressToRemove);
+        for (Role tr: rolesListOfUserToRemove) {
             if(roleType.equals(tr.getRoleType())){
-                rolesOfOwnerToRemove.remove(tr);
+                rolesListOfUserToRemove.remove(tr);
                 break;
             }
         }
