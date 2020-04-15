@@ -11,7 +11,7 @@ public class PersonalPage {
     private System_Controller myController;
     private String pageID;
 
-    public PersonalPage(String ownerID) {
+    public PersonalPage(String ownerID) throws Exception {
         myController = System_Controller.getInstance();
         fansFollowingThisPage = new HashMap<>();
         pageID = ownerID;

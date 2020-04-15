@@ -10,13 +10,13 @@ import java.util.Map;
 public class JudgeDbInMemory implements JudgeDb
 {
     /*structure like the DB of Judges*/
-    private Map<String, Judge> judgeMap;
+    private Map<String, Judge> allJudgesMap;
 
     private static JudgeDbInMemory ourInstance = new JudgeDbInMemory();
 
     public static JudgeDbInMemory getInstance() { return ourInstance; }
 
-    public JudgeDbInMemory() { judgeMap = new HashMap<>(); }
+    public JudgeDbInMemory() { allJudgesMap = new HashMap<>(); }
 
     /**
      * Will receive from the Controller the Judge, add Judge to Data.
@@ -28,11 +28,11 @@ public class JudgeDbInMemory implements JudgeDb
      */
     public void createJudge(Judge judge) throws Exception
     {
-        if(judgeMap.containsKey(judge.getEmailAddress()))
+        if(allJudgesMap.containsKey(judge.getEmailAddress()))
         {
             throw new Exception("Judge already exist in the system");
         }
-        judgeMap.put(judge.getEmailAddress(), judge);
+        allJudgesMap.put(judge.getEmailAddress(), judge);
     }
 
     /**
@@ -46,11 +46,11 @@ public class JudgeDbInMemory implements JudgeDb
      */
     public Judge getJudge(String judgeEmailAddress) throws Exception
     {
-        if (!judgeMap.containsKey(judgeEmailAddress))
+        if (!allJudgesMap.containsKey(judgeEmailAddress))
         {
             throw new Exception("Judge not found");
         }
-        return judgeMap.get(judgeEmailAddress);
+        return allJudgesMap.get(judgeEmailAddress);
     }
 
     /**
@@ -63,7 +63,7 @@ public class JudgeDbInMemory implements JudgeDb
      */
     public void removeJudge(String judgeEmailAddress) throws Exception
     {
-        if(!judgeMap.containsKey(judgeEmailAddress))
+        if(!allJudgesMap.containsKey(judgeEmailAddress))
         {
             throw new Exception("Judge not found");
         }
@@ -139,10 +139,10 @@ public class JudgeDbInMemory implements JudgeDb
      */
     public void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception
     {
-        if (!judgeMap.containsKey(judgeSeasonLeague.getJudgeEmailAddress()))
+        if (!allJudgesMap.containsKey(judgeSeasonLeague.getJudgeEmailAddress()))
         {
             throw new Exception("Judge not found");
         }
-        judgeMap.get(judgeSeasonLeague.getJudgeEmailAddress()).getSeasonLeagueId_JudgeSeasonLeagueId().put(judgeSeasonLeague.getSeasonLeagueId(), judgeSeasonLeague.getJudgeSeasonLeagueId());
+        allJudgesMap.get(judgeSeasonLeague.getJudgeEmailAddress()).getSeasonLeagueId_JudgeSeasonLeagueId().put(judgeSeasonLeague.getSeasonLeagueId(), judgeSeasonLeague.getJudgeSeasonLeagueId());
     }
 }

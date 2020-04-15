@@ -3,7 +3,6 @@ package Data;
 import Model.Enums.QualificationJudge;
 import Model.JudgeSeasonLeague;
 import Model.UsersTypes.Judge;
-import jdk.nashorn.internal.runtime.ECMAException;
 
 public interface JudgeDb
 {
