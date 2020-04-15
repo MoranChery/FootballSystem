@@ -1,7 +1,9 @@
 package Data;
 
 import Model.Enums.QualificationJudge;
+import Model.JudgeSeasonLeague;
 import Model.UsersTypes.Judge;
+import jdk.nashorn.internal.runtime.ECMAException;
 
 public interface JudgeDb
 {
@@ -26,13 +28,12 @@ public interface JudgeDb
      * @throws Exception-if details are incorrect.
      */
     void removeJudge(String judgeEmailAddress) throws Exception;
-//
-//    /**
-//     * Will receive from the Controller the seasonLeague's id and the judge's id,
-//     * want to inlay Judge to SeasonLeague.
-//     * @param seasonLeagueId-id of the SeasonLeague.
-//     * @param judgeEmailAddress-emailAddress of the Judge.
-//     * @throws Exception-if details are incorrect.
-//     */
-//    void inlayJudgeToSeasonLeague(Integer seasonLeagueId, String judgeEmailAddress) throws Exception;
+
+    /**
+     * Will receive from the Controller the JudgeSeasonLeague,
+     * add to seasonLeagueId_JudgeSeasonLeagueId Map the seasonLeagueId and the judgeSeasonLeagueId of the specific Judge.
+     * @param judgeSeasonLeague-the new JudgeSeasonLeague.
+     * @throws Exception-if details are incorrect.
+     */
+    void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception;
 }

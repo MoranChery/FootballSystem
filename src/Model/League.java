@@ -1,7 +1,7 @@
 package Model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class League
 {
@@ -9,12 +9,12 @@ public class League
 
     private Integer leagueId;
     private String leagueName;
-    private Set<Integer> seasonLeagueIdList;
+    private Map<Integer, Integer> seasonId_SeasonLeagueId;
 
     public League(String leagueName)
     {
         this.leagueName = leagueName;
-        this.seasonLeagueIdList = new HashSet<>();
+        this.seasonId_SeasonLeagueId = new HashMap<>();
         this.leagueId = leagueIdCounter;
 
         leagueIdCounter++;
@@ -27,14 +27,6 @@ public class League
 
     public String getLeagueName() { return leagueName; }
 
-    public Set<Integer> getSeasonLeagueIdList() { return seasonLeagueIdList; }
-    //endregion
-
-    //region Setters
-//    public void setLeagueId(Integer leagueId) { this.leagueId = leagueId; }
-
-//    public void setLeagueName(String leagueName) { this.leagueName = leagueName; }
-
-//    public void setSeasonLeagueIdList(Set<Integer> seasonLeagueIdList) { this.seasonLeagueIdList = seasonLeagueIdList; }
+    public Map<Integer, Integer> getSeasonId_SeasonLeagueId() { return seasonId_SeasonLeagueId; }
     //endregion
 }

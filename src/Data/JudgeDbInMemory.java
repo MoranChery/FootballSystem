@@ -1,6 +1,7 @@
 package Data;
 
 import Model.Enums.QualificationJudge;
+import Model.JudgeSeasonLeague;
 import Model.UsersTypes.Judge;
 
 import java.util.HashMap;
@@ -69,20 +70,18 @@ public class JudgeDbInMemory implements JudgeDb
         judgeMap.remove(judgeEmailAddress);
     }
 
-//    /**
-//     * Will receive from the Controller the seasonLeague's id and the judge's id,
-//     * want to inlay Judge to SeasonLeague.
-//     * @param seasonLeagueId-id of the SeasonLeague.
-//     * @param judgeId-id of the Judge.
-//     * @throws Exception-if details are incorrect.
-//     */
-//    public void inlayJudgeToSeasonLeague(Integer seasonLeagueId, String judgeEmailAddress) throws Exception
-//    {
-//        if(!judgeMap.containsKey(judgeId))
-//        {
-//            throw new Exception("Judge not found");
-//        }
-//        Judge judge = judgeMap.get(judgeId);
-//        judge.getInlaySeasonLeagueIdList().add(seasonLeagueId);
-//    }
+    /**
+     * Will receive from the Controller the JudgeSeasonLeague,
+     * add to seasonLeagueId_JudgeSeasonLeagueId Map the seasonLeagueId and the judgeSeasonLeagueId of the specific Judge.
+     * @param judgeSeasonLeague-the new JudgeSeasonLeague.
+     * @throws Exception-if details are incorrect.
+     */
+    public void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception
+    {
+        if (!judgeMap.containsKey(judgeSeasonLeague.getJudgeEmailAddress()))
+        {
+            throw new Exception("Judge not found");
+        }
+        judgeMap.get(judgeSeasonLeague.getJudgeEmailAddress()).getSeasonLeagueId_JudgeSeasonLeagueId().put(judgeSeasonLeague.getSeasonLeagueId(), judgeSeasonLeague.getJudgeSeasonLeagueId());
+    }
 }

@@ -1,19 +1,16 @@
 package Data;
 
+import Model.JudgeSeasonLeague;
 import Model.SeasonLeague;
 
 public interface SeasonLeagueDb
 {
     /**
-     * Will receive from the Controller the league's id and the season's id, want to create SeasonLeague-
-     * combine exists League to exists Season, and define both kind of Policy to this specific SeasonLeague.
-     * @param leagueId-id of the League.
-     * @param seasonId-id of the Season.
-     * @param calculateLeaguePointsId-id of the Policy CalculateLeaguePoints.
-     * @param inlayGamesId-name of the Policy InlayGamesId.
+     * Will receive from the Controller the SeasonLeague, add SeasonLeague to Data.
+     * @param seasonLeague-the new SeasonLeague.
      * @throws Exception-if details are incorrect.
      */
-    void createSeasonLeague(Integer leagueId, Integer seasonId, Integer calculateLeaguePointsId, Integer inlayGamesId) throws Exception;
+    void createSeasonLeague(SeasonLeague seasonLeague) throws Exception;
 
     /**
      * Will receive from the Controller the seasonLeague's id, return the SeasonLeague.
@@ -24,22 +21,12 @@ public interface SeasonLeagueDb
     SeasonLeague getSeasonLeague(Integer seasonLeagueId) throws Exception;
 
     /**
-     * Will receive from the Service the season's Id, the league's Id and return the seasonLeague's id.
-     * @param seasonId-id of the Season.
-     * @param leagueId-id of the League.
-     * @return the id of the SeasonLeague.
+     * Will receive from the Controller the JudgeSeasonLeague,
+     * add to judgeEmailAddress_JudgeSeasonLeagueId Map the judgeEmailAddres and the judgeSeasonLeagueId of the specific SeasonLeague.
+     * @param judgeSeasonLeague-the new JudgeSeasonLeague.
      * @throws Exception-if details are incorrect.
      */
-    Integer getSeasonLeagueIdBySeasonAndByLeague(Integer seasonId, Integer leagueId) throws Exception;
-
-    /**
-     * Will receive from the Controller the seasonLeague's Id and the judge's id,
-     * want to inlay Judge to SeasonLeague.
-     * @param seasonLeagueId-id of the SeasonLeague.
-     * @param judgeId-id of the Judge.
-     * @throws Exception-if details are incorrect.
-     */
-    void inlayJudgeToSeasonLeague(Integer seasonLeagueId, Integer judgeId) throws Exception;
+    void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception;
 
     /**
      * Will receive from the Service the seasonLeague's id and the calculateLeaguePoints's id,

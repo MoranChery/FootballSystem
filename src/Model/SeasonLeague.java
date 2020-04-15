@@ -1,6 +1,7 @@
 package Model;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SeasonLeague
 {
@@ -11,7 +12,8 @@ public class SeasonLeague
     private Integer leagueId;
     private Integer calculateLeaguePointsId;
     private Integer inlayGamesId;
-    private List<Integer> inlayJudgeIdList;
+    private Map<String, Integer> judgeEmailAddress_JudgeSeasonLeagueId;
+
 
     public SeasonLeague(Integer seasonId, Integer leagueId, Integer calculateLeaguePointsId, Integer inlayGamesId)
     {
@@ -19,6 +21,7 @@ public class SeasonLeague
         this.leagueId = leagueId;
         this.calculateLeaguePointsId = calculateLeaguePointsId;
         this.inlayGamesId = inlayGamesId;
+        this.judgeEmailAddress_JudgeSeasonLeagueId = new HashMap<>();
         this.seasonLeagueId = seasonLeagueIdCounter;
 
         seasonLeagueIdCounter++;
@@ -41,22 +44,10 @@ public class SeasonLeague
 
     public Integer getInlayGamesId() { return inlayGamesId; }
 
-    public List<Integer> getInlayJudgeIdList() { return inlayJudgeIdList; }
+    public Map<String, Integer> getJudgeEmailAddress_JudgeSeasonLeagueId() { return judgeEmailAddress_JudgeSeasonLeagueId; }
     //endregion
 
     //region Setters
-//    public void setSeasonLeagueId(Integer seasonLeagueId) { this.seasonLeagueId = seasonLeagueId; }
-
-//    public void setSeasonId(Integer seasonId) { this.seasonId = seasonId; }
-
-//    public void setLeagueId(Integer leagueId) { this.leagueId = leagueId; }
-
     public void setCalculateLeaguePointsId(Integer calculateLeaguePointsId) { this.calculateLeaguePointsId = calculateLeaguePointsId; }
-
-//    public void setInlayGamesId(Integer inlayGamesId) { this.inlayGamesId = inlayGamesId; }
-
-//    public void setInlayJudgeIdList(List<Integer> inlayJudgeIdList) { this.inlayJudgeIdList = inlayJudgeIdList; }
     //endregion
-
-
 }
