@@ -1,6 +1,5 @@
 package Data;
 
-import Model.System_Controller;
 import Model.Team;
 import Model.UsersTypes.Player;
 
