@@ -4,10 +4,12 @@ import Model.Enums.AlertWay;
 import Model.Enums.GamesAlert;
 import Model.Enums.Status;
 import Model.PersonalPage;
+import Model.Search;
 import Model.UsersTypes.Fan;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static Model.Enums.Status.OFFLINE;
 import static Model.Enums.Status.ONLINE;
@@ -15,7 +17,6 @@ import static Model.Enums.Status.ONLINE;
 public class FanDbInMemory implements FanDb{
 
     private Map<String, Fan> allFans;
-
     private static FanDbInMemory ourInstance = new FanDbInMemory();
     public FanDbInMemory() {
         this.allFans = new HashMap<>();
@@ -104,58 +105,28 @@ public class FanDbInMemory implements FanDb{
     }
 
     @Override
-    public void wantToEditMail(String fanMail, String newMailAddress) throws Exception {
-        if(fanMail == null || newMailAddress == null){
-            throw new Exception("Somthing went wrong");
-        }
-        Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new NullPointerException("Coudn't get this fan");
-        }
-        if(theFan.getEmailAddress().equals(newMailAddress)){
-            throw new Exception("You are already using this mail address");
-        }
-        theFan.setEmailAddress(newMailAddress);
-    }
-
-    @Override
     public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
         if(fanMail == null || newPassword == null){
-            throw new Exception("Somthing went wrong");
+            throw new Exception("Something went wrong in editing the password");
         }
         Fan theFan = allFans.get(fanMail);
         if(theFan == null){
-            throw new NullPointerException("Coudn't get this fan");
+            throw new NotFoundException("Couldn't get this fan");
         }
         if(theFan.getPassword().equals(newPassword)){
-            throw new Exception("You are already using password");
+            throw new Exception("You are already using this password");
         }
         theFan.setPassword(newPassword);
     }
 
     @Override
-    public void wantToEditID(String fanMail, Integer newID) throws Exception {
-        if(fanMail == null || newID == null){
-            throw new Exception("Somthing went wrong");
-        }
-        Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new NullPointerException("Coudn't get this fan");
-        }
-        if(theFan.getId().equals(newID)){
-            throw new Exception("You are already using this ID");
-        }
-        theFan.setId(newID);
-    }
-
-    @Override
     public void wantToEditFirstName(String fanMail, String newFirstName) throws Exception {
         if(fanMail == null || newFirstName == null){
-            throw new Exception("Somthing went wrong");
+            throw new Exception("Something went wrong in editing the first name");
         }
         Fan theFan = allFans.get(fanMail);
         if(theFan == null){
-            throw new NullPointerException("Coudn't get this fan");
+            throw new NotFoundException("Couldn't get this fan");
         }
         if(theFan.getFirstName().equals(newFirstName)){
             throw new Exception("You are already using this name as first name");
@@ -166,16 +137,50 @@ public class FanDbInMemory implements FanDb{
     @Override
     public void wantToEditLastName(String fanMail, String newLastName) throws Exception {
         if(fanMail == null || newLastName == null){
-            throw new Exception("Somthing went wrong");
+            throw new Exception("Something went wrong in editing the last name");
         }
         Fan theFan = allFans.get(fanMail);
         if(theFan == null){
-            throw new NullPointerException("Coudn't get this fan");
+            throw new NotFoundException("Couldn't get this fan");
         }
         if(theFan.getLastName().equals(newLastName)){
             throw new Exception("You are already using this name as last name");
         }
         theFan.setLastName(newLastName);
+    }
+
+    @Override
+    public Set<Search> watchMySearchHistory(String fanMail) throws Exception {
+        if(fanMail == null){
+            throw new NullPointerException("Can't display searches as one of the inputs is null");
+        }
+        Fan theFan = allFans.get(fanMail);
+        if(theFan == null){
+            throw new NotFoundException("Couldn't get this fan");
+        }
+        Set<Search> searchSetToReturn = theFan.getMySearchHistory();
+        if(searchSetToReturn == null){
+            throw new NotFoundException("The search history is not found");
+        }
+        return searchSetToReturn;
+    }
+
+    @Override
+    public void addSearchToMyHistory(String fanMail, Search myNewSearch) throws Exception {
+
+        if(fanMail == null || myNewSearch == null){
+            throw new NullPointerException("Can't add new search as one of the inputs is null");
+        }
+        Fan theFan = allFans.get(fanMail);
+        if(theFan == null){
+            throw new NotFoundException("Couldn't get this fan");
+        }
+        if(theFan.getMySearchHistory().contains(myNewSearch)){
+            throw new Exception("This search is already in your list");
+        }
+        Set<Search> searchSet = theFan.getMySearchHistory();
+        searchSet.add(myNewSearch);
+        theFan.setMySearchHistory(searchSet);
     }
 
 //    public void editPersonalDetails(String fanMail,String password, Integer id, String firstName, String lastName) throws Exception {

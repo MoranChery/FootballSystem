@@ -12,27 +12,17 @@ public class FanService {
     public FanService() {
         this.fanController = new FanController();
     }
-    public void addPageToFanList(String pageId, String pageName, String fanMail) throws Exception {
-        fanController.addPageToFanList(pageId, pageName, fanMail);
+    public void addPageToFanList(String pageId, String fanMail) throws Exception {
+        fanController.addPageToFanList(pageId, fanMail);
     }
     public void logOut(String fanMail, Status status) throws Exception{
         fanController.logOut(fanMail, status);
     }
-
     public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
         fanController.askToGetAlerts(fanMail,alert,alertWay);
     }
-
-
-
-    public void wantToEditMail(String fanMail, String newMailAddress) throws Exception {
-        fanController.wantToEditMail(fanMail, newMailAddress);
-    }
     public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
         fanController.wantToEditPassword(fanMail, newPassword);
-    }
-    public void wantToEditID(String fanMail, Integer newID) throws Exception {
-        fanController.wantToEditID(fanMail, newID);
     }
     public void wantToEditFirstName(String fanMail, String newFirstName) throws Exception {
         fanController.wantToEditFirstName(fanMail, newFirstName);
@@ -40,6 +30,7 @@ public class FanService {
     public void wantToEditLastName(String fanMail, String newLastName) throws Exception {
         fanController.wantToEditLastName(fanMail, newLastName);
     }
+
 
 
 

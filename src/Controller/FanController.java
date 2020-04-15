@@ -5,9 +5,11 @@ import Model.Enums.AlertWay;
 import Model.Enums.GamesAlert;
 import Model.Enums.Status;
 import Model.PersonalPage;
+import Model.Search;
 import Model.UsersTypes.Fan;
 
 import java.util.Map;
+import java.util.Set;
 
 public class FanController {
 
@@ -25,9 +27,6 @@ public class FanController {
         }
         fanDb.createFan(theFan);
     }
-
-
-
 
     public void addPageToFanList(String pageId, String fanMail) throws Exception {
         if(pageId == null || fanMail == null){
@@ -76,22 +75,6 @@ public class FanController {
         fanDb.askToGetAlerts(fanMail,alert,alertWay);
     }
 
-
-    public void wantToEditMail(String fanMail, String newMailAddress) throws Exception {
-        if(fanMail == null || newMailAddress == null){
-            throw new NullPointerException("bad input");
-        }
-        Fan fan = fanDb.getFan(fanMail);
-        if(fan == null){
-            throw new NotFoundException("Fan not found");
-        }
-        if(fan.getPassword().equals(newMailAddress)){
-            throw new Exception("This E-mail address is the same as the old one");
-        }
-        fanDb.wantToEditMail(fanMail, newMailAddress);
-
-
-    }
     public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
         if(fanMail == null || newPassword == null){
             throw new NullPointerException("bad input");
@@ -104,19 +87,6 @@ public class FanController {
             throw new Exception("This password is the same as the old one");
         }
         fanDb.wantToEditPassword(fanMail, newPassword);
-    }
-    public void wantToEditID(String fanMail, Integer newID) throws Exception {
-        if(fanMail == null || newID == null){
-            throw new NullPointerException("bad input");
-        }
-        Fan fan = fanDb.getFan(fanMail);
-        if(fan == null){
-            throw new NotFoundException("Fan not found");
-        }
-        if(fan.getId().equals(newID)){
-            throw new Exception("This id is the same as the old one");
-        }
-        fanDb.wantToEditID(fanMail, newID);
     }
     public void wantToEditFirstName(String fanMail, String newFirstName) throws Exception {
         if(fanMail == null || newFirstName == null){
@@ -143,6 +113,11 @@ public class FanController {
             throw new Exception("This password is the same as the old one");
         }
         fanDb.wantToEditLastName(fanMail, newLastName);
+    }
+
+    public void watchMySearchHistory(String fanMail) throws Exception {
+
+        fanDb.watchMySearchHistory(fanMail);
     }
 
 
