@@ -7,6 +7,7 @@ import Data.PersonalPageDbInMemory;
 import Model.PersonalPage;
 import Model.UsersTypes.Fan;
 
+
 import java.util.Map;
 
 public class PersonalPageController {
@@ -31,9 +32,15 @@ public class PersonalPageController {
         if(!testFan.equals(fanToAdd)){
             throw new Exception("One or more of the details incorrect");
         }
-        if(fanOfThisPage.containsKey(fanId)){
+        if(fanOfThisPage.containsKey(fanMail)){
             throw new Exception("You are already follow this page");
         }
         pageDb.addPageToFanList(pageID,fanToAdd);
+    }
+    public void createPage(String pageID) throws Exception {
+        if(pageID == null){
+            throw new NullPointerException("Page bad input");
+        }
+        pageDb.createPage(pageID);
     }
 }

@@ -47,4 +47,13 @@ public class PersonalPageDbInMemory implements PersonalPageDb {
         }
         return page;
     }
+
+    @Override
+    public void createPage(String pageID) throws Exception {
+        if(allPages.containsKey(pageID)){
+            throw new Exception("Page already exist in the system");
+        }
+        PersonalPage personalPage = new PersonalPage(pageID);
+        allPages.put(pageID,personalPage);
+    }
 }

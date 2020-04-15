@@ -29,6 +29,20 @@ public interface JudgeDb
      */
     void removeJudge(String judgeEmailAddress) throws Exception;
 
+    void wantToEditPassword(String judgeMail, String newPassword) throws Exception;
+    void wantToEditFirstName(String judgeMail, String newFirstName) throws Exception;
+    void wantToEditLastName(String judgeMail, String newLastName) throws Exception;
+    void wantToEditQualification(String judgeMail, String newQualification) throws Exception;
+//
+//    /**
+//     * Will receive from the Controller the seasonLeague's id and the judge's id,
+//     * want to inlay Judge to SeasonLeague.
+//     * @param seasonLeagueId-id of the SeasonLeague.
+//     * @param judgeEmailAddress-emailAddress of the Judge.
+//     * @throws Exception-if details are incorrect.
+//     */
+//    void inlayJudgeToSeasonLeague(Integer seasonLeagueId, String judgeEmailAddress) throws Exception;
+
     /**
      * Will receive from the Controller the JudgeSeasonLeague,
      * add to seasonLeagueId_JudgeSeasonLeagueId Map the seasonLeagueId and the judgeSeasonLeagueId of the specific Judge.
