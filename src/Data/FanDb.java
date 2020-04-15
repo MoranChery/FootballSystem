@@ -16,9 +16,7 @@ public interface FanDb {
     void createFan(Fan theFan) throws Exception;
     void logOut(String fanMail, Status status) throws Exception;
     void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception;
-
     void wantToEditPassword(String fanMail, String newPassword) throws Exception;
-
     void wantToEditFirstName(String fanMail, String newFirstName) throws Exception;
     void wantToEditLastName(String fanMail, String newLastName) throws Exception;
     Set<Search> watchMySearchHistory(String fanMail) throws Exception;

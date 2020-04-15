@@ -107,7 +107,7 @@ public class FanDbInMemory implements FanDb{
     @Override
     public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
         if(fanMail == null || newPassword == null){
-            throw new Exception("Something went wrong in editing the password");
+            throw new Exception("Something went wrong in editing fan the password");
         }
         Fan theFan = allFans.get(fanMail);
         if(theFan == null){
@@ -122,7 +122,7 @@ public class FanDbInMemory implements FanDb{
     @Override
     public void wantToEditFirstName(String fanMail, String newFirstName) throws Exception {
         if(fanMail == null || newFirstName == null){
-            throw new Exception("Something went wrong in editing the first name");
+            throw new Exception("Something went wrong in editing fan's the first name");
         }
         Fan theFan = allFans.get(fanMail);
         if(theFan == null){
@@ -137,7 +137,7 @@ public class FanDbInMemory implements FanDb{
     @Override
     public void wantToEditLastName(String fanMail, String newLastName) throws Exception {
         if(fanMail == null || newLastName == null){
-            throw new Exception("Something went wrong in editing the last name");
+            throw new Exception("Something went wrong in editing the last name of the fan");
         }
         Fan theFan = allFans.get(fanMail);
         if(theFan == null){

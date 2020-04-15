@@ -5,6 +5,7 @@ import Model.Enums.AlertWay;
 import Model.Enums.GamesAlert;
 import Model.Enums.Status;
 import Model.PersonalPage;
+import Model.UsersTypes.Fan;
 
 public class FanService {
     private FanController fanController;

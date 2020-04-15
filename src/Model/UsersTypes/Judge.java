@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Judge extends Subscriber
 {
+
     private QualificationJudge qualificationJudge;
     private List<Integer> inlaySeasonLeagueIdList;
 
@@ -17,6 +18,9 @@ public class Judge extends Subscriber
 
 
     public QualificationJudge getQualificationJudge() { return qualificationJudge; }
+    public void setQualificationJudge(QualificationJudge qualificationJudge) {
+        this.qualificationJudge = qualificationJudge;
+    }
 
     public List<Integer> getInlaySeasonLeagueIdList() { return inlaySeasonLeagueIdList; }
     //endregion
