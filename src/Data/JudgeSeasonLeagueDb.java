@@ -19,4 +19,6 @@ public interface JudgeSeasonLeagueDb
      * @throws Exception-if details are incorrect.
      */
     JudgeSeasonLeague getJudgeSeasonLeague(Integer judgeSeasonLeagueId) throws Exception;
+
+    void removeJudgeSeasonLeague(Integer judgeSeasonLeagueId)throws Exception;
 }
