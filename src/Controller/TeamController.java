@@ -5,6 +5,7 @@ import Model.Court;
 import Model.Enums.*;
 import Model.FinancialActivity;
 import Model.Team;
+import Model.TeamPage;
 import Model.UsersTypes.*;
 
 import java.util.*;
@@ -19,6 +20,7 @@ public class TeamController {
     private SubscriberDb subscriberDb;
     private RoleDb roleDb;
     private FinancialActivityDb financialActivityDb;
+    private PersonalPageDb personalPageDb;
 
     public TeamController() {
         teamDb =  TeamDbInMemory.getInstance();
@@ -30,8 +32,14 @@ public class TeamController {
         subscriberDb =  SubscriberDbInMemory.getInstance();
         roleDb =  RoleDbInMemory.getInstance();
         financialActivityDb =  FinancialActivityDbInMemory.getInstance();
+        personalPageDb = PersonalPageDbInMemory.getInstance();
     }
 
+    /**
+     * create team in db
+     * @param teamName
+     * @throws Exception
+     */
     public void createTeam(String teamName) throws Exception {
         if(teamName == null) {
             throw new NullPointerException("bad input");
@@ -39,6 +47,12 @@ public class TeamController {
         teamDb.createTeam(teamName);
     }
 
+    /**
+     * get team from db
+     * @param teamName
+     * @return
+     * @throws Exception
+     */
     public Team getTeam(String teamName) throws Exception {
         if(teamName == null) {
             throw new NullPointerException("bad input");
@@ -46,22 +60,37 @@ public class TeamController {
        return teamDb.getTeam(teamName);
     }
 
-
-    public void createNewTeam(String teamName, String teamOwnerEmail,Map<String,Player> players, Map<String,Coach> coaches, Map<String,TeamManager> teamManagers,Court court) throws Exception {
-        teamDb.createTeam(teamName);
+    /**
+     * create new team
+     * @param teamName
+     * @param teamOwnerEmail
+     * @param players
+     * @param coaches
+     * @param teamManagers
+     * @param court
+     * @throws Exception
+     */
+    public void createNewTeam(String teamName, String teamOwnerEmail,List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers,Court court) throws Exception {
+       if(teamName == null || teamOwnerEmail == null || players == null || coaches == null || teamManagers == null || court == null){
+           throw new NullPointerException("bad input");
+       }
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
-        subscriptionTeamOwner(teamName,teamOwnerEmail,teamOwnerEmail);
-        for (Player player : players.values()) {
+        teamDb.createTeam(teamName);
+        teamOwnerDb.updateTeamOwnerTeam(teamDb.getTeam(teamName),teamOwnerEmail);
+        for (Player player : players) {
             addPlayer(teamName,player.getEmailAddress(),player.getId(),player.getFirstName(),player.getLastName(),player.getBirthDate(),player.getPlayerRole());
         }
-        for (Coach coach : coaches.values()) {
+        for (Coach coach : coaches) {
             addCoach(teamName,coach.getEmailAddress(),coach.getId(),coach.getFirstName(),coach.getLastName(),coach.getCoachRole(),coach.getQualificationCoach());
         }
-        for (TeamManager teamManager : teamManagers.values()) {
+        for (TeamManager teamManager : teamManagers) {
             addTeamManager(teamName,teamManager.getEmailAddress(),teamManager.getId(),teamManager.getFirstName(),teamManager.getLastName(),teamManager.getOwnedByEmail());
         }
         addCourt(teamName,court.getCourtName(),court.getCourtCity());
-        // TODO: 14/04/2020 add new personalPage
+        TeamPage teamPage = new TeamPage(teamName,getTeam(teamName));
+        personalPageDb.createTeamPage(teamName,getTeam(teamName));
+        teamDb.addTeamPage(teamPage);
+
     }
 
 
@@ -125,6 +154,16 @@ public class TeamController {
                 playerInDb.getPlayerRole().equals(playerToAdd.getPlayerRole());
     }
 
+    /**
+     * add teamManger to team if the teamManager exists in the system as teamManager or if not exists
+     * @param teamName
+     * @param emailAddress
+     * @param teamManagerId
+     * @param firstName
+     * @param lastName
+     * @param ownedByEmail
+     * @throws Exception
+     */
     public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName ,String lastName,String ownedByEmail) throws Exception {
         if(teamName == null || emailAddress == null ||teamManagerId == null || firstName == null || lastName == null || ownedByEmail == null) {
             throw new NullPointerException("bad input");
@@ -175,6 +214,17 @@ public class TeamController {
                 teamManagerInDb.getLastName().equals(teamManagerToAdd.getLastName()));
     }
 
+    /**
+     * add coach to the team
+     * @param teamName
+     * @param emailAddress
+     * @param coachId
+     * @param firstName
+     * @param lastName
+     * @param coachRole
+     * @param qualificationCoach
+     * @throws Exception
+     */
     public void addCoach(String teamName, String emailAddress, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
         if(teamName == null || emailAddress == null || coachId == null || firstName == null || lastName == null || coachRole == null|| qualificationCoach == null) {
             throw new NullPointerException("bad input");
@@ -198,7 +248,7 @@ public class TeamController {
             try {
                 /*check if there is other subscriber already*/
                 subscriberDb.getSubscriber(emailAddress);
-                throw new Exception("The teamManager to added already has other subscriber type - you can to appoint him to team manager");
+                throw new Exception("The coach to added already has other subscriber type - you can to appoint him to team manager");
             } catch(NotFoundException ex) {
                 /*give random password to player when open new subscriber*/
                 currCoach.setPassword(UUID.randomUUID().toString());
@@ -224,6 +274,13 @@ public class TeamController {
                 coachInDb.getQualificationCoach().equals(coachToAdd.getQualificationCoach()));
     }
 
+    /**
+     * add court to the team
+     * @param teamName
+     * @param courtName
+     * @param courtCity
+     * @throws Exception
+     */
     public void addCourt(String teamName, String courtName, String courtCity) throws Exception {
         if (teamName == null || courtName == null || courtCity == null) {
             throw new NullPointerException("bad input");
@@ -252,6 +309,12 @@ public class TeamController {
         teamDb.addCourt(teamName, court);
     }
 
+    /**
+     * remove player from the team
+     * @param teamName
+     * @param playerEmailAddress
+     * @throws Exception
+     */
     public void removePlayer(String teamName, String playerEmailAddress) throws Exception {
         /*check if one of the inputs null*/
         if(teamName == null || playerEmailAddress == null) {
@@ -270,6 +333,12 @@ public class TeamController {
         roleDb.removeRoleFromTeam(playerEmailAddress,teamName, RoleType.PLAYER);
     }
 
+    /**
+     * remove teamManager to team
+     * @param teamName
+     * @param teamManagerEmailAddress
+     * @throws Exception
+     */
     public void removeTeamManager(String teamName, String teamManagerEmailAddress) throws Exception {
         /*check if one of the inputs null*/
         if(teamName == null || teamManagerEmailAddress == null) {
@@ -288,6 +357,13 @@ public class TeamController {
         roleDb.removeRoleFromTeam(teamManagerEmailAddress,teamName, RoleType.TEAM_MANAGER);
 
     }
+
+    /**
+     * remove coach from team
+     * @param teamName
+     * @param coachEmailAddress
+     * @throws Exception
+     */
     public void removeCoach(String teamName, String coachEmailAddress) throws Exception {
         /*check if one of the inputs null*/
         if(teamName == null || coachEmailAddress == null) {
@@ -306,6 +382,12 @@ public class TeamController {
         roleDb.removeRoleFromTeam(coachEmailAddress,teamName, RoleType.COACH);
     }
 
+    /**
+     * remove court from team
+     * @param teamName
+     * @param courtName
+     * @throws Exception
+     */
     public void removeCourt(String teamName, String courtName) throws Exception {
         /*check if one of the inputs null*/
         if(teamName == null || courtName == null) {
@@ -322,6 +404,13 @@ public class TeamController {
         teamDb.removeCourt(teamName, courtName);
     }
 
+    /**
+     * subscription teamOwner in case the subscriber's role is not teamOwner or associated with other team
+     * @param teamName
+     * @param teamOwnerEmail
+     * @param ownerToAddEmail
+     * @throws Exception
+     */
     public void subscriptionTeamOwner(String teamName, String teamOwnerEmail, String ownerToAddEmail) throws Exception {
         if(teamName == null || teamOwnerEmail == null || ownerToAddEmail == null) {
             throw new NullPointerException("bad input");
@@ -348,7 +437,13 @@ public class TeamController {
         roleDb.createRole(ownerToAddEmail,teamName, RoleType.TEAM_OWNER);
     }
 
-
+    /**
+     * subscription teamOwner in case the subscriber's role is not teamOwner/teamManager or associated with other team
+     * @param teamName
+     * @param teamOwnerEmail
+     * @param managerToAddEmail
+     * @throws Exception
+     */
     public void subscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToAddEmail) throws Exception {
         if(teamName == null || teamOwnerEmail == null || managerToAddEmail == null) {
             throw new NullPointerException("bad input");
@@ -378,6 +473,14 @@ public class TeamController {
         roleDb.createRole(managerToAddEmail,teamName, RoleType.TEAM_MANAGER);
     }
 
+    /**
+     * remove subscription teamOwner and all the owners and teamManagers under this subscription from team
+     * remove role teamOwner for this subscription
+     * @param teamName
+     * @param teamOwnerEmailAddress
+     * @param ownerToRemove
+     * @throws Exception
+     */
     public void removeSubscriptionTeamOwner(String teamName, String teamOwnerEmailAddress, String ownerToRemove) throws Exception {
         if(teamName == null || teamOwnerEmailAddress == null || ownerToRemove == null) {
             throw new NullPointerException("bad input");
@@ -412,6 +515,14 @@ public class TeamController {
 
     }
 
+    /**
+     * remove subscription teamManager
+     * remove role teamManager from this subscription and update the last role to be the role
+     * @param teamName
+     * @param teamOwnerEmail
+     * @param managerToRemoveEmail
+     * @throws Exception
+     */
     public void removeSubscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToRemoveEmail) throws Exception {
         if(teamName == null || teamOwnerEmail == null || managerToRemoveEmail == null) {
             throw new NullPointerException("bad input");
@@ -435,7 +546,14 @@ public class TeamController {
         roleDb.removeRole(managerToRemoveEmail, RoleType.TEAM_MANAGER);
     }
 
-
+    /**
+     *add financial activity of the team and update the budget
+     * @param teamName
+     * @param financialActivityAmount
+     * @param description
+     * @param financialActivityType
+     * @throws Exception
+     */
     public void addFinancialActivity(String teamName, Double financialActivityAmount, String description, FinancialActivityType financialActivityType) throws Exception {
         if(teamName == null || financialActivityAmount == null || description == null || financialActivityType == null) {
             throw new NullPointerException("bad input");
@@ -454,6 +572,12 @@ public class TeamController {
         teamDb.addFinancialActivity(teamName,financialActivity);
     }
 
+    /**
+     * change the team's status
+     * @param teamName
+     * @param teamStatus
+     * @throws Exception
+     */
     public void changeStatus(String teamName,TeamStatus teamStatus) throws Exception {
         if(teamName == null) {
             throw new NullPointerException("bad input");
@@ -462,12 +586,28 @@ public class TeamController {
         teamDb.changeStatus(teamName,teamStatus);
     }
 
+    /**
+     * in case that the status is INACTIVE, will not can do any functions
+     * @param team
+     * @throws Exception
+     */
     private void checkTeamStatusIsActive(Team team) throws Exception {
         if(TeamStatus.INACTIVE.equals(team.getTeamStatus())){
             throw new Exception("This Team's status - Inactive");
         }
     }
 
+
+    /**
+     * update player's details
+     * @param ownerEmailAddress
+     * @param playerEmailAddress
+     * @param firstName
+     * @param lastName
+     * @param birthDate
+     * @param playerRole
+     * @throws Exception
+     */
     public void updatePlayerDetails(String ownerEmailAddress,String playerEmailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
         /*check if the teamOwner in Db, than check if the player want to change is in teamOwner's team*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(ownerEmailAddress);

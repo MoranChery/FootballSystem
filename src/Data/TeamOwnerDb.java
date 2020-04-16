@@ -9,11 +9,13 @@ import java.util.List;
 public interface TeamOwnerDb extends Db {
     void createTeamOwner(TeamOwner teamOwner) throws Exception;
 
-    TeamOwner getTeamOwner(Integer teamOwnerId) throws Exception;
+    void updateTeamOwnerTeam(Team team, String teamOwnerEmailAddress) throws Exception;
 
-    void subscriptionTeamOwner(Team team, Integer teamOwnerId, Subscriber subscriber) throws Exception;
+    TeamOwner getTeamOwner(String teamOwnerEmailAddress) throws Exception;
 
-    void removeSubscriptionTeamOwner(Integer ownerToRemove) throws Exception;
+    void subscriptionTeamOwner(Team team, String teamOwnerId, Subscriber subscriber) throws Exception;
 
-    List<Integer> getAllTeamOwnersOwnedBy(Integer teamOwner);
+    void removeSubscriptionTeamOwner(String ownerToRemoveEmail) throws Exception;
+
+    List<String> getAllTeamOwnersOwnedBy(String teamOwnerEmail);
 }

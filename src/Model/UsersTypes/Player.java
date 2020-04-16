@@ -1,6 +1,7 @@
 package Model.UsersTypes;
 
 import Model.Enums.PlayerRole;
+import Model.PersonalPage;
 import Model.Team;
 
 import java.util.Date;
@@ -10,6 +11,8 @@ public class Player extends Subscriber {
     private Team team;
     private Date birthDate;
     private PlayerRole playerRole;
+    private PersonalPage coachPage;
+
 
     public Player(String username, String password,Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) {
         setRegisteringDetails(username,password,id,firstName,lastName);

@@ -16,10 +16,10 @@ public class Team {
    private Map<Integer, TeamManager> teamManagers;
    private Map<String, FinancialActivity> financialActivities;
    private Court court;
-   private PersonalPage teamPage;
    private List<Game> games;
    private Double budget;
    private TeamStatus teamStatus;
+   private TeamPage teamPage;
 
     public Team() {
         teamOwners = new HashMap<>();
@@ -62,14 +62,6 @@ public class Team {
 
     public void setTeamManagers(Map<Integer, TeamManager> teamManagers) {
         this.teamManagers = teamManagers;
-    }
-
-    public PersonalPage getTeamPage() {
-        return teamPage;
-    }
-
-    public void setTeamPage(PersonalPage teamPage) {
-        this.teamPage = teamPage;
     }
 
     public List<Game> getGames() {
@@ -118,5 +110,13 @@ public class Team {
 
     public void setTeamStatus(TeamStatus teamStatus) {
         this.teamStatus = teamStatus;
+    }
+
+    public TeamPage getTeamPage() {
+        return teamPage;
+    }
+
+    public void setTeamPage(TeamPage teamPage) {
+        this.teamPage = teamPage;
     }
 }

@@ -17,6 +17,11 @@ public class TeamOwner extends Subscriber {
         this.teamOwnersByThis = new HashMap<>();
     }
 
+    public TeamOwner(String emailAddress, String password, Integer id,String firstName, String lastName) {
+        setRegisteringDetails(emailAddress,password,id,firstName,lastName);
+        this.teamOwnersByThis = new HashMap<>();
+    }
+
     public TeamOwner(Team team, Subscriber subscriber, String teamOwnerEmail) {
         setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getPassword(),subscriber.getId(),subscriber.getFirstName(),getLastName());
         this.team = team;
