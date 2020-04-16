@@ -71,6 +71,11 @@ public class PageDbInMemory implements PageDb {
     }
 
     @Override
+    public void removePersonalPageFromDb(String pageId) throws Exception{
+        allPages.remove(pageId);
+    }
+
+    @Override
     public void deleteAll() {
         allPages.clear();
     }

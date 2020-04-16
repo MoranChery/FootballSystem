@@ -16,7 +16,7 @@ public class SystemAdministratorController {
     private PlayerDb playerDb;
     private TeamManagerDb teamManagerDb;
     private TeamOwnerDb teamOwnerDb;
-    private PersonalPageDb personalPageDb;
+    private PageDb pageDb;
     private FanDb fanDb;
 
 
@@ -29,7 +29,7 @@ public class SystemAdministratorController {
         playerDb = PlayerDbInMemory.getInstance();
         teamManagerDb = TeamManagerDbInMemory.getInstance();
         teamOwnerDb = TeamOwnerDbInMemory.getInstance();
-        personalPageDb = PersonalPageDbInMemory.getInstance();
+        pageDb = PageDbInMemory.getInstance();
         fanDb=FanDbInMemory.getInstance();
     }
 
@@ -155,9 +155,9 @@ public class SystemAdministratorController {
         Judge judge = (Judge) subscriberToRemove;
         //remove the judge from his connected games
         //todo: until judge will be connected to games
-        for (Game game : judge.getGames()) {
-
-        }
+//        for (Game game : judge.getGames()) {
+//
+//        }
         //todo: remove judge from association class of league and Season
 
         //remove the judge from judgeDb
@@ -176,7 +176,7 @@ public class SystemAdministratorController {
         //remove the personalPage from its followers
 
         //remove the personal page of the player from PersonalPageDb
-        personalPageDb.removePersonalPageFromDb(player.getPersonalPage().getId());
+        pageDb.removePersonalPageFromDb(player.getPlayerPage().getPageID());
         //remove the player from his team
         player.getTeam().getPlayers().remove(player.getId());
         //remove the player from the playerDB

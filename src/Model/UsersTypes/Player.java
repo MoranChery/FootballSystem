@@ -11,7 +11,7 @@ public class Player extends Subscriber {
     private Team team;
     private Date birthDate;
     private PlayerRole playerRole;
-    private PersonalPage coachPage;
+    private PersonalPage playerPage;
 
 
     public Player(String emailAddress, String password,Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) {
@@ -48,6 +48,14 @@ public class Player extends Subscriber {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public PersonalPage getPlayerPage() {
+        return playerPage;
+    }
+
+    public void setPlayerPage(PersonalPage playerPage) {
+        this.playerPage = playerPage;
     }
 
     @Override

@@ -12,5 +12,5 @@ public interface PageDb extends Db {
     //    void createPage(String pageID) throws Exception;
     void createTeamPage(String pageID, Team team) throws Exception;
     void createPersonalPage(String pageID, Subscriber subscriber) throws Exception;
-
+    void removePersonalPageFromDb(String pageId) throws Exception;
     }
