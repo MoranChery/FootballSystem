@@ -23,7 +23,7 @@ public class TeamOwner extends Subscriber {
     }
 
     public TeamOwner(Team team, Subscriber subscriber, String teamOwnerEmail) {
-        setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getPassword(),subscriber.getId(),subscriber.getFirstName(),getLastName());
+        setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),getLastName());
         this.team = team;
         this.ownedByEmailAddress = teamOwnerEmail;
         this.teamOwnersByThis = new HashMap<>();

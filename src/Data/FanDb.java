@@ -21,7 +21,6 @@ public interface FanDb {
     void wantToEditLastName(String fanMail, String newLastName) throws Exception;
     Set<Search> watchMySearchHistory(String fanMail) throws Exception;
     void addSearchToMyHistory(String fanMail, Search myNewSearch) throws Exception;
-    void removeFan(Fan fan) throws Exception;
 
 
 

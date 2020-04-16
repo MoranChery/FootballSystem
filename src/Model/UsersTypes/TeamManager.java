@@ -14,7 +14,7 @@ public class TeamManager extends Subscriber {
     }
 
     public TeamManager(Team team,Subscriber subscriber, String ownedById) {
-        setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getPassword(),subscriber.getId(),subscriber.getFirstName(),subscriber.getLastName());
+        setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),subscriber.getLastName());
         this.team = team;
         this.ownedByEmail = ownedById;
     }

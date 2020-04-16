@@ -30,6 +30,7 @@ public class TeamControllerTest {
         dbs.add(TeamManagerDbInMemory.getInstance());
         dbs.add(TeamOwnerDbInMemory.getInstance());
         dbs.add(RoleDbInMemory.getInstance());
+        dbs.add(PageDbInMemory.getInstance());
         for (Db db : dbs) {
             db.deleteAll();
         }

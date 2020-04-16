@@ -57,11 +57,6 @@ public class PlayerDbInMemory implements PlayerDb {
     }
 
     @Override
-    public void removePlayerFromDb(Player player) {
-        players.remove(player);
-    }
-
-    @Override
     public void deleteAll() {
         players.clear();
     }
