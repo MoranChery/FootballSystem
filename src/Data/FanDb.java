@@ -5,13 +5,15 @@ import Model.Enums.GamesAlert;
 import Model.Enums.Status;
 import Model.PersonalPage;
 import Model.Search;
+import Model.TeamPage;
 import Model.UsersTypes.Fan;
 
 import java.util.Set;
 
 public interface FanDb {
 
-    void addPageToFanList(String fanMail, PersonalPage pageToAdd) throws Exception;
+    void addPersonalPageToFanListOfPages(String fanMail, PersonalPage personalPageToAdd) throws Exception;
+    void addTeamPageToFanListOfPages(String fanMail, TeamPage teamPageToAdd) throws Exception;
     Fan getFan(String fanMail) throws NotFoundException;
     void createFan(Fan theFan) throws Exception;
     void logOut(String fanMail) throws Exception;

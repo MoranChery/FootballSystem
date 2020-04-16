@@ -13,12 +13,16 @@ public class FanService {
     public FanService() {
         this.fanController = new FanController();
     }
-    public void addPageToFanList(String pageId, String fanMail) throws Exception {
-        fanController.addPageToFanList(pageId, fanMail);
+    public void addPersonalPageToFanListOfPages(String pageId, String fanMail) throws Exception {
+        fanController.addPersonalPageToFanListOfPages(pageId, fanMail);
+    }
+    public void addTeamPageToFanListOfPages(String pageId, String fanMail) throws Exception {
+        fanController.addTeamPageToFanListOfPages(pageId, fanMail);
     }
     public void logOut(String fanMail) throws Exception{
         fanController.logOut(fanMail);
     }
+
 
 
     public void wantToEditPassword(String fanMail, String newPassword) throws Exception {

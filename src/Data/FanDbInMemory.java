@@ -1,10 +1,9 @@
 package Data;
 
 import Model.Enums.AlertWay;
-import Model.Enums.GamesAlert;
-import Model.Enums.Status;
 import Model.PersonalPage;
 import Model.Search;
+import Model.TeamPage;
 import Model.UsersTypes.Fan;
 
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import java.util.Set;
 
 import static Model.Enums.GamesAlert.ALERTS_ON;
 import static Model.Enums.Status.OFFLINE;
-import static Model.Enums.Status.ONLINE;
 
 public class FanDbInMemory implements FanDb{
 
@@ -27,20 +25,37 @@ public class FanDbInMemory implements FanDb{
     }
 
     @Override
-    public void addPageToFanList(String fanMail, PersonalPage pageToAdd) throws Exception {
-        if(pageToAdd == null){
-            throw new Exception("Page not found");
+    public void addPersonalPageToFanListOfPages(String fanMail, PersonalPage personalPageToAdd) throws Exception {
+        if(fanMail == null || fanMail.isEmpty() || personalPageToAdd == null){
+            throw new NullPointerException("One or more of the inputs is wrong");
         }
         Fan theFan = allFans.get(fanMail);
         if(theFan == null){
-            throw new Exception("Fan not found");
+            throw new NotFoundException("Fan not found");
         }
-        Map<String, PersonalPage> theFanPages = theFan.getMyPages();
-        String pageToAddId = pageToAdd.getPageID();
-        if(theFanPages.containsKey(pageToAddId)){
+        Map<String, PersonalPage> theFanPersonalPages = theFan.getMyPersonalPageFollowList();
+        String pageToAddId = personalPageToAdd.getPageID();
+        if(theFanPersonalPages.containsKey(pageToAddId)){
             throw new Exception("You are already follow this page");
         }
-        theFanPages.put(pageToAddId,pageToAdd);
+        theFanPersonalPages.put(pageToAddId,personalPageToAdd);
+    }
+
+    @Override
+    public void addTeamPageToFanListOfPages(String fanMail, TeamPage teamPageToAdd) throws Exception {
+        if(fanMail == null || fanMail.isEmpty() || teamPageToAdd == null){
+            throw new NullPointerException("One or more of the inputs is wrong");
+        }
+        Fan theFan = allFans.get(fanMail);
+        if(theFan == null){
+            throw new NotFoundException("Fan not found");
+        }
+        Map<String, TeamPage> theFanTeamPages = theFan.getMyTeamPageFollowList();
+        String teamPageToAddID = teamPageToAdd.getPageID();
+        if(theFanTeamPages.containsKey(teamPageToAddID)){
+            throw new Exception("You are already follow this page");
+        }
+        theFanTeamPages.put(teamPageToAddID, teamPageToAdd);
     }
 
     @Override

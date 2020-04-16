@@ -2,16 +2,14 @@ package Controller;
 
 import Data.*;
 import Model.Enums.AlertWay;
-import Model.Enums.GamesAlert;
 import Model.Enums.Status;
+import Model.Page;
 import Model.PersonalPage;
-import Model.Search;
+import Model.TeamPage;
 import Model.UsersTypes.Fan;
 
 import java.util.Map;
-import java.util.Set;
 
-import static Model.Enums.AlertWay.EmailAlert;
 import static Model.Enums.GamesAlert.ALERTS_ON;
 
 public class FanController {
@@ -31,26 +29,71 @@ public class FanController {
         fanDb.createFan(theFan);
     }
 
-    public void addPageToFanList(String pageId, String fanMail) throws Exception {
-        if(pageId == null || fanMail == null){
+    /**
+     * this function add personal page to the table of personal pages for this fan
+     * @param fanMail String the fan id - email address
+     * @param personalPageToAddID String the id of the page - the email address of his owner
+     * @throws Exception NullPointerException if the fanMail or the teamPageToAddID is null
+     * NotFoundException if the fan is not in the DB
+     * Exception if the page type incorrect or if the page is exist in the DB
+     */
+    public void addPersonalPageToFanListOfPages(String fanMail, String personalPageToAddID) throws Exception {
+        if(personalPageToAddID == null || fanMail == null){
             throw new NullPointerException("bad input");
         }
         Fan fan = fanDb.getFan(fanMail);
         if(fan == null){
             throw new NotFoundException("fan not found");
         }
-        PersonalPage pageToAdd = new PersonalPage(pageId); // may change
-        Map<String, PersonalPage> fansPages = fan.getMyPages();
-        PersonalPage testPage = personalPageDb.getPage(pageId);
-        if(!testPage.equals(pageToAdd)){
+        PersonalPage personalPageToAdd = new PersonalPage(personalPageToAddID);
+        Map<String, PersonalPage> personalPageMapOfThisFan = fan.getMyPersonalPageFollowList();
+        if(personalPageMapOfThisFan == null){
+            throw new Exception("There is problem with the pages of this fan");
+        }
+        Page testPage = personalPageDb.getPage(personalPageToAddID);
+        if(!(testPage instanceof PersonalPage)){
+            throw new Exception("The page type incorrect");
+        }
+        if(!testPage.equals(personalPageToAdd)){
             throw new Exception("One or more of the details incorrect");
         }
-        if(fansPages.containsKey(pageId)){
+        if(personalPageMapOfThisFan.containsKey(personalPageToAddID)){
             throw new Exception("You are already follow this page");
         }
-        fanDb.addPageToFanList(fanMail, pageToAdd);
+        fanDb.addPersonalPageToFanListOfPages(fanMail, personalPageToAdd);
     }
 
+    /**
+     * this function add team page to the table of team pages for this fan
+     * @param fanMail String the fan id - email address
+     * @param teamPageToAddID String the id of the page - the email address of his owner
+     * @throws Exception NullPointerException if the fanMail or the teamPageToAddID is null
+     * NotFoundException if the fan is not in the DB
+     * Exception if the page type incorrect or if the page is exist in the DB
+     */
+    public void addTeamPageToFanListOfPages(String fanMail, String teamPageToAddID) throws Exception {
+        if(teamPageToAddID == null || fanMail == null){
+            throw new NullPointerException("bad input");
+        }
+        Fan fan = fanDb.getFan(fanMail);
+        if(fan == null){
+            throw new NotFoundException("fan not found");
+        }
+        TeamPage teamPageToAdd = new TeamPage(teamPageToAddID);
+        Map<String, TeamPage> teamPageMapOfThisFan = fan.getMyTeamPageFollowList();
+        Page testPage = personalPageDb.getPage(teamPageToAddID);
+        if(!(testPage instanceof TeamPage)){
+            throw new Exception("The page type incorrect");
+        }
+
+        if(!testPage.equals(teamPageToAdd)){
+            throw new Exception("One or more of the details incorrect");
+        }
+        if(teamPageMapOfThisFan.containsKey(teamPageToAddID)){
+            throw new Exception("You are already follow this page");
+        }
+        fanDb.addTeamPageToFanListOfPages(fanMail, teamPageToAdd);
+    }
 
     /**
      * function for the fan to logout of the system
