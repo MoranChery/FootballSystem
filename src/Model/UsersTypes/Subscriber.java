@@ -50,7 +50,7 @@ public abstract class Subscriber extends Model.UsersTypes.User {
         LastName = lastName;
     }
 
-    public String getUsername() {
+    public String getEmailAddress() {
         return username;
     }
 

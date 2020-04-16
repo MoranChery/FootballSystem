@@ -6,10 +6,6 @@ import Model.UsersTypes.TeamManager;
 import java.util.HashMap;
 
 public class CoachDbInMemory implements CoachDb {
-
-
-
-
     private static CoachDbInMemory ourInstance = new CoachDbInMemory();
 
     public static CoachDbInMemory getInstance() {
@@ -40,12 +36,8 @@ public class CoachDbInMemory implements CoachDb {
     }
 
     @Override
-    public boolean removeCoach(Coach coachToRemove) throws Exception {
-        if(!coaches.containsKey(coachToRemove.getUsername())){
-           return false;
-        }
+    public void removeCoach(Coach coachToRemove) throws Exception {
         coaches.remove(coachToRemove);
-        return true;
     }
 
     @Override

@@ -1,26 +1,32 @@
 package Controller;
 
+import Data.RoleDb;
+import Data.RoleDbInMemory;
 import Data.SubscriberDb;
 import Data.SubscriberDbInMemory;
 
-import Model.Enums.Status;
+import Model.Enums.*;
+
 import java.util.Date;
 
-import Model.Enums.CoachRole;
-import Model.Enums.PlayerRole;
-import Model.Enums.QualificationCoach;
-import Model.Enums.QualificationJudge;
 import Model.Team;
 import Model.UsersTypes.*;
 
 public class SubscriberController {
     private SubscriberDb subscriberDb;
+    private RoleDb roleDb;
 
     public SubscriberController() {
-        subscriberDb =  SubscriberDbInMemory.getInstance();;
+        subscriberDb = SubscriberDbInMemory.getInstance();
+        roleDb = RoleDbInMemory.getInstance();
     }
 
     //todo: call use case 2.2 from UI
+
+    /**
+     * UI function
+     * @param userType
+     */
     public void registerSubscriber(String userType) {
         if ("Coach".equals(userType)) {
         } else if ("Fan".equals(userType)) {
@@ -33,101 +39,124 @@ public class SubscriberController {
         } else if ("TeamOwner".equals(userType)) {
         }
     }
+//all the following registration functions are to create objects due to the input role type from UI
 
-    public void registerCoach(String username, String password, Integer id, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+    //register coach to the system
+    public void registerCoach(String emailAddress, String password, Integer id, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        Coach coach = new Coach(username, password, id, firstName, lastName, coachRole, qualificationCoach);
+        Coach coach = new Coach(emailAddress, password, id, firstName, lastName, coachRole, qualificationCoach);
         subscriberDb.createSubscriber(coach);
+        roleDb.createRoleInSystem( emailAddress,RoleType.COACH);
     }
 
-    public void registerFan(String username, String password, Integer id, String firstName, String lastName) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+    //register fan to the system
+    public void registerFan(String emailAddress, String password, Integer id, String firstName, String lastName) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        Fan fan = new Fan(username, password, id, firstName, lastName);
+        Fan fan = new Fan(emailAddress, password, id, firstName, lastName);
         subscriberDb.createSubscriber(fan);
+        roleDb.createRoleInSystem( emailAddress,RoleType.Fan);
     }
 
-
-    public void registerJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+    //register judge to the system
+    public void registerJudge(String emailAddress, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        Judge judge = new Judge(username, password, id, firstName, lastName, qualificationJudge);
+        Judge judge = new Judge(emailAddress, password, id, firstName, lastName, qualificationJudge);
         subscriberDb.createSubscriber(judge);
+        roleDb.createRoleInSystem( emailAddress,RoleType.JUDGE);
     }
 
-    public void registerMajorJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+    //register MajorJudge to the system
+    public void registerMajorJudge(String emailAddress, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        MajorJudge majorJudge = new MajorJudge(username, password, id, firstName, lastName, qualificationJudge);
+        MajorJudge majorJudge = new MajorJudge(emailAddress, password, id, firstName, lastName, qualificationJudge);
         subscriberDb.createSubscriber(majorJudge);
+        roleDb.createRoleInSystem( emailAddress,RoleType.MAJOR_JUDGE);
     }
 
-    public void registerPlayer(String username, String password, Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+    //register Player to the system
+    public void registerPlayer(String emailAddress, String password, Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        Player player = new Player(username, password, id, firstName, lastName, birthDate, playerRole);
+        Player player = new Player(emailAddress, password, id, firstName, lastName, birthDate, playerRole);
         subscriberDb.createSubscriber(player);
+        roleDb.createRoleInSystem( emailAddress,RoleType.PLAYER);
     }
 
-    public void registerRepresentativeAssociation(String username, String password, Integer id, String firstName, String lastName) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+    //register Representative Association to the system
+    public void registerRepresentativeAssociation(String emailAddress, String password, Integer id, String firstName, String lastName) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation(username, password, id, firstName, lastName);
+        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation(emailAddress, password, id, firstName, lastName);
         subscriberDb.createSubscriber(representativeAssociation);
+        roleDb.createRoleInSystem( emailAddress,RoleType.REPRESENTIVE_ASSOCIATION);
     }
 
-    public void registerSystemAdministrator(String username, String password, Integer id, String firstName, String lastName) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+    //register System Administrator to the system
+    public void registerSystemAdministrator(String emailAddress, String password, Integer id, String firstName, String lastName) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        SystemAdministrator systemAdministrator = new SystemAdministrator(username, password, id, firstName, lastName);
+        SystemAdministrator systemAdministrator = new SystemAdministrator(emailAddress, password, id, firstName, lastName);
         subscriberDb.createSubscriber(systemAdministrator);
+        roleDb.createRoleInSystem( emailAddress,RoleType.SYSTEM_ADMINISTRATOR);
     }
 
-    public void registerTeamManager(String username, String password, Integer id, String firstName, String lastName, Integer ownedById) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+    //register Team Manager to the system
+    public void registerTeamManager(String emailAddress, String password, Integer id, String firstName, String lastName, Integer ownedById) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        TeamManager teamManager = new TeamManager(username, password, id, firstName, lastName, ownedById);
+        TeamManager teamManager = new TeamManager(emailAddress, password, id, firstName, lastName, ownedById);
         subscriberDb.createSubscriber(teamManager);
+        roleDb.createRoleInSystem( emailAddress,RoleType.TEAM_MANAGER);
     }
 
-    public void registerTeamOwner(String username, String password, Integer id, String firstName, String lastName, Team team) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+    //register Team Owner to the system
+    public void registerTeamOwner(String emailAddress, String password, Integer id, String firstName, String lastName, Team team) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        TeamOwner teamOwner = new TeamOwner(username, password, id, firstName, lastName, team);
+        TeamOwner teamOwner = new TeamOwner(emailAddress, password, id, firstName, lastName, team);
         subscriberDb.createSubscriber(teamOwner);
+        roleDb.createRoleInSystem( emailAddress,RoleType.TEAM_OWNER);
     }
 
-
-    public Subscriber getSubscriber(String username) throws Exception {
-        if (username == null) {
+    /**
+     *
+     * @param emailAddress of the subscriber
+     * @return the subscriber with the emailAddress from the input
+     * @throws Exception if the email input is null
+     */
+    public Subscriber getSubscriber(String emailAddress) throws Exception {
+        if (emailAddress == null) {
             throw new NullPointerException();
         }
-        return subscriberDb.getSubscriber(username);
+        return subscriberDb.getSubscriber(emailAddress);
     }
 
     //use case 2.3
 
     /**
-     * @param username
+     * @param emailAddress
      * @param password
      * @return true if the login successfully
      * @throws Exception
      */
-    public boolean login(String username, String password) throws Exception {
-        if (username == null || password == null) {
+    public boolean login(String emailAddress, String password) throws Exception {
+        if (emailAddress == null || password == null) {
             return false;
         }
-        Subscriber subscriber = subscriberDb.getSubscriber(username);
+        Subscriber subscriber = subscriberDb.getSubscriber(emailAddress);
         if (subscriber != null && subscriber.getPassword().equals(password)) {
             subscriber.setStatus(Status.ONLINE);
             return true;

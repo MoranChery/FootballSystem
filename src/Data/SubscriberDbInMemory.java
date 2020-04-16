@@ -29,10 +29,10 @@ public class SubscriberDbInMemory implements SubscriberDb, Db {
      */
     @Override
     public void createSubscriber(Subscriber subscriber) throws Exception {
-        if(subscribers.containsKey(subscriber.getEmailAddress())) {
+        if(subscribers.containsKey(subscriber.getUsername())) {
             throw new Exception("subscriber already exists");
         }
-        subscribers.put(subscriber.getEmailAddress(), subscriber);
+        subscribers.put(subscriber.getUsername(), subscriber);
     }
 
 
@@ -42,6 +42,14 @@ public class SubscriberDbInMemory implements SubscriberDb, Db {
             throw new NotFoundException("Subscriber not found");
         }
         return subscribers.get(emailAddress);
+    }
+
+    @Override
+    public boolean removeSubscriberFromDB(Subscriber subscriber) {
+        if(!subscribers.containsKey(subscriber.getUsername()))
+            return false;
+        subscribers.remove(subscriber);
+        return true;
     }
 
     @Override

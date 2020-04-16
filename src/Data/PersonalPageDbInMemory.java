@@ -56,4 +56,14 @@ public class PersonalPageDbInMemory implements PersonalPageDb {
         PersonalPage personalPage = new PersonalPage(pageID);
         allPages.put(pageID,personalPage);
     }
+
+    /**
+     *
+     * @param pageId
+     * @return true if the removal worked
+     */
+    @Override
+    public void removePersonalPageFromDb(String pageId) throws Exception{
+        allPages.remove(pageId);
+    }
 }
