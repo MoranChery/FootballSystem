@@ -2,6 +2,11 @@ package Controller;
 
 import Data.*;
 import Model.Enums.QualificationJudge;
+import Model.JudgeSeasonLeague;
+import Model.League;
+import Model.Season;
+import Model.SeasonLeague;
+import Model.UsersTypes.Judge;
 
 public class RepresentativeAssociationController
 {
@@ -9,22 +14,19 @@ public class RepresentativeAssociationController
     private SeasonDb seasonDb;
     private SeasonLeagueDb seasonLeagueDb;
     private JudgeDb judgeDb;
+    private JudgeSeasonLeagueDb judgeSeasonLeagueDb;
 
-    public RepresentativeAssociationController(/*LeagueDb leagueDb, SeasonDb seasonDb, SeasonLeagueDb seasonLeagueDb, JudgeDb judgeDb*/)
+    public RepresentativeAssociationController()
     {
-//        this.leagueDb = leagueDb;
-//        this.seasonDb = seasonDb;
-//        this.seasonLeagueDb = seasonLeagueDb;
-//        this.judgeDb = judgeDb;
-//
         this.leagueDb = LeagueDbInMemory.getInstance();
         this.seasonDb = SeasonDbInMemory.getInstance();
         this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
         this.judgeDb = JudgeDbInMemory.getInstance();
+        this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
     }
 
     /**
-     * Will receive from the Service the league's name, want to create League.
+     * Will receive from the Service the league's name, create the League.
      * Will continue to Data.
      * @param leagueName-name of the new League.
      * @throws Exception-if details are incorrect.
@@ -33,13 +35,14 @@ public class RepresentativeAssociationController
     {
         if(leagueName == null)
         {
-            throw new NullPointerException();
+            throw new NullPointerException("One or more of the League details incorrect");
         }
-        leagueDb.createLeague(leagueName);
+        League league = new League(leagueName);
+        leagueDb.createLeague(league);
     }
 
     /**
-     * Will receive from the Service the season's name, want to create Season.
+     * Will receive from the Service the season's name, create the Season.
      * Will continue to Data.
      * @param seasonName-name of the new Season.
      * @throws Exception-if details are incorrect.
@@ -48,14 +51,14 @@ public class RepresentativeAssociationController
     {
         if(seasonName == null)
         {
-            throw new NullPointerException();
+            throw new NullPointerException("One or more of the Season details incorrect");
         }
-        seasonDb.createSeason(seasonName);
+        Season season = new Season(seasonName);
+        seasonDb.createSeason(season);
     }
 
     /**
-     * Will receive from the Service the league's id and the season's id, want to create SeasonLeague-
-     * combine exists League to exists Season, and define both kind of Policy to this specific SeasonLeague.
+     * Will receive from the UI the league's id the season's id the policy-calculateLeaguePoints's id and the policy-inlayGames's id, create SeasonLeague.
      * Will continue to Data.
      * @param leagueId-id of the League.
      * @param seasonId-id of the Season.
@@ -65,62 +68,72 @@ public class RepresentativeAssociationController
      */
     public void createSeasonLeague(Integer leagueId, Integer seasonId, Integer calculateLeaguePointsId, Integer inlayGamesId) throws Exception
     {
-        if(leagueId == null || seasonId == null)
+        if(leagueId == null || seasonId == null || calculateLeaguePointsId == null || inlayGamesId == null)
         {
-            throw new NullPointerException();
+            throw new NullPointerException("One or more of the SeasonLeague details incorrect");
         }
-        seasonLeagueDb.createSeasonLeague(leagueId, seasonId, calculateLeaguePointsId, inlayGamesId);
+        SeasonLeague seasonLeague = new SeasonLeague(seasonId, leagueId, calculateLeaguePointsId, inlayGamesId);
+        seasonLeagueDb.createSeasonLeague(seasonLeague);
+        seasonDb.addSeasonLeague(seasonLeague);
+        leagueDb.addSeasonLeague(seasonLeague);
     }
 
     /**
-     * Will receive from the Service the judge's name, want to create Judge.
+     * Will receive from the Service the judge's details, want to create Judge.
      * Will continue to Data.
-     * @param judgeName-name of the new Judge.
+     * @param username-username of the new Judge.
+     * @param password-password of the new Judge.
+     * @param id-id of the new Judge.
+     * @param firstName-firstName of the new Judge.
+     * @param lastName-lastName of the new Judge.
      * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudge(String judgeName, QualificationJudge qualificationJudge) throws Exception
+    public void createJudge(String username, String password,Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception
     {
-        if(judgeName == null || qualificationJudge == null)
+        if(username == null || password == null || id == null || firstName == null || lastName == null || qualificationJudge == null)
         {
-            throw new NullPointerException();
+            throw new NullPointerException("One or more of the Judge details incorrect");
         }
-        judgeDb.createJudge(judgeName, qualificationJudge);
+        Judge judge = new Judge(username, password, id, firstName, lastName, qualificationJudge);
+        judgeDb.createJudge(judge);
     }
 
     /**
-     * Will receive from the Service the judge's id, want to remove Judge.
+     * Will receive from the Service the judge's emailAddress, want to remove Judge.
      * Will continue to Data.
-     * @param judgeId-id of the Judge.
+     * @param judgeEmailAddress-emailAddress of the Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void removeJudge(Integer judgeId) throws Exception
+    public void removeJudge(String judgeEmailAddress) throws Exception
     {
-        if(judgeId == null)
+        if(judgeEmailAddress == null)
         {
-            throw new NullPointerException();
+            throw new NullPointerException("One or more of the Judge details incorrect");
         }
-        judgeDb.removeJudge(judgeId);
+        judgeDb.removeJudge(judgeEmailAddress);
     }
 
     /**
-     * Will receive from the Service the season's id, the league's id and the judge's id,
-     * want to inlay Judge to SeasonLeague.
+     * Will receive from the Service the season's id, the league's id and the judge's id, create the JudgeSeasonLeague.
      * Will continue to Data.
      * @param seasonId-id of the Season.
      * @param leagueId-id of the League.
-     * @param judgeId-id of the Judge.
+     * @param judgeEmailAddress-emailAddress of the Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void inlayJudgeToSeasonLeague(Integer seasonId, Integer leagueId, Integer judgeId) throws Exception
+    public void createJudgeSeasonLeague(Integer seasonId, Integer leagueId, String judgeEmailAddress) throws Exception
     {
-        if(seasonId == null || leagueId == null || judgeId == null)
+        if(seasonId == null || leagueId == null || judgeEmailAddress == null)
         {
-            throw new NullPointerException();
+            throw new NullPointerException("One or more of the JudgeSeasonLeague details incorrect");
         }
-        Integer seasonLeagueId = seasonLeagueDb.getSeasonLeagueIdBySeasonAndByLeague(seasonId,leagueId);
-        seasonLeagueDb.inlayJudgeToSeasonLeague(seasonLeagueId, judgeId);
-        judgeDb.inlayJudgeToSeasonLeague(seasonLeagueId, judgeId);
+        Integer seasonLeagueId = seasonDb.getSeasonLeagueIdBySeasonAndByLeague(seasonId, leagueId);
+
+        JudgeSeasonLeague judgeSeasonLeague = new JudgeSeasonLeague(seasonLeagueId, judgeEmailAddress);
+        judgeSeasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
+        seasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
+        judgeDb.createJudgeSeasonLeague(judgeSeasonLeague);
     }
 
     /**
@@ -138,7 +151,7 @@ public class RepresentativeAssociationController
         {
             throw new NullPointerException();
         }
-        Integer seasonLeagueId = seasonLeagueDb.getSeasonLeagueIdBySeasonAndByLeague(seasonId,leagueId);
+        Integer seasonLeagueId = seasonDb.getSeasonLeagueIdBySeasonAndByLeague(seasonId, leagueId);
         seasonLeagueDb.changeCalculateLeaguePointsPolicy(seasonLeagueId, calculateLeaguePointsId);
     }
 }

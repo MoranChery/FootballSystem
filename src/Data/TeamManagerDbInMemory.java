@@ -5,7 +5,9 @@ import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamManager;
 import Model.UsersTypes.TeamOwner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TeamManagerDbInMemory implements TeamManagerDb{
@@ -67,6 +69,17 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
             throw new Exception("TeamManager not found");
         }
         teamManagers.remove(managerToRemove);
+    }
+
+    @Override
+    public List<String> getAllTeamManagersOwnedBy(String teamOwnerEmail){
+        List<String> teamManagersOwnedBy = new ArrayList<>();
+        for (TeamManager teamManager: teamManagers.values()) {
+            if(teamOwnerEmail.equals(teamManager.getOwnedByEmail())){
+                teamManagersOwnedBy.add(teamManager.getEmailAddress());
+            }
+        }
+        return teamManagersOwnedBy;
     }
 
     @Override

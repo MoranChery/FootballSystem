@@ -3,8 +3,9 @@ package Data;
 import java.util.HashMap;
 import java.util.Map;
 import Model.UsersTypes.Subscriber;
+import org.omg.CORBA.NO_IMPLEMENT;
 
-public class SubscriberDbInMemory implements SubscriberDb {
+public class SubscriberDbInMemory implements SubscriberDb, Db {
     /*structure like the DB of subscriber*/
     //key: username
     //value: subscriber class
@@ -20,19 +21,7 @@ public class SubscriberDbInMemory implements SubscriberDb {
         return ourInstance;
     }
 
-    /**
-     *
-     * @param email of the Subscriber
-     * @return true- If the removal was successful
-     */
-    @Override
-   public boolean removeSubscriberFromDB(String email){
-        if(subscribers.containsKey(email)){
-            subscribers.remove(email);
-            return true;
-        }
-        return false;
-   }
+
     /**
      * for the tests - create player in DB
      * @param subscriber
@@ -40,19 +29,19 @@ public class SubscriberDbInMemory implements SubscriberDb {
      */
     @Override
     public void createSubscriber(Subscriber subscriber) throws Exception {
-        if(subscribers.containsKey(subscriber.getUsername())) {
+        if(subscribers.containsKey(subscriber.getEmailAddress())) {
             throw new Exception("subscriber already exists");
         }
-        subscribers.put(subscriber.getUsername(), subscriber);
+        subscribers.put(subscriber.getEmailAddress(), subscriber);
     }
 
 
     @Override
-    public Subscriber getSubscriber(String username) throws Exception {
-        if (!subscribers.containsKey(username)) {
-            throw new Exception("Subscriber not found");
+    public Subscriber getSubscriber(String emailAddress) throws Exception {
+        if (!subscribers.containsKey(emailAddress)) {
+            throw new NotFoundException("Subscriber not found");
         }
-        return subscribers.get(username);
+        return subscribers.get(emailAddress);
     }
 
     @Override

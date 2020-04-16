@@ -3,23 +3,34 @@ package Model.UsersTypes;
 import Model.Enums.QualificationJudge;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Judge extends Subscriber
 {
 
     private QualificationJudge qualificationJudge;
-    private List<Integer> inlaySeasonLeagueIdList;
+    private Map<Integer, Integer> seasonLeagueId_JudgeSeasonLeagueId;
 
-    public Judge(String username, String password,Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) {
+    public Judge(String username, String password,Integer id, String firstName, String lastName, QualificationJudge qualificationJudge)
+    {
         setRegisteringDetails(username,password,id,firstName,lastName);
         this.qualificationJudge = qualificationJudge;
+        this.seasonLeagueId_JudgeSeasonLeagueId = new HashMap<>();
     }
 
 
     public QualificationJudge getQualificationJudge() { return qualificationJudge; }
 
-    public List<Integer> getInlaySeasonLeagueIdList() { return inlaySeasonLeagueIdList; }
+    public void setQualificationJudge(QualificationJudge qualificationJudge) {
+        this.qualificationJudge = qualificationJudge;
+    }
+
+    public Map<Integer, Integer> getSeasonLeagueId_JudgeSeasonLeagueId() { return seasonLeagueId_JudgeSeasonLeagueId; }
+    //endregion
+
+
     //endregion
 
     //region Setters

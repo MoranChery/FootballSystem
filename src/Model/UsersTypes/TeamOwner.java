@@ -8,19 +8,20 @@ import java.util.Map;
 public class TeamOwner extends Subscriber {
 
     private Team team;
-    private Map<Integer,TeamOwner> teamOwnersByThis;
-    private Integer ownedById;
+    private Map<String,TeamOwner> teamOwnersByThis;
+    private String ownedByEmailAddress;
 
-    public TeamOwner(String username, String password, Integer id,String firstName, String lastName, Team team ) {
-        setRegisteringDetails(username,password,id,firstName,lastName);
+    public TeamOwner(String emailAddress, String password, Integer id,String firstName, String lastName, Team team ) {
+        setRegisteringDetails(emailAddress,password,id,firstName,lastName);
         this.team = team;
         this.teamOwnersByThis = new HashMap<>();
     }
 
-    public TeamOwner(Team team, Subscriber subscriber, Integer teamOwnerId) {
-        super(subscriber);
+    public TeamOwner(Team team, Subscriber subscriber, String teamOwnerEmail) {
+        setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),getLastName());
         this.team = team;
-        this.ownedById = teamOwnerId;
+        this.ownedByEmailAddress = teamOwnerEmail;
+        this.teamOwnersByThis = new HashMap<>();
     }
 
     public Team getTeam() {
@@ -31,19 +32,19 @@ public class TeamOwner extends Subscriber {
         this.team = team;
     }
 
-    public Map<Integer, TeamOwner> getTeamOwnersByThis() {
+    public Map<String, TeamOwner> getTeamOwnersByThis() {
         return teamOwnersByThis;
     }
 
-    public void setTeamOwnersByThis(Map<Integer, TeamOwner> teamOwnersByThis) {
+    public void setTeamOwnersByThis(Map<String, TeamOwner> teamOwnersByThis) {
         this.teamOwnersByThis = teamOwnersByThis;
     }
 
-    public Integer getOwnedById() {
-        return ownedById;
+    public String getOwnedByEmailAddress() {
+        return ownedByEmailAddress;
     }
 
-    public void setOwnedById(Integer ownedById) {
-        this.ownedById = ownedById;
+    public void setOwnedByEmailAddress(String ownedByEmailAddress) {
+        this.ownedByEmailAddress = ownedByEmailAddress;
     }
 }

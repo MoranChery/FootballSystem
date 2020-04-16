@@ -15,6 +15,10 @@ public class RepresentativeAssociationService
      */
     public void createLeague(String leagueName) throws Exception
     {
+        if(leagueName == null)
+        {
+            throw new NullPointerException("One or more of the League details incorrect");
+        }
         representativeAssociationController.createLeague(leagueName);
     }
 
@@ -26,12 +30,15 @@ public class RepresentativeAssociationService
      */
     public void createSeason(String seasonName) throws Exception
     {
+        if(seasonName == null)
+        {
+            throw new NullPointerException("One or more of the Season details incorrect");
+        }
         representativeAssociationController.createSeason(seasonName);
     }
 
     /**
-     * Will receive from the UI the league's id and the season's id, want to create SeasonLeague-
-     * combine exists League to exists Season, and define both kind of Policy to this specific SeasonLeague.
+     * Will receive from the UI the league's id the season's id the policy-calculateLeaguePoints's id and the policy-inlayGames's id , want to create SeasonLeague.
      * Will continue to Controller.
      * @param leagueId-id of the League.
      * @param seasonId-id of the Season.
@@ -41,44 +48,63 @@ public class RepresentativeAssociationService
      */
     public void createSeasonLeague(Integer leagueId, Integer seasonId, Integer calculateLeaguePointsId, Integer inlayGamesId) throws Exception
     {
+        if(leagueId == null || seasonId == null || calculateLeaguePointsId == null || inlayGamesId == null)
+        {
+            throw new NullPointerException("One or more of the SeasonLeague details incorrect");
+        }
         representativeAssociationController.createSeasonLeague(leagueId, seasonId, calculateLeaguePointsId, inlayGamesId);
     }
 
     /**
-     * Will receive from the UI the judge's name, want to create Judge.
-     * Will continue to Controller.
-     * @param judgeName-name of the new Judge.
+     * Will receive from the Service the judge's details, want to create Judge.
+     * Will continue to Data.
+     * @param username-username of the new Judge.
+     * @param password-password of the new Judge.
+     * @param id-id of the new Judge.
+     * @param firstName-firstName of the new Judge.
+     * @param lastName-lastName of the new Judge.
      * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudge(String judgeName, QualificationJudge qualificationJudge) throws Exception
+    public void createJudge(String username, String password,Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception
     {
-        representativeAssociationController.createJudge(judgeName, qualificationJudge);
+        if(username == null || password == null || id == null || firstName == null || lastName == null || qualificationJudge == null)
+        {
+            throw new NullPointerException("One or more of the Judge details incorrect");
+        }
+        representativeAssociationController.createJudge(username, password, id, firstName, lastName, qualificationJudge);
     }
 
     /**
      * Will receive from the UI the judge's id, want to remove Judge.
      * Will continue to Controller.
-     * @param judgeId-id of the Judge.
+     * @param judgeEmailAddress-emailAddress of the Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void removeJudge(Integer judgeId) throws Exception
+    public void removeJudge(String judgeEmailAddress) throws Exception
     {
-        representativeAssociationController.removeJudge(judgeId);
+        if(judgeEmailAddress == null)
+        {
+            throw new NullPointerException("One or more of the Judge details incorrect");
+        }
+        representativeAssociationController.removeJudge(judgeEmailAddress);
     }
 
     /**
-     * Will receive from the UI the season's id, the league's id and the judge's id,
-     * want to inlay Judge to SeasonLeague.
+     * Will receive from the UI the season's id, the league's id and the judge's id, want to create JudgeSeasonLeague.
      * Will continue to Controller.
      * @param seasonId-id of the Season.
      * @param leagueId-id of the League.
-     * @param judgeId-id of the Judge.
+     * @param judgeEmailAddress-emailAddress of the Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void inlayJudgeToSeasonLeague(Integer seasonId, Integer leagueId, Integer judgeId) throws Exception
+    public void createJudgeSeasonLeague(Integer seasonId, Integer leagueId, String judgeEmailAddress) throws Exception
     {
-        representativeAssociationController.inlayJudgeToSeasonLeague(seasonId, leagueId, judgeId);
+        if(seasonId == null || leagueId == null || judgeEmailAddress == null)
+        {
+            throw new NullPointerException("One or more of the JudgeSeasonLeague details incorrect");
+        }
+        representativeAssociationController.createJudgeSeasonLeague(seasonId, leagueId, judgeEmailAddress);
     }
 
     /**

@@ -6,16 +6,22 @@ import java.util.Objects;
 
 public class TeamManager extends Subscriber {
     private Team team;
-    private Integer ownedById;
+    private String ownedByEmail;
 
-    public TeamManager(String username, String password,Integer id, String firstName, String lastName,Integer ownedById) {
-        setRegisteringDetails(username,password,id,firstName,lastName);
-        this.ownedById = ownedById;
+    public TeamManager(String emailAddress, String password,Integer id, String firstName, String lastName,String ownedByEmail) {
+        setRegisteringDetails(emailAddress,password,id,firstName,lastName);
+        this.ownedByEmail = ownedByEmail;
     }
 
-    public TeamManager(Team team,Subscriber subscriber, Integer ownedById) {
-        super(subscriber);
-        this.ownedById = ownedById;
+    public TeamManager(Team team,Subscriber subscriber, String ownedById) {
+        setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),subscriber.getLastName());
+        this.team = team;
+        this.ownedByEmail = ownedById;
+    }
+
+    public TeamManager(String emailAddress,Integer teamManagerId, String firstName, String lastName, String ownedById) {
+        setRegisteringDetails(emailAddress,teamManagerId,firstName,lastName);
+        this.ownedByEmail = ownedById;
     }
 
     public Team getTeam() {
@@ -26,12 +32,12 @@ public class TeamManager extends Subscriber {
         this.team = team;
     }
 
-    public Integer getOwnedById() {
-        return ownedById;
+    public String getOwnedByEmail() {
+        return ownedByEmail;
     }
 
-    public void setOwnedById(Integer ownedById) {
-        this.ownedById = ownedById;
+    public void setOwnedByEmail(String ownedByEmail) {
+        this.ownedByEmail = ownedByEmail;
     }
 
     @Override
