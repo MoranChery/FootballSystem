@@ -8,6 +8,7 @@ import java.util.List;
 
 public class System {
 
+    LogFunctionality log;
     List<League> allLeagues;
     List<User> allUsers;
     List<Complaint> allComplaints;
@@ -85,4 +86,7 @@ public class System {
         return allSystemAdministrators;
     }
 
+    public void creteLog(String outputPath) {
+        this.log = new LogFunctionality(outputPath);
+    }
 }

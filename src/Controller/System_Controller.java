@@ -1,17 +1,26 @@
 package Controller;
 
+import Model.System;
 import Model.UsersTypes.SystemAdministrator;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class System_Controller {
-    private static boolean isInitialize = false;
-    private static List<SystemAdministrator> systemAdministrators;
+    private System system;
+
+    public static boolean isIsInitialize() {
+        return isInitialize;
+    }
+
+    private static boolean isInitialize;
+    private List<SystemAdministrator> systemAdministrators;
     private static System_Controller ourInstance= new System_Controller();
 
     private System_Controller() {
-        systemAdministrators = new ArrayList<>();
+        system= System.getInstance();
+        systemAdministrators = system.getAllSystemAdministrators();
     }
 
     public static System_Controller getInstance() throws Exception {
@@ -22,49 +31,27 @@ public class System_Controller {
             throw new Exception("The system must be rebooted first");
         }
     }
+
     /**
      * When the user presses the system reboot for the first time, we use this method
      * @throws Exception - Something went wrong with this method
      */
-    private static void startInitializeTheSystem() throws Exception {
+    public void startInitializeTheSystem() throws Exception {
         if(connectionToExternalSystems()){
-            ShowAdminRegistrationForm();
         }
         else{
             throw new Exception("Something got wrong- function: startInitializeTheSystem in System_Controller");
-
         }
 
-    }
-
-    private void displaysMessageSuccessfulAdministratorRegistration() {
-        //todo- Adds a successful administrator registration alert
-        //  then- displayHomeScreen
-        displayHomeScreen();
     }
 
     /**
      * This method will show the user the home screen
      */
     //todo
-    private static void displayHomeScreen() {
-    }
-
-    /**
-     * This method will close the displayed user window
-     */
-    //todo
-    private void closeWindow() {
+    public void displayHomeScreen() {
 
     }
-
-    /**
-     * An initial administrator registration form is displayed to the user
-     */
-    private static void ShowAdminRegistrationForm() {
-        //todo
-    }
-
 
     /**
      *When the user clicks the submit button
@@ -72,7 +59,7 @@ public class System_Controller {
      * @param allDetails - All parameters on the administrator
      * @throws Exception - If the registry could not be made from any error, this error will cause an appropriate message
      */
-    private void initialAdministratorRegistration(String[] allDetails) throws Exception {
+    public void initialAdministratorRegistration(String[] allDetails) throws Exception {
         if(allDetails!=null && allDetails.length == 5) {
             boolean[] isDetailsCorrect = checkDetails(allDetails);
             boolean isProblem = false;
@@ -90,23 +77,21 @@ public class System_Controller {
                 String lastName= allDetails[4];
                 SystemAdministrator systemAdministrator= new SystemAdministrator(username, password,id, firstName, lastName);
                 systemAdministrators.add(systemAdministrator);
-                closeWindow();
-                displaysMessageSuccessfulAdministratorRegistration();
                 isInitialize = true;
             } else {
                 ArrayList whereIsDetailsProblem= problemWithTheDetails(isDetailsCorrect);
-                closeWindow();
                 ShowAgainAdminRegistrationForm(whereIsDetailsProblem);
             }
         }
+
     }
 
     private void ShowAgainAdminRegistrationForm(ArrayList<Integer> whereIsDetailsProblem) {
+
         //todo
     }
 
-
-    private static ArrayList problemWithTheDetails(boolean[] isDetailsCorrect) throws Exception {
+    private ArrayList problemWithTheDetails(boolean[] isDetailsCorrect) throws Exception {
         if(isDetailsCorrect!=null) {
             ArrayList<Integer> whereIsDetailsProblem = new ArrayList<>();
             for (int i= 0; i<isDetailsCorrect.length ; i++) {
@@ -122,7 +107,7 @@ public class System_Controller {
         }
     }
 
-    private static boolean[] checkDetails(String[] allDetails) throws Exception {
+    private boolean[] checkDetails(String[] allDetails) throws Exception {
         if(allDetails!=null && allDetails.length==5){
             boolean[] isCorrect= new boolean[allDetails.length];
             for (int i = 0 ; i<allDetails.length ; i++){
@@ -145,7 +130,7 @@ public class System_Controller {
         }
     }
 
-    private static boolean connectionToExternalSystems() throws Exception {
+    private boolean connectionToExternalSystems() throws Exception {
         if(!logInToTheAccountingSystem()){
             throw new Exception("problem in login accounting system");
         }
@@ -159,23 +144,28 @@ public class System_Controller {
     }
 
     //todo
-    private static boolean logInToTheTaxLawSystem() {
+    private boolean logInToTheTaxLawSystem() {
         return true;
     }
+
     //todo
-    private static boolean logInToTheAccountingSystem() {
+    private boolean logInToTheAccountingSystem() {
         return true;
     }
 
-    public static void main(String[] args) throws Exception {
-        if(isInitialize){
-            displayHomeScreen();
-        }
-        else {
-            startInitializeTheSystem();
-        }
+    /**
+     * This method creates the log file
+     * @param path - The path where to save the log file
+     */
+    public void createLog(String path) {
+        system.creteLog(path);
 
     }
+
+    public static void main(String[] args){
+
+    }
+
 
 
 }
