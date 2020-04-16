@@ -5,7 +5,6 @@ import Model.Court;
 import Model.Enums.*;
 import Model.FinancialActivity;
 import Model.Team;
-import Model.TeamPage;
 import Model.UsersTypes.*;
 
 import java.util.*;
@@ -87,10 +86,7 @@ public class TeamController {
             addTeamManager(teamName,teamManager.getEmailAddress(),teamManager.getId(),teamManager.getFirstName(),teamManager.getLastName(),teamManager.getOwnedByEmail());
         }
         addCourt(teamName,court.getCourtName(),court.getCourtCity());
-        TeamPage teamPage = new TeamPage(teamName,getTeam(teamName));
         personalPageDb.createTeamPage(teamName,getTeam(teamName));
-        teamDb.addTeamPage(teamPage);
-
     }
 
 

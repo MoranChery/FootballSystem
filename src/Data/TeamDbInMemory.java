@@ -5,7 +5,6 @@ import Model.Enums.FinancialActivityType;
 import Model.Enums.TeamStatus;
 import Model.FinancialActivity;
 import Model.Team;
-import Model.TeamPage;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
@@ -226,17 +225,6 @@ public class TeamDbInMemory implements TeamDb {
         }else{
            throw new Exception("The team already " + teamStatus.toString());
        }
-   }
-
-
-   @Override
-   public void addTeamPage(TeamPage teamPage) throws Exception {
-       String teamName = teamPage.getTeam().getTeamName();
-       if(teamPage == null || !teams.containsKey(teamName)) {
-           throw new Exception("Team not found");
-       }
-       Team team = teams.get(teamName);
-        team.setTeamPage(teamPage);
    }
 
     @Override
