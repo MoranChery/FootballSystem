@@ -10,10 +10,10 @@ import java.util.*;
 
 public class Team {
    private String teamName;
-   private Map <Integer, TeamOwner> teamOwners;
-   private Map<Integer, Player> players;
-   private Map<Integer,Coach> coaches;
-   private Map<Integer, TeamManager> teamManagers;
+   private Map <String, TeamOwner> teamOwners;
+   private Map<String, Player> players;
+   private Map<String,Coach> coaches;
+   private Map<String, TeamManager> teamManagers;
    private Map<String, FinancialActivity> financialActivities;
    private Court court;
    private List<Game> games;
@@ -29,7 +29,6 @@ public class Team {
         games = new ArrayList<>();
         teamStatus = TeamStatus.ACTIVE;
         financialActivities = new HashMap<>();
-
     }
 
     public String getTeamName() {
@@ -40,27 +39,27 @@ public class Team {
         this.teamName = teamName;
     }
 
-    public Map<Integer, Player> getPlayers() {
+    public Map<String, Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(Map<Integer, Player> players) {
+    public void setPlayers(Map<String, Player> players) {
         this.players = players;
     }
 
-    public void setCoaches(Map<Integer, Coach> coaches) {
+    public void setCoaches(Map<String, Coach> coaches) {
         this.coaches = coaches;
     }
 
-    public Map<Integer, Coach> getCoaches() {
+    public Map<String, Coach> getCoaches() {
         return coaches;
     }
 
-    public Map<Integer, TeamManager> getTeamManagers() {
+    public Map<String, TeamManager> getTeamManagers() {
         return teamManagers;
     }
 
-    public void setTeamManagers(Map<Integer, TeamManager> teamManagers) {
+    public void setTeamManagers(Map<String, TeamManager> teamManagers) {
         this.teamManagers = teamManagers;
     }
 
@@ -80,11 +79,11 @@ public class Team {
         this.court = court;
     }
 
-    public Map<Integer, TeamOwner> getTeamOwners() {
+    public Map<String, TeamOwner> getTeamOwners() {
         return teamOwners;
     }
 
-    public void setTeamOwners(Map<Integer, TeamOwner> teamOwners) {
+    public void setTeamOwners(Map<String, TeamOwner> teamOwners) {
         this.teamOwners = teamOwners;
     }
 

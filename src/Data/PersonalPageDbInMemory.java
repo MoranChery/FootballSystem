@@ -69,14 +69,4 @@ public class PersonalPageDbInMemory implements PersonalPageDb {
         TeamPage personalPage = new TeamPage(pageID ,team);
         allPages.put(pageID,personalPage);
     }
-
-    /**
-     *
-     * @param pageId
-     * @return true if the removal worked
-     */
-    @Override
-    public void removePersonalPageFromDb(String pageId) throws Exception{
-        allPages.remove(pageId);
-    }
 }

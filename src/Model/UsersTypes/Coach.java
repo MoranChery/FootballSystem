@@ -17,6 +17,12 @@ public class Coach extends Subscriber {
         this.qualificationCoach = qualificationCoach;
     }
 
+    public Coach(String emailAddress, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) {
+        setRegisteringDetails(emailAddress,coachId,firstName,lastName);
+        this.coachRole = coachRole;
+        this.qualificationCoach = qualificationCoach;
+    }
+
     public Team getTeam() {
         return team;
     }
