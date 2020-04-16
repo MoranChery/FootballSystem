@@ -1,14 +1,18 @@
 package Data;
 
+import Model.Page;
 import Model.PersonalPage;
+import Model.Team;
+import Model.TeamPage;
 import Model.UsersTypes.Fan;
+import Model.UsersTypes.Subscriber;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PersonalPageDbInMemory implements PersonalPageDb {
 
-    private Map<String, PersonalPage> allPages;
+    private Map<String, Page> allPages;
 
 
     private static PersonalPageDbInMemory ourInstance = new PersonalPageDbInMemory();
@@ -27,7 +31,7 @@ public class PersonalPageDbInMemory implements PersonalPageDb {
         if(fanToAdd == null){
             throw new Exception("Fan not found");
         }
-        PersonalPage page = allPages.get(pageID);
+        Page page = allPages.get(pageID);
         if(page == null){
             throw new Exception("Page not found");
         }
@@ -40,8 +44,8 @@ public class PersonalPageDbInMemory implements PersonalPageDb {
     }
 
     @Override
-    public PersonalPage getPage(String pageId) throws NotFoundException {
-        PersonalPage page = allPages.get(pageId);
+    public Page getPage(String pageId) throws NotFoundException {
+        Page page = allPages.get(pageId);
         if(page == null){
             throw new NotFoundException("Page not found");
         }
@@ -49,11 +53,20 @@ public class PersonalPageDbInMemory implements PersonalPageDb {
     }
 
     @Override
-    public void createPage(String pageID) throws Exception {
+    public void createPersonalPage(String pageID, Subscriber subscriber) throws Exception {
         if(allPages.containsKey(pageID)){
             throw new Exception("Page already exist in the system");
         }
-        PersonalPage personalPage = new PersonalPage(pageID);
+        PersonalPage personalPage = new PersonalPage(pageID,subscriber);
+        allPages.put(pageID,personalPage);
+    }
+
+    @Override
+    public void createTeamPage(String pageID, Team team) throws Exception {
+        if(allPages.containsKey(pageID)){
+            throw new Exception("Page already exist in the system");
+        }
+        TeamPage personalPage = new TeamPage(pageID ,team);
         allPages.put(pageID,personalPage);
     }
 }

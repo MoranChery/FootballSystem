@@ -2,12 +2,14 @@ package Model.UsersTypes;
 
 import Model.Enums.CoachRole;
 import Model.Enums.QualificationCoach;
+import Model.PersonalPage;
 import Model.Team;
 
 public class Coach extends Subscriber {
     private Team team;
     private CoachRole coachRole;
     private QualificationCoach qualificationCoach;
+    private PersonalPage coachPage;
 
     public Coach(String username,String password,Integer id, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) {
         setRegisteringDetails(username,password,id,firstName,lastName);

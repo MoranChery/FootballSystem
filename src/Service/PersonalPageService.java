@@ -1,7 +1,5 @@
 package Service;
 
-import Controller.PersonalPageController;
-
 public class PersonalPageService {
 
     private PersonalPageController pageController;

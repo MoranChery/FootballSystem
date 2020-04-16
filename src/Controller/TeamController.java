@@ -244,7 +244,7 @@ public class TeamController {
             try {
                 /*check if there is other subscriber already*/
                 subscriberDb.getSubscriber(emailAddress);
-                throw new Exception("The teamManager to added already has other subscriber type - you can to appoint him to team manager");
+                throw new Exception("The coach to added already has other subscriber type - you can to appoint him to team manager");
             } catch(NotFoundException ex) {
                 /*give random password to player when open new subscriber*/
                 currCoach.setPassword(UUID.randomUUID().toString());
@@ -592,6 +592,7 @@ public class TeamController {
             throw new Exception("This Team's status - Inactive");
         }
     }
+
 
     /**
      * update player's details

@@ -20,7 +20,7 @@ public class Team {
    private List<Game> games;
    private Double budget;
    private TeamStatus teamStatus;
-   private PersonalPage personalPage;
+   private TeamPage personalPage;
 
     public Team() {
         teamOwners = new HashMap<>();
@@ -118,5 +118,13 @@ public class Team {
 
     public void setTeamStatus(TeamStatus teamStatus) {
         this.teamStatus = teamStatus;
+    }
+
+    public TeamPage getPersonalPage() {
+        return personalPage;
+    }
+
+    public void setPersonalPage(TeamPage personalPage) {
+        this.personalPage = personalPage;
     }
 }

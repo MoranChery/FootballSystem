@@ -35,7 +35,7 @@ public class FanController {
         Fan fan = fanDb.getFan(fanMail);
         PersonalPage pageToAdd = new PersonalPage(pageId);
         Map<String, PersonalPage> fansPages = fan.getMyPages();
-        PersonalPage testPage = personalPageDb.getPage(pageId);
+        PersonalPage testPage = (PersonalPage) personalPageDb.getPage(pageId);
         if(!testPage.equals(pageToAdd)){
             throw new Exception("One or more of the details incorrect");
         }
