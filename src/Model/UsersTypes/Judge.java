@@ -2,6 +2,7 @@ package Model.UsersTypes;
 
 import Model.Enums.JudgeType;
 import Model.Enums.QualificationJudge;
+import Model.Game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,8 +14,7 @@ public class Judge extends Subscriber
     private QualificationJudge qualificationJudge;
     private Map<Integer, Integer> seasonLeagueId_JudgeSeasonLeagueId;
     private JudgeType judgeType;
-
-
+    private Map<Integer, Game> theJudgeGameList; // gameId_game
 
     public Judge(String username, String password,Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theJudgeType)
     {
@@ -33,6 +33,21 @@ public class Judge extends Subscriber
 
     public Map<Integer, Integer> getSeasonLeagueId_JudgeSeasonLeagueId() { return seasonLeagueId_JudgeSeasonLeagueId; }
     //endregion
+
+    public JudgeType getJudgeType() {
+        return judgeType;
+    }
+
+    public void setJudgeType(JudgeType judgeType) {
+        this.judgeType = judgeType;
+    }
+    public Map<Integer, Game> getTheJudgeGameList() {
+        return theJudgeGameList;
+    }
+
+    public void setTheJudgeGameList(Map<Integer, Game> theJudgeGameList) {
+        this.theJudgeGameList = theJudgeGameList;
+    }
 
 
     //endregion
