@@ -22,7 +22,6 @@ public class System_Controller {
             throw new Exception("The system must be rebooted first");
         }
     }
-
     /**
      * When the user presses the system reboot for the first time, we use this method
      * @throws Exception - Something went wrong with this method
