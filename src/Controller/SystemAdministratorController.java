@@ -119,7 +119,7 @@ public class SystemAdministratorController {
             removeTeamOwner(owner);
         }
         //remove teamOwner from teamOwnerDb
-        teamOwnerDb.removeSubscriptionTeamOwner(teamOwner.getId());
+        teamOwnerDb.removeSubscriptionTeamOwner(teamOwner.getEmailAddress());
         try {
             subscriberDb.removeSubscriberFromDB(teamOwner);
         } catch (Exception e) {
