@@ -22,9 +22,6 @@ public class FanService {
     public void logOut(String fanMail) throws Exception{
         fanController.logOut(fanMail);
     }
-
-
-
     public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
         fanController.wantToEditPassword(fanMail, newPassword);
     }

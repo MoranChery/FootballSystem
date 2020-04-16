@@ -157,6 +157,7 @@ public class FanDbInMemory implements FanDb{
         theFan.setLastName(newLastName);
     }
 
+    /**
     @Override
     public Set<Search> watchMySearchHistory(String fanMail) throws Exception {
         if(fanMail == null){
@@ -190,7 +191,7 @@ public class FanDbInMemory implements FanDb{
         searchSet.add(myNewSearch);
         theFan.setMySearchHistory(searchSet);
     }
-
+**/
 //    public void editPersonalDetails(String fanMail,String password, Integer id, String firstName, String lastName) throws Exception {
 //        if(fanMail == null || password == null || id == null || firstName == null || lastName == null){
 //            throw new Exception("bad input");

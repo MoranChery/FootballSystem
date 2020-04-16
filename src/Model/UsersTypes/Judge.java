@@ -1,5 +1,6 @@
 package Model.UsersTypes;
 
+import Model.Enums.JudgeType;
 import Model.Enums.QualificationJudge;
 
 import java.util.ArrayList;
@@ -11,12 +12,16 @@ public class Judge extends Subscriber
 {
     private QualificationJudge qualificationJudge;
     private Map<Integer, Integer> seasonLeagueId_JudgeSeasonLeagueId;
+    private JudgeType judgeType;
 
-    public Judge(String username, String password,Integer id, String firstName, String lastName, QualificationJudge qualificationJudge)
+
+
+    public Judge(String username, String password,Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theJudgeType)
     {
         setRegisteringDetails(username,password,id,firstName,lastName);
         this.qualificationJudge = qualificationJudge;
         this.seasonLeagueId_JudgeSeasonLeagueId = new HashMap<>();
+        judgeType = theJudgeType;
     }
 
 

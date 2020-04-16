@@ -199,11 +199,12 @@ public class FanController {
         fanDb.wantToEditLastName(fanMail, newLastName);
     }
 
+    /**
     public void watchMySearchHistory(String fanMail) throws Exception {
 
         fanDb.watchMySearchHistory(fanMail);
     }
-
+**/
 
 
 //    public void editPersonalDetails(String fanMail,String password, Integer id, String firstName, String lastName) throws Exception {

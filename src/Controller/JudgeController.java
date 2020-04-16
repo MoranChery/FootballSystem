@@ -18,6 +18,15 @@ public class JudgeController {
         }
         judgeDb.createJudge(judge);
     }
+
+    /**
+     * this function enable the judge to edit his password
+     * @param judgeMail String the judge id- email address
+     * @param newPassword String the new password the judge want to change to
+     * @throws Exception NullPointerException - if one or more of the inputs is null
+     * NotFoundException - if the judge is not in the db
+     * Exception - if the new password is equal to the current password
+     */
     public void wantToEditPassword(String judgeMail, String newPassword) throws Exception {
         if(judgeMail == null || newPassword == null){
             throw new NullPointerException("bad input");
@@ -31,6 +40,16 @@ public class JudgeController {
         }
         judgeDb.wantToEditPassword(judgeMail, newPassword);
     }
+
+    /**
+     * this function enable the judge to edit his first name
+     * @param judgeMail String the judge id- email address
+     * @param newFirstName String the new first name the judge want to change to
+     * @throws Exception NullPointerException - if one or more of the inputs is null
+     * NotFoundException - if the judge is not in the db
+     * Exception - if the new first name is equal to the current first name
+     *
+     */
     public void wantToEditFirstName(String judgeMail, String newFirstName) throws Exception {
         if(judgeMail == null || newFirstName == null){
             throw new NullPointerException("bad input");
@@ -44,6 +63,15 @@ public class JudgeController {
         }
         judgeDb.wantToEditFirstName(judgeMail, newFirstName);
     }
+
+    /**
+     * this function enable the judge to edit his last name
+     * @param judgeMail String the judge id- email address
+     * @param newLastName String the new last name the judge want to change to
+     * @throws Exception NullPointerException - if one or more of the inputs is null
+     * NotFoundException - if the judge is not in the db
+     * Exception - if the new last name is equal to the current last name
+     */
     public void wantToEditLastName(String judgeMail, String newLastName) throws Exception {
         if(judgeMail == null || newLastName == null){
             throw new NullPointerException("bad input");
@@ -57,6 +85,15 @@ public class JudgeController {
         }
         judgeDb.wantToEditLastName(judgeMail, newLastName);
     }
+
+    /**
+     * this function enable the judge to edit qualification
+     * @param judgeMail String the judge id- email address
+     * @param newQualification String the new qualification the judge want to change to
+     * @throws Exception NullPointerException - if one or more of the inputs is null
+     * NotFoundException - if the judge is not in the db
+     * Exception - if the new qualification is equal to the current qualification
+     */
     public void wantToEditQualification(String judgeMail, String newQualification) throws Exception {
         if(judgeMail == null || newQualification == null){
             throw new NullPointerException("bad input");

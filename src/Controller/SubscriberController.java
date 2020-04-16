@@ -58,21 +58,21 @@ public class SubscriberController {
     }
 
 
-    public void registerJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
+    public void registerJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType judgeType) throws Exception {
         if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        Judge judge = new Judge(username, password, id, firstName, lastName, qualificationJudge);
+        Judge judge = new Judge(username, password, id, firstName, lastName, qualificationJudge,judgeType);
         subscriberDb.createSubscriber(judge);
     }
 
-    public void registerMajorJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
-            throw new Exception("you should use only letters and numbers!");
-        }
-        MajorJudge majorJudge = new MajorJudge(username, password, id, firstName, lastName, qualificationJudge);
-        subscriberDb.createSubscriber(majorJudge);
-    }
+//    public void registerMajorJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
+//        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
+//            throw new Exception("you should use only letters and numbers!");
+//        }
+//        MajorJudge majorJudge = new MajorJudge(username, password, id, firstName, lastName, qualificationJudge);
+//        subscriberDb.createSubscriber(majorJudge);
+//    }
 
     public void registerPlayer(String username, String password, Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
         if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
