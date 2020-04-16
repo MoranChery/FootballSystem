@@ -20,8 +20,6 @@ public class System_ControllerTest {
     @Test
     public void getInstance() {
 
-
-
     }
 
     @Test

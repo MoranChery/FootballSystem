@@ -7,6 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class System_Controller {
+
+    static CoachController coachController;
+    static FanController fanController;
+    static JudgeController judgeController;
+    static PersonalPageController personalPageController;
+    static PlayerController playerController;
+    static RepresentativeAssociationController representativeAssociationController;
+    static SubscriberController subscriberController;
+    static SystemManagerController systemManagerController;
+    static TeamController teamController;
+    static TeamManagerController teamManagerController;
+    static TeamOwnerController teamOwnerController;
+
     private System system;
 
     public static boolean isIsInitialize() {
@@ -74,8 +87,21 @@ public class System_Controller {
                 Integer id= Integer.parseInt(allDetails[2]);
                 String firstName= allDetails[3];
                 String lastName= allDetails[4];
+                systemManagerController= new SystemManagerController();
+                //todo- Change - used the function from controller of systemManagerController
                 SystemAdministrator systemAdministrator= new SystemAdministrator(username, password,id, firstName, lastName);
                 systemAdministrators.add(systemAdministrator);
+                //todo
+                coachController = new CoachController();
+                fanController= new FanController();
+                judgeController = new JudgeController();
+                personalPageController =new PersonalPageController();
+                playerController= new PlayerController();
+                representativeAssociationController= new RepresentativeAssociationController();
+                subscriberController= new SubscriberController();
+                teamController= new TeamController();
+                teamManagerController= new TeamManagerController();
+                teamOwnerController= new TeamOwnerController();
                 isInitialize = true;
             } else {
                 ArrayList whereIsDetailsProblem= problemWithTheDetails(isDetailsCorrect);
