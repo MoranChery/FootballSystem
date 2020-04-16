@@ -2169,6 +2169,8 @@ public void testsCreateNewTeamInvalidInputs() {
         team = court.getTeam(teamName);
         Assert.assertEquals("courtName",team.getCourt().getCourtName());
         Assert.assertEquals("courtCity",team.getCourt().getCourtCity());
+
+        Assert.assertEquals(teamName,team.getTeamPage().getPageID());
     }
 
 

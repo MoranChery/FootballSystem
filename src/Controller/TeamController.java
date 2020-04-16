@@ -86,7 +86,7 @@ public class TeamController {
             addTeamManager(teamName,teamManager.getEmailAddress(),teamManager.getId(),teamManager.getFirstName(),teamManager.getLastName(),teamManager.getOwnedByEmail());
         }
         addCourt(teamName,court.getCourtName(),court.getCourtCity());
-        personalPageDb.createPage(teamName);
+        personalPageDb.createTeamPage(teamName,getTeam(teamName));
     }
 
 
