@@ -1,6 +1,6 @@
 package Model;
 
-public class CalculateLeaguePoints extends Model.Policy
+public class CalculateLeaguePoints extends Policy
 {
     static int calculateLeaguePointsIdCounter = 0;
 

@@ -1,4 +1,4 @@
 package Model.Enums;
 
-public enum AlertWay {
+public enum FieldRole {
 }

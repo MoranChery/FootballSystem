@@ -14,14 +14,8 @@ public class Player extends Subscriber {
     private PersonalPage coachPage;
 
 
-    public Player(String emailAddress, String password,Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) {
-        setRegisteringDetails(emailAddress,password,id,firstName,lastName);
-        this.birthDate = birthDate;
-        this.playerRole = playerRole;
-    }
-
-    public Player(String emailAddress, Integer playerId, String firstName, String lastName, Date birthDate, PlayerRole playerRole) {
-        setRegisteringDetails(emailAddress,playerId,firstName,lastName);
+    public Player(String username, String password,Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) {
+        setRegisteringDetails(username,password,id,firstName,lastName);
         this.birthDate = birthDate;
         this.playerRole = playerRole;
     }
@@ -56,8 +50,7 @@ public class Player extends Subscriber {
         if (!(o instanceof Player)) return false;
         if (!super.equals(o)) return false;
         Player player = (Player) o;
-        return Objects.equals(team, player.team) &&
-                Objects.equals(birthDate, player.birthDate) &&
+        return Objects.equals(birthDate, player.birthDate) &&
                 playerRole == player.playerRole;
     }
 
@@ -65,18 +58,4 @@ public class Player extends Subscriber {
     public int hashCode() {
         return Objects.hash(super.hashCode(), team, birthDate, playerRole);
     }
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof Player)) return false;
-//        if (!super.equals(o)) return false;
-//        Player player = (Player) o;
-//        return Objects.equals(birthDate, player.birthDate) &&
-//                playerRole == player.playerRole;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(super.hashCode(), team, birthDate, playerRole);
-//    }
 }

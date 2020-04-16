@@ -2,31 +2,20 @@ package Model.UsersTypes;
 
 import Model.Enums.Status;
 
-import java.util.Objects;
-
-
 public abstract class Subscriber extends Model.UsersTypes.User {
-    protected String emailAddress;
+    protected String username;
     protected String password;
     protected Integer id;
     protected String firstName;
     protected String LastName;
-    protected Status status = Status.OFFLINE;
-
+    protected Status status=Status.OFFLINE;
 
     public void setRegisteringDetails(String emailAddress, String password, Integer id, String firstName, String lastName){
         setFirstName(firstName);
         setId(id);
         setLastName(lastName);
         setPassword(password);
-        setEmailAddress(emailAddress);
-    }
-
-    public void setRegisteringDetails(String emailAddress,Integer id, String firstName, String lastName){
-        setEmailAddress(emailAddress);
-        setFirstName(firstName);
-        setId(id);
-        setLastName(lastName);
+        setUsername(emailAddress);
     }
 
     public void setId(Integer id) {
@@ -62,11 +51,11 @@ public abstract class Subscriber extends Model.UsersTypes.User {
     }
 
     public String getEmailAddress() {
-        return emailAddress;
+        return username;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -75,23 +64,5 @@ public abstract class Subscriber extends Model.UsersTypes.User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Subscriber)) return false;
-        Subscriber that = (Subscriber) o;
-        return Objects.equals(emailAddress, that.emailAddress) &&
-                Objects.equals(password, that.password) &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(firstName, that.firstName) &&
-                Objects.equals(LastName, that.LastName) &&
-                status == that.status;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(emailAddress, password, id, firstName, LastName, status);
     }
 }

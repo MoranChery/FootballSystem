@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class Judge extends Subscriber
 {
+
     private QualificationJudge qualificationJudge;
     private Map<Integer, Integer> seasonLeagueId_JudgeSeasonLeagueId;
 

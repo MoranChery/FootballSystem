@@ -8,6 +8,9 @@ import Model.Team;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
+import com.sun.xml.internal.bind.v2.TODO;
+import org.omg.PortableInterceptor.ACTIVE;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,31 +72,31 @@ public class TeamDbInMemory implements TeamDb {
             throw new Exception("Team not found");
         }
 
-        Map<String, Player> players = team.getPlayers();
-        String emailAddress = player.getEmailAddress();
+        Map<Integer, Player> players = team.getPlayers();
+        Integer id = player.getId();
 
-        if(players.containsKey(emailAddress)) {
+        if(players.containsKey(id)) {
             throw new Exception("Player already part of the team");
         }
-        players.put(emailAddress, player);
+        players.put(id, player);
         player.setTeam(team);
     }
 
     @Override
-    public void addTeamManager(String teamName, TeamManager teamManager, String ownedByEmail) throws Exception {
+    public void addTeamManager(String teamName, TeamManager teamManager, Integer ownedById) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
         }
-        Map<String, TeamManager> teamManagers = team.getTeamManagers();
-        String emailAddress = teamManager.getEmailAddress();
+        Map<Integer, TeamManager> teamManagers = team.getTeamManagers();
+        Integer id = teamManager.getId();
 
-        if(teamManagers.containsKey(emailAddress)) {
+        if(teamManagers.containsKey(id)) {
             throw new Exception("TeamManager already part of the team");
         }
-        teamManagers.put(emailAddress, teamManager);
+        teamManagers.put(id, teamManager);
         teamManager.setTeam(team);
-        teamManager.setOwnedByEmail(ownedByEmail);
+        teamManager.setOwnedById(ownedById);
     }
 
     @Override
@@ -103,13 +106,13 @@ public class TeamDbInMemory implements TeamDb {
             throw new Exception("Team not found");
         }
 
-        Map<String, Coach> coaches = team.getCoaches();
-        String emailAddress = coach.getEmailAddress();
+        Map<Integer, Coach> coaches = team.getCoaches();
+        Integer id = coach.getId();
 
-        if(coaches.containsKey(emailAddress)) {
+        if(coaches.containsKey(id)) {
             throw new Exception("Coach already part of the team");
         }
-        coaches.put(emailAddress, coach);
+        coaches.put(id, coach);
         coach.setTeam(team);
     }
 
@@ -126,21 +129,21 @@ public class TeamDbInMemory implements TeamDb {
     /**
      * remove the player from the team in DB
      * @param teamName
-     * @param playerEmailAddress
+     * @param playerId
      * @throws Exception
      */
     @Override
-    public void removePlayer(String teamName, String playerEmailAddress) throws Exception {
+    public void removePlayer(String teamName, Integer playerId) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
         }
 
-        Map<String, Player> players = team.getPlayers();
-        if(!players.containsKey(playerEmailAddress)) {
+        Map<Integer, Player> players = team.getPlayers();
+        if(!players.containsKey(playerId)) {
             throw new Exception("Player not part of the team");
         }
-        Player player = players.remove(playerEmailAddress);
+        Player player = players.remove(playerId);
         //TODO check if needed
         player.setTeam(null);
     }
@@ -148,33 +151,33 @@ public class TeamDbInMemory implements TeamDb {
 
 
     @Override
-    public void removeTeamManager(String teamName, String teamManagerEmailAddress) throws Exception {
+    public void removeTeamManager(String teamName, Integer teamManagerId) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
         }
 
-        Map<String, TeamManager> teamManagers = team.getTeamManagers();
-        if(!teamManagers.containsKey(teamManagerEmailAddress)) {
+        Map<Integer, TeamManager> teamManagers = team.getTeamManagers();
+        if(!teamManagers.containsKey(teamManagerId)) {
             throw new Exception("TeamManager not part of the team");
         }
-        TeamManager teamManager = teamManagers.remove(teamManagerEmailAddress);
+        TeamManager teamManager = teamManagers.remove(teamManagerId);
         //TODO check if needed
         teamManager.setTeam(null);
     }
 
     @Override
-    public void removeCoach(String teamName, String coachEmailAddress) throws Exception {
+    public void removeCoach(String teamName, Integer coachId) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
         }
 
-        Map<String, Coach> coaches = team.getCoaches();
-        if(!coaches.containsKey(coachEmailAddress)) {
+        Map<Integer, Coach> coaches = team.getCoaches();
+        if(!coaches.containsKey(coachId)) {
             throw new Exception("Coach not part of the team");
         }
-        Coach coach = coaches.remove(coachEmailAddress);
+        Coach coach = coaches.remove(coachId);
         //TODO check if needed
         coach.setTeam(null);
     }

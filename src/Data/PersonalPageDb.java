@@ -13,4 +13,5 @@ public interface PersonalPageDb {
     void createTeamPage(String pageID, Team team) throws Exception;
     void createPersonalPage(String pageID, Subscriber subscriber) throws Exception;
 
-    }
+    void removePersonalPageFromDb(String pageId) throws Exception;
+}
