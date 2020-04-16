@@ -11,6 +11,9 @@ import Model.UsersTypes.Fan;
 import java.util.Map;
 import java.util.Set;
 
+import static Model.Enums.AlertWay.EmailAlert;
+import static Model.Enums.GamesAlert.ALERTS_ON;
+
 public class FanController {
 
     private FanDb fanDb;
@@ -71,23 +74,21 @@ public class FanController {
         fanDb.logOut(fanMail);
     }
 
-
-    public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
-        if(fanMail == null || alert == null || alertWay == null){
-            throw new NullPointerException("bad input");
+    public void askToGetAlerts(String fanMail, AlertWay alertWay) throws Exception {
+        if(fanMail == null || alertWay == null){
+            throw new NullPointerException("One or more of the inputs is wrong");
         }
         Fan fan = fanDb.getFan(fanMail);
-        if(fan == null){
+        if (fan == null){
             throw new NotFoundException("Fan not found");
         }
-        if(fan.getAlertWay() != null){
-            throw new Exception("You are already choose the way to get alerts about games");
+        if(fan.getGamesAlert().equals(ALERTS_ON)){
+            throw new Exception("You are already signed to get alerts about games");
         }
-        if(fan.getGamesAlert().equals(GamesAlert.ALERTS_ON)){
-            throw new Exception("You are already registered to get alerts about games");
-        }
-        fanDb.askToGetAlerts(fanMail,alert,alertWay);
+        fanDb.askToGetAlerts(fanMail,alertWay);
     }
+
+
 
     /**
      * this function enable the fan to edit his password
@@ -162,9 +163,6 @@ public class FanController {
 
 
 
-
-
-
 //    public void editPersonalDetails(String fanMail,String password, Integer id, String firstName, String lastName) throws Exception {
 //        if(fanMail == null || password == null || id == null || firstName == null || lastName == null){
 //            throw new Exception("bad input");
@@ -199,6 +197,24 @@ public class FanController {
 //            throw new Exception("Wrong status");
 //        }
 //        fanDb.logOut(fanMail, status);
+//    }
+
+
+//    public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
+//        if(fanMail == null || alert == null || alertWay == null){
+//            throw new NullPointerException("bad input");
+//        }
+//        Fan fan = fanDb.getFan(fanMail);
+//        if(fan == null){
+//            throw new NotFoundException("Fan not found");
+//        }
+//        if(fan.getAlertWay() != null){
+//            throw new Exception("You are already choose the way to get alerts about games");
+//        }
+//        if(fan.getGamesAlert().equals(GamesAlert.ALERTS_ON)){
+//            throw new Exception("You are already registered to get alerts about games");
+//        }
+//        fanDb.askToGetAlerts(fanMail,alert,alertWay);
 //    }
 
 }
