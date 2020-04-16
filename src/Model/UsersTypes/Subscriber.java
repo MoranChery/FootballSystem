@@ -10,12 +10,12 @@ public abstract class Subscriber extends Model.UsersTypes.User {
     protected String LastName;
     protected Status status=Status.OFFLINE;
 
-    public void setRegisteringDetails(String username, String password, Integer id, String firstName, String lastName){
+    public void setRegisteringDetails(String emailAddress, String password, Integer id, String firstName, String lastName){
         setFirstName(firstName);
         setId(id);
         setLastName(lastName);
         setPassword(password);
-        setUsername(username);
+        setUsername(emailAddress);
     }
 
     public void setId(Integer id) {

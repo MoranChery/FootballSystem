@@ -58,7 +58,7 @@ public class SubscriberController {
         }
         Fan fan = new Fan(emailAddress, password, id, firstName, lastName);
         subscriberDb.createSubscriber(fan);
-        roleDb.createRoleInSystem( emailAddress,RoleType.Fan);
+        roleDb.createRoleInSystem( emailAddress,RoleType.FAN);
     }
 
     //register judge to the system
@@ -98,7 +98,7 @@ public class SubscriberController {
         }
         RepresentativeAssociation representativeAssociation = new RepresentativeAssociation(emailAddress, password, id, firstName, lastName);
         subscriberDb.createSubscriber(representativeAssociation);
-        roleDb.createRoleInSystem( emailAddress,RoleType.REPRESENTIVE_ASSOCIATION);
+        roleDb.createRoleInSystem( emailAddress,RoleType.REPRESENTATIVE_ASSOCIATION);
     }
 
     //register System Administrator to the system
@@ -112,11 +112,11 @@ public class SubscriberController {
     }
 
     //register Team Manager to the system
-    public void registerTeamManager(String emailAddress, String password, Integer id, String firstName, String lastName, Integer ownedById) throws Exception {
+    public void registerTeamManager(String emailAddress, String password, Integer id, String firstName, String lastName, String ownedByEmail) throws Exception {
         if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("you should use only letters and numbers!");
         }
-        TeamManager teamManager = new TeamManager(emailAddress, password, id, firstName, lastName, ownedById);
+        TeamManager teamManager = new TeamManager(emailAddress, password, id, firstName, lastName, ownedByEmail);
         subscriberDb.createSubscriber(teamManager);
         roleDb.createRoleInSystem( emailAddress,RoleType.TEAM_MANAGER);
     }
