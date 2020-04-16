@@ -3,7 +3,6 @@ package Controller;
 import Model.System;
 import Model.UsersTypes.SystemAdministrator;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +13,12 @@ public class System_Controller {
         return isInitialize;
     }
 
-    private static boolean isInitialize;
-    private List<SystemAdministrator> systemAdministrators;
+    private static boolean isInitialize= false;
+    private static List<SystemAdministrator> systemAdministrators;
     private static System_Controller ourInstance= new System_Controller();
 
     private System_Controller() {
-        system= System.getInstance();
+        system = System.getInstance();
         systemAdministrators = system.getAllSystemAdministrators();
     }
 
@@ -36,7 +35,7 @@ public class System_Controller {
      * When the user presses the system reboot for the first time, we use this method
      * @throws Exception - Something went wrong with this method
      */
-    public void startInitializeTheSystem() throws Exception {
+    public static void startInitializeTheSystem() throws Exception {
         if(connectionToExternalSystems()){
         }
         else{
@@ -59,7 +58,7 @@ public class System_Controller {
      * @param allDetails - All parameters on the administrator
      * @throws Exception - If the registry could not be made from any error, this error will cause an appropriate message
      */
-    public void initialAdministratorRegistration(String[] allDetails) throws Exception {
+    public static void initialAdministratorRegistration(String[] allDetails) throws Exception {
         if(allDetails!=null && allDetails.length == 5) {
             boolean[] isDetailsCorrect = checkDetails(allDetails);
             boolean isProblem = false;
@@ -86,12 +85,12 @@ public class System_Controller {
 
     }
 
-    private void ShowAgainAdminRegistrationForm(ArrayList<Integer> whereIsDetailsProblem) {
+    private static void ShowAgainAdminRegistrationForm(ArrayList<Integer> whereIsDetailsProblem) {
 
         //todo
     }
 
-    private ArrayList problemWithTheDetails(boolean[] isDetailsCorrect) throws Exception {
+    private static ArrayList problemWithTheDetails(boolean[] isDetailsCorrect) throws Exception {
         if(isDetailsCorrect!=null) {
             ArrayList<Integer> whereIsDetailsProblem = new ArrayList<>();
             for (int i= 0; i<isDetailsCorrect.length ; i++) {
@@ -107,7 +106,7 @@ public class System_Controller {
         }
     }
 
-    private boolean[] checkDetails(String[] allDetails) throws Exception {
+    private static boolean[] checkDetails(String[] allDetails) throws Exception {
         if(allDetails!=null && allDetails.length==5){
             boolean[] isCorrect= new boolean[allDetails.length];
             for (int i = 0 ; i<allDetails.length ; i++){
@@ -130,26 +129,23 @@ public class System_Controller {
         }
     }
 
-    private boolean connectionToExternalSystems() throws Exception {
+    private static boolean connectionToExternalSystems() throws Exception {
         if(!logInToTheAccountingSystem()){
             throw new Exception("problem in login accounting system");
         }
-        if(logInToTheTaxLawSystem()){
+        if(!logInToTheTaxLawSystem()){
             throw new Exception("problem in login tax law system");
         }
-        else{
-            throw new Exception("problem in registering system administrator");
-        }
-
-    }
-
-    //todo
-    private boolean logInToTheTaxLawSystem() {
         return true;
     }
 
     //todo
-    private boolean logInToTheAccountingSystem() {
+    private static boolean logInToTheTaxLawSystem() {
+        return true;
+    }
+
+    //todo
+    private static boolean logInToTheAccountingSystem() {
         return true;
     }
 
