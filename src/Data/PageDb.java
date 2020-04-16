@@ -6,7 +6,7 @@ import Model.Team;
 import Model.UsersTypes.Fan;
 import Model.UsersTypes.Subscriber;
 
-public interface PersonalPageDb {
+public interface PageDb extends Db {
     void addPageToFanList(String pageID, Fan fanToAdd) throws Exception;
     Page getPage(String pageId) throws NotFoundException;
     //    void createPage(String pageID) throws Exception;

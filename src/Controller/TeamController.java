@@ -20,7 +20,7 @@ public class TeamController {
     private SubscriberDb subscriberDb;
     private RoleDb roleDb;
     private FinancialActivityDb financialActivityDb;
-    private PersonalPageDb personalPageDb;
+    private PageDb pageDb;
 
     public TeamController() {
         teamDb =  TeamDbInMemory.getInstance();
@@ -32,7 +32,7 @@ public class TeamController {
         subscriberDb =  SubscriberDbInMemory.getInstance();
         roleDb =  RoleDbInMemory.getInstance();
         financialActivityDb =  FinancialActivityDbInMemory.getInstance();
-        personalPageDb = PersonalPageDbInMemory.getInstance();
+        pageDb = PageDbInMemory.getInstance();
     }
 
     /**
@@ -88,7 +88,7 @@ public class TeamController {
         }
         addCourt(teamName,court.getCourtName(),court.getCourtCity());
         TeamPage teamPage = new TeamPage(teamName,getTeam(teamName));
-        personalPageDb.createTeamPage(teamName,getTeam(teamName));
+        pageDb.createTeamPage(teamName,getTeam(teamName));
         teamDb.addTeamPage(teamPage);
 
     }
