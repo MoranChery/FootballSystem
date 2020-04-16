@@ -25,7 +25,6 @@ public class Fan extends Subscriber {
     }
 
     // getters & setters
-
     public HashMap<String, PersonalPage> getMyPages() {
         return myPages;
     }
@@ -47,7 +46,6 @@ public class Fan extends Subscriber {
     public Set<Search> getMySearchHistory() {
         return mySearchHistory;
     }
-
     public void setMySearchHistory(Set<Search> mySearchHistory) {
         this.mySearchHistory = mySearchHistory;
     }

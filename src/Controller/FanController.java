@@ -33,7 +33,10 @@ public class FanController {
             throw new NullPointerException("bad input");
         }
         Fan fan = fanDb.getFan(fanMail);
-        PersonalPage pageToAdd = new PersonalPage(pageId);
+        if(fan == null){
+            throw new NotFoundException("fan not found");
+        }
+        PersonalPage pageToAdd = new PersonalPage(pageId); // may change
         Map<String, PersonalPage> fansPages = fan.getMyPages();
         PersonalPage testPage = personalPageDb.getPage(pageId);
         if(!testPage.equals(pageToAdd)){
@@ -45,8 +48,17 @@ public class FanController {
         fanDb.addPageToFanList(fanMail, pageToAdd);
     }
 
-    public void logOut(String fanMail, Status status) throws Exception {
-        if(status == null || fanMail == null){
+
+    /**
+     * function for the fan to logout of the system
+     * the function set the fan's status to offline
+     * @param fanMail String the fan id - fan email
+     * @throws Exception nullPointerException if the input is null
+     * NotFoundException if the fan is not in the db
+     * Exception if the fan's status is already null
+     */
+    public void logOut(String fanMail) throws Exception {
+        if(fanMail == null){
             throw new NullPointerException("bad input");
         }
         Fan fan = fanDb.getFan(fanMail);
@@ -56,8 +68,10 @@ public class FanController {
         if(fan.getStatus().equals(Status.OFFLINE)){
             throw new Exception("You are already disconnected to the system");
         }
-        fanDb.logOut(fanMail, status);
+        fanDb.logOut(fanMail);
     }
+
+
     public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
         if(fanMail == null || alert == null || alertWay == null){
             throw new NullPointerException("bad input");
@@ -75,6 +89,14 @@ public class FanController {
         fanDb.askToGetAlerts(fanMail,alert,alertWay);
     }
 
+    /**
+     * this function enable the fan to edit his password
+     * @param fanMail String the fan id- email address
+     * @param newPassword String the new password the fan want to change to
+     * @throws Exception NullPointerException - if one or more of the inputs is null
+     * NotFoundException - if the fan is not in the db
+     * Exception - if the new password is equal to the current password of the fan
+     */
     public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
         if(fanMail == null || newPassword == null){
             throw new NullPointerException("bad input");
@@ -88,6 +110,15 @@ public class FanController {
         }
         fanDb.wantToEditPassword(fanMail, newPassword);
     }
+
+    /**
+     * this function enable the fan to edit his first name
+     * @param fanMail String the fan id- email address
+     * @param newFirstName String the new first name the fan want to change to
+     * @throws Exception NullPointerException - if one or more of the inputs is null
+     * NotFoundException - if the fan is not in the db
+     * Exception - if the new first name is equal to the current first name of the fan
+     */
     public void wantToEditFirstName(String fanMail, String newFirstName) throws Exception {
         if(fanMail == null || newFirstName == null){
             throw new NullPointerException("bad input");
@@ -101,6 +132,15 @@ public class FanController {
         }
         fanDb.wantToEditFirstName(fanMail, newFirstName);
     }
+
+    /**
+     * this function enable the fan to edit his last name
+     * @param fanMail String the fan id- email address
+     * @param newLastName String the new last name the fan want to change to
+     * @throws Exception NullPointerException - if one or more of the inputs is null
+     * NotFoundException - if the fan is not in the db
+     * Exception - if the new last name is equal to the current last name of the fan
+     */
     public void wantToEditLastName(String fanMail, String newLastName) throws Exception {
         if(fanMail == null || newLastName == null){
             throw new NullPointerException("bad input");
@@ -134,6 +174,31 @@ public class FanController {
 //            throw new NotFoundException("Fan not found");
 //        }
 //
+//    }
+
+
+
+//    /**
+//     * function for the fan to logout the system
+//     * @param fanMail the id of the fan in the system
+//     * @param status the status he want
+//     * @throws Exception
+//     */
+//    public void logOut(String fanMail, Status status) throws Exception {
+//        if(status == null || fanMail == null){
+//            throw new NullPointerException("bad input");
+//        }
+//        Fan fan = fanDb.getFan(fanMail);
+//        if (fan == null){
+//            throw new NotFoundException("Fan not found");
+//        }
+//        if(fan.getStatus().equals(Status.OFFLINE)){
+//            throw new Exception("You are already disconnected to the system");
+//        }
+//        if (status.equals(Status.ONLINE)) {
+//            throw new Exception("Wrong status");
+//        }
+//        fanDb.logOut(fanMail, status);
 //    }
 
 }

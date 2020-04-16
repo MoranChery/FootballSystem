@@ -64,12 +64,9 @@ public class FanDbInMemory implements FanDb{
     }
 
     @Override
-    public void logOut(String fanMail, Status status) throws Exception{
+    public void logOut(String fanMail) throws Exception{
         if(fanMail == null){
             throw new Exception("Fan not found");
-        }
-        if(status == null || status.equals(ONLINE)){
-            throw new Exception("bad status");
         }
         Fan theFan = allFans.get(fanMail);
         if(theFan == null){
@@ -79,7 +76,6 @@ public class FanDbInMemory implements FanDb{
             throw new Exception("You are already out of the system");
         }
         theFan.setStatus(OFFLINE);
-        // alert that the fan logout succesfully
     }
 
     public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
@@ -188,6 +184,26 @@ public class FanDbInMemory implements FanDb{
 //            throw new Exception("bad input");
 //        }
 //
+//    }
+
+
+//    @Override
+//    public void logOut(String fanMail) throws Exception{
+//        if(fanMail == null){
+//            throw new Exception("Fan not found");
+//        }
+//        if(status == null || status.equals(ONLINE)){
+//            throw new Exception("bad status");
+//        }
+//        Fan theFan = allFans.get(fanMail);
+//        if(theFan == null){
+//            throw new Exception("Fan not found");
+//        }
+//        if(theFan.getStatus().equals(OFFLINE)){
+//            throw new Exception("You are already out of the system");
+//        }
+//        theFan.setStatus(OFFLINE);
+//        // alert that the fan logout succesfully
 //    }
 
 }

@@ -14,7 +14,7 @@ public interface FanDb {
     void addPageToFanList(String fanMail, PersonalPage pageToAdd) throws Exception;
     Fan getFan(String fanMail) throws NotFoundException;
     void createFan(Fan theFan) throws Exception;
-    void logOut(String fanMail, Status status) throws Exception;
+    void logOut(String fanMail) throws Exception;
     void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception;
     void wantToEditPassword(String fanMail, String newPassword) throws Exception;
     void wantToEditFirstName(String fanMail, String newFirstName) throws Exception;

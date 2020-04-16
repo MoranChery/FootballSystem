@@ -16,9 +16,10 @@ public class FanService {
     public void addPageToFanList(String pageId, String fanMail) throws Exception {
         fanController.addPageToFanList(pageId, fanMail);
     }
-    public void logOut(String fanMail, Status status) throws Exception{
-        fanController.logOut(fanMail, status);
+    public void logOut(String fanMail) throws Exception{
+        fanController.logOut(fanMail);
     }
+
     public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
         fanController.askToGetAlerts(fanMail,alert,alertWay);
     }
@@ -33,6 +34,9 @@ public class FanService {
     }
 
 
+//    public void logOut(String fanMail, Status status) throws Exception{
+//        fanController.logOut(fanMail, status);
+//    }
 
 
 
