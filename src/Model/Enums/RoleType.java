@@ -4,5 +4,8 @@ public enum RoleType {
     COACH,
     PLAYER,
     TEAM_MANAGER,
-    TEAM_OWNER
+    TEAM_OWNER,
+    SYSTEM_ADMINISTRATOR,
+    REPRESENTATIVE_ASSOCIATION,
+    FAN
 }

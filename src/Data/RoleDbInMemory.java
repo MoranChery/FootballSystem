@@ -90,6 +90,9 @@ public class RoleDbInMemory implements RoleDb {
                 break;
             }
         }
+        if(rolesListOfUserToRemove.isEmpty()){
+            rolesListOfUserToRemove.add(new Role(RoleType.FAN));
+        }
     }
 
     @Override
