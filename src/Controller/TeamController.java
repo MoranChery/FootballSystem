@@ -21,6 +21,7 @@ public class TeamController {
     private RoleDb roleDb;
     private FinancialActivityDb financialActivityDb;
     private PageDb pageDb;
+    private PermissionsDb permissionDb;
 
     public TeamController() {
         teamDb =  TeamDbInMemory.getInstance();
@@ -33,6 +34,8 @@ public class TeamController {
         roleDb =  RoleDbInMemory.getInstance();
         financialActivityDb =  FinancialActivityDbInMemory.getInstance();
         pageDb = PageDbInMemory.getInstance();
+        permissionDb = PermissionDbInMemory.getInstance();
+
     }
 
     /**
@@ -74,19 +77,20 @@ public class TeamController {
        if(teamName == null || teamOwnerEmail == null || players == null || coaches == null || teamManagers == null || court == null){
            throw new NullPointerException("bad input");
        }
+        checkPermissions(teamOwnerEmail,null,PermissionType.OWNER);
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
         teamDb.createTeam(teamName);
         teamOwnerDb.updateTeamOwnerTeam(teamDb.getTeam(teamName),teamOwnerEmail);
         for (Player player : players) {
-            addPlayer(teamName,player.getEmailAddress(),player.getId(),player.getFirstName(),player.getLastName(),player.getBirthDate(),player.getPlayerRole());
+            addPlayer(teamName,teamOwnerEmail,player.getEmailAddress(),player.getId(),player.getFirstName(),player.getLastName(),player.getBirthDate(),player.getPlayerRole());
         }
         for (Coach coach : coaches) {
-            addCoach(teamName,coach.getEmailAddress(),coach.getId(),coach.getFirstName(),coach.getLastName(),coach.getCoachRole(),coach.getQualificationCoach());
+            addCoach(teamName,teamOwnerEmail,coach.getEmailAddress(),coach.getId(),coach.getFirstName(),coach.getLastName(),coach.getCoachRole(),coach.getQualificationCoach());
         }
         for (TeamManager teamManager : teamManagers) {
             addTeamManager(teamName,teamManager.getEmailAddress(),teamManager.getId(),teamManager.getFirstName(),teamManager.getLastName(),teamManager.getOwnedByEmail());
         }
-        addCourt(teamName,court.getCourtName(),court.getCourtCity());
+        addCourt(teamName,teamOwnerEmail,court.getCourtName(),court.getCourtCity());
         TeamPage teamPage = new TeamPage(teamName,getTeam(teamName));
         pageDb.createTeamPage(teamName,getTeam(teamName));
         teamDb.addTeamPage(teamPage);
@@ -100,11 +104,12 @@ public class TeamController {
      * @param playerId
      * @throws Exception
      */
-    public void addPlayer(String teamName, String emailAddress, Integer playerId, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
-        if(teamName == null || emailAddress == null || playerId == null || firstName == null || lastName == null || birthDate == null || playerRole == null) {
+    public void addPlayer(String teamName,String ownerEmail, String emailAddress, Integer playerId, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+        if(teamName == null || ownerEmail == null || emailAddress == null || playerId == null || firstName == null || lastName == null || birthDate == null || playerRole == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(ownerEmail,teamName,PermissionType.ADD_PLAYER);
         checkTeamStatusIsActive(team);
         Player currPlayer = new Player(emailAddress,playerId,firstName,lastName,birthDate,playerRole);
         Player player;
@@ -169,6 +174,7 @@ public class TeamController {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(ownedByEmail,teamName,PermissionType.ADD_TEAM_MANAGER);
         checkTeamStatusIsActive(team);
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(ownedByEmail);
         TeamManager currTeamManager = new TeamManager(emailAddress,teamManagerId, firstName, lastName,ownedByEmail);
@@ -225,11 +231,12 @@ public class TeamController {
      * @param qualificationCoach
      * @throws Exception
      */
-    public void addCoach(String teamName, String emailAddress, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
+    public void addCoach(String teamName, String ownerEmail,String emailAddress, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
         if(teamName == null || emailAddress == null || coachId == null || firstName == null || lastName == null || coachRole == null|| qualificationCoach == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(ownerEmail,teamName,PermissionType.ADD_COACH);
         checkTeamStatusIsActive(team);
         Coach currCoach = new Coach(emailAddress, coachId, firstName, lastName, coachRole, qualificationCoach);
         /*get the coach from DB*/
@@ -281,12 +288,13 @@ public class TeamController {
      * @param courtCity
      * @throws Exception
      */
-    public void addCourt(String teamName, String courtName, String courtCity) throws Exception {
-        if (teamName == null || courtName == null || courtCity == null) {
+    public void addCourt(String teamName,String ownerEmail, String courtName, String courtCity) throws Exception {
+        if (teamName == null || ownerEmail == null || courtName == null || courtCity == null) {
             throw new NullPointerException("bad input");
         }
-        /*check if the team exists*/
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(ownerEmail,teamName,PermissionType.ADD_COURT);
+        /*check if the team exists*/
         checkTeamStatusIsActive(team);
         if(team.getCourt() != null){
             throw new Exception("team already associated with court");
@@ -315,12 +323,13 @@ public class TeamController {
      * @param playerEmailAddress
      * @throws Exception
      */
-    public void removePlayer(String teamName, String playerEmailAddress) throws Exception {
+    public void removePlayer(String teamName,String ownerEmail, String playerEmailAddress) throws Exception {
         /*check if one of the inputs null*/
-        if(teamName == null || playerEmailAddress == null) {
+        if(teamName == null || ownerEmail == null || playerEmailAddress == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(ownerEmail,teamName,PermissionType.REMOVE_PLAYER);
         checkTeamStatusIsActive(team);
         /* get the player from the database*/
         Player player = playerDb.getPlayer(playerEmailAddress);
@@ -339,12 +348,13 @@ public class TeamController {
      * @param teamManagerEmailAddress
      * @throws Exception
      */
-    public void removeTeamManager(String teamName, String teamManagerEmailAddress) throws Exception {
+    public void removeTeamManager(String teamName, String ownerEmail,String teamManagerEmailAddress) throws Exception {
         /*check if one of the inputs null*/
-        if(teamName == null || teamManagerEmailAddress == null) {
+        if(teamName == null || ownerEmail == null || teamManagerEmailAddress == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(ownerEmail,teamName,PermissionType.OWNER);
         checkTeamStatusIsActive(team);
         /* get the teamManager from the database*/
         TeamManager teamManager = teamManagerDb.getTeamManager(teamManagerEmailAddress);
@@ -364,12 +374,13 @@ public class TeamController {
      * @param coachEmailAddress
      * @throws Exception
      */
-    public void removeCoach(String teamName, String coachEmailAddress) throws Exception {
+    public void removeCoach(String teamName,String emailAddress, String coachEmailAddress) throws Exception {
         /*check if one of the inputs null*/
-        if(teamName == null || coachEmailAddress == null) {
+        if(teamName == null || emailAddress == null || coachEmailAddress == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(emailAddress,teamName,PermissionType.REMOVE_COACH);
         checkTeamStatusIsActive(team);
         /* get the coach from the database*/
         Coach coach = coachDb.getCoach(coachEmailAddress);
@@ -388,12 +399,13 @@ public class TeamController {
      * @param courtName
      * @throws Exception
      */
-    public void removeCourt(String teamName, String courtName) throws Exception {
+    public void removeCourt(String teamName, String ownerEmail,String courtName) throws Exception {
         /*check if one of the inputs null*/
-        if(teamName == null || courtName == null) {
+        if(teamName == null || ownerEmail == null || courtName == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(ownerEmail,teamName,PermissionType.REMOVE_COURT);
         checkTeamStatusIsActive(team);
         Court court = courtDb.getCourt(courtName);
         /*check if one of the teams that associated with the court match to the court want to delete*/
@@ -417,11 +429,9 @@ public class TeamController {
         }
         Team team = teamDb.getTeam(teamName);
         checkTeamStatusIsActive(team);
+        checkPermissions(teamOwnerEmail,teamName,PermissionType.OWNER);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
-        if(!team.equals(teamOwner.getTeam())){
-            throw new Exception("Teamowner's team does't match");
-        }
         /*check if the subscriber exists*/
         Subscriber subscriber = subscriberDb.getSubscriber(ownerToAddEmail);
         List<Role> rolesOfOwnerToAdd = roleDb.getRoles(ownerToAddEmail);
@@ -444,17 +454,15 @@ public class TeamController {
      * @param managerToAddEmail
      * @throws Exception
      */
-    public void subscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToAddEmail) throws Exception {
-        if(teamName == null || teamOwnerEmail == null || managerToAddEmail == null) {
+    public void subscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToAddEmail,List<PermissionType> permissionTypes) throws Exception {
+        if(teamName == null || teamOwnerEmail == null || managerToAddEmail == null || permissionTypes == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(teamOwnerEmail,teamName,PermissionType.OWNER);
         checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
-        if(!team.equals(teamOwner.getTeam())){
-            throw new Exception("Teamowner's team does't match");
-        }
         Subscriber subscriber = subscriberDb.getSubscriber(managerToAddEmail);
         List<Role> teamRolesOfManagerToAdd = roleDb.getRoles(managerToAddEmail);
         for (Role tr: teamRolesOfManagerToAdd) {
@@ -469,7 +477,10 @@ public class TeamController {
                 throw new Exception("This subscriber already teamManager");
             }
         }
-        teamManagerDb.subscriptionTeamManager(team,teamOwnerEmail,subscriber);
+        for (PermissionType pt: permissionTypes) {
+            permissionDb.createPermission(managerToAddEmail,pt);
+        }
+        teamManagerDb.subscriptionTeamManager(team,teamOwnerEmail,subscriber,permissionTypes);
         roleDb.createRole(managerToAddEmail,teamName, RoleType.TEAM_MANAGER);
     }
 
@@ -486,6 +497,7 @@ public class TeamController {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(teamOwnerEmailAddress,teamName,PermissionType.OWNER);
         checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmailAddress);
@@ -528,6 +540,7 @@ public class TeamController {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(teamOwnerEmail,teamName,PermissionType.OWNER);
         checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
@@ -554,11 +567,12 @@ public class TeamController {
      * @param financialActivityType
      * @throws Exception
      */
-    public void addFinancialActivity(String teamName, Double financialActivityAmount, String description, FinancialActivityType financialActivityType) throws Exception {
+    public void addFinancialActivity(String teamName, String emailAddress,Double financialActivityAmount, String description, FinancialActivityType financialActivityType) throws Exception {
         if(teamName == null || financialActivityAmount == null || description == null || financialActivityType == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(emailAddress,teamName,PermissionType.ADD_FINANCIAL);
         checkTeamStatusIsActive(team);
         if(financialActivityType.equals(FinancialActivityType.OUTCOME) ){
             if(team.getBudget() - financialActivityAmount < 0){
@@ -578,11 +592,12 @@ public class TeamController {
      * @param teamStatus
      * @throws Exception
      */
-    public void changeStatus(String teamName,TeamStatus teamStatus) throws Exception {
+    public void changeStatus(String teamName,String ownerEmail,TeamStatus teamStatus) throws Exception {
         if(teamName == null) {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
+        checkPermissions(ownerEmail,teamName,PermissionType.CHANGE_STATUS);
         teamDb.changeStatus(teamName,teamStatus);
     }
 
@@ -608,7 +623,8 @@ public class TeamController {
      * @param playerRole
      * @throws Exception
      */
-    public void updatePlayerDetails(String ownerEmailAddress,String playerEmailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+    public void updatePlayerDetails(String teamName,String ownerEmailAddress,String playerEmailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+        checkPermissions(ownerEmailAddress,teamName,PermissionType.OWNER);
         /*check if the teamOwner in Db, than check if the player want to change is in teamOwner's team*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(ownerEmailAddress);
         Map<String, Player> players = teamOwner.getTeam().getPlayers();
@@ -623,6 +639,24 @@ public class TeamController {
             playerDb.updatePlayerDetails(playerFromDb);
     }
 
-
-
+    private void checkPermissions(String emailAddress,String teamName,PermissionType permissionType) throws Exception {
+        SubscriberDbInMemory subscriberDbInMemory = SubscriberDbInMemory.getInstance();
+        subscriberDbInMemory.getSubscriber(emailAddress);
+        Role role = roleDb.getRole(emailAddress);
+        String roleTeam = role.getTeamName();
+        if(teamName != null && !teamName.equals(roleTeam)){
+            throw new Exception("Team doesn't match");
+        }
+        RoleType roleType = role.getRoleType();
+        if (RoleType.TEAM_MANAGER.equals(roleType)) {
+            List<PermissionType> permissionTypes = permissionDb.getPermissions(emailAddress);
+            if (!permissionTypes.contains(permissionType)) {
+                throw new Exception("This user hasn't Permissions for this operation");
+            }
+            return;
+        }
+        if (!RoleType.TEAM_OWNER.equals(roleType)) {
+                throw new Exception("This user hasn't Permissions for this operation");
+        }
+    }
 }
