@@ -4,6 +4,7 @@ package Model;
 import Model.UsersTypes.Judge;
 
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,17 +21,17 @@ public class Game {
     private Set<Judge> judgesOfTheGameList;
     private Set<GameEvent> eventsInTheGameList;
 
-    public Game(Integer gameID, SimpleDateFormat gameDate, SeasonLeague seasonLeague, Team hostTeam, Team guestTeam, Court court, Integer hostTeamScore, Integer guestTeamScore, Set<Judge> judgesOfTheGameList, Set<GameEvent> eventsInTheGameList) {
+    public Game(Integer gameID, SimpleDateFormat gameDate, SeasonLeague seasonLeague, Team hostTeam, Team guestTeam, Court court, Set<Judge> judges) {
         this.gameID = gameID;
         this.gameDate = gameDate;
         this.seasonLeague = seasonLeague;
         this.hostTeam = hostTeam;
         this.guestTeam = guestTeam;
         this.court = court;
-        this.hostTeamScore = hostTeamScore;
-        this.guestTeamScore = guestTeamScore;
-        this.judgesOfTheGameList = judgesOfTheGameList;
-        this.eventsInTheGameList = eventsInTheGameList;
+        this.hostTeamScore = 0;
+        this.guestTeamScore = 0;
+        this.judgesOfTheGameList = judges;
+        this.eventsInTheGameList = new HashSet<>();
     }
 
     public Integer getGameID() {
