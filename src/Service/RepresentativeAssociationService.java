@@ -1,6 +1,7 @@
 package Service;
 
 import Controller.RepresentativeAssociationController;
+import Model.Enums.JudgeType;
 import Model.Enums.QualificationJudge;
 
 public class RepresentativeAssociationService
@@ -66,13 +67,13 @@ public class RepresentativeAssociationService
      * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudge(String username, String password,Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception
+    public void createJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theJudgeType) throws Exception
     {
         if(username == null || password == null || id == null || firstName == null || lastName == null || qualificationJudge == null)
         {
             throw new NullPointerException("One or more of the Judge details incorrect");
         }
-        representativeAssociationController.createJudge(username, password, id, firstName, lastName, qualificationJudge);
+        representativeAssociationController.createJudge(username, password, id, firstName, lastName, qualificationJudge,theJudgeType);
     }
 
     /**
