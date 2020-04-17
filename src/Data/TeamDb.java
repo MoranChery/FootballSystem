@@ -4,6 +4,7 @@ import Model.Court;
 import Model.Enums.TeamStatus;
 import Model.FinancialActivity;
 import Model.Team;
+import Model.TeamPage;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
@@ -13,7 +14,7 @@ public interface TeamDb extends Db {
 
     void addPlayer(String teamName, Player player) throws Exception;
 
-    void addTeamManager(String teamName, TeamManager player,String ownedByEmail) throws Exception;
+    void addTeamManager(String teamName, TeamManager player, String ownedByEmail) throws Exception;
 
     Team getTeam(String teamName) throws Exception;
     
@@ -33,4 +34,5 @@ public interface TeamDb extends Db {
 
     void changeStatus(String teamName, TeamStatus teamStatus) throws Exception;
 
+    void addTeamPage(TeamPage teamPage) throws Exception;
 }

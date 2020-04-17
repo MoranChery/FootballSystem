@@ -5,20 +5,18 @@ import Model.Enums.AlertWay;
 import Model.Enums.GamesAlert;
 import Model.Enums.Status;
 import Model.PersonalPage;
-import Model.Search;
 import Model.UsersTypes.Fan;
 
 import java.util.Map;
-import java.util.Set;
 
 public class FanController {
 
     private FanDb fanDb;
-    private PersonalPageDb personalPageDb;
+    private PageDb pageDb;
 
     public FanController() {
         this.fanDb = FanDbInMemory.getInstance();
-        personalPageDb = PersonalPageDbInMemory.getInstance();
+        pageDb = PageDbInMemory.getInstance();
     }
 
     public void createFan(Fan theFan) throws Exception{
@@ -35,7 +33,7 @@ public class FanController {
         Fan fan = fanDb.getFan(fanMail);
         PersonalPage pageToAdd = new PersonalPage(pageId);
         Map<String, PersonalPage> fansPages = fan.getMyPages();
-        PersonalPage testPage = personalPageDb.getPage(pageId);
+        PersonalPage testPage = (PersonalPage) pageDb.getPage(pageId);
         if(!testPage.equals(pageToAdd)){
             throw new Exception("One or more of the details incorrect");
         }
