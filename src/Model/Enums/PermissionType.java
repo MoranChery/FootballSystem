@@ -10,5 +10,6 @@ public enum PermissionType {
     REMOVE_PLAYER,
     REMOVE_COACH,
     REMOVE_COURT,
-    OWNER
+    OWNER,
+    CREATE_NEW_TEAM
 }

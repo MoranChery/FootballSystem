@@ -77,7 +77,7 @@ public class TeamController {
        if(teamName == null || teamOwnerEmail == null || players == null || coaches == null || teamManagers == null || court == null){
            throw new NullPointerException("bad input");
        }
-        checkPermissions(teamOwnerEmail,null,PermissionType.OWNER);
+        checkPermissions(teamOwnerEmail,null,PermissionType.CREATE_NEW_TEAM);
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
         teamDb.createTeam(teamName);
         teamOwnerDb.updateTeamOwnerTeam(teamDb.getTeam(teamName),teamOwnerEmail);
@@ -107,13 +107,16 @@ public class TeamController {
         if(teamName == null || ownerEmail == null || emailAddress == null || playerId == null || firstName == null || lastName == null || birthDate == null || playerRole == null) {
             throw new NullPointerException("bad input");
         }
+        /*check if the team already exists*/
         Team team = teamDb.getTeam(teamName);
+        /*check if the subscription has permission to do this action*/
         checkPermissions(ownerEmail,teamName,PermissionType.ADD_PLAYER);
+        /*check if the team in active status*/
         checkTeamStatusIsActive(team);
         Player currPlayer = new Player(emailAddress,playerId,firstName,lastName,birthDate,playerRole);
         Player player;
         try{
-            /*get the player from DB*/
+            /*get the player from DB if exists*/
             player = playerDb.getPlayer(emailAddress);
             /*get the team of the player if there is a team already, will throw exception*/
             if (player.getTeam() != null) {
@@ -124,19 +127,30 @@ public class TeamController {
                 throw new Exception("One or more of the details incorrect");
             }
         }catch(NotFoundException e){
+            /*if player not exists*/
             try {
                 /*check if there is other subscriber already*/
                 subscriberDb.getSubscriber(emailAddress);
-                throw new Exception("The player to added already has other subscriber type");
+                List<Role> roles = roleDb.getRoles(emailAddress);
+                boolean isCanBePlayer = false;
+                /*check if the player has subscriber with TeamOwner type in the same team*/
+                for (Role role : roles) {
+                    if(PermissionType.OWNER.equals(role.getRoleType()) && teamName.equals(role.getTeamName())){
+                        isCanBePlayer = true;
+                    }
+                }
+                if(!isCanBePlayer){
+                    throw new Exception("The player to added already has other subscriber type");
+                }
             } catch(NotFoundException ex) {
                 /*give random password to player when open new subscriber*/
                 currPlayer.setPassword(UUID.randomUUID().toString());
                 subscriberDb.createSubscriber(currPlayer);
                 /*Player doesnt exist in the db - add to players's db*/
-                playerDb.createPlayer(currPlayer);
-                player = currPlayer;
                 // TODO: 14/04/2020 add message to the new subscriber
             }
+            playerDb.createPlayer(currPlayer);
+            player = currPlayer;
         }
         /*add to DB the player to the team*/
         teamDb.addPlayer(teamName, player);
@@ -196,16 +210,26 @@ public class TeamController {
             try {
                 /*check if there is other subscriber already*/
                 subscriberDb.getSubscriber(emailAddress);
-                throw new Exception("The teamManager to added already has other subscriber type");
+                List<Role> roles = roleDb.getRoles(emailAddress);
+                boolean isCanBePlayer = false;
+                /*check if the player has subscriber with TeamOwner type in the same team*/
+                for (Role role : roles) {
+                    if(PermissionType.OWNER.equals(role.getRoleType()) && teamName.equals(role.getTeamName())){
+                        isCanBePlayer = true;
+                    }
+                }
+                if(!isCanBePlayer){
+                    throw new Exception("The teamManager to added already has other subscriber type");
+                }
             } catch(NotFoundException ex) {
                 /*give random password to player when open new subscriber*/
                 currTeamManager.setPassword(UUID.randomUUID().toString());
                 subscriberDb.createSubscriber(currTeamManager);
                 /*teamManager doesnt exist in the db - add to teamManagers's db*/
-                teamManagerDb.createTeamManager(currTeamManager);
-                teamManager = currTeamManager;
                 // TODO: 14/04/2020 add message to the new subscriber
             }
+            teamManagerDb.createTeamManager(currTeamManager);
+            teamManager = currTeamManager;
         }
         /*add to DB the teamManager to the team*/
         teamDb.addTeamManager(teamName, teamManager,ownedByEmail);
@@ -254,17 +278,27 @@ public class TeamController {
             try {
                 /*check if there is other subscriber already*/
                 subscriberDb.getSubscriber(emailAddress);
-                throw new Exception("The coach to added already has other subscriber type - you can to appoint him to team manager");
+                List<Role> roles = roleDb.getRoles(emailAddress);
+                boolean isCanBePlayer = false;
+                /*check if the player has subscriber with TeamOwner type in the same team*/
+                for (Role role : roles) {
+                    if(PermissionType.OWNER.equals(role.getRoleType()) && teamName.equals(role.getTeamName())){
+                        isCanBePlayer = true;
+                    }
+                }
+                if(!isCanBePlayer){
+                    throw new Exception("The coach to added already has other subscriber type - you can to appoint him to team manager");
+                }
             } catch(NotFoundException ex) {
                 /*give random password to player when open new subscriber*/
                 currCoach.setPassword(UUID.randomUUID().toString());
                 /*create subscriber in db*/
                 subscriberDb.createSubscriber(currCoach);
                 /*Coach doesnt exist in the db - add to coachs's db*/
-                coachDb.createCoach(currCoach);
-                coach = currCoach;
                 // TODO: 14/04/2020 add message to the new subscriber
             }
+            coachDb.createCoach(currCoach);
+            coach = currCoach;
         }
         /* add to DB the player to the team*/
         teamDb.addCoach(teamName, coach);
@@ -364,7 +398,6 @@ public class TeamController {
         }
         teamDb.removeTeamManager(teamName, teamManagerEmailAddress);
         roleDb.removeRoleFromTeam(teamManagerEmailAddress,teamName, RoleType.TEAM_MANAGER);
-
     }
 
     /**
@@ -641,21 +674,27 @@ public class TeamController {
     private void checkPermissions(String emailAddress,String teamName,PermissionType permissionType) throws Exception {
         SubscriberDbInMemory subscriberDbInMemory = SubscriberDbInMemory.getInstance();
         subscriberDbInMemory.getSubscriber(emailAddress);
-        Role role = roleDb.getRole(emailAddress);
-        String roleTeam = role.getTeamName();
-        if(teamName != null && !teamName.equals(roleTeam)){
-            throw new Exception("Team doesn't match");
-        }
-        RoleType roleType = role.getRoleType();
-        if (RoleType.TEAM_MANAGER.equals(roleType)) {
-            List<PermissionType> permissionTypes = permissionDb.getPermissions(emailAddress);
-            if (!permissionTypes.contains(permissionType)) {
-                throw new Exception("This user hasn't Permissions for this operation");
+        List<Role> roles = roleDb.getRoles(emailAddress);
+        boolean isPermitted = false;
+        for (Role role: roles) {
+            String roleTeam = role.getTeamName();
+            RoleType roleType = role.getRoleType();
+            if(teamName == null && PermissionType.CREATE_NEW_TEAM.equals(permissionType) && RoleType.TEAM_OWNER.equals(roleType)){
+                isPermitted = true;
             }
-            return;
+            else if(teamName != null && teamName.equals(roleTeam)){
+                if(RoleType.TEAM_OWNER.equals(roleType)){
+                    isPermitted = true;
+                }else if(RoleType.TEAM_MANAGER.equals(roleType)){
+                    List<PermissionType> permissionTypes = permissionDb.getPermissions(emailAddress);
+                    if (permissionTypes.contains(permissionType)) {
+                        isPermitted = true;
+                    }
+                }
+            }
         }
-        if (!RoleType.TEAM_OWNER.equals(roleType)) {
-                throw new Exception("This user hasn't Permissions for this operation");
+        if(!isPermitted){
+            throw new Exception("This user hasn't Permissions for this operation");
         }
     }
 }
