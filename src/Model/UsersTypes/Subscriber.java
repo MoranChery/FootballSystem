@@ -5,7 +5,7 @@ import Model.Enums.Status;
 import java.util.Objects;
 
 
-public abstract class Subscriber extends Model.UsersTypes.User {
+public abstract class Subscriber extends User {
     protected String emailAddress;
     protected String password;
     protected Integer id;

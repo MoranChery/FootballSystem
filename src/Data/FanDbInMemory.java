@@ -157,6 +157,11 @@ public class FanDbInMemory implements FanDb{
         theFan.setLastName(newLastName);
     }
 
+    @Override
+    public void removeFan(Fan fan) throws Exception {
+        allFans.remove(fan.getEmailAddress());
+    }
+
     /**
     @Override
     public Set<Search> watchMySearchHistory(String fanMail) throws Exception {

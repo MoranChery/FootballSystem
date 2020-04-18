@@ -39,6 +39,11 @@ public class CoachDbInMemory implements CoachDb {
     }
 
     @Override
+    public void removeCoach(Coach coachToRemove) throws Exception {
+        coaches.remove(coachToRemove.getEmailAddress());
+    }
+
+    @Override
     public void deleteAll() {
         coaches.clear();
     }

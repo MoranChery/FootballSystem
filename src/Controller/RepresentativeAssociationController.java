@@ -90,13 +90,13 @@ public class RepresentativeAssociationController
      * @param qualificationJudge-qualification of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theTypeOfTheJudge) throws Exception
+    public void createJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theJudgeType) throws Exception
     {
         if(username == null || password == null || id == null || firstName == null || lastName == null || qualificationJudge == null)
         {
             throw new NullPointerException("One or more of the Judge details incorrect");
         }
-        Judge judge = new Judge(username, password, id, firstName, lastName, qualificationJudge,theTypeOfTheJudge);
+        Judge judge = new Judge(username, password, id, firstName, lastName, qualificationJudge,theJudgeType);
         judgeDb.createJudge(judge);
     }
 

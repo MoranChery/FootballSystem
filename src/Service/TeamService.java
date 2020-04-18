@@ -8,6 +8,7 @@ import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class TeamService {
@@ -16,7 +17,7 @@ public class TeamService {
     public TeamService() {
         this.teamController = new TeamController();
     }
-    public void createNewTeam(String teamName, String teamOwnerEmail, Map<String, Player> players, Map<String, Coach> coaches, Map<String, TeamManager> teamManagers, Court court) throws Exception {
+    public void createNewTeam(String teamName, String teamOwnerEmail, List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers, Court court) throws Exception {
         teamController.createNewTeam(teamName, teamOwnerEmail, players,  coaches, teamManagers, court);
     }
         /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/

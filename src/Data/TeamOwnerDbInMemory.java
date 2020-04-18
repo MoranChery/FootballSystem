@@ -33,9 +33,19 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
     }
 
     @Override
+    public void updateTeamOwnerTeam(Team team, String teamOwnerEmailAddress) throws Exception {
+        TeamOwner teamOwner = teamOwners.get(teamOwnerEmailAddress);
+        if(teamOwner.getTeam() != null){
+            throw new Exception("This teamOwner has already team");
+        }
+        teamOwner.setTeam(team);
+        team.getTeamOwners().put(teamOwnerEmailAddress,teamOwner);
+    }
+
+    @Override
     public TeamOwner getTeamOwner(String teamOwnerEmailAddress) throws Exception {
         if(teamOwnerEmailAddress == null || !teamOwners.containsKey(teamOwnerEmailAddress)){
-            throw new Exception("TeamOwner not found");
+            throw new NotFoundException("TeamOwner not found");
         }
         return teamOwners.get(teamOwnerEmailAddress);
     }

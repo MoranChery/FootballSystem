@@ -2,6 +2,7 @@ package Controller;
 
 import Data.*;
 import Model.Enums.AlertWay;
+import Model.Enums.GamesAlert;
 import Model.Enums.Status;
 import Model.Page;
 import Model.PersonalPage;
@@ -9,17 +10,18 @@ import Model.TeamPage;
 import Model.UsersTypes.Fan;
 
 import java.util.Map;
+import java.util.Set;
 
 import static Model.Enums.GamesAlert.ALERTS_ON;
 
 public class FanController {
 
     private FanDb fanDb;
-    private PersonalPageDb personalPageDb;
+    private PageDb pageDb;
 
     public FanController() {
         this.fanDb = FanDbInMemory.getInstance();
-        personalPageDb = PersonalPageDbInMemory.getInstance();
+        pageDb = PageDbInMemory.getInstance();
     }
 
     public void createFan(Fan theFan) throws Exception{
@@ -50,7 +52,7 @@ public class FanController {
         if(personalPageMapOfThisFan == null){
             throw new Exception("There is problem with the pages of this fan");
         }
-        Page testPage = personalPageDb.getPage(personalPageToAddID);
+        Page testPage = pageDb.getPage(personalPageToAddID);
         if(!(testPage instanceof PersonalPage)){
             throw new Exception("The page type incorrect");
         }
@@ -62,7 +64,6 @@ public class FanController {
         }
         fanDb.addPersonalPageToFanListOfPages(fanMail, personalPageToAdd);
     }
-
     /**
      * this function add team page to the table of team pages for this fan
      * @param fanMail String the fan id - email address
@@ -81,7 +82,7 @@ public class FanController {
         }
         TeamPage teamPageToAdd = new TeamPage(teamPageToAddID);
         Map<String, TeamPage> teamPageMapOfThisFan = fan.getMyTeamPageFollowList();
-        Page testPage = personalPageDb.getPage(teamPageToAddID);
+        Page testPage = pageDb.getPage(teamPageToAddID);
         if(!(testPage instanceof TeamPage)){
             throw new Exception("The page type incorrect");
         }
@@ -198,13 +199,16 @@ public class FanController {
         }
         fanDb.wantToEditLastName(fanMail, newLastName);
     }
-
-    /**
+/**
     public void watchMySearchHistory(String fanMail) throws Exception {
 
         fanDb.watchMySearchHistory(fanMail);
     }
-**/
+ **/
+
+
+
+
 
 
 //    public void editPersonalDetails(String fanMail,String password, Integer id, String firstName, String lastName) throws Exception {
@@ -216,49 +220,6 @@ public class FanController {
 //            throw new NotFoundException("Fan not found");
 //        }
 //
-//    }
-
-
-
-//    /**
-//     * function for the fan to logout the system
-//     * @param fanMail the id of the fan in the system
-//     * @param status the status he want
-//     * @throws Exception
-//     */
-//    public void logOut(String fanMail, Status status) throws Exception {
-//        if(status == null || fanMail == null){
-//            throw new NullPointerException("bad input");
-//        }
-//        Fan fan = fanDb.getFan(fanMail);
-//        if (fan == null){
-//            throw new NotFoundException("Fan not found");
-//        }
-//        if(fan.getStatus().equals(Status.OFFLINE)){
-//            throw new Exception("You are already disconnected to the system");
-//        }
-//        if (status.equals(Status.ONLINE)) {
-//            throw new Exception("Wrong status");
-//        }
-//        fanDb.logOut(fanMail, status);
-//    }
-
-
-//    public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
-//        if(fanMail == null || alert == null || alertWay == null){
-//            throw new NullPointerException("bad input");
-//        }
-//        Fan fan = fanDb.getFan(fanMail);
-//        if(fan == null){
-//            throw new NotFoundException("Fan not found");
-//        }
-//        if(fan.getAlertWay() != null){
-//            throw new Exception("You are already choose the way to get alerts about games");
-//        }
-//        if(fan.getGamesAlert().equals(GamesAlert.ALERTS_ON)){
-//            throw new Exception("You are already registered to get alerts about games");
-//        }
-//        fanDb.askToGetAlerts(fanMail,alert,alertWay);
 //    }
 
 }

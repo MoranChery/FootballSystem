@@ -10,18 +10,18 @@ import Model.UsersTypes.Subscriber;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PersonalPageDbInMemory implements PersonalPageDb {
+public class PageDbInMemory implements PageDb {
 
     private Map<String, Page> allPages;
 
 
-    private static PersonalPageDbInMemory ourInstance = new PersonalPageDbInMemory();
+    private static PageDbInMemory ourInstance = new PageDbInMemory();
 
-    public PersonalPageDbInMemory() {
+    public PageDbInMemory() {
         this.allPages = new HashMap<>();
     }
 
-    public static PersonalPageDbInMemory getInstance() {
+    public static PageDbInMemory getInstance() {
         return ourInstance;
     }
 
@@ -61,8 +61,6 @@ public class PersonalPageDbInMemory implements PersonalPageDb {
         allPages.put(pageID,personalPage);
     }
 
-
-
     @Override
     public void createTeamPage(String pageID, Team team) throws Exception {
         if(allPages.containsKey(pageID)){
@@ -70,5 +68,15 @@ public class PersonalPageDbInMemory implements PersonalPageDb {
         }
         TeamPage personalPage = new TeamPage(pageID ,team);
         allPages.put(pageID,personalPage);
+    }
+
+    @Override
+    public void removePersonalPageFromDb(String pageId) throws Exception{
+        allPages.remove(pageId);
+    }
+
+    @Override
+    public void deleteAll() {
+        allPages.clear();
     }
 }

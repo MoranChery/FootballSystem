@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import Model.UsersTypes.Subscriber;
 
-public class SubscriberDbInMemory implements SubscriberDb, Db {
+public class SubscriberDbInMemory implements SubscriberDb {
     /*structure like the DB of subscriber*/
     //key: username
     //value: subscriber class
@@ -44,8 +44,15 @@ public class SubscriberDbInMemory implements SubscriberDb, Db {
     }
 
     @Override
-    public void deleteAll() {
+    public boolean removeSubscriberFromDB(Subscriber subscriber) {
+        if(!subscribers.containsKey(subscriber.getEmailAddress()))
+            return false;
+        subscribers.remove(subscriber.getEmailAddress());
+        return true;
+    }
 
+    @Override
+    public void deleteAll() {
         subscribers.clear();
     }
 }

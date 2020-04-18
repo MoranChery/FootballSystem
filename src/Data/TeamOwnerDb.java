@@ -9,6 +9,8 @@ import java.util.List;
 public interface TeamOwnerDb extends Db {
     void createTeamOwner(TeamOwner teamOwner) throws Exception;
 
+    void updateTeamOwnerTeam(Team team, String teamOwnerEmailAddress) throws Exception;
+
     TeamOwner getTeamOwner(String teamOwnerEmailAddress) throws Exception;
 
     void subscriptionTeamOwner(Team team, String teamOwnerId, Subscriber subscriber) throws Exception;
