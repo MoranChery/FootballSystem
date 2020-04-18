@@ -14,8 +14,8 @@ import java.util.Set;
 
 public class Fan extends Subscriber {
 
-    private HashMap<String, PersonalPage> myPersonalPageFollowList;
-    private Map<String, TeamPage> myTeamPageFollowList;
+
+    private Set<String> myPages;
     private Set<Search> mySearchHistory;
     protected GamesAlert gamesAlert = GamesAlert.ALERTS_OFF;
     private AlertWay alertWay = null;
@@ -23,17 +23,11 @@ public class Fan extends Subscriber {
 
     public Fan(String emailAddress,String password, Integer id, String firstName, String lastName) {
         setRegisteringDetails(emailAddress, password, id, firstName, lastName);
-        myPersonalPageFollowList = new HashMap<>();
+        myPages = new HashSet<>();
         mySearchHistory = new HashSet<>();
     }
 
     // getters & setters
-    public HashMap<String, PersonalPage> getMyPersonalPageFollowList() {
-        return myPersonalPageFollowList;
-    }
-    public void setMyPersonalPageFollowList(HashMap<String, PersonalPage> myPersonalPageFollowList) {
-        this.myPersonalPageFollowList = myPersonalPageFollowList;
-    }
     public GamesAlert getGamesAlert() {
         return gamesAlert;
     }
@@ -52,12 +46,11 @@ public class Fan extends Subscriber {
     public void setMySearchHistory(Set<Search> mySearchHistory) {
         this.mySearchHistory = mySearchHistory;
     }
-
-    public Map<String, TeamPage> getMyTeamPageFollowList() {
-        return myTeamPageFollowList;
+    public Set<String> getMyPages() {
+        return myPages;
     }
 
-    public void setMyTeamPageFollowList(Map<String, TeamPage> myTeamPageFollowList) {
-        this.myTeamPageFollowList = myTeamPageFollowList;
+    public void setMyPages(Set<String> myPages) {
+        this.myPages = myPages;
     }
 }

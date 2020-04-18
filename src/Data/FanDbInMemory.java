@@ -25,40 +25,6 @@ public class FanDbInMemory implements FanDb{
     }
 
     @Override
-    public void addPersonalPageToFanListOfPages(String fanMail, PersonalPage personalPageToAdd) throws Exception {
-        if(fanMail == null || fanMail.isEmpty() || personalPageToAdd == null){
-            throw new NullPointerException("One or more of the inputs is wrong");
-        }
-        Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new NotFoundException("Fan not found");
-        }
-        Map<String, PersonalPage> theFanPersonalPages = theFan.getMyPersonalPageFollowList();
-        String pageToAddId = personalPageToAdd.getPageID();
-        if(theFanPersonalPages.containsKey(pageToAddId)){
-            throw new Exception("You are already follow this page");
-        }
-        theFanPersonalPages.put(pageToAddId,personalPageToAdd);
-    }
-
-    @Override
-    public void addTeamPageToFanListOfPages(String fanMail, TeamPage teamPageToAdd) throws Exception {
-        if(fanMail == null || fanMail.isEmpty() || teamPageToAdd == null){
-            throw new NullPointerException("One or more of the inputs is wrong");
-        }
-        Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new NotFoundException("Fan not found");
-        }
-        Map<String, TeamPage> theFanTeamPages = theFan.getMyTeamPageFollowList();
-        String teamPageToAddID = teamPageToAdd.getPageID();
-        if(theFanTeamPages.containsKey(teamPageToAddID)){
-            throw new Exception("You are already follow this page");
-        }
-        theFanTeamPages.put(teamPageToAddID, teamPageToAdd);
-    }
-
-    @Override
     public Fan getFan(String fanMail) throws NotFoundException {
         Fan fan = allFans.get(fanMail);
         if(fan == null){
@@ -162,88 +128,20 @@ public class FanDbInMemory implements FanDb{
         allFans.remove(fan.getEmailAddress());
     }
 
-    /**
     @Override
-    public Set<Search> watchMySearchHistory(String fanMail) throws Exception {
-        if(fanMail == null){
-            throw new NullPointerException("Can't display searches as one of the inputs is null");
+    public void addPageToFanListOfPages(String fanMail, String pageID) throws Exception {
+        if(fanMail == null || pageID == null){
+            throw new NullPointerException("One or more of the inputs is null");
         }
-        Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new NotFoundException("Couldn't get this fan");
+        Fan fan = allFans.get(fanMail);
+        if(fan == null){
+            throw new NotFoundException("fan not found");
         }
-        Set<Search> searchSetToReturn = theFan.getMySearchHistory();
-        if(searchSetToReturn == null){
-            throw new NotFoundException("The search history is not found");
+        Set<String> theFanPages = fan.getMyPages();
+        if(theFanPages.contains(pageID)){
+            throw new Exception("You already following this page");
         }
-        return searchSetToReturn;
+        theFanPages.add(pageID);
+        fan.setMyPages(theFanPages);
     }
-
-    @Override
-    public void addSearchToMyHistory(String fanMail, Search myNewSearch) throws Exception {
-
-        if(fanMail == null || myNewSearch == null){
-            throw new NullPointerException("Can't add new search as one of the inputs is null");
-        }
-        Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new NotFoundException("Couldn't get this fan");
-        }
-        if(theFan.getMySearchHistory().contains(myNewSearch)){
-            throw new Exception("This search is already in your list");
-        }
-        Set<Search> searchSet = theFan.getMySearchHistory();
-        searchSet.add(myNewSearch);
-        theFan.setMySearchHistory(searchSet);
-    }
-**/
-//    public void editPersonalDetails(String fanMail,String password, Integer id, String firstName, String lastName) throws Exception {
-//        if(fanMail == null || password == null || id == null || firstName == null || lastName == null){
-//            throw new Exception("bad input");
-//        }
-//
-//    }
-
-
-//    @Override
-//    public void logOut(String fanMail) throws Exception{
-//        if(fanMail == null){
-//            throw new Exception("Fan not found");
-//        }
-//        if(status == null || status.equals(ONLINE)){
-//            throw new Exception("bad status");
-//        }
-//        Fan theFan = allFans.get(fanMail);
-//        if(theFan == null){
-//            throw new Exception("Fan not found");
-//        }
-//        if(theFan.getStatus().equals(OFFLINE)){
-//            throw new Exception("You are already out of the system");
-//        }
-//        theFan.setStatus(OFFLINE);
-//        // alert that the fan logout succesfully
-//    }
-
-    //    public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
-//        if(fanMail == null){
-//            throw new Exception("Fan not found");
-//        }
-//        if(alert == null || alert.equals(GamesAlert.ALERTS_OFF)){
-//            throw new Exception("bad status");
-//        }
-//        if(alertWay == null){
-//            throw new Exception("bad alert");
-//        }
-//        Fan theFan = allFans.get(fanMail);
-//        if(theFan == null){
-//            throw new Exception("Fan not found");
-//        }
-//        if(theFan.getAlertWay() != null || theFan.getGamesAlert().equals(GamesAlert.ALERTS_ON)){
-//            throw new Exception("You are already registered to get alerts about games");
-//        }
-//        theFan.setAlertWay(alertWay);
-//        theFan.setGamesAlert(alert);
-//        // alert that the fan registered to get alerts about games succesfully
-//    }
-
 }

@@ -101,8 +101,9 @@ public class SystemAdministratorController {
         //casting
         Fan fan = (Fan) subscriberToRemove;
         //remove the fan from personalPages that he followed after
-        for (PersonalPage personalPage : fan.getMyPages().values()) {
-            personalPage.getFansFollowingThisPage().remove(fan);
+        for (String pageID : fan.getMyPages()) {
+            Page page = pageDb.getPage(pageID);
+            page.getFansFollowingThisPage().remove(fan);
         }
         //remove fan from fanDB
         fanDb.removeFan(fan);

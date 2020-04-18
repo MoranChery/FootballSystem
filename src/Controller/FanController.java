@@ -24,6 +24,11 @@ public class FanController {
         pageDb = PageDbInMemory.getInstance();
     }
 
+    /**
+     * This function creates new fan in the DB
+     * @param theFan Fan the fan you want to add to the DB
+     * @throws Exception NullPointerException if input is null
+     */
     public void createFan(Fan theFan) throws Exception{
         if(theFan == null){
             throw new NullPointerException("Can't create this fan");
@@ -32,77 +37,12 @@ public class FanController {
     }
 
     /**
-     * this function add personal page to the table of personal pages for this fan
-     * @param fanMail String the fan id - email address
-     * @param personalPageToAddID String the id of the page - the email address of his owner
-     * @throws Exception NullPointerException if the fanMail or the teamPageToAddID is null
-     * NotFoundException if the fan is not in the DB
-     * Exception if the page type incorrect or if the page is exist in the DB
-     */
-    public void addPersonalPageToFanListOfPages(String fanMail, String personalPageToAddID) throws Exception {
-        if(personalPageToAddID == null || fanMail == null){
-            throw new NullPointerException("bad input");
-        }
-        Fan fan = fanDb.getFan(fanMail);
-        if(fan == null){
-            throw new NotFoundException("fan not found");
-        }
-        PersonalPage personalPageToAdd = new PersonalPage(personalPageToAddID);
-        Map<String, PersonalPage> personalPageMapOfThisFan = fan.getMyPersonalPageFollowList();
-        if(personalPageMapOfThisFan == null){
-            throw new Exception("There is problem with the pages of this fan");
-        }
-        Page testPage = pageDb.getPage(personalPageToAddID);
-        if(!(testPage instanceof PersonalPage)){
-            throw new Exception("The page type incorrect");
-        }
-        if(!testPage.equals(personalPageToAdd)){
-            throw new Exception("One or more of the details incorrect");
-        }
-        if(personalPageMapOfThisFan.containsKey(personalPageToAddID)){
-            throw new Exception("You are already follow this page");
-        }
-        fanDb.addPersonalPageToFanListOfPages(fanMail, personalPageToAdd);
-    }
-    /**
-     * this function add team page to the table of team pages for this fan
-     * @param fanMail String the fan id - email address
-     * @param teamPageToAddID String the id of the page - the email address of his owner
-     * @throws Exception NullPointerException if the fanMail or the teamPageToAddID is null
-     * NotFoundException if the fan is not in the DB
-     * Exception if the page type incorrect or if the page is exist in the DB
-     */
-    public void addTeamPageToFanListOfPages(String fanMail, String teamPageToAddID) throws Exception {
-        if(teamPageToAddID == null || fanMail == null){
-            throw new NullPointerException("bad input");
-        }
-        Fan fan = fanDb.getFan(fanMail);
-        if(fan == null){
-            throw new NotFoundException("fan not found");
-        }
-        TeamPage teamPageToAdd = new TeamPage(teamPageToAddID);
-        Map<String, TeamPage> teamPageMapOfThisFan = fan.getMyTeamPageFollowList();
-        Page testPage = pageDb.getPage(teamPageToAddID);
-        if(!(testPage instanceof TeamPage)){
-            throw new Exception("The page type incorrect");
-        }
-
-        if(!testPage.equals(teamPageToAdd)){
-            throw new Exception("One or more of the details incorrect");
-        }
-        if(teamPageMapOfThisFan.containsKey(teamPageToAddID)){
-            throw new Exception("You are already follow this page");
-        }
-        fanDb.addTeamPageToFanListOfPages(fanMail, teamPageToAdd);
-    }
-
-    /**
      * function for the fan to logout of the system
      * the function set the fan's status to offline
      * @param fanMail String the fan id - fan email
      * @throws Exception nullPointerException if the input is null
      * NotFoundException if the fan is not in the db
-     * Exception if the fan's status is already null
+     * Exception if the fan's status is already OFFLINE
      */
     public void logOut(String fanMail) throws Exception {
         if(fanMail == null){
@@ -118,6 +58,15 @@ public class FanController {
         fanDb.logOut(fanMail);
     }
 
+    /**
+     * This function enable the fan get alerts about games.
+     * the status of gameAlerts changes to ON by his way (mail or system)
+     * @param fanMail String the fan id - fan email
+     * @param alertWay Enum AlertWay - the way the fan wants to get his alerts - by email or by the system
+     * @throws Exception NullPointerException if the input is null
+     * NotFoundException if the fan is not in the db
+     * Exception if the fan's status is already ON to get alert about games
+     */
     public void askToGetAlerts(String fanMail, AlertWay alertWay) throws Exception {
         if(fanMail == null || alertWay == null){
             throw new NullPointerException("One or more of the inputs is wrong");
@@ -131,7 +80,6 @@ public class FanController {
         }
         fanDb.askToGetAlerts(fanMail,alertWay);
     }
-
 
 
     /**
@@ -199,27 +147,31 @@ public class FanController {
         }
         fanDb.wantToEditLastName(fanMail, newLastName);
     }
-/**
-    public void watchMySearchHistory(String fanMail) throws Exception {
 
-        fanDb.watchMySearchHistory(fanMail);
+    /**
+     * this function add page to the table of pages that are followed by this fan
+     * @param fanMail String the fan id - email address
+     * @param pageID String the id of the page - the email address of his owner
+     * @throws Exception NullPointerException if the fanMail or the pageID is null
+     * NotFoundException if the fan is not in the DB
+     * Exception if the input is empty or if the page is exist in the DB
+     */
+    public void addPageToFanListOfPages(String fanMail, String pageID) throws Exception {
+        if(fanMail == null || pageID == null){
+            throw new NullPointerException("bad input");
+        }
+        if(fanMail.isEmpty() || pageID.isEmpty()){
+            throw new Exception("the input has no value");
+        }
+        Fan fan = fanDb.getFan(fanMail);
+        if(fan == null ){
+            throw new NotFoundException("fan not found");
+        }
+        if(fan.getMyPages().contains(pageID)){
+            throw new Exception("You already follow this page");
+        }
+        fanDb.addPageToFanListOfPages(fanMail,pageID);
     }
- **/
 
-
-
-
-
-
-//    public void editPersonalDetails(String fanMail,String password, Integer id, String firstName, String lastName) throws Exception {
-//        if(fanMail == null || password == null || id == null || firstName == null || lastName == null){
-//            throw new Exception("bad input");
-//        }
-//        Fan fan = fanDb.getFan(fanMail);
-//        if(fan == null){
-//            throw new NotFoundException("Fan not found");
-//        }
-//
-//    }
 
 }

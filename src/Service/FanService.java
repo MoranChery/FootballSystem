@@ -13,12 +13,6 @@ public class FanService {
     public FanService() {
         this.fanController = new FanController();
     }
-    public void addPersonalPageToFanListOfPages(String pageId, String fanMail) throws Exception {
-        fanController.addPersonalPageToFanListOfPages(pageId, fanMail);
-    }
-    public void addTeamPageToFanListOfPages(String pageId, String fanMail) throws Exception {
-        fanController.addTeamPageToFanListOfPages(pageId, fanMail);
-    }
     public void logOut(String fanMail) throws Exception{
         fanController.logOut(fanMail);
     }
@@ -34,6 +28,9 @@ public class FanService {
 
     public void askToGetAlerts(String fanMail, AlertWay alertWay) throws Exception {
         fanController.askToGetAlerts(fanMail,alertWay);
+    }
+    public void addPageToFanListOfPages(String fanMail, String pageID) throws Exception{
+        fanController.addPageToFanListOfPages(fanMail, pageID);
     }
 
 //    public void logOut(String fanMail, Status status) throws Exception{

@@ -12,8 +12,6 @@ import java.util.Set;
 
 public interface FanDb {
 
-    void addPersonalPageToFanListOfPages(String fanMail, PersonalPage personalPageToAdd) throws Exception;
-    void addTeamPageToFanListOfPages(String fanMail, TeamPage teamPageToAdd) throws Exception;
     Fan getFan(String fanMail) throws NotFoundException;
     void createFan(Fan theFan) throws Exception;
     void logOut(String fanMail) throws Exception;
@@ -22,6 +20,8 @@ public interface FanDb {
     void wantToEditFirstName(String fanMail, String newFirstName) throws Exception;
     void wantToEditLastName(String fanMail, String newLastName) throws Exception;
     void removeFan(Fan fan) throws Exception;
+    void addPageToFanListOfPages(String fanMail, String pageID) throws Exception;
+
     //Set<Search> watchMySearchHistory(String fanMail) throws Exception;
     //void addSearchToMyHistory(String fanMail, Search myNewSearch) throws Exception;
 
