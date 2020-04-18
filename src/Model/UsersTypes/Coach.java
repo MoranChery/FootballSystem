@@ -46,4 +46,8 @@ public class Coach extends Subscriber {
     public void setQualificationCoach(QualificationCoach qualificationCoach) {
         this.qualificationCoach = qualificationCoach;
     }
+
+    public PersonalPage getCoachPage() {
+        return coachPage;
+    }
 }

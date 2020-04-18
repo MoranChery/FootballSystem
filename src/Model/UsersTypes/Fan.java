@@ -4,15 +4,18 @@ import Model.Enums.AlertWay;
 import Model.Enums.GamesAlert;
 import Model.PersonalPage;
 import Model.Search;
+import Model.TeamPage;
 
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Fan extends Subscriber {
 
-    private HashMap<String, PersonalPage> myPages;
+
+    private Set<String> myPages;
     private Set<Search> mySearchHistory;
     protected GamesAlert gamesAlert = GamesAlert.ALERTS_OFF;
     private AlertWay alertWay = null;
@@ -20,18 +23,11 @@ public class Fan extends Subscriber {
 
     public Fan(String emailAddress,String password, Integer id, String firstName, String lastName) {
         setRegisteringDetails(emailAddress, password, id, firstName, lastName);
-        myPages = new HashMap<>();
+        myPages = new HashSet<>();
         mySearchHistory = new HashSet<>();
     }
 
     // getters & setters
-
-    public HashMap<String, PersonalPage> getMyPages() {
-        return myPages;
-    }
-    public void setMyPages(HashMap<String, PersonalPage> myPages) {
-        this.myPages = myPages;
-    }
     public GamesAlert getGamesAlert() {
         return gamesAlert;
     }
@@ -47,8 +43,14 @@ public class Fan extends Subscriber {
     public Set<Search> getMySearchHistory() {
         return mySearchHistory;
     }
-
     public void setMySearchHistory(Set<Search> mySearchHistory) {
         this.mySearchHistory = mySearchHistory;
+    }
+    public Set<String> getMyPages() {
+        return myPages;
+    }
+
+    public void setMyPages(Set<String> myPages) {
+        this.myPages = myPages;
     }
 }

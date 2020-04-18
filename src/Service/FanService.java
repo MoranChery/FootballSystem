@@ -13,14 +13,8 @@ public class FanService {
     public FanService() {
         this.fanController = new FanController();
     }
-    public void addPageToFanList(String pageId, String fanMail) throws Exception {
-        fanController.addPageToFanList(pageId, fanMail);
-    }
-    public void logOut(String fanMail, Status status) throws Exception{
-        fanController.logOut(fanMail, status);
-    }
-    public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
-        fanController.askToGetAlerts(fanMail,alert,alertWay);
+    public void logOut(String fanMail) throws Exception{
+        fanController.logOut(fanMail);
     }
     public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
         fanController.wantToEditPassword(fanMail, newPassword);
@@ -32,8 +26,19 @@ public class FanService {
         fanController.wantToEditLastName(fanMail, newLastName);
     }
 
+    public void askToGetAlerts(String fanMail, AlertWay alertWay) throws Exception {
+        fanController.askToGetAlerts(fanMail,alertWay);
+    }
+    public void addPageToFanListOfPages(String fanMail, String pageID) throws Exception{
+        fanController.addPageToFanListOfPages(fanMail, pageID);
+    }
 
-
+//    public void logOut(String fanMail, Status status) throws Exception{
+//        fanController.logOut(fanMail, status);
+//    }
+//    public void askToGetAlerts(String fanMail, GamesAlert alert, AlertWay alertWay) throws Exception {
+//        fanController.askToGetAlerts(fanMail,alert,alertWay);
+//    }
 
 
 //    public void editPersonalDetails(String fanMail,String password, Integer id, String firstName, String lastName) throws Exception {
