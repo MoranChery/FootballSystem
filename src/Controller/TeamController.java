@@ -94,7 +94,6 @@ public class TeamController {
         TeamPage teamPage = new TeamPage(teamName,getTeam(teamName));
         pageDb.createTeamPage(teamName,getTeam(teamName));
         teamDb.addTeamPage(teamPage);
-
     }
 
 
