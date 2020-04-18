@@ -27,18 +27,18 @@ public class PageDbInMemory implements PageDb {
 
 
     @Override
-    public void addPageToFanList(String pageID, Fan fanToAdd) throws Exception {
-        if(fanToAdd == null){
-            throw new Exception("Fan not found");
+    public void addFanToPageListOfFans(String pageID, Fan fanToAdd) throws Exception {
+        if(fanToAdd == null || pageID == null){
+            throw new NullPointerException("One or more of the input was null");
         }
         Page page = allPages.get(pageID);
         if(page == null){
-            throw new Exception("Page not found");
+            throw new NotFoundException("Page not found");
         }
         Map<String, Fan> fansFollowingThisPage = page.getFansFollowingThisPage();
         String fanToAddEmailAddress = fanToAdd.getEmailAddress();
         if(fansFollowingThisPage.containsKey(fanToAddEmailAddress)){
-            throw new Exception("You are already follow this page");
+            throw new Exception("This fan is already a follower");
         }
         fansFollowingThisPage.put(fanToAddEmailAddress,fanToAdd);
     }

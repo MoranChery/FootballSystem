@@ -38,4 +38,15 @@ public class JudgeSeasonLeagueDbInMemory implements JudgeSeasonLeagueDb
         }
         return judgeSeasonLeagueMap.get(judgeSeasonLeagueId);
     }
+
+    @Override
+    public void removeJudgeSeasonLeague(Integer judgeSeasonLeagueId) throws Exception {
+        if (!judgeSeasonLeagueMap.containsKey(judgeSeasonLeagueId))
+        {
+            throw new Exception("JudgeSeasonLeague not found");
+        }
+        judgeSeasonLeagueMap.remove(judgeSeasonLeagueId);
+    }
+
+
 }
