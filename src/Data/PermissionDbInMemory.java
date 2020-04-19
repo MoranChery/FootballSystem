@@ -38,4 +38,9 @@ public class PermissionDbInMemory implements PermissionsDb{
     public List<PermissionType> getPermissions(String emailAddress) throws Exception {
        return permissions.getOrDefault(emailAddress,new ArrayList<>());
     }
+
+    @Override
+    public void deleteAll() {
+        permissions.clear();
+    }
 }

@@ -8,6 +8,7 @@ public enum PermissionType {
     ADD_FINANCIAL,
     CHANGE_STATUS,
     REMOVE_PLAYER,
+    REMOVE_TEAM_MANAGER,
     REMOVE_COACH,
     REMOVE_COURT,
     OWNER,

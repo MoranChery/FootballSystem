@@ -17,8 +17,8 @@ public class TeamService {
     public TeamService() {
         this.teamController = new TeamController();
     }
-    public void createNewTeam(String teamName, String teamOwnerEmail, List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers, Court court) throws Exception {
-        teamController.createNewTeam(teamName, teamOwnerEmail, players,  coaches, teamManagers, court);
+    public void createNewTeam(String teamName, String teamOwnerEmail, List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers, Court court,Double budget) throws Exception {
+        teamController.createNewTeam(teamName, teamOwnerEmail, players,  coaches, teamManagers, court,budget);
     }
         /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
     public void addPlayer(String teamName, String ownerEmail,String emailAddress, Integer playerId, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {

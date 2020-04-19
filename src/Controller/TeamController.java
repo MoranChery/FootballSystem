@@ -73,7 +73,7 @@ public class TeamController {
      * @param court
      * @throws Exception
      */
-    public void createNewTeam(String teamName, String teamOwnerEmail,List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers,Court court) throws Exception {
+    public void createNewTeam(String teamName, String teamOwnerEmail,List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers,Court court,Double budget) throws Exception {
        if(teamName == null || teamOwnerEmail == null || players == null || coaches == null || teamManagers == null || court == null){
            throw new NullPointerException("bad input");
        }
@@ -91,8 +91,10 @@ public class TeamController {
             addTeamManager(teamName,teamManager.getEmailAddress(),teamManager.getId(),teamManager.getFirstName(),teamManager.getLastName(),teamManager.getOwnedByEmail());
         }
         addCourt(teamName,teamOwnerEmail,court.getCourtName(),court.getCourtCity());
-        TeamPage teamPage = new TeamPage(teamName,getTeam(teamName));
-        pageDb.createTeamPage(teamName,getTeam(teamName));
+        Team team = getTeam(teamName);
+        team.setBudget(budget);
+        TeamPage teamPage = new TeamPage(teamName, team);
+        pageDb.createTeamPage(teamName, team);
         teamDb.addTeamPage(teamPage);
     }
 
@@ -193,7 +195,6 @@ public class TeamController {
         Team team = teamDb.getTeam(teamName);
         checkPermissions(ownedByEmail,teamName,PermissionType.ADD_TEAM_MANAGER);
         checkTeamStatusIsActive(team);
-        TeamOwner teamOwner = teamOwnerDb.getTeamOwner(ownedByEmail);
         TeamManager currTeamManager = new TeamManager(emailAddress,teamManagerId, firstName, lastName,ownedByEmail);
         /*get the teamManager from DB*/
         TeamManager teamManager;
@@ -399,7 +400,7 @@ public class TeamController {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
-        checkPermissions(ownerEmail,teamName,PermissionType.OWNER);
+        checkPermissions(ownerEmail,teamName,PermissionType.REMOVE_TEAM_MANAGER);
         checkTeamStatusIsActive(team);
         /* get the teamManager from the database*/
         TeamManager teamManager = teamManagerDb.getTeamManager(teamManagerEmailAddress);

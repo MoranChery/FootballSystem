@@ -59,6 +59,8 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
         TeamManager teamManager = new TeamManager(team,subscriber,teamOwnerEmail,permissionTypes);
         String managerEmailAddress = teamManager.getEmailAddress();
         teamManagers.put(managerEmailAddress,teamManager);
+        Map<String, TeamManager> teamManagers = team.getTeamManagers();
+        teamManagers.put(managerEmailAddress,teamManager);
     }
 
     @Override
@@ -69,6 +71,8 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
         if (!teamManagers.containsKey(managerToRemoveEmail)) {
             throw new Exception("TeamManager not found");
         }
+        TeamManager teamManager = teamManagers.remove(managerToRemoveEmail);
+        Map<String, TeamManager> teamManagers = teamManager.getTeam().getTeamManagers();
         teamManagers.remove(managerToRemoveEmail);
     }
 
