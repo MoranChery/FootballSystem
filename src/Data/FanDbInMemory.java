@@ -46,22 +46,6 @@ public class FanDbInMemory implements FanDb{
     }
 
     @Override
-    public void logOut(String fanMail) throws Exception{
-        if(fanMail == null){
-            throw new Exception("Fan not found");
-        }
-        Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new Exception("Fan not found");
-        }
-        if(theFan.getStatus().equals(OFFLINE)){
-            throw new Exception("You are already out of the system");
-        }
-        theFan.setStatus(OFFLINE);
-        System.out.println("You are now disconnected");
-    }
-
-    @Override
     public void askToGetAlerts(String fanMail, AlertWay alertWay) throws Exception {
         if(fanMail == null || alertWay == null){
             throw new NullPointerException("One or more of the inputs is wrong");
@@ -78,50 +62,7 @@ public class FanDbInMemory implements FanDb{
 
     }
 
-    @Override
-    public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
-        if(fanMail == null || newPassword == null){
-            throw new Exception("Something went wrong in editing fan the password");
-        }
-        Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new NotFoundException("Couldn't get this fan");
-        }
-        if(theFan.getPassword().equals(newPassword)){
-            throw new Exception("You are already using this password");
-        }
-        theFan.setPassword(newPassword);
-    }
 
-    @Override
-    public void wantToEditFirstName(String fanMail, String newFirstName) throws Exception {
-        if(fanMail == null || newFirstName == null){
-            throw new Exception("Something went wrong in editing fan's the first name");
-        }
-        Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new NotFoundException("Couldn't get this fan");
-        }
-        if(theFan.getFirstName().equals(newFirstName)){
-            throw new Exception("You are already using this name as first name");
-        }
-        theFan.setFirstName(newFirstName);
-    }
-
-    @Override
-    public void wantToEditLastName(String fanMail, String newLastName) throws Exception {
-        if(fanMail == null || newLastName == null){
-            throw new Exception("Something went wrong in editing the last name of the fan");
-        }
-        Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new NotFoundException("Couldn't get this fan");
-        }
-        if(theFan.getLastName().equals(newLastName)){
-            throw new Exception("You are already using this name as last name");
-        }
-        theFan.setLastName(newLastName);
-    }
 
     @Override
     public void removeFan(Fan fan) throws Exception {

@@ -13,18 +13,7 @@ public class FanService {
     public FanService() {
         this.fanController = new FanController();
     }
-    public void logOut(String fanMail) throws Exception{
-        fanController.logOut(fanMail);
-    }
-    public void wantToEditPassword(String fanMail, String newPassword) throws Exception {
-        fanController.wantToEditPassword(fanMail, newPassword);
-    }
-    public void wantToEditFirstName(String fanMail, String newFirstName) throws Exception {
-        fanController.wantToEditFirstName(fanMail, newFirstName);
-    }
-    public void wantToEditLastName(String fanMail, String newLastName) throws Exception {
-        fanController.wantToEditLastName(fanMail, newLastName);
-    }
+
 
     public void askToGetAlerts(String fanMail, AlertWay alertWay) throws Exception {
         fanController.askToGetAlerts(fanMail,alertWay);

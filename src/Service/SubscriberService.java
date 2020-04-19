@@ -9,28 +9,17 @@ public class SubscriberService {
         this.subscriberController = new SubscriberController();
     }
 
-    public void registerSubscriber(String userType) {
-        try {
-            subscriberController.registerSubscriber(userType);
-        } catch (Exception e) {
-            System.out.println("try again!");
-        }
+    public void logOut(String subscriberMail) throws Exception{
+        subscriberController.logOut(subscriberMail);
+    }
+    public void wantToEditPassword(String subscriberMail, String newPassword) throws Exception {
+        subscriberController.wantToEditPassword(subscriberMail, newPassword);
+    }
+    public void wantToEditFirstName(String subscriberMail, String newFirstName) throws Exception {
+        subscriberController.wantToEditFirstName(subscriberMail, newFirstName);
+    }
+    public void wantToEditLastName(String subscriberMail, String newLastName) throws Exception {
+        subscriberController.wantToEditLastName(subscriberMail, newLastName);
     }
 
-    public void login(String emailAddress, String password) {
-        try {
-            subscriberController.login(emailAddress, password);
-        } catch (Exception e) {
-            System.out.println("try again to login!");
-        }
-    }
-
-    public void showInformation(String subject) {
-        subscriberController.showInformation(subject);
-    }
-
-    public void searchInformation(String input) {
-        if (!subscriberController.searchInformation(input))
-            System.out.println("no found results with the search input: " + input);
-    }
 }
