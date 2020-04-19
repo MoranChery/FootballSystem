@@ -75,51 +75,6 @@ public class JudgeDbInMemory implements JudgeDb
     }
 
     @Override
-    public void wantToEditPassword(String judgeMail, String newPassword) throws Exception {
-        if(judgeMail == null || newPassword == null){
-            throw new Exception("Something went wrong in editing judge the password");
-        }
-        Judge theJudge = allJudgesMap.get(judgeMail);
-        if(theJudge == null){
-            throw new NotFoundException("Couldn't get this judge");
-        }
-        if(theJudge.getPassword().equals(newPassword)){
-            throw new Exception("You are already using this password");
-        }
-        theJudge.setPassword(newPassword);
-    }
-
-    @Override
-    public void wantToEditFirstName(String judgeMail, String newFirstName) throws Exception {
-        if(judgeMail == null || newFirstName == null){
-            throw new Exception("Something went wrong in editing judge's first name");
-        }
-        Judge theJudge = allJudgesMap.get(judgeMail);
-        if(theJudge == null){
-            throw new NotFoundException("Couldn't get this judge");
-        }
-        if(theJudge.getFirstName().equals(newFirstName)){
-            throw new Exception("You are already using this name as first name");
-        }
-        theJudge.setFirstName(newFirstName);
-    }
-
-    @Override
-    public void wantToEditLastName(String judgeMail, String newLastName) throws Exception {
-        if(judgeMail == null || newLastName == null){
-            throw new Exception("Something went wrong in editing judge's last name");
-        }
-        Judge theJudge = allJudgesMap.get(judgeMail);
-        if(theJudge == null){
-            throw new NotFoundException("Couldn't get this judge");
-        }
-        if(theJudge.getLastName().equals(newLastName)){
-            throw new Exception("You are already using this name as last name");
-        }
-        theJudge.setLastName(newLastName);
-    }
-
-    @Override
     public void wantToEditQualification(String judgeMail, String newQualification) throws Exception {
         if(judgeMail == null || newQualification == null){
             throw new Exception("Something went wrong in editing judge's qualification");

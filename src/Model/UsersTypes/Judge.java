@@ -12,7 +12,6 @@ import java.util.Map;
 public class Judge extends Subscriber
 {
     private QualificationJudge qualificationJudge;
-//    private Map<Integer, Integer> seasonLeagueId_JudgeSeasonLeagueId;
     private Map<String, String> seasonLeagueName_JudgeSeasonLeagueName;
     private JudgeType judgeType;
     private Map<Integer, Game> theJudgeGameList; // gameId_game
