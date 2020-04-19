@@ -1,5 +1,5 @@
 package Model;
 
-public class EvenetsSchedule {
+public class EventsLog {
     //list events
 }

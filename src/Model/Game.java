@@ -4,8 +4,6 @@ package Model;
 import Model.UsersTypes.Judge;
 
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -19,7 +17,7 @@ public class Game {
     private Integer hostTeamScore;
     private Integer guestTeamScore;
     private Set<Judge> judgesOfTheGameList;
-    private Set<GameEvent> eventsInTheGameList;
+    private EventsLog eventLog;
 
     public Game(Integer gameID, SimpleDateFormat gameDate, SeasonLeague seasonLeague, Team hostTeam, Team guestTeam, Court court, Set<Judge> judges) {
         this.gameID = gameID;
@@ -31,7 +29,7 @@ public class Game {
         this.hostTeamScore = 0;
         this.guestTeamScore = 0;
         this.judgesOfTheGameList = judges;
-        this.eventsInTheGameList = new HashSet<>();
+        this.eventLog = new EventsLog();
     }
 
     public Integer getGameID() {
@@ -105,12 +103,12 @@ public class Game {
     public void setJudgesOfTheGameList(Set<Judge> judgesOfTheGameList) {
         this.judgesOfTheGameList = judgesOfTheGameList;
     }
-
-    public Set<GameEvent> getEventsInTheGameList() {
-        return eventsInTheGameList;
+    public EventsLog getEventLog() {
+        return eventLog;
     }
 
-    public void setEventsInTheGameList(Set<GameEvent> eventsInTheGameList) {
-        this.eventsInTheGameList = eventsInTheGameList;
+    public void setEventLog(EventsLog eventLog) {
+        this.eventLog = eventLog;
     }
+
 }
