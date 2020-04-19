@@ -7,5 +7,6 @@ public enum RoleType {
     TEAM_OWNER,
     SYSTEM_ADMINISTRATOR,
     REPRESENTATIVE_ASSOCIATION,
-    FAN
+    FAN,
+    JUDGE
 }

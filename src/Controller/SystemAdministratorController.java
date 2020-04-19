@@ -38,6 +38,7 @@ public class SystemAdministratorController {
         fanDb = FanDbInMemory.getInstance();
         seasonalLeagueDB = SeasonLeagueDbInMemory.getInstance();
         judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
+        representativeAssociationDb=RepresentativeAssociationDbInMemory.getInstance();
     }
 
     //use case 8.1
@@ -45,17 +46,13 @@ public class SystemAdministratorController {
     /**
      * @param teamName that the system administrator want to close for ever
      */
-    public void closeTeamForEver(String teamName) {
-        try {
-            Team teamToClose = teamDb.getTeam(teamName);
-            teamToClose.setTeamStatus(TeamStatus.CLOSE);
-            //todo: send alert to the team owners and to the team managers
-            System.out.println("send alert to the team owners and to the team managers");
-            //todo: update the log file
-            System.out.println("log file updated");
-        } catch (Exception e) {
-            System.out.println("the team " + teamName + " doesn't exist in the system");
-        }
+    public void closeTeamForEver(String teamName) throws Exception {
+        Team teamToClose = teamDb.getTeam(teamName);
+        teamToClose.setTeamStatus(TeamStatus.CLOSE);
+        //todo: send alert to the team owners and to the team managers
+        System.out.println("send alert to the team owners and to the team managers");
+        //todo: update the log file
+        System.out.println("log file updated");
     }
 
     //use case 8.2
@@ -63,8 +60,7 @@ public class SystemAdministratorController {
     /**
      * @param email of the subscriber that the system administrator want to remove
      */
-    public void removeSubscriber(String email) {
-        try {
+    public void removeSubscriber(String email) throws Exception {
             Subscriber subscriberToRemove = subscriberDb.getSubscriber(email);
             //remove the subscriber from subscriberDB
             subscriberDb.removeSubscriberFromDB(subscriberToRemove);
@@ -87,10 +83,20 @@ public class SystemAdministratorController {
             if (subscriberToRemove instanceof Fan) {
                 removeFan(subscriberToRemove);
             }
+            if (subscriberToRemove instanceof RepresentativeAssociation) {
+                removeRepresentativeAssociation(subscriberToRemove);
+            }
             System.out.println("the chosen subscriber with the Email " + email + " deleted successfully :)");
-        } catch (Exception e) {
-            System.out.println("the subscriber with the Email " + email + " doesn't in the system!");
-        }
+    }
+
+    /**
+     * todo!!! have no RepresentativeAssociation in this version!!!
+     *
+     * @param subscriberToRemove subscriberToRemove that is also RepresentativeAssociation
+     * @throws Exception if the RepresentativeAssociation is already removed from fanDB
+     */
+    private void removeRepresentativeAssociation(Subscriber subscriberToRemove) {
+
     }
 
     /**
