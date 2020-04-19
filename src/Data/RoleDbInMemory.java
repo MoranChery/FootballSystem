@@ -99,7 +99,8 @@ public class RoleDbInMemory implements RoleDb {
     public Role getRole(String emailAddress) throws Exception {
         List<Role> roles = getRoles(emailAddress);
         if(roles.isEmpty()) {
-            return null;
+            Role role = new Role(null, RoleType.FAN);
+            return role;
         }
         // sort by date
         roles.sort(Comparator.comparing(Role::getAssignedDate).reversed());

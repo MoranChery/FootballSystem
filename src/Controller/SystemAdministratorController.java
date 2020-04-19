@@ -43,6 +43,7 @@ public class SystemAdministratorController {
     //use case 8.1
 
     /**
+     *
      * @param teamName that the system administrator want to close for ever
      */
     public void closeTeamForEver(String teamName) {
@@ -59,8 +60,8 @@ public class SystemAdministratorController {
     }
 
     //use case 8.2
-
     /**
+     *
      * @param email of the subscriber that the system administrator want to remove
      */
     public void removeSubscriber(String email) {
@@ -84,25 +85,27 @@ public class SystemAdministratorController {
             if (subscriberToRemove instanceof TeamOwner) {
                 removeTeamOwner(subscriberToRemove);
             }
-            if (subscriberToRemove instanceof Fan) {
+            if(subscriberToRemove instanceof Fan){
                 removeFan(subscriberToRemove);
             }
-            System.out.println("the chosen subscriber with the Email " + email + " deleted successfully :)");
+            System.out.println("the chosen subscriber with the Email "+email+" deleted successfully :)");
         } catch (Exception e) {
-            System.out.println("the subscriber with the Email " + email + " doesn't in the system!");
+            System.out.println("the subscriber with the Email "+email+" doesn't in the system!");
         }
     }
 
     /**
+     *
      * @param subscriberToRemove that is also fan
      * @throws Exception if the fan is already removed from fanDB
      */
     private void removeFan(Subscriber subscriberToRemove) throws Exception {
         //casting
-        Fan fan = (Fan) subscriberToRemove;
+        Fan fan= (Fan) subscriberToRemove;
         //remove the fan from personalPages that he followed after
-        for (PersonalPage personalPage : fan.getMyPages().values()) {
-            personalPage.getFansFollowingThisPage().remove(fan);
+        for (String pageID : fan.getMyPages()) {
+            Page page = pageDb.getPage(pageID);
+            page.getFansFollowingThisPage().remove(fan);
         }
         //remove fan from fanDB
         fanDb.removeFan(fan);
@@ -132,12 +135,14 @@ public class SystemAdministratorController {
     }
 
     /**
+     *
      * @param subscriberToRemove that is also coach
      * @throws Exception if the coach is already removed from coachDB
      */
     private void removeCoach(Subscriber subscriberToRemove) throws Exception {
         //casting
         Coach coach = (Coach) subscriberToRemove;
+        //todo: wait until coach will connect to personalPage
         //remove the personalPage from its followers
         Page coachPage = coach.getCoachPage();
         for (String fanEmail : coachPage.getFansFollowingThisPage().keySet()) {
@@ -152,6 +157,7 @@ public class SystemAdministratorController {
     }
 
     /**
+     *
      * @param subscriberToRemove that is als judge
      * @throws Exception if the judge is already removed from judgeDB
      */
@@ -177,12 +183,14 @@ public class SystemAdministratorController {
     }
 
     /**
+     *
      * @param subscriberToRemove that is also player
      * @throws Exception if the player is already removed from playerDB
      */
     private void removePlayer(Subscriber subscriberToRemove) throws Exception {
         //casting
         Player player = (Player) subscriberToRemove;
+        //todo: wait until coach will connected to personalPage
         //remove the personalPage from its followers
         Page playerPage = player.getPlayerPage();
         for (String fanEmail : playerPage.getFansFollowingThisPage().keySet()) {
@@ -197,6 +205,7 @@ public class SystemAdministratorController {
     }
 
     /**
+     *
      * @param subscriberToRemove that is als teamManager
      * @throws Exception if the teamManager is already removed from teamManagerDB
      */

@@ -1,5 +1,6 @@
 package Data;
 
+import Model.Enums.PermissionType;
 import Model.Team;
 import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamManager;
@@ -48,15 +49,17 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
     }
 
     @Override
-    public void subscriptionTeamManager(Team team, String teamOwnerEmail, Subscriber subscriber) throws Exception {
-        if(team == null || teamOwnerEmail == null || subscriber == null){
+    public void subscriptionTeamManager(Team team, String teamOwnerEmail, Subscriber subscriber, List<PermissionType> permissionTypes) throws Exception {
+        if(team == null || teamOwnerEmail == null || subscriber == null || permissionTypes == null){
             throw new NullPointerException();
         }
         if(teamManagers.containsKey(subscriber.getEmailAddress())){
             throw new Exception("Team Manager to add already exists");
         }
-        TeamManager teamManager = new TeamManager(team,subscriber,teamOwnerEmail);
+        TeamManager teamManager = new TeamManager(team,subscriber,teamOwnerEmail,permissionTypes);
         String managerEmailAddress = teamManager.getEmailAddress();
+        teamManagers.put(managerEmailAddress,teamManager);
+        Map<String, TeamManager> teamManagers = team.getTeamManagers();
         teamManagers.put(managerEmailAddress,teamManager);
     }
 
@@ -68,6 +71,8 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
         if (!teamManagers.containsKey(managerToRemoveEmail)) {
             throw new Exception("TeamManager not found");
         }
+        TeamManager teamManager = teamManagers.remove(managerToRemoveEmail);
+        Map<String, TeamManager> teamManagers = teamManager.getTeam().getTeamManagers();
         teamManagers.remove(managerToRemoveEmail);
     }
 

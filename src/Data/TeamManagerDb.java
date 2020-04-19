@@ -1,5 +1,6 @@
 package Data;
 
+import Model.Enums.PermissionType;
 import Model.Team;
 import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamManager;
@@ -12,7 +13,7 @@ public interface TeamManagerDb extends Db {
     TeamManager getTeamManager(String teamManagerEmailAddress) throws Exception;
 
 
-    void subscriptionTeamManager(Team team, String teamOwnerId, Subscriber subscriber) throws Exception;
+    void subscriptionTeamManager(Team team, String teamOwnerId, Subscriber subscriber, List<PermissionType> permissionTypes) throws Exception;
 
     void removeSubscriptionTeamManager(String managerToRemoveEmail) throws Exception;
 

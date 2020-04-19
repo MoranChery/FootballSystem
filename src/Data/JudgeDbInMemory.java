@@ -1,6 +1,7 @@
 package Data;
 
 import Model.Enums.QualificationJudge;
+import Model.Game;
 import Model.JudgeSeasonLeague;
 import Model.UsersTypes.Judge;
 
@@ -157,5 +158,22 @@ public class JudgeDbInMemory implements JudgeDb
     public void deleteAll()
     {
         allJudgesMap.clear();
+    }
+
+    @Override
+    public void addGameToTheJudge(String judgeMail, Game gameToAdd) throws Exception {
+        if(judgeMail.isEmpty() || judgeMail == null || gameToAdd == null){
+            throw new Exception("One or more of the inputs wrong");
+        }
+        Judge theJudge = allJudgesMap.get(judgeMail);
+        if(theJudge == null){
+            throw new NotFoundException("Judge not found");
+        }
+        Map<Integer, Game> theGamesOfThisJudge = theJudge.getTheJudgeGameList();
+        Integer gameID = gameToAdd.getGameID();
+        if(theGamesOfThisJudge.containsKey(gameID)){
+            throw new Exception("Game already belongs to this judge");
+        }
+        theGamesOfThisJudge.put(gameID, gameToAdd);
     }
 }

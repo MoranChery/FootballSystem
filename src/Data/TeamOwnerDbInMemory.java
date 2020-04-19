@@ -66,6 +66,8 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         TeamOwner teamOwnerMajor = teamOwners.get(teamOwnerEmail);
         teamOwnerMajor.getTeamOwnersByThis().put(teamOwner.getEmailAddress(),teamOwner);
         teamOwners.put(emailAddressToAdd,teamOwner);
+        Map<String, TeamOwner> teamOwners = team.getTeamOwners();
+        teamOwners.put(emailAddressToAdd,teamOwner);
     }
 
     @Override
@@ -82,6 +84,8 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         TeamOwner teamOwner = getTeamOwner(ownedByEmailAddress);
         Map<String, TeamOwner> teamOwnersByThis = teamOwner.getTeamOwnersByThis();
         teamOwnersByThis.remove(ownerToRemoveEmail);
+        Team team = removeTeamOwner.getTeam();
+        team.getTeamOwners().remove(ownerToRemoveEmail);
     }
 
     @Override

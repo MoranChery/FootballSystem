@@ -1,6 +1,7 @@
 package Data;
 
 import Model.Enums.QualificationJudge;
+import Model.Game;
 import Model.JudgeSeasonLeague;
 import Model.UsersTypes.Judge;
 
@@ -32,15 +33,6 @@ public interface JudgeDb extends Db
     void wantToEditFirstName(String judgeMail, String newFirstName) throws Exception;
     void wantToEditLastName(String judgeMail, String newLastName) throws Exception;
     void wantToEditQualification(String judgeMail, String newQualification) throws Exception;
-//
-//    /**
-//     * Will receive from the Controller the seasonLeague's id and the judge's id,
-//     * want to inlay Judge to SeasonLeague.
-//     * @param seasonLeagueId-id of the SeasonLeague.
-//     * @param judgeEmailAddress-emailAddress of the Judge.
-//     * @throws Exception-if details are incorrect.
-//     */
-//    void inlayJudgeToSeasonLeague(Integer seasonLeagueId, String judgeEmailAddress) throws Exception;
 
     /**
      * Will receive from the Controller the JudgeSeasonLeague,
@@ -49,4 +41,5 @@ public interface JudgeDb extends Db
      * @throws Exception-if details are incorrect.
      */
     void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception;
+    void addGameToTheJudge(String judgeMail, Game gameToAdd) throws Exception;
 }
