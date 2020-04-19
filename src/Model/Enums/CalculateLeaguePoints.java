@@ -1,7 +1,5 @@
 package Model.Enums;
 
-import Model.Policy;
-
 public enum CalculateLeaguePoints
 {
     WIN_IS_2_TIE_IS_1_LOSE_IS_0,

@@ -1,7 +1,5 @@
 package Model.Enums;
 
-import Model.Policy;
-
 public enum InlayGames
 {
     EACH_TWO_TEAMS_PLAY_ONE_TIME,
