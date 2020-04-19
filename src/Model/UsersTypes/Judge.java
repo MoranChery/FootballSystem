@@ -12,7 +12,8 @@ import java.util.Map;
 public class Judge extends Subscriber
 {
     private QualificationJudge qualificationJudge;
-    private Map<Integer, Integer> seasonLeagueId_JudgeSeasonLeagueId;
+//    private Map<Integer, Integer> seasonLeagueId_JudgeSeasonLeagueId;
+    private Map<String, String> seasonLeagueName_JudgeSeasonLeagueName;
     private JudgeType judgeType;
     private Map<Integer, Game> theJudgeGameList; // gameId_game
 
@@ -20,7 +21,8 @@ public class Judge extends Subscriber
     {
         setRegisteringDetails(username,password,id,firstName,lastName);
         this.qualificationJudge = qualificationJudge;
-        this.seasonLeagueId_JudgeSeasonLeagueId = new HashMap<>();
+//        this.seasonLeagueId_JudgeSeasonLeagueId = new HashMap<>();
+        this.seasonLeagueName_JudgeSeasonLeagueName = new HashMap<>();
         judgeType = theJudgeType;
     }
 
@@ -31,7 +33,8 @@ public class Judge extends Subscriber
         this.qualificationJudge = qualificationJudge;
     }
 
-    public Map<Integer, Integer> getSeasonLeagueId_JudgeSeasonLeagueId() { return seasonLeagueId_JudgeSeasonLeagueId; }
+//    public Map<Integer, Integer> getSeasonLeagueId_JudgeSeasonLeagueId() { return seasonLeagueId_JudgeSeasonLeagueId; }
+    public Map<String, String> getSeasonLeagueName_JudgeSeasonLeagueName() { return seasonLeagueName_JudgeSeasonLeagueName; }
     //endregion
 
     public JudgeType getJudgeType() {

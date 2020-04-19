@@ -5,26 +5,18 @@ import java.util.Map;
 
 public class Season
 {
-    static int seasonIdCounter = 0;
-
-    private Integer seasonId;
     private String seasonName;
-    private Map<Integer, Integer> leagueId_SeasonLeagueId;
+    private Map<String, String> leagueName_SeasonLeagueName;
 
     public Season(String leagueName)
     {
         this.seasonName = leagueName;
-        this.leagueId_SeasonLeagueId = new HashMap<>();
-        this.seasonId = seasonIdCounter;
-
-        seasonIdCounter++;
+        this.leagueName_SeasonLeagueName = new HashMap<>();
     }
 
     //region Getters
-    public Integer getSeasonId() { return seasonId; }
-
     public String getSeasonName() { return seasonName; }
 
-    public Map<Integer, Integer> getLeagueId_SeasonLeagueId() { return leagueId_SeasonLeagueId; }
+    public Map<String, String> getLeagueName_SeasonLeagueId() { return leagueName_SeasonLeagueName; }
     //endregion
 }

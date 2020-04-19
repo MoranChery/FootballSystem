@@ -26,11 +26,12 @@ public class JudgeDbInMemory implements JudgeDb
      * @param judge-the new Judge.
      * @throws Exception-if details are incorrect.
      */
+    @Override
     public void createJudge(Judge judge) throws Exception
     {
         if(allJudgesMap.containsKey(judge.getEmailAddress()))
         {
-            throw new Exception("Judge already exist in the system");
+            throw new Exception("Judge already exists in the system");
         }
         allJudgesMap.put(judge.getEmailAddress(), judge);
     }
@@ -44,6 +45,7 @@ public class JudgeDbInMemory implements JudgeDb
      * @return the Judge.
      * @throws Exception-if details are incorrect.
      */
+    @Override
     public Judge getJudge(String judgeEmailAddress) throws Exception
     {
         if (!allJudgesMap.containsKey(judgeEmailAddress))
@@ -61,6 +63,7 @@ public class JudgeDbInMemory implements JudgeDb
      * @param judgeEmailAddress-id of the Judge.
      * @throws Exception-if details are incorrect.
      */
+    @Override
     public void removeJudge(String judgeEmailAddress) throws Exception
     {
         if(!allJudgesMap.containsKey(judgeEmailAddress))
@@ -133,16 +136,26 @@ public class JudgeDbInMemory implements JudgeDb
 
     /**
      * Will receive from the Controller the JudgeSeasonLeague,
-     * add to seasonLeagueId_JudgeSeasonLeagueId Map the seasonLeagueId and the judgeSeasonLeagueId of the specific Judge.
+     * add to seasonLeagueName_JudgeSeasonLeagueName Map the seasonLeagueName and the judgeSeasonLeagueName of the specific Judge.
      * @param judgeSeasonLeague-the new JudgeSeasonLeague.
      * @throws Exception-if details are incorrect.
      */
+    @Override
     public void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception
     {
         if (!allJudgesMap.containsKey(judgeSeasonLeague.getJudgeEmailAddress()))
         {
             throw new Exception("Judge not found");
         }
-        allJudgesMap.get(judgeSeasonLeague.getJudgeEmailAddress()).getSeasonLeagueId_JudgeSeasonLeagueId().put(judgeSeasonLeague.getSeasonLeagueId(), judgeSeasonLeague.getJudgeSeasonLeagueId());
+        allJudgesMap.get(judgeSeasonLeague.getJudgeEmailAddress()).getSeasonLeagueName_JudgeSeasonLeagueName().put(judgeSeasonLeague.getSeasonLeagueName(), judgeSeasonLeague.getJudgeSeasonLeagueName());
+    }
+
+    /**
+     * For the tests-Clear the Judge Map from the DB.
+     */
+    @Override
+    public void deleteAll()
+    {
+        allJudgesMap.clear();
     }
 }

@@ -1,9 +1,10 @@
 package Data;
 
+import Model.Enums.CalculateLeaguePoints;
 import Model.JudgeSeasonLeague;
 import Model.SeasonLeague;
 
-public interface SeasonLeagueDb
+public interface SeasonLeagueDb extends Db
 {
     /**
      * Will receive from the Controller the SeasonLeague, add SeasonLeague to Data.
@@ -13,27 +14,26 @@ public interface SeasonLeagueDb
     void createSeasonLeague(SeasonLeague seasonLeague) throws Exception;
 
     /**
-     * Will receive from the Controller the seasonLeague's id, return the SeasonLeague.
-     * @param seasonLeagueId-id of the SeasonLeague.
+     * Will receive from the Controller the seasonLeague's name, return the SeasonLeague.
+     * @param seasonLeagueName-id of the SeasonLeague.
      * @return the SeasonLeague.
      * @throws Exception-if details are incorrect.
      */
-    SeasonLeague getSeasonLeague(Integer seasonLeagueId) throws Exception;
+    SeasonLeague getSeasonLeague(String seasonLeagueName) throws Exception;
 
     /**
      * Will receive from the Controller the JudgeSeasonLeague,
-     * add to judgeEmailAddress_JudgeSeasonLeagueId Map the judgeEmailAddres and the judgeSeasonLeagueId of the specific SeasonLeague.
+     * add to judgeEmailAddress_JudgeSeasonLeagueName Map the judgeEmailAddress and the judgeSeasonLeagueName of the specific SeasonLeague.
      * @param judgeSeasonLeague-the new JudgeSeasonLeague.
      * @throws Exception-if details are incorrect.
      */
     void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception;
 
     /**
-     * Will receive from the Service the seasonLeague's id and the calculateLeaguePoints's id,
-     * want to set Policy CalculateLeaguePointsId of thr SeasonLeague.
-     * Will continue to Data.
-     * @param seasonLeagueId-id of the SeasonLeague.
-     * @param calculateLeaguePointsId-id of the new Policy CalculateLeaguePoints.
+     * Will receive from the Controller the seasonLeague's name and the calculateLeaguePoints,
+     * want to set Policy CalculateLeaguePoints of thr SeasonLeague.
+     * @param seasonLeagueName-name of the SeasonLeague.
+     * @param calculateLeaguePoints-new Policy CalculateLeaguePoints.
      */
-    void changeCalculateLeaguePointsPolicy(Integer seasonLeagueId, Integer calculateLeaguePointsId) throws Exception;
+    void changeCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception;
 }

@@ -1,53 +1,50 @@
 package Model;
 
+import Model.Enums.CalculateLeaguePoints;
+import Model.Enums.InlayGames;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class SeasonLeague
 {
-    static int seasonLeagueIdCounter = 0;
-
-    private Integer seasonLeagueId;
-    private Integer seasonId;
-    private Integer leagueId;
-    private Integer calculateLeaguePointsId;
-    private Integer inlayGamesId;
-    private Map<String, Integer> judgeEmailAddress_JudgeSeasonLeagueId;
+    private String seasonLeagueName;
+    private String seasonName;
+    private String leagueName;
+    private CalculateLeaguePoints calculateLeaguePoints;
+    private InlayGames inlayGames;
+    private Map<String, String> judgeEmailAddress_JudgeSeasonLeagueName;
 
 
-    public SeasonLeague(Integer seasonId, Integer leagueId, Integer calculateLeaguePointsId, Integer inlayGamesId)
+    public SeasonLeague(String seasonName, String leagueName, CalculateLeaguePoints calculateLeaguePoints, InlayGames inlayGames)
     {
-        this.seasonId = seasonId;
-        this.leagueId = leagueId;
-        this.calculateLeaguePointsId = calculateLeaguePointsId;
-        this.inlayGamesId = inlayGamesId;
-        this.judgeEmailAddress_JudgeSeasonLeagueId = new HashMap<>();
-        this.seasonLeagueId = seasonLeagueIdCounter;
-
-        seasonLeagueIdCounter++;
+        this.seasonLeagueName = seasonName + "_" + leagueName;
+        this.seasonName = seasonName;
+        this.leagueName = leagueName;
+        this.calculateLeaguePoints = calculateLeaguePoints;
+        this.inlayGames = inlayGames;
+        this.judgeEmailAddress_JudgeSeasonLeagueName = new HashMap<>();
     }
 
     //region Getters
-    public Integer getSeasonLeagueId() {
-        return seasonLeagueId;
+    public String getSeasonLeagueName() { return seasonLeagueName; }
+
+    public String getSeasonName() {
+        return seasonName;
     }
 
-    public Integer getSeasonId() {
-        return seasonId;
+    public String getLeagueName() {
+        return leagueName;
     }
 
-    public Integer getLeagueId() {
-        return leagueId;
-    }
+    public CalculateLeaguePoints getCalculateLeaguePoints() { return calculateLeaguePoints; }
 
-    public Integer getCalculateLeaguePointsId() { return calculateLeaguePointsId; }
+    public InlayGames getInlayGames() { return inlayGames; }
 
-    public Integer getInlayGamesId() { return inlayGamesId; }
-
-    public Map<String, Integer> getJudgeEmailAddress_JudgeSeasonLeagueId() { return judgeEmailAddress_JudgeSeasonLeagueId; }
+    public Map<String, String> getJudgeEmailAddress_JudgeSeasonLeagueName() { return judgeEmailAddress_JudgeSeasonLeagueName; }
     //endregion
 
     //region Setters
-    public void setCalculateLeaguePointsId(Integer calculateLeaguePointsId) { this.calculateLeaguePointsId = calculateLeaguePointsId; }
+    public void setCalculateLeaguePoints(CalculateLeaguePoints calculateLeaguePoints) { this.calculateLeaguePoints = calculateLeaguePoints; }
     //endregion
 }

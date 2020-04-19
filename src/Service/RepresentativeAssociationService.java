@@ -1,6 +1,8 @@
 package Service;
 
 import Controller.RepresentativeAssociationController;
+import Model.Enums.CalculateLeaguePoints;
+import Model.Enums.InlayGames;
 import Model.Enums.JudgeType;
 import Model.Enums.QualificationJudge;
 
@@ -39,21 +41,21 @@ public class RepresentativeAssociationService
     }
 
     /**
-     * Will receive from the UI the league's id the season's id the policy-calculateLeaguePoints's id and the policy-inlayGames's id , want to create SeasonLeague.
-     * Will continue to Controller.
-     * @param leagueId-id of the League.
-     * @param seasonId-id of the Season.
-     * @param calculateLeaguePointsId-id of the Policy CalculateLeaguePoints.
-     * @param inlayGamesId-name of the Policy InlayGamesId.
+     * Will receive from the UI the league's name the season's name the policy-calculateLeaguePoints and the policy-inlayGames, create SeasonLeague.
+     * Will continue to Data.
+     * @param leagueName-name of the League.
+     * @param seasonName-name of the Season.
+     * @param calculateLeaguePoints-Policy CalculateLeaguePoints.
+     * @param inlayGames-Policy InlayGames.
      * @throws Exception-if details are incorrect.
      */
-    public void createSeasonLeague(Integer leagueId, Integer seasonId, Integer calculateLeaguePointsId, Integer inlayGamesId) throws Exception
+    public void createSeasonLeague(String leagueName, String seasonName, CalculateLeaguePoints calculateLeaguePoints, InlayGames inlayGames) throws Exception
     {
-        if(leagueId == null || seasonId == null || calculateLeaguePointsId == null || inlayGamesId == null)
+        if(leagueName == null || seasonName == null || calculateLeaguePoints == null || inlayGames == null)
         {
             throw new NullPointerException("One or more of the SeasonLeague details incorrect");
         }
-        representativeAssociationController.createSeasonLeague(leagueId, seasonId, calculateLeaguePointsId, inlayGamesId);
+        representativeAssociationController.createSeasonLeague(leagueName, seasonName, calculateLeaguePoints, inlayGames);
     }
 
     /**
@@ -65,15 +67,16 @@ public class RepresentativeAssociationService
      * @param firstName-firstName of the new Judge.
      * @param lastName-lastName of the new Judge.
      * @param qualificationJudge-qualification of the new Judge.
+     * @param judgeType-type of the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theJudgeType) throws Exception
+    public void createJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType judgeType) throws Exception
     {
-        if(username == null || password == null || id == null || firstName == null || lastName == null || qualificationJudge == null)
+        if(username == null || password == null || id == null || firstName == null || lastName == null || qualificationJudge == null || judgeType == null)
         {
             throw new NullPointerException("One or more of the Judge details incorrect");
         }
-        representativeAssociationController.createJudge(username, password, id, firstName, lastName, qualificationJudge,theJudgeType);
+        representativeAssociationController.createJudge(username, password, id, firstName, lastName, qualificationJudge, judgeType);
     }
 
     /**
@@ -92,34 +95,32 @@ public class RepresentativeAssociationService
     }
 
     /**
-     * Will receive from the UI the season's id, the league's id and the judge's id, want to create JudgeSeasonLeague.
+     * Will receive from the UI the seasonLeague's name and the judge's emailAddress, want to create JudgeSeasonLeague.
      * Will continue to Controller.
-     * @param seasonId-id of the Season.
-     * @param leagueId-id of the League.
+     * @param seasonLeagueName-name of the SeasonLeague.
      * @param judgeEmailAddress-emailAddress of the Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudgeSeasonLeague(Integer seasonId, Integer leagueId, String judgeEmailAddress) throws Exception
+    public void createJudgeSeasonLeague(String seasonLeagueName, String judgeEmailAddress) throws Exception
     {
-        if(seasonId == null || leagueId == null || judgeEmailAddress == null)
+        if(seasonLeagueName == null || judgeEmailAddress == null)
         {
             throw new NullPointerException("One or more of the JudgeSeasonLeague details incorrect");
         }
-        representativeAssociationController.createJudgeSeasonLeague(seasonId, leagueId, judgeEmailAddress);
+        representativeAssociationController.createJudgeSeasonLeague(seasonLeagueName, judgeEmailAddress);
     }
 
     /**
-     * Will receive from the UI the season's id, the league's id and the calculateLeaguePoints's id,
-     * want to set Policy CalculateLeaguePointsId of thr SeasonLeague.
+     * Will receive from the UI the seasonLeague's name, policy-calculateLeaguePoints,
+     * want to set Policy CalculateLeaguePoints of the SeasonLeague.
      * Will continue to Controller.
-     * @param seasonId-id of the Season.
-     * @param leagueId-id of the League.
-     * @param calculateLeaguePointsId-id of the new Policy CalculateLeaguePoints.
-     * @throws Exception-if details are incorrect.
+     * @param seasonLeagueName-name of SeasonLeague.
+     * @param calculateLeaguePoints-Policy CalculateLeaguePoints.
+     * @throws Exception
      */
-    public void changeCalculateLeaguePointsPolicy(Integer seasonId, Integer leagueId, Integer calculateLeaguePointsId) throws Exception
+    public void changeCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception
     {
-        representativeAssociationController.changeCalculateLeaguePointsPolicy(seasonId, leagueId, calculateLeaguePointsId);
+        representativeAssociationController.changeCalculateLeaguePointsPolicy(seasonLeagueName, calculateLeaguePoints);
     }
 }
 

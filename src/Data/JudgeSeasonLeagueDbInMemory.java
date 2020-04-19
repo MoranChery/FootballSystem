@@ -8,7 +8,7 @@ import java.util.Map;
 public class JudgeSeasonLeagueDbInMemory implements JudgeSeasonLeagueDb
 {
     /*structure like the DB of JudgeSeasonLeague*/
-    private Map<Integer, JudgeSeasonLeague> judgeSeasonLeagueMap;
+    private Map<String, JudgeSeasonLeague> judgeSeasonLeagueMap;
 
     private static JudgeSeasonLeagueDbInMemory ourInstance = new JudgeSeasonLeagueDbInMemory();
 
@@ -23,29 +23,45 @@ public class JudgeSeasonLeagueDbInMemory implements JudgeSeasonLeagueDb
      */
     public void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception
     {
-        if(judgeSeasonLeagueMap.containsKey(judgeSeasonLeague.getJudgeSeasonLeagueId()))
+        if(judgeSeasonLeagueMap.containsKey(judgeSeasonLeague.getJudgeSeasonLeagueName()))
         {
-            throw new Exception("JudgeSeasonLeague already exist in the system");
+            throw new Exception("JudgeSeasonLeague already exists in the system");
         }
-        judgeSeasonLeagueMap.put(judgeSeasonLeague.getSeasonLeagueId(), judgeSeasonLeague);
+        judgeSeasonLeagueMap.put(judgeSeasonLeague.getJudgeSeasonLeagueName(), judgeSeasonLeague);
     }
 
-    public JudgeSeasonLeague getJudgeSeasonLeague(Integer judgeSeasonLeagueId) throws Exception
+    /**
+     * Will receive from the Controller the judgeSeasonLeague's name, return the JudgeSeasonLeague.
+     * @param judgeSeasonLeagueName-name of the JudgeSeasonLeague.
+     * @return the JudgeSeasonLeague.
+     * @throws Exception-if details are incorrect.
+     */
+    @Override
+    public JudgeSeasonLeague getJudgeSeasonLeague(String judgeSeasonLeagueName) throws Exception
     {
-        if (!judgeSeasonLeagueMap.containsKey(judgeSeasonLeagueId))
+        if (!judgeSeasonLeagueMap.containsKey(judgeSeasonLeagueName))
         {
             throw new Exception("JudgeSeasonLeague not found");
         }
-        return judgeSeasonLeagueMap.get(judgeSeasonLeagueId);
+        return judgeSeasonLeagueMap.get(judgeSeasonLeagueName);
     }
 
     @Override
-    public void removeJudgeSeasonLeague(Integer judgeSeasonLeagueId) throws Exception {
-        if (!judgeSeasonLeagueMap.containsKey(judgeSeasonLeagueId))
+    public void removeJudgeSeasonLeague(String judgeSeasonLeagueName) throws Exception {
+        if (!judgeSeasonLeagueMap.containsKey(judgeSeasonLeagueName))
         {
             throw new Exception("JudgeSeasonLeague not found");
         }
-        judgeSeasonLeagueMap.remove(judgeSeasonLeagueId);
+        judgeSeasonLeagueMap.remove(judgeSeasonLeagueName);
+    }
+
+    /**
+     * For the tests-Clear the JudgeSeasonLeague Map from the DB.
+     */
+    @Override
+    public void deleteAll()
+    {
+        judgeSeasonLeagueMap.clear();
     }
 
 

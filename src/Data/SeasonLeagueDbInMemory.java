@@ -1,5 +1,6 @@
 package Data;
 
+import Model.Enums.CalculateLeaguePoints;
 import Model.JudgeSeasonLeague;
 import Model.SeasonLeague;
 
@@ -9,7 +10,7 @@ import java.util.Map;
 public class SeasonLeagueDbInMemory implements SeasonLeagueDb
 {
     /*structure like the DB of SeasonLeagues*/
-    private Map<Integer, SeasonLeague> seasonLeagueMap;
+    private Map<String, SeasonLeague> seasonLeagueMap;
 
     private static SeasonLeagueDbInMemory ourInstance = new SeasonLeagueDbInMemory();
 
@@ -27,59 +28,68 @@ public class SeasonLeagueDbInMemory implements SeasonLeagueDb
      */
     public void createSeasonLeague(SeasonLeague seasonLeague) throws Exception
     {
-        if(seasonLeagueMap.containsKey(seasonLeague.getSeasonLeagueId()))
+        if(seasonLeagueMap.containsKey(seasonLeague.getSeasonLeagueName()))
         {
-            throw new Exception("SeasonLeague already exist in the system");
+            throw new Exception("SeasonLeague already exists in the system");
         }
-        seasonLeagueMap.put(seasonLeague.getSeasonLeagueId(), seasonLeague);
+        seasonLeagueMap.put(seasonLeague.getSeasonLeagueName(), seasonLeague);
     }
 
     /**
-     * Will receive from the Controller the seasonLeague's id, return the SeasonLeague.
+     * Will receive from the Controller the seasonLeague's name, return the SeasonLeague.
      *
      * "pull" SeasonLeague from DB.
      *
-     * @param seasonLeagueId-id of the SeasonLeague.
+     * @param seasonLeagueName-name of the SeasonLeague.
      * @return the SeasonLeague.
      * @throws Exception-if details are incorrect.
      */
-    public SeasonLeague getSeasonLeague(Integer seasonLeagueId) throws Exception
+    public SeasonLeague getSeasonLeague(String seasonLeagueName) throws Exception
     {
-        if (!seasonLeagueMap.containsKey(seasonLeagueId))
+        if (!seasonLeagueMap.containsKey(seasonLeagueName))
         {
             throw new Exception("SeasonLeague not found");
         }
-        return seasonLeagueMap.get(seasonLeagueId);
+        return seasonLeagueMap.get(seasonLeagueName);
     }
 
     /**
      * Will receive from the Controller the JudgeSeasonLeague,
-     * add to judgeEmailAddress_JudgeSeasonLeagueId Map the judgeEmailAddres and the judgeSeasonLeagueId of the specific SeasonLeague.
+     * add to judgeEmailAddress_JudgeSeasonLeagueName Map the judgeEmailAddress and the judgeSeasonLeagueName of the specific SeasonLeague.
      * @param judgeSeasonLeague-the new JudgeSeasonLeague.
      * @throws Exception-if details are incorrect.
      */
     public void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception
     {
-        if (!seasonLeagueMap.containsKey(judgeSeasonLeague.getSeasonLeagueId()))
+        if (!seasonLeagueMap.containsKey(judgeSeasonLeague.getSeasonLeagueName()))
         {
             throw new Exception("SeasonLeague not found");
         }
-        seasonLeagueMap.get(judgeSeasonLeague.getSeasonLeagueId()).getJudgeEmailAddress_JudgeSeasonLeagueId().put(judgeSeasonLeague.getJudgeEmailAddress(), judgeSeasonLeague.getJudgeSeasonLeagueId());
+        seasonLeagueMap.get(judgeSeasonLeague.getSeasonLeagueName()).getJudgeEmailAddress_JudgeSeasonLeagueName().put(judgeSeasonLeague.getJudgeEmailAddress(), judgeSeasonLeague.getJudgeSeasonLeagueName());
     }
 
     /**
-     * Will receive from the Service the seasonLeague's id and the calculateLeaguePoints's id,
-     * want to set Policy CalculateLeaguePointsId of thr SeasonLeague.
+     * Will receive from the Controller the seasonLeague's name and the calculateLeaguePoints,
+     * want to set Policy CalculateLeaguePoints of thr SeasonLeague.
      *
-     * @param seasonLeagueId-id of the SeasonLeague.
-     * @param calculateLeaguePointsId-id of the new Policy CalculateLeaguePoints.
+     * @param seasonLeagueName-name of the SeasonLeague.
+     * @param calculateLeaguePoints-new Policy CalculateLeaguePoints.
      */
-    public void changeCalculateLeaguePointsPolicy(Integer seasonLeagueId, Integer calculateLeaguePointsId) throws Exception
+    public void changeCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception
     {
-        if(!seasonLeagueMap.containsKey(seasonLeagueId))
+        if(!seasonLeagueMap.containsKey(seasonLeagueName))
         {
             throw new Exception("SeasonLeague not found");
         }
-        seasonLeagueMap.get(seasonLeagueId).setCalculateLeaguePointsId(calculateLeaguePointsId);
+        seasonLeagueMap.get(seasonLeagueName).setCalculateLeaguePoints(calculateLeaguePoints);
+    }
+
+    /**
+     * For the tests-Clear the SeasonLeague Map from the DB.
+     */
+    @Override
+    public void deleteAll()
+    {
+        seasonLeagueMap.clear();
     }
 }

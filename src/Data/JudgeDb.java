@@ -4,7 +4,7 @@ import Model.Enums.QualificationJudge;
 import Model.JudgeSeasonLeague;
 import Model.UsersTypes.Judge;
 
-public interface JudgeDb
+public interface JudgeDb extends Db
 {
     /**
      * Will receive from the Controller the Judge, add Judge to Data.

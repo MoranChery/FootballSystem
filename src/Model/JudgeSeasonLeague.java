@@ -2,25 +2,21 @@ package Model;
 
 public class JudgeSeasonLeague
 {
-    static int judgeSeasonLeagueIdCounter = 0;
-
-    private Integer judgeSeasonLeagueId;
-    private Integer seasonLeagueId;
+    private String judgeSeasonLeagueName;
+    private String seasonLeagueName;
     private String judgeEmailAddress;
 
-    public JudgeSeasonLeague(Integer seasonLeagueId, String judgeEmailAddress)
+    public JudgeSeasonLeague(String seasonLeagueName, String judgeEmailAddress)
     {
-        this.seasonLeagueId = seasonLeagueId;
+        this.judgeSeasonLeagueName = seasonLeagueName + "_" + judgeEmailAddress;
+        this.seasonLeagueName = seasonLeagueName;
         this.judgeEmailAddress = judgeEmailAddress;
-        this.judgeSeasonLeagueId = judgeSeasonLeagueIdCounter;
-
-        judgeSeasonLeagueIdCounter++;
     }
 
     //region Getters
-    public Integer getJudgeSeasonLeagueId() { return judgeSeasonLeagueId; }
+    public String getJudgeSeasonLeagueName() { return judgeSeasonLeagueName; }
 
-    public Integer getSeasonLeagueId() { return seasonLeagueId; }
+    public String getSeasonLeagueName() { return seasonLeagueName; }
 
     public String getJudgeEmailAddress() { return judgeEmailAddress; }
     //endregion

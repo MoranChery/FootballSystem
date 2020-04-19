@@ -9,7 +9,7 @@ import java.util.Map;
 public class LeagueDbInMemory implements LeagueDb
 {
     /*structure like the DB of Leagues*/
-    private Map<Integer, League> leagueMap;
+    private Map<String, League> leagueMap;
 
     private static LeagueDbInMemory ourInstance = new LeagueDbInMemory();
 
@@ -25,31 +25,33 @@ public class LeagueDbInMemory implements LeagueDb
      * @param league-the new League.
      * @throws Exception-if details are incorrect.
      */
+    @Override
     public void createLeague(League league) throws Exception
     {
-        if(leagueMap.containsKey(league.getLeagueId()))
+        if(leagueMap.containsKey(league.getLeagueName()))
         {
-            throw new Exception("League already exist in the system");
+            throw new Exception("League already exists in the system");
         }
-        leagueMap.put(league.getLeagueId(), league);
+        leagueMap.put(league.getLeagueName(), league);
     }
 
     /**
-     * Will receive from the Controller the league's id, return the League.
+     * Will receive from the Controller the league's name, return the League.
      *
      * "pull" League from DB.
      *
-     * @param leagueId-id of the League.
+     * @param leagueName-name of the League.
      * @return the League.
      * @throws Exception-if details are incorrect.
      */
-    public League getLeague(Integer leagueId) throws Exception
+    @Override
+    public League getLeague(String leagueName) throws Exception
     {
-        if (!leagueMap.containsKey(leagueId))
+        if (!leagueMap.containsKey(leagueName))
         {
             throw new Exception("League not found");
         }
-        return leagueMap.get(leagueId);
+        return leagueMap.get(leagueName);
     }
 
     /**
@@ -58,28 +60,39 @@ public class LeagueDbInMemory implements LeagueDb
      * @param seasonLeague-the new SeasonLeague.
      * @throws Exception-if details are incorrect.
      */
+    @Override
     public void addSeasonLeague(SeasonLeague seasonLeague) throws Exception
     {
-        if (!leagueMap.containsKey(seasonLeague.getSeasonId()))
+        if (!leagueMap.containsKey(seasonLeague.getLeagueName()))
         {
             throw new Exception("League not found");
         }
-        leagueMap.get(seasonLeague.getLeagueId()).getSeasonId_SeasonLeagueId().put(seasonLeague.getSeasonId(), seasonLeague.getSeasonLeagueId());
+        leagueMap.get(seasonLeague.getLeagueName()).getSeasonName_SeasonLeagueId().put(seasonLeague.getSeasonName(), seasonLeague.getSeasonLeagueName());
     }
 
     /**
-     * Will receive from the Controller the season's id and the league's id, return the seasonLeague's id.
-     * @param seasonId-the season's id.
-     * @param leagueId-the league's id.
-     * @return the seasonLeague's id.
+     * Will receive from the Controller the season's id and the league's id, return the seasonLeague's name.
+     * @param seasonName-the season's name.
+     * @param leagueName-the league's name.
+     * @return the seasonLeague's name.
      * @throws Exception-if details are incorrect.
      */
-    public Integer getSeasonLeagueIdBySeasonAndByLeague(Integer seasonId, Integer leagueId) throws Exception
+    @Override
+    public String getSeasonLeagueNameBySeasonAndByLeague(String seasonName, String leagueName) throws Exception
     {
-        if (!leagueMap.containsKey(leagueId))
+        if (!leagueMap.containsKey(leagueName))
         {
             throw new Exception("Season not found");
         }
-        return leagueMap.get(leagueId).getSeasonId_SeasonLeagueId().get(seasonId);
+        return leagueMap.get(leagueName).getSeasonName_SeasonLeagueId().get(seasonName);
+    }
+
+    /**
+     * For the tests-Clear the League Map from the DB.
+     */
+    @Override
+    public void deleteAll()
+    {
+        leagueMap.clear();
     }
 }

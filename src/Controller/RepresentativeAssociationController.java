@@ -1,6 +1,8 @@
 package Controller;
 
 import Data.*;
+import Model.Enums.CalculateLeaguePoints;
+import Model.Enums.InlayGames;
 import Model.Enums.JudgeType;
 import Model.Enums.QualificationJudge;
 import Model.JudgeSeasonLeague;
@@ -8,9 +10,11 @@ import Model.League;
 import Model.Season;
 import Model.SeasonLeague;
 import Model.UsersTypes.Judge;
+import Model.UsersTypes.RepresentativeAssociation;
 
 public class RepresentativeAssociationController
 {
+    private RepresentativeAssociationDb representativeAssociationDb;
     private LeagueDb leagueDb;
     private SeasonDb seasonDb;
     private SeasonLeagueDb seasonLeagueDb;
@@ -19,11 +23,27 @@ public class RepresentativeAssociationController
 
     public RepresentativeAssociationController()
     {
+        this.representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
         this.leagueDb = LeagueDbInMemory.getInstance();
         this.seasonDb = SeasonDbInMemory.getInstance();
         this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
         this.judgeDb = JudgeDbInMemory.getInstance();
         this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
+    }
+
+    /**
+     * Will receive the RepresentativeAssociation, add RepresentativeAssociation to Data.
+     * Will continue to Data.
+     * @param representativeAssociation-the new RepresentativeAssociation.
+     * @throws Exception-if details are incorrect.
+     */
+    public void createRepresentativeAssociation(RepresentativeAssociation representativeAssociation) throws Exception
+    {
+        if(representativeAssociation == null)
+        {
+            throw new NullPointerException("No RepresentativeAssociation been created");
+        }
+        representativeAssociationDb.createRepresentativeAssociation(representativeAssociation);
     }
 
     /**
@@ -59,24 +79,24 @@ public class RepresentativeAssociationController
     }
 
     /**
-     * Will receive from the UI the league's id the season's id the policy-calculateLeaguePoints's id and the policy-inlayGames's id, create SeasonLeague.
+     * Will receive from the Service the league's name the season's name the policy-calculateLeaguePoints and the policy-inlayGames, create SeasonLeague.
      * Will continue to Data.
-     * @param leagueId-id of the League.
-     * @param seasonId-id of the Season.
-     * @param calculateLeaguePointsId-id of the Policy CalculateLeaguePoints.
-     * @param inlayGamesId-name of the Policy InlayGamesId.
+     * @param leagueName-name of the League.
+     * @param seasonName-name of the Season.
+     * @param calculateLeaguePoints-Policy CalculateLeaguePoints.
+     * @param inlayGames-Policy InlayGames.
      * @throws Exception-if details are incorrect.
      */
-    public void createSeasonLeague(Integer leagueId, Integer seasonId, Integer calculateLeaguePointsId, Integer inlayGamesId) throws Exception
+    public void createSeasonLeague(String leagueName, String seasonName, CalculateLeaguePoints calculateLeaguePoints, InlayGames inlayGames) throws Exception
     {
-        if(leagueId == null || seasonId == null || calculateLeaguePointsId == null || inlayGamesId == null)
+        if(leagueName == null || seasonName == null || calculateLeaguePoints == null || inlayGames == null)
         {
             throw new NullPointerException("One or more of the SeasonLeague details incorrect");
         }
-        SeasonLeague seasonLeague = new SeasonLeague(seasonId, leagueId, calculateLeaguePointsId, inlayGamesId);
-        seasonLeagueDb.createSeasonLeague(seasonLeague);
+        SeasonLeague seasonLeague = new SeasonLeague(seasonName, leagueName, calculateLeaguePoints, inlayGames);
         seasonDb.addSeasonLeague(seasonLeague);
         leagueDb.addSeasonLeague(seasonLeague);
+        seasonLeagueDb.createSeasonLeague(seasonLeague);
     }
 
     /**
@@ -116,43 +136,38 @@ public class RepresentativeAssociationController
     }
 
     /**
-     * Will receive from the Service the season's id, the league's id and the judge's id, create the JudgeSeasonLeague.
+     * Will receive from the Service the seasonLeague's name and the judge's emailAddress, want to create JudgeSeasonLeague.
      * Will continue to Data.
-     * @param seasonId-id of the Season.
-     * @param leagueId-id of the League.
+     * @param seasonLeagueName-name of the SeasonLeague.
      * @param judgeEmailAddress-emailAddress of the Judge.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudgeSeasonLeague(Integer seasonId, Integer leagueId, String judgeEmailAddress) throws Exception
+    public void createJudgeSeasonLeague(String seasonLeagueName, String judgeEmailAddress) throws Exception
     {
-        if(seasonId == null || leagueId == null || judgeEmailAddress == null)
+        if(seasonLeagueName == null || judgeEmailAddress == null)
         {
             throw new NullPointerException("One or more of the JudgeSeasonLeague details incorrect");
         }
-        Integer seasonLeagueId = seasonDb.getSeasonLeagueIdBySeasonAndByLeague(seasonId, leagueId);
-
-        JudgeSeasonLeague judgeSeasonLeague = new JudgeSeasonLeague(seasonLeagueId, judgeEmailAddress);
-        judgeSeasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
+        JudgeSeasonLeague judgeSeasonLeague = new JudgeSeasonLeague(seasonLeagueName, judgeEmailAddress);
         seasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
         judgeDb.createJudgeSeasonLeague(judgeSeasonLeague);
+        judgeSeasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
     }
 
     /**
-     * Will receive from the Service the season's id, the league's id and the calculateLeaguePoints's id,
-     * want to set Policy CalculateLeaguePointsId of thr SeasonLeague.
-     * Will continue to Data.
-     * @param seasonId-id of the Season.
-     * @param leagueId-id of the League.
-     * @param calculateLeaguePointsId-id of the new Policy CalculateLeaguePoints.
-     * @throws Exception-if details are incorrect.
+     * Will receive from the Service the seasonLeague's name, policy-calculateLeaguePoints,
+     * want to set Policy CalculateLeaguePoints of the SeasonLeague.
+     * Will continue to Date.
+     * @param seasonLeagueName-name of SeasonLeague.
+     * @param calculateLeaguePoints-Policy CalculateLeaguePoints.
+     * @throws Exception
      */
-    public void changeCalculateLeaguePointsPolicy(Integer seasonId, Integer leagueId, Integer calculateLeaguePointsId) throws Exception
+    public void changeCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception
     {
-        if(seasonId == null || leagueId == null || calculateLeaguePointsId == null)
+        if(seasonLeagueName == null || calculateLeaguePoints == null)
         {
-            throw new NullPointerException();
+            throw new NullPointerException("SeasonLeague or CalculateLeaguePointsPolicy details incorrect");
         }
-        Integer seasonLeagueId = seasonDb.getSeasonLeagueIdBySeasonAndByLeague(seasonId, leagueId);
-        seasonLeagueDb.changeCalculateLeaguePointsPolicy(seasonLeagueId, calculateLeaguePointsId);
+        seasonLeagueDb.changeCalculateLeaguePointsPolicy(seasonLeagueName, calculateLeaguePoints);
     }
 }

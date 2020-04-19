@@ -3,7 +3,7 @@ package Data;
 import Model.League;
 import Model.SeasonLeague;
 
-public interface LeagueDb
+public interface LeagueDb extends Db
 {
     /**
      * Will receive from the Controller the League, add League to Data.
@@ -13,27 +13,27 @@ public interface LeagueDb
     void createLeague(League league) throws Exception;
 
     /**
-     * Will receive from the Controller the league's id, return the League.
-     * @param leagueId-id of the League.
+     * Will receive from the Controller the league's name, return the League.
+     * @param leagueName-name of the League.
      * @return the League.
      * @throws Exception-if details are incorrect.
      */
-    League getLeague(Integer leagueId) throws Exception;
+    League getLeague(String leagueName) throws Exception;
 
     /**
      * Will receive from the Controller the SeasonLeague,
-     * add to seasonId_SeasonLeagueId Map the seasonId and the seasonLeagueId of the specific League.
+     * add to seasonName_SeasonLeagueId Map the seasonName and the seasonLeagueId of the specific League.
      * @param seasonLeague-the new SeasonLeague.
      * @throws Exception-if details are incorrect.
      */
     void addSeasonLeague(SeasonLeague seasonLeague) throws Exception;
 
     /**
-     * Will receive from the Controller the season's id and the league's id, return the seasonLeague's id.
-     * @param seasonId-the season's id.
-     * @param leagueId-the league's id.
-     * @return the seasonLeague's id.
+     * Will receive from the Controller the season's name and the league's name, return the seasonLeague's name.
+     * @param seasonName-the season's name.
+     * @param leagueName-the league's name.
+     * @return the seasonLeague's name.
      * @throws Exception-if details are incorrect.
      */
-    Integer getSeasonLeagueIdBySeasonAndByLeague(Integer seasonId, Integer leagueId) throws Exception;
+    String getSeasonLeagueNameBySeasonAndByLeague(String seasonName, String leagueName) throws Exception;
 }
