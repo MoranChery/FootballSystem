@@ -25,6 +25,7 @@ public class SystemAdministratorController {
     private JudgeSeasonLeagueDb judgeSeasonLeagueDb;
     private RoleDb roleDb;
     private SystemAdministratorDb systemAdministratorDb;
+    private RepresentativeAssociationDb representativeAssociationDb;
 
 
     public SystemAdministratorController() {
@@ -97,19 +98,15 @@ public class SystemAdministratorController {
     }
 
     /**
-     * todo!!! have no RepresentativeAssociation in this version!!!
+     *
      *
      * @param subscriberToRemove subscriberToRemove that is also RepresentativeAssociation
      * @throws Exception if the RepresentativeAssociation is already removed from fanDB
      */
     private void removeRepresentativeAssociation(Subscriber subscriberToRemove) throws Exception {
         RepresentativeAssociation representativeAssociation= (RepresentativeAssociation) subscriberToRemove;
-        //remove representativeAssociation from his connected league
-        //todo
-        //remove representativeAssociation from his connected Season
-        //todo
         //remove the representativeAssociation from representativeAssociationDB
-        representativeAssociationDb.removeRepresentativeAssociation(representativeAssociation);
+        representativeAssociationDb.removeRepresentativeAssociation(representativeAssociation.getEmailAddress());
         //remove systemAdministrator from roleDB
         roleDb.removeRole(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
     }
@@ -216,19 +213,17 @@ public class SystemAdministratorController {
             game.getJudgesOfTheGameList().remove(judge);
         }
         // remove judge from association class of league and Season
-        Map<Integer, Integer> seasonLeagueId_JudgeSeasonLeagueId = judge.getSeasonLeagueId_JudgeSeasonLeagueId();
+        Map<String, String> seasonLeagueName_JudgeSeasonLeagueName = judge.getSeasonLeagueName_JudgeSeasonLeagueName();
         //remove the judge from his connected seasonLeague
-        for (Integer seasonLeagueId : seasonLeagueId_JudgeSeasonLeagueId.keySet()) {
-            seasonalLeagueDB.getSeasonLeague(seasonLeagueId).getJudgeEmailAddress_JudgeSeasonLeagueId().remove(judge.getEmailAddress());
+        for (String seasonLeagueName : seasonLeagueName_JudgeSeasonLeagueName.keySet()) {
+            seasonalLeagueDB.getSeasonLeague(seasonLeagueName).getJudgeEmailAddress_JudgeSeasonLeagueName().remove(judge.getEmailAddress());
         }
         //remove judge and his JudgeSeasonLeagueId from judgeSeasonLeagueDB
-        for (Integer judgeSeasonLeagueId : seasonLeagueId_JudgeSeasonLeagueId.values()) {
-            judgeSeasonLeagueDb.removeJudgeSeasonLeague(judgeSeasonLeagueId);
+        for (String judgeSeasonLeagueName : seasonLeagueName_JudgeSeasonLeagueName.values()) {
+            judgeSeasonLeagueDb.removeJudgeSeasonLeague(judgeSeasonLeagueName);
         }
         //remove the judge from judgeDb
         judgeDb.removeJudge(judge.getEmailAddress());
-        //remove judge from roleDB
-        roleDb.removeRole(judge.getEmailAddress(), RoleType.JUDGE);
     }
 
     /**
@@ -267,4 +262,5 @@ public class SystemAdministratorController {
         //remove teamManager from roleDB
         roleDb.removeRole(teamManager.getEmailAddress(), RoleType.TEAM_MANAGER);
     }
+
 }

@@ -20,4 +20,10 @@ public interface RepresentativeAssociationDb extends Db
      * @throws Exception-if details are incorrect.
      */
     RepresentativeAssociation getRepresentativeAssociation(String representativeAssociationEmailAddress) throws Exception;
+
+    /**
+     * Remove removeRepresentativeAssociation from db
+     * @param email String the id
+     */
+    void removeRepresentativeAssociation(String email) throws Exception;
 }

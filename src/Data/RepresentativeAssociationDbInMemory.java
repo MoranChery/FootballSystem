@@ -53,6 +53,15 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
     }
 
     /**
+     * Remove removeRepresentativeAssociation from db
+     * @param email String the id
+     */
+    @Override
+    public void removeRepresentativeAssociation(String email) throws Exception{
+        representativeAssociationMap.remove(email);
+    }
+
+    /**
      * For the tests-Clear the RepresentativeAssociation Map from the DB.
      */
     @Override

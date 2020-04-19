@@ -18,6 +18,7 @@ public class SubscriberController {
     private FanDb fanDb;
     private RoleDb roleDb;
     private SystemAdministratorDb systemAdministratorDb;
+    private RepresentativeAssociationDb representativeAssociationDb;
 
     public SubscriberController() {
         subscriberDb = SubscriberDbInMemory.getInstance();
@@ -29,7 +30,7 @@ public class SubscriberController {
         fanDb = FanDbInMemory.getInstance();
         roleDb= RoleDbInMemory.getInstance();
         systemAdministratorDb= SystemAdministratorDbInMemory.getInstance();
-        representativeAssociationDb=RepresentativeAssociationDbInMemory.getInstance();
+        representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
     }
 
     //todo: call use case 2.2 from UI
@@ -41,8 +42,6 @@ public class SubscriberController {
             case "Fan":
                 break;
             case "Judge":
-                break;
-            case "MajorJudge":
                 break;
             case "Player":
                 break;
