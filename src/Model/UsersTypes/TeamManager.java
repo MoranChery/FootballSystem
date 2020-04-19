@@ -1,22 +1,28 @@
 package Model.UsersTypes;
 
+import Model.Enums.PermissionType;
 import Model.Team;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class TeamManager extends Subscriber {
     private Team team;
     private String ownedByEmail;
+    private List<PermissionType> permissionTypes;
 
     public TeamManager(String emailAddress, String password,Integer id, String firstName, String lastName,String ownedByEmail) {
         setRegisteringDetails(emailAddress,password,id,firstName,lastName);
         this.ownedByEmail = ownedByEmail;
+        permissionTypes = new ArrayList<>();
     }
 
-    public TeamManager(Team team,Subscriber subscriber, String ownedById) {
+    public TeamManager(Team team,Subscriber subscriber, String ownedById,List<PermissionType> permissionTypes) {
         setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),subscriber.getLastName());
         this.team = team;
         this.ownedByEmail = ownedById;
+        this.permissionTypes = permissionTypes;
     }
 
     public TeamManager(String emailAddress,Integer teamManagerId, String firstName, String lastName, String ownedById) {
@@ -38,6 +44,14 @@ public class TeamManager extends Subscriber {
 
     public void setOwnedByEmail(String ownedByEmail) {
         this.ownedByEmail = ownedByEmail;
+    }
+
+    public List<PermissionType> getPermissionTypes() {
+        return permissionTypes;
+    }
+
+    public void setPermissionTypes(List<PermissionType> permissionTypes) {
+        this.permissionTypes = permissionTypes;
     }
 
     @Override
