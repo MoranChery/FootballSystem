@@ -60,11 +60,25 @@ public class SystemService{
      * This method will be called when a user attempts to access the system
      */
     public void openingTheSystemByUser(){
-        if(system_controller.isIsInitialize()){
+        if(system_controller.isTheSystemInitialize()){
             displayHomeScreen();
         }
         else{
             alert("System not booted - Unable to connect");
+        }
+    }
+
+    /**
+     * after we creat the first System Administrator we ask the user to add log path
+     * @param path the path where to save the log file
+     */
+    public void createLog(String path){
+        try{
+            system_controller.createLog(path);
+            alert("Log created");
+        }
+        catch (Exception e){
+            alert("Can't create Log");
         }
     }
 

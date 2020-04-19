@@ -1,39 +1,36 @@
 package Controller;
 
-import Model.System;
+import Data.LeagueDbInMemory;
+
+import Model.LogFunctionality;
 import Model.UsersTypes.SystemAdministrator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class System_Controller {
 
-    static CoachController coachController;
-    static FanController fanController;
-    static JudgeController judgeController;
-    static PlayerController playerController;
-    static RepresentativeAssociationController representativeAssociationController;
-    static SubscriberController subscriberController;
-    static TeamController teamController;
-    static TeamManagerController teamManagerController;
-    static TeamOwnerController teamOwnerController;
-    static SystemAdministrator systemAdministrator;
+    private static SubscriberController subscriberController;
+    private static  SystemAdministratorController systemAdministratorController;
+    private static LeagueDbInMemory leagueDbInMemory;
+    private LogFunctionality log;
+    private static boolean isInitialize = false;
+    private static System_Controller ourInstance;
 
-    private static boolean isInitialize= false;
-    private System system;
+    private System_Controller() { }
 
-    public static boolean isIsInitialize() {
+    /**
+     * if we want to know if the system initialized
+     * @return is the system initialized- return true, else- false
+     */
+    public static boolean isTheSystemInitialize() {
         return isInitialize;
     }
 
-    private static List<SystemAdministrator> systemAdministrators;
-    private static System_Controller ourInstance= new System_Controller();
-
-    private System_Controller() {
-        system = System.getInstance();
-        systemAdministrators = system.getAllSystemAdministrators();
-    }
-
+    /**
+     * get the System Controller
+     * @return System_Controller
+     * @throws Exception - if the system were not initialized
+     */
     public static System_Controller getInstance() throws Exception {
         if(isInitialize){
             return ourInstance;
@@ -63,9 +60,8 @@ public class System_Controller {
     /**
      * This method will show the user the home screen
      */
-    //todo
     public void displayHomeScreen() {
-
+        //todo
     }
 
     /**
@@ -92,23 +88,31 @@ public class System_Controller {
                 String lastName= allDetails[4];
                 //todo- Change - used the function from controller of systemManagerController
                 SystemAdministrator systemAdministrator= new SystemAdministrator(username, password,id, firstName, lastName);
-                systemAdministrators.add(systemAdministrator);
-                //systemAdministrator = new SystemAdministrator(systemAdministrator);
-                //todo
-                coachController = new CoachController();
-                fanController= new FanController();
-                judgeController = new JudgeController();
-                playerController= new PlayerController();
-                representativeAssociationController= new RepresentativeAssociationController();
                 subscriberController= new SubscriberController();
-                teamController= new TeamController();
-                teamManagerController= new TeamManagerController();
-                teamOwnerController= new TeamOwnerController();
+                systemAdministratorController = new SystemAdministratorController();
+                //todo- systemAdministratorController.create(systemAdministrator)-something like this
+                leagueDbInMemory = LeagueDbInMemory.getInstance();
+                //todo- ComplaintsDb
+                ourInstance = new System_Controller();
                 isInitialize = true;
             } else {
                 ArrayList whereIsDetailsProblem= problemWithTheDetails(isDetailsCorrect);
                 ShowAgainAdminRegistrationForm(whereIsDetailsProblem);
             }
+        }
+
+    }
+
+    /**
+     * This method creates the log file
+     * @param path - The path where to save the log file
+     */
+    public void createLog(String path) throws Exception {
+        if(path!=null && path.length()>0){
+            this.log = new LogFunctionality(path);
+        }
+        else {
+            throw new Exception("Cant create log");
         }
 
     }
@@ -167,29 +171,14 @@ public class System_Controller {
         return true;
     }
 
-    //todo
-    private static boolean logInToTheTaxLawSystem() {
+    private static boolean logInToTheTaxLawSystem(){
+        //todo
         return true;
     }
 
-    //todo
     private static boolean logInToTheAccountingSystem() {
+        //todo
         return true;
     }
-
-    /**
-     * This method creates the log file
-     * @param path - The path where to save the log file
-     */
-    public void createLog(String path) {
-        system.creteLog(path);
-
-    }
-
-    public static void main(String[] args){
-
-    }
-
-
 
 }

@@ -10,13 +10,14 @@ public class System_ControllerTest {
 
     System_Controller system_controller;
 
+
     @Test
     public void isIsInitialize() throws Exception {
-        assertEquals(system_controller.isIsInitialize(),false);
+        assertEquals(system_controller.isTheSystemInitialize() ,false);
         System_Controller.startInitializeTheSystem();
         String[] allDetails = {"username","password","123","firstName","lastName"};
         System_Controller.initialAdministratorRegistration(allDetails);
-        assertTrue(system_controller.isIsInitialize());
+        assertTrue(system_controller.isTheSystemInitialize());
     }
 
     @Rule
