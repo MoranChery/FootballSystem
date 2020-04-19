@@ -3,12 +3,10 @@ package Controller;
 import Controller.RepresentativeAssociationController;
 import Data.*;
 import Model.*;
-import Model.Enums.CalculateLeaguePoints;
-import Model.Enums.InlayGames;
-import Model.Enums.JudgeType;
-import Model.Enums.QualificationJudge;
+import Model.Enums.*;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.RepresentativeAssociation;
+import Model.UsersTypes.Subscriber;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +24,8 @@ public class RepresentativeAssociationControllerTest
         final List<Db> dbs = new ArrayList<>();
 
         dbs.add(RepresentativeAssociationDbInMemory.getInstance());
+        dbs.add(RoleDbInMemory.getInstance());
+        dbs.add(SubscriberDbInMemory.getInstance());
         dbs.add(LeagueDbInMemory.getInstance());
         dbs.add(SeasonDbInMemory.getInstance());
         dbs.add(SeasonLeagueDbInMemory.getInstance());
@@ -494,8 +494,15 @@ public class RepresentativeAssociationControllerTest
         {
             e.printStackTrace();
         }
+        Subscriber subscriber = SubscriberDbInMemory.getInstance().getSubscriber("username");
+        Assert.assertEquals("username", subscriber.getEmailAddress());
+
         Judge judge = JudgeDbInMemory.getInstance().getJudge("username");
         Assert.assertEquals("username", judge.getEmailAddress());
+
+        Role role = RoleDbInMemory.getInstance().getRole("username");
+        RoleType roleType = role.getRoleType();
+        Assert.assertEquals(RoleType.JUDGE, roleType);
     }
 
     @Test
@@ -546,7 +553,7 @@ public class RepresentativeAssociationControllerTest
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
             representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
             representativeAssociationController.removeJudge("username");
-            Judge judge = JudgeDbInMemory.getInstance().getJudge("username");
+//            Judge judge = JudgeDbInMemory.getInstance().getJudge("username");
 
         }
         catch (Exception e)

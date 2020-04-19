@@ -1,10 +1,7 @@
 package Controller;
 
 import Data.*;
-import Model.Enums.CalculateLeaguePoints;
-import Model.Enums.InlayGames;
-import Model.Enums.JudgeType;
-import Model.Enums.QualificationJudge;
+import Model.Enums.*;
 import Model.JudgeSeasonLeague;
 import Model.League;
 import Model.Season;
@@ -15,6 +12,8 @@ import Model.UsersTypes.RepresentativeAssociation;
 public class RepresentativeAssociationController
 {
     private RepresentativeAssociationDb representativeAssociationDb;
+    private SubscriberDb subscriberDb;
+    private RoleDb roleDb;
     private LeagueDb leagueDb;
     private SeasonDb seasonDb;
     private SeasonLeagueDb seasonLeagueDb;
@@ -24,6 +23,8 @@ public class RepresentativeAssociationController
     public RepresentativeAssociationController()
     {
         this.representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
+        this.subscriberDb = SubscriberDbInMemory.getInstance();
+        this.roleDb = RoleDbInMemory.getInstance();
         this.leagueDb = LeagueDbInMemory.getInstance();
         this.seasonDb = SeasonDbInMemory.getInstance();
         this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
@@ -117,7 +118,23 @@ public class RepresentativeAssociationController
             throw new NullPointerException("One or more of the Judge details incorrect");
         }
         Judge judge = new Judge(username, password, id, firstName, lastName, qualificationJudge,theJudgeType);
-        judgeDb.createJudge(judge);
+        try
+        {
+            subscriberDb.createSubscriber(judge);
+            try
+            {
+                judgeDb.createJudge(judge);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Judge already exists in the system");
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Judge already exists in the system");
+        }
+        roleDb.createRoleInSystem(username, RoleType.JUDGE);
     }
 
     /**
@@ -132,7 +149,16 @@ public class RepresentativeAssociationController
         {
             throw new NullPointerException("One or more of the Judge details incorrect");
         }
-        judgeDb.removeJudge(judgeEmailAddress);
+        Judge judge = judgeDb.getJudge(judgeEmailAddress);
+        if(subscriberDb.removeSubscriberFromDB(judge) == false)
+        {
+            throw new Exception("Judge not found");
+        }
+        else
+        {
+            judgeDb.removeJudge(judgeEmailAddress);
+            roleDb.removeRoleFromSystem(judgeEmailAddress);
+        }
     }
 
     /**
@@ -160,7 +186,7 @@ public class RepresentativeAssociationController
      * Will continue to Date.
      * @param seasonLeagueName-name of SeasonLeague.
      * @param calculateLeaguePoints-Policy CalculateLeaguePoints.
-     * @throws Exception
+     * @throws Exception-if details are incorrect.
      */
     public void changeCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception
     {
