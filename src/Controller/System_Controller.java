@@ -19,13 +19,13 @@ public class System_Controller {
     static TeamOwnerController teamOwnerController;
     static SystemAdministrator systemAdministrator;
 
+    private static boolean isInitialize= false;
     private System system;
 
     public static boolean isIsInitialize() {
         return isInitialize;
     }
 
-    private static boolean isInitialize= false;
     private static List<SystemAdministrator> systemAdministrators;
     private static System_Controller ourInstance= new System_Controller();
 
@@ -48,10 +48,14 @@ public class System_Controller {
      * @throws Exception - Something went wrong with this method
      */
     public static void startInitializeTheSystem() throws Exception {
-        if(connectionToExternalSystems()){
+        try {
+            if (connectionToExternalSystems()) {
+            } else {
+                throw new Exception("Something got wrong- function: startInitializeTheSystem in System_Controller");
+            }
         }
-        else{
-            throw new Exception("Something got wrong- function: startInitializeTheSystem in System_Controller");
+        catch (Exception e){
+            throw new Exception("The system must be rebooted first");
         }
 
     }
