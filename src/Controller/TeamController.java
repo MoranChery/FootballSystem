@@ -135,8 +135,12 @@ public class TeamController {
                 boolean isCanBePlayer = false;
                 /*check if the player has subscriber with TeamOwner type in the same team*/
                 for (Role role : roles) {
-                    if(PermissionType.OWNER.equals(role.getRoleType()) && teamName.equals(role.getTeamName())){
-                        isCanBePlayer = true;
+                    if(RoleType.TEAM_OWNER.equals(role.getRoleType())){
+                        if(teamName.equals(role.getTeamName())) {
+                            isCanBePlayer = true;
+                        }else{
+                            throw new Exception("The player to added already has other team");
+                        }
                     }
                 }
                 if(!isCanBePlayer){
@@ -214,8 +218,12 @@ public class TeamController {
                 boolean isCanBePlayer = false;
                 /*check if the player has subscriber with TeamOwner type in the same team*/
                 for (Role role : roles) {
-                    if(PermissionType.OWNER.equals(role.getRoleType()) && teamName.equals(role.getTeamName())){
-                        isCanBePlayer = true;
+                    if(RoleType.TEAM_OWNER.equals(role.getRoleType())){
+                        if(teamName.equals(role.getTeamName())) {
+                            isCanBePlayer = true;
+                        }else{
+                            throw new Exception("The teamManager to added already has other team");
+                        }
                     }
                 }
                 if(!isCanBePlayer){
@@ -282,12 +290,16 @@ public class TeamController {
                 boolean isCanBePlayer = false;
                 /*check if the player has subscriber with TeamOwner type in the same team*/
                 for (Role role : roles) {
-                    if(PermissionType.OWNER.equals(role.getRoleType()) && teamName.equals(role.getTeamName())){
-                        isCanBePlayer = true;
+                    if(RoleType.TEAM_OWNER.equals(role.getRoleType())){
+                        if(teamName.equals(role.getTeamName())) {
+                            isCanBePlayer = true;
+                        }else{
+                            throw new Exception("The coach to added already has other team");
+                        }
                     }
                 }
                 if(!isCanBePlayer){
-                    throw new Exception("The coach to added already has other subscriber type - you can to appoint him to team manager");
+                    throw new Exception("The coach to added already has other subscriber type");
                 }
             } catch(NotFoundException ex) {
                 /*give random password to player when open new subscriber*/
@@ -460,8 +472,8 @@ public class TeamController {
             throw new NullPointerException("bad input");
         }
         Team team = teamDb.getTeam(teamName);
-        checkTeamStatusIsActive(team);
         checkPermissions(teamOwnerEmail,teamName,PermissionType.OWNER);
+        checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
         /*check if the subscriber exists*/

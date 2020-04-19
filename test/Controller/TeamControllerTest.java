@@ -1,3 +1,5 @@
+package Controller;
+
 import Controller.*;
 import Data.*;
 import Model.Court;
@@ -36,9 +38,6 @@ public class TeamControllerTest {
         }
     }
 
-    private void createTeamOwnerSubscriberAndRole(){
-
-    }
     @Test
     public void createTeamNull() throws Exception {
         try {
@@ -87,6 +86,58 @@ public class TeamControllerTest {
     }
 
     @Test
+    public void testAddPlayerOwnerWithManagerPermissions() throws Exception {
+//        String teamName = "Exists";
+//        teamController.createTeam(teamName);
+//        String ownerEmail = "owner@gmail.com";
+//        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+//        teamOwnerController.createTeamOwner(teamOwner);
+//        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+//        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+//
+//        String withPermissionsEmail = "withPermissions@gmail.com";
+//        Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+//        playerController.createPlayer(managerToAdd);
+//        RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
+//        SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
+//
+//        ArrayList<PermissionType> permissionTypes = new ArrayList<>();
+//        permissionTypes.add(PermissionType.ADD_PLAYER);
+//
+//        teamController.subscriptionTeamManager(teamName,ownerEmail, withPermissionsEmail,permissionTypes);
+//        Assert.assertEquals(2,RoleDbInMemory.getInstance().getRoles(withPermissionsEmail).size());
+//        teamController.addPlayer(teamName, withPermissionsEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER);
+//        Assert.assertEquals(2,teamController.getTeam(teamName).getPlayers().size());
+//
+
+//        Assert.assertEquals(2,team.getPlayers().size());
+    }
+
+    @Test
+    public void testAddPlayerOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.addPlayer(teamName, withoutPermissionsOwnerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
+
+    @Test
     public void testAddPlayerTeamNotFound() {
         try {
             String teamName = "Exists";
@@ -123,17 +174,21 @@ public class TeamControllerTest {
     public void testAddPlayerNotExistsPlayer() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
+
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
         teamOwnerController.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
         Date birthDate = new Date();
 
         String playerToAdd = "email@gmail.com";
         teamController.addPlayer(teamName, ownerEmail,playerToAdd, 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+
         Team team = teamController.getTeam(teamName);
         Map<String, Player> players = team.getPlayers();
+
         Assert.assertEquals(1, players.size());
         Assert.assertTrue(players.containsKey(playerToAdd));
         Player player = players.get(playerToAdd);
@@ -154,12 +209,14 @@ public class TeamControllerTest {
     public void testAddPlayerExistsPlayerAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
+
         teamController.createTeam(teamName);
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
         teamOwnerController.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
         Player player = new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
 //        SubscriberDbInMemory.getInstance().createSubscriber(player);
         playerController.createPlayer(player);
@@ -196,14 +253,111 @@ public class TeamControllerTest {
         String teamName = "Exists";
         Date birthDate = new Date();
         teamController.createTeam(teamName);
+
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
         teamOwnerController.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner); Coach coach = new Coach("email@gmail.com", 1, "first", "last", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        Coach coach = new Coach("email@gmail.com", 1, "first", "last", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         SubscriberDbInMemory.getInstance().createSubscriber(coach);
         try {
             teamController.addPlayer(teamName,"owner@gmail.com", "email@gmail.com", 1, "first", "last", birthDate, PlayerRole.GOALKEEPER);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("The player to added already has other subscriber type", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void testAddPlayerExistSubscriberWithTeamOwnerAndSameTeam() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+        teamController.createTeam(teamName);
+        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        String playerToAdd = "email@gmail.com";
+        TeamOwner ownerToAddAsPlayer = new TeamOwner(playerToAdd, "1234",1, "first", "last",teamController.getTeam(teamName));
+        SubscriberDbInMemory.getInstance().createSubscriber(ownerToAddAsPlayer);
+        RoleDbInMemory.getInstance().createRole(playerToAdd,teamName,RoleType.TEAM_OWNER);
+        Assert.assertEquals(RoleType.TEAM_OWNER,roleDbInMemory.getRole(playerToAdd).getRoleType());
+        Thread.sleep(100);
+        teamController.addPlayer(teamName,ownerEmail, playerToAdd, 1, "first", "last", birthDate, PlayerRole.GOALKEEPER);
+
+        Team team = teamController.getTeam(teamName);
+        Map<String, Player> players = team.getPlayers();
+
+        Assert.assertEquals(1, players.size());
+        Assert.assertTrue(players.containsKey(playerToAdd));
+        Player player = players.get(playerToAdd);
+        Assert.assertEquals(1, player.getId().intValue());
+        Assert.assertEquals(playerToAdd, player.getEmailAddress());
+        Assert.assertEquals("first", player.getFirstName());
+        Assert.assertEquals("last", player.getLastName());
+        Assert.assertEquals(birthDate, player.getBirthDate());
+        Assert.assertEquals(PlayerRole.GOALKEEPER, player.getPlayerRole());
+        Assert.assertEquals(team, player.getTeam());
+        Assert.assertEquals(2,roleDbInMemory.getRoles(playerToAdd).size());
+        Assert.assertEquals(RoleType.PLAYER,roleDbInMemory.getRole(playerToAdd).getRoleType());
+    }
+
+    @Test
+    public void testAddPlayerExistSubscriberWithTeamOwnerAndDifferentTeam() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+        teamController.createTeam(teamName);
+        String otherTeam = "other";
+        teamController.createTeam(otherTeam);
+        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        String playerToAdd = "email@gmail.com";
+        TeamOwner ownerToAddAsPlayer = new TeamOwner(playerToAdd, "1234",1, "first", "last",teamController.getTeam(otherTeam));
+        SubscriberDbInMemory.getInstance().createSubscriber(ownerToAddAsPlayer);
+        RoleDbInMemory.getInstance().createRole(playerToAdd,otherTeam,RoleType.TEAM_OWNER);
+        Assert.assertEquals(RoleType.TEAM_OWNER,roleDbInMemory.getRole(playerToAdd).getRoleType());
+        try {
+            teamController.addPlayer(teamName, ownerEmail, playerToAdd, 1, "first", "last", birthDate, PlayerRole.GOALKEEPER);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("The player to added already has other team", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddPlayerExistSubscriberWithDifferentTypeAndSameTeam() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+        teamController.createTeam(teamName);
+        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        String playerToAdd = "email@gmail.com";
+        Coach ownerToAddAsPlayer = new Coach(playerToAdd, "1234",1, "first", "last",CoachRole.MAJOR,QualificationCoach.UEFA_A);
+        SubscriberDbInMemory.getInstance().createSubscriber(ownerToAddAsPlayer);
+        RoleDbInMemory.getInstance().createRole(playerToAdd,teamName,RoleType.COACH);
+        Assert.assertEquals(RoleType.COACH,roleDbInMemory.getRole(playerToAdd).getRoleType());
+
+        try {
+            teamController.addPlayer(teamName, ownerEmail, playerToAdd, 1, "first", "last", birthDate, PlayerRole.GOALKEEPER);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("The player to added already has other subscriber type", e.getMessage());
@@ -253,6 +407,32 @@ public class TeamControllerTest {
             Assert.assertEquals("bad input", e.getMessage());
         }
     }
+
+    @Test
+    public void testAddTeamManagerOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer", withoutPermissionsOwnerEmail);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
+
 
     @Test
     public void testAddTeamManagerTeamNotFound() {
@@ -419,6 +599,95 @@ public class TeamControllerTest {
     }
 
     @Test
+    public void testAddTeamManagerExistSubscriberWithTeamOwnerAndSameTeam() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        String managerToAdd = "email@gmail.com";
+        TeamOwner ownerToAddAsManager = new TeamOwner(managerToAdd, "1234",1, "first", "last",teamController.getTeam(teamName));
+        SubscriberDbInMemory.getInstance().createSubscriber(ownerToAddAsManager);
+        RoleDbInMemory.getInstance().createRole(managerToAdd,teamName,RoleType.TEAM_OWNER);
+        Assert.assertEquals(RoleType.TEAM_OWNER,roleDbInMemory.getRole(managerToAdd).getRoleType());
+        Thread.sleep(100);
+        teamController.addTeamManager(teamName, managerToAdd, 1, "first", "last", ownerEmail);
+
+        Team team = teamController.getTeam(teamName);
+        Map<String, TeamManager> teamManagers = team.getTeamManagers();
+
+        Assert.assertEquals(1, teamManagers.size());
+        Assert.assertTrue(teamManagers.containsKey(managerToAdd));
+        TeamManager manager = teamManagers.get(managerToAdd);
+        Assert.assertEquals(1, manager.getId().intValue());
+        Assert.assertEquals(managerToAdd, manager.getEmailAddress());
+        Assert.assertEquals("first", manager.getFirstName());
+        Assert.assertEquals("last", manager.getLastName());
+        Assert.assertEquals(team, manager.getTeam());
+        Assert.assertEquals(2,roleDbInMemory.getRoles(managerToAdd).size());
+        Assert.assertEquals(RoleType.TEAM_MANAGER,roleDbInMemory.getRole(managerToAdd).getRoleType());
+    }
+
+    @Test
+    public void testAddTeamManagerExistSubscriberWithTeamOwnerAndDifferentTeam() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+        teamController.createTeam(teamName);
+        String otherTeam = "other";
+        teamController.createTeam(otherTeam);
+        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        String managerToAdd = "email@gmail.com";
+        TeamOwner ownerToAddAsPlayer = new TeamOwner(managerToAdd, "1234",1, "first", "last",teamController.getTeam(otherTeam));
+        SubscriberDbInMemory.getInstance().createSubscriber(ownerToAddAsPlayer);
+        RoleDbInMemory.getInstance().createRole(managerToAdd,otherTeam,RoleType.TEAM_OWNER);
+        Assert.assertEquals(RoleType.TEAM_OWNER,roleDbInMemory.getRole(managerToAdd).getRoleType());
+        try {
+            teamController.addTeamManager(teamName, managerToAdd, 1, "first", "last",ownerEmail);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("The teamManager to added already has other team", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddTeamManagerExistSubscriberWithDifferentTypeAndSameTeam() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        String playerToAdd = "email@gmail.com";
+        Coach ownerToAddAsPlayer = new Coach(playerToAdd, "1234",1, "first", "last",CoachRole.MAJOR,QualificationCoach.UEFA_A);
+        SubscriberDbInMemory.getInstance().createSubscriber(ownerToAddAsPlayer);
+        RoleDbInMemory.getInstance().createRole(playerToAdd,teamName,RoleType.COACH);
+        Assert.assertEquals(RoleType.COACH,roleDbInMemory.getRole(playerToAdd).getRoleType());
+
+        try {
+            teamController.addTeamManager(teamName, playerToAdd, 1, "first", "last",ownerEmail);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("The teamManager to added already has other subscriber type", e.getMessage());
+        }
+    }
+
+    @Test
     public void testAddTeamManagerExistsTeamManager() throws Exception {
         String teamName = "Exists";
         teamController.createTeam(teamName);
@@ -478,6 +747,32 @@ public class TeamControllerTest {
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NullPointerException);
             Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddCoachOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+
+        try {
+            teamController.addCoach(teamName,withoutPermissionsOwnerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", CoachRole.MAJOR,QualificationCoach.UEFA_A);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
         }
     }
 
@@ -584,6 +879,96 @@ public class TeamControllerTest {
         }
     }
 
+
+    @Test
+    public void testAddTCoachExistSubscriberWithTeamOwnerAndSameTeam() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        String managerToAdd = "email@gmail.com";
+        TeamOwner ownerToAddAsManager = new TeamOwner(managerToAdd, "1234",1, "first", "last",teamController.getTeam(teamName));
+        SubscriberDbInMemory.getInstance().createSubscriber(ownerToAddAsManager);
+        RoleDbInMemory.getInstance().createRole(managerToAdd,teamName,RoleType.TEAM_OWNER);
+        Assert.assertEquals(RoleType.TEAM_OWNER,roleDbInMemory.getRole(managerToAdd).getRoleType());
+        Thread.sleep(100);
+        teamController.addCoach(teamName, ownerEmail,managerToAdd, 1, "first", "last",CoachRole.MAJOR,QualificationCoach.UEFA_A);
+
+        Team team = teamController.getTeam(teamName);
+        Map<String, Coach> coaches = team.getCoaches();
+
+        Assert.assertEquals(1, coaches.size());
+        Assert.assertTrue(coaches.containsKey(managerToAdd));
+        Coach coach = coaches.get(managerToAdd);
+        Assert.assertEquals(1, coach.getId().intValue());
+        Assert.assertEquals(managerToAdd, coach.getEmailAddress());
+        Assert.assertEquals("first", coach.getFirstName());
+        Assert.assertEquals("last", coach.getLastName());
+        Assert.assertEquals(team, coach.getTeam());
+        Assert.assertEquals(2,roleDbInMemory.getRoles(managerToAdd).size());
+        Assert.assertEquals(RoleType.COACH,roleDbInMemory.getRole(managerToAdd).getRoleType());
+    }
+
+    @Test
+    public void testAddCoachExistSubscriberWithTeamOwnerAndDifferentTeam() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String otherTeam = "other";
+        teamController.createTeam(otherTeam);
+        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        String coachToAdd = "email@gmail.com";
+        TeamOwner ownerToAddAsCoach = new TeamOwner(coachToAdd, "1234",1, "first", "last",teamController.getTeam(otherTeam));
+        SubscriberDbInMemory.getInstance().createSubscriber(ownerToAddAsCoach);
+        RoleDbInMemory.getInstance().createRole(coachToAdd,otherTeam,RoleType.TEAM_OWNER);
+        Assert.assertEquals(RoleType.TEAM_OWNER,roleDbInMemory.getRole(coachToAdd).getRoleType());
+        try {
+            teamController.addCoach(teamName, ownerEmail,coachToAdd, 1, "first", "last",CoachRole.MAJOR,QualificationCoach.UEFA_A);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("The coach to added already has other team", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddCoachExistSubscriberWithDifferentTypeAndSameTeam() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        String coachToAdd = "email@gmail.com";
+        Coach ownerToAddAsCoach = new Coach(coachToAdd, "1234",1, "first", "last",CoachRole.MAJOR,QualificationCoach.UEFA_A);
+        SubscriberDbInMemory.getInstance().createSubscriber(ownerToAddAsCoach);
+        RoleDbInMemory.getInstance().createRole(coachToAdd,teamName,RoleType.COACH);
+        Assert.assertEquals(RoleType.COACH,roleDbInMemory.getRole(coachToAdd).getRoleType());
+
+        try {
+            teamController.addCoach(teamName, ownerEmail,coachToAdd, 1, "first", "last",CoachRole.MAJOR,QualificationCoach.UEFA_A);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("The coach to added already has other subscriber type", e.getMessage());
+        }
+    }
+
+
     @Test
     public void testAddCoachExistsCoach() throws Exception {
         String teamName = "Exists";
@@ -626,7 +1011,7 @@ public class TeamControllerTest {
             teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "first", "last", CoachRole.MAJOR, QualificationCoach.UEFA_A);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
-            Assert.assertEquals("The coach to added already has other subscriber type - you can to appoint him to team manager", e.getMessage());
+            Assert.assertEquals("The coach to added already has other subscriber type", e.getMessage());
         }
     }
 
@@ -643,6 +1028,30 @@ public class TeamControllerTest {
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NullPointerException);
             Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddCourtOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.addCourt(teamName, withoutPermissionsOwnerEmail,"courtName","courtCity");
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
         }
     }
 
@@ -775,6 +1184,30 @@ public class TeamControllerTest {
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NullPointerException);
             Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testRemovePlayerOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.removePlayer(teamName, withoutPermissionsOwnerEmail,"email@gmail.com");
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
         }
     }
 
@@ -920,6 +1353,29 @@ public class TeamControllerTest {
     }
 
     @Test
+    public void testRemoveTeamManagerOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.removeTeamManager(teamName, withoutPermissionsOwnerEmail,"email@gmail.com");
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
+    @Test
     public void testRemoveTeamManagerTeamNotFound() {
         try {
             String teamName = "Exists";
@@ -1060,7 +1516,29 @@ public class TeamControllerTest {
             Assert.assertEquals("bad input", e.getMessage());
         }
     }
+    @Test
+    public void testRemoveCoachOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
 
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.removeCoach(teamName, withoutPermissionsOwnerEmail,"email@gmail.com");
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
     @Test
     public void testRemoveCoachTeamNotFound() {
         try {
@@ -1171,6 +1649,30 @@ public class TeamControllerTest {
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NullPointerException);
             Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testRemoveCourtOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.removeCourt(teamName, withoutPermissionsOwnerEmail,"courName");
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
         }
     }
 
@@ -1290,7 +1792,30 @@ public class TeamControllerTest {
             Assert.assertEquals("bad input", e.getMessage());
         }
     }
+    @Test
+    public void testAddFinancialActivityOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
 
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.addFinancialActivity(teamName, withoutPermissionsOwnerEmail,1000.0, "Description", FinancialActivityType.OUTCOME);
+
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
     @Test
     public void testAddFinancialActivityTeamNotFound() {
         try {
@@ -1420,7 +1945,24 @@ public class TeamControllerTest {
             Assert.assertEquals("bad input", e.getMessage());
         }
     }
+    @Test
+    public void testChangeStatusOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
 
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.changeStatus(teamName,withoutPermissionsOwnerEmail, TeamStatus.INACTIVE);
+
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
     @Test
     public void testChangeStatusTeamNotFound() {
         try {
@@ -1531,6 +2073,31 @@ public class TeamControllerTest {
         Player player = players.get("email@gmail.com");
         Assert.assertEquals("changePlayer", player.getFirstName());
     }
+    @Test
+    public void testUpdatePlayerOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.updatePlayerDetails(teamName,withoutPermissionsOwnerEmail, "email@gmail.com", "changePlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
 
     @Test
     public void testUpdatePlayerNotExistsChangeDetails() throws Exception {
@@ -1615,6 +2182,29 @@ public class TeamControllerTest {
     }
 
     @Test
+    public void testSubscriptionTeamOwnerOwnerWithOtherTeamNotPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.subscriptionTeamOwner(teamName, withoutPermissionsOwnerEmail, "emailToRemove@gmail.com");
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
+
+    @Test
     public void testSubscriptionTeamOwnerTeamNotFound() {
         try {
             teamController.subscriptionTeamOwner("notExists", "teamOwner@gmail.com", "teamOwnerToAdd@gmail.com");
@@ -1658,26 +2248,6 @@ public class TeamControllerTest {
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("TeamOwner not found", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testSubscriptionTeamOwnerOwnerWithOtherTeam() throws Exception {
-        String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamController.createTeam("Other");
-
-        String ownerEmail = "owner@gmail.com";
-        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
-        teamOwnerController.createTeamOwner(teamOwner);
-        RoleDbInMemory.getInstance().createRole(ownerEmail,"Other",RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-
-        try {
-            teamController.subscriptionTeamOwner(teamName, ownerEmail, "teamOwnerToAdd@gmail.com");
-            Assert.fail("Should throw Exception");
-        } catch (Exception e) {
-            Assert.assertEquals("Team doesn't match", e.getMessage());
         }
     }
 
@@ -1810,6 +2380,28 @@ public class TeamControllerTest {
         }
     }
 
+    @Test
+    public void testRemoveSubscriptionTeamOwnerOwnerWithOtherTeamNotPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.removeSubscriptionTeamOwner(teamName, withoutPermissionsOwnerEmail, "emailToRemove@gmail.com");
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
     @Test
     public void testRemoveSubscriptionTeamOwnerTeamNotFound() {
         try {
@@ -2116,6 +2708,30 @@ public class TeamControllerTest {
         }
     }
 
+
+    @Test
+    public void testRemoveSubscriptionTeamManagerOwnerWithOtherTeamNotPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.removeSubscriptionTeamManager(teamName, withoutPermissionsOwnerEmail, "emailToRemove@gmail.com");
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
+
     @Test
     public void testRemoveSubscriptionTeamManagerTeamNotFound() {
         try {
@@ -2309,6 +2925,30 @@ public class TeamControllerTest {
         }
     }
 
+
+
+    @Test
+    public void testSubscriptionTeamManagerOwnerWithOtherTeamNotPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.subscriptionTeamManager(teamName, withoutPermissionsOwnerEmail, "emailToRemove@gmail.com",new ArrayList<>());
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
     @Test
     public void testSubscriptionTeamManagerTeamNotFound() {
         try {
@@ -2361,24 +3001,6 @@ public class TeamControllerTest {
         }
     }
 
-    @Test
-    public void testSubscriptionTeamManagerOwnerWithOtherTeam() throws Exception {
-        String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        teamController.createTeam("Other");
-        String ownerEmail = "owner@gmail.com";
-        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
-        teamOwnerController.createTeamOwner(teamOwner);
-        RoleDbInMemory.getInstance().createRole(ownerEmail,"Other",RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        try {
-            teamController.subscriptionTeamManager(teamName, ownerEmail, "teamManagerToAdd@gmail.com",new ArrayList<>());
-            Assert.fail("Should throw Exception");
-        } catch (Exception e) {
-            Assert.assertEquals("Team doesn't match", e.getMessage());
-        }
-    }
 
     @Test
     public void testSubscriptionTeamManagerSubscriberNotExist() throws Exception {
@@ -2525,6 +3147,28 @@ public void testsCreateNewTeamInvalidInputs() {
         Assert.assertEquals("bad input", e.getMessage());
     }
 }
+    @Test
+    public void testCreateNewTeamNotPermissions() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerController.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+        try {
+            teamController.createNewTeam(teamName, withoutPermissionsOwnerEmail, new ArrayList<Player>(), new ArrayList<Coach>(), new ArrayList< TeamManager>(), new Court("courtName", "courtCity"));
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
 
     @Test
     public void testsCreateNewTeamNotExistsTeamOwnerInDb() {
