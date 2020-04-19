@@ -4,6 +4,7 @@ import Model.UsersTypes.SystemAdministrator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class SystemAdministratorDbInMemory implements SystemAdministratorDb {
     /*structure like the DB of SystemAdministrator*/
@@ -51,6 +52,12 @@ public class SystemAdministratorDbInMemory implements SystemAdministratorDb {
         systemAdministrators.remove(systemAdministrator.getEmailAddress());
         return true;
     }
+
+    @Override
+    public Set<String> getAllSystemAdministrators() {
+        return systemAdministrators.keySet();
+    }
+
 
     @Override
     public void deleteAll() {

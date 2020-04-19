@@ -5,6 +5,7 @@ import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamOwner;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TeamOwnerDb extends Db {
     void createTeamOwner(TeamOwner teamOwner) throws Exception;
@@ -18,4 +19,6 @@ public interface TeamOwnerDb extends Db {
     void removeSubscriptionTeamOwner(String ownerToRemoveEmail) throws Exception;
 
     List<String> getAllTeamOwnersOwnedBy(String teamOwnerEmail);
+
+    Set<String> getAllTeamOwnersInDB();
 }

@@ -1,10 +1,10 @@
 package Controller;
 
 import Data.*;
+import Model.Enums.RoleType;
 import Model.Enums.TeamStatus;
 import Model.Game;
 import Model.Page;
-import Model.PersonalPage;
 import Model.Team;
 import Model.UsersTypes.*;
 
@@ -23,6 +23,8 @@ public class SystemAdministratorController {
     private FanDb fanDb;
     private SeasonLeagueDb seasonalLeagueDB;
     private JudgeSeasonLeagueDb judgeSeasonLeagueDb;
+    private RoleDb roleDb;
+    private SystemAdministratorDb systemAdministratorDb;
 
 
     public SystemAdministratorController() {
@@ -38,6 +40,8 @@ public class SystemAdministratorController {
         fanDb = FanDbInMemory.getInstance();
         seasonalLeagueDB = SeasonLeagueDbInMemory.getInstance();
         judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
+        roleDb= RoleDbInMemory.getInstance();
+        systemAdministratorDb=SystemAdministratorDbInMemory.getInstance();
         representativeAssociationDb=RepresentativeAssociationDbInMemory.getInstance();
     }
 
@@ -86,6 +90,9 @@ public class SystemAdministratorController {
             if (subscriberToRemove instanceof RepresentativeAssociation) {
                 removeRepresentativeAssociation(subscriberToRemove);
             }
+            if(subscriberToRemove instanceof SystemAdministrator){
+                removeSystemAdministrator(subscriberToRemove);
+            }
             System.out.println("the chosen subscriber with the Email " + email + " deleted successfully :)");
     }
 
@@ -95,9 +102,38 @@ public class SystemAdministratorController {
      * @param subscriberToRemove subscriberToRemove that is also RepresentativeAssociation
      * @throws Exception if the RepresentativeAssociation is already removed from fanDB
      */
-    private void removeRepresentativeAssociation(Subscriber subscriberToRemove) {
-
+    private void removeRepresentativeAssociation(Subscriber subscriberToRemove) throws Exception {
+        RepresentativeAssociation representativeAssociation= (RepresentativeAssociation) subscriberToRemove;
+        //remove representativeAssociation from his connected league
+        //todo
+        //remove representativeAssociation from his connected Season
+        //todo
+        //remove the representativeAssociation from representativeAssociationDB
+        representativeAssociationDb.removeRepresentativeAssociation(representativeAssociation);
+        //remove systemAdministrator from roleDB
+        roleDb.removeRole(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
     }
+
+    /**
+     *
+     * @param subscriberToRemove that is also system manager
+     * @throws Exception if the system administrator is not in the SystemAdministratorDB
+     *                    or if there is only one SystemAdministrator
+     */
+    private void removeSystemAdministrator(Subscriber subscriberToRemove) throws Exception{
+        //casting
+        SystemAdministrator systemAdministrator= (SystemAdministrator) subscriberToRemove;
+        //check the constraint if there is more than one systemAdministrator
+        if(systemAdministratorDb.getAllSystemAdministrators().size()==1){
+            System.out.println("one systemAdministrator EXCEPTION");
+            throw new Exception();
+        }
+        //remove the system administrator from systemAdministratorDb
+        systemAdministratorDb.removeSystemAdministratorFromDB(systemAdministrator);
+        //remove systemAdministrator from roleDB
+        roleDb.removeRole(systemAdministrator.getEmailAddress(), RoleType.SYSTEM_ADMINISTRATOR);
+    }
+
 
     /**
      * @param subscriberToRemove that is also fan
@@ -113,6 +149,8 @@ public class SystemAdministratorController {
         }
         //remove fan from fanDB
         fanDb.removeFan(fan);
+        //remove fan from roleDB
+        roleDb.removeRole(fan.getEmailAddress(), RoleType.FAN);
     }
 
     /**
@@ -124,6 +162,10 @@ public class SystemAdministratorController {
     private void removeTeamOwner(Subscriber subscriberToRemove) throws Exception {
         if (subscriberToRemove == null)
             return;
+        //check constraints if there is more than one team owner in the system
+        if(teamOwnerDb.getAllTeamOwnersInDB().size()==1){
+            throw new Exception();
+        }
         //casting
         TeamOwner teamOwner = (TeamOwner) subscriberToRemove;
         //remove all the teamOwner's subscribers
@@ -132,6 +174,8 @@ public class SystemAdministratorController {
         }
         //remove teamOwner from teamOwnerDb
         teamOwnerDb.removeSubscriptionTeamOwner(teamOwner.getEmailAddress());
+        //remove teamOwner from roleDB
+        roleDb.removeRole(teamOwner.getEmailAddress(), RoleType.TEAM_OWNER);
         try {
             subscriberDb.removeSubscriberFromDB(teamOwner);
         } catch (Exception e) {
@@ -156,6 +200,8 @@ public class SystemAdministratorController {
         coach.getTeam().getCoaches().remove(coach);
         //remove the coach from the coachDB
         coachDb.removeCoach(coach);
+        //remove coach from roleDB
+        roleDb.removeRole(coach.getEmailAddress(), RoleType.COACH);
     }
 
     /**
@@ -181,6 +227,8 @@ public class SystemAdministratorController {
         }
         //remove the judge from judgeDb
         judgeDb.removeJudge(judge.getEmailAddress());
+        //remove judge from roleDB
+        roleDb.removeRole(judge.getEmailAddress(), RoleType.JUDGE);
     }
 
     /**
@@ -201,6 +249,8 @@ public class SystemAdministratorController {
         player.getTeam().getPlayers().remove(player.getId());
         //remove the player from the playerDB
         playerDb.removePlayerFromDb(player);
+        //remove player from roleDB
+        roleDb.removeRole(player.getEmailAddress(), RoleType.PLAYER);
     }
 
     /**
@@ -214,5 +264,7 @@ public class SystemAdministratorController {
         teamManager.getTeam().getTeamManagers().remove(teamManager.getOwnedByEmail());
         //remove the teamManager from teamManagerDB
         teamManagerDb.removeSubscriptionTeamManager(teamManager.getOwnedByEmail());
+        //remove teamManager from roleDB
+        roleDb.removeRole(teamManager.getEmailAddress(), RoleType.TEAM_MANAGER);
     }
 }
