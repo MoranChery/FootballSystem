@@ -10,6 +10,7 @@ import Model.UsersTypes.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.notification.RunListener;
 
 import java.util.*;
 
@@ -70,6 +71,82 @@ public class TeamControllerTest {
         Team team = teamController.getTeam("Team");
         Assert.assertEquals("Team",team.getTeamName());
     }
+
+    ///////////////////////////////// playerController///////////////////////////////////
+    @Test
+    public void testCreatePlayerNull(){
+        try {
+            playerController.createPlayer(null);
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void testCreatePlayerLegal() throws Exception {
+            Player player = new Player("email@gmail.com", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+            playerController.createPlayer(player);
+            Assert.assertEquals(player,PlayerDbInMemory.getInstance().getPlayer("email@gmail.com"));
+    }
+
+    ///////////////////////////////// playerController///////////////////////////////////
+    @Test
+    public void testCreateCoachNull(){
+        try {
+            coachController.createCoach(null);
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void testCreateCoachLegal() throws Exception {
+        Coach coach = new Coach("email@gmail.com", 2, "firstTeamOwnerName", "lastTeamOwnerName",CoachRole.MAJOR,QualificationCoach.UEFA_A);
+        coachController.createCoach(coach);
+        Assert.assertEquals(coach,CoachDbInMemory.getInstance().getCoach("email@gmail.com"));
+    }
+
+    ///////////////////////////////// TeamOwnerController///////////////////////////////////
+    @Test
+    public void testCreateTeamOwnerNull(){
+        try {
+            teamOwnerController.createTeamOwner(null);
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void testCreateTeamOwnerLegal() throws Exception {
+        String teamName = "Exists";
+        teamController.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerController.createTeamOwner(teamOwner);
+        Assert.assertEquals(teamOwner,TeamOwnerDbInMemory.getInstance().getTeamOwner(ownerEmail));
+    }
+
+    ///////////////////////////////// TeamManagerController///////////////////////////////////
+    @Test
+    public void testTeamManagerCoachNull(){
+        try {
+            teamManagerController.createTeamManager(null);
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void testTeamManagerLegal() throws Exception {
+        TeamManager teamManager = new TeamManager( "email@gmail.com","1111", 1, "firstTeamManager", "lastTeamManager", "ownerEmail");
+        teamManagerController.createTeamManager(teamManager);
+        Assert.assertEquals(teamManager,TeamManagerDbInMemory.getInstance().getTeamManager("email@gmail.com"));
+    }
+
 //////////////////////////////////// addPlayer /////////////////////////////////
     @Test
     public void testAddPlayerInvalidInputs() {

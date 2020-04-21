@@ -17,7 +17,7 @@ public class TeamOwnerController {
 
     public void createTeamOwner(TeamOwner teamOwner) throws Exception {
         if(teamOwner == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         TeamOwnerDb.createTeamOwner(teamOwner);
     }

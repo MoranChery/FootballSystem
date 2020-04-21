@@ -13,7 +13,7 @@ public class PlayerController {
 
     public void createPlayer(Player player) throws Exception {
         if(player == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         playerDb.createPlayer(player);
     }

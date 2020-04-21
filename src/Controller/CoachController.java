@@ -17,7 +17,7 @@ public class CoachController {
 
     public void createCoach(Coach coach) throws Exception {
         if(coach == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         coachDb.createCoach(coach);
     }

@@ -16,8 +16,10 @@ public class TeamManagerController {
 
     public void createTeamManager(TeamManager teamManager) throws Exception {
         if(teamManager == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         teamManagerDb.createTeamManager(teamManager);
     }
+
+
 }
