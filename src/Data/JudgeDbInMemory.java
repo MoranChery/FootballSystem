@@ -176,4 +176,9 @@ public class JudgeDbInMemory implements JudgeDb
         }
         theGamesOfThisJudge.put(gameID, gameToAdd);
     }
+
+    public Map<String, Judge> getAllJudgesMap()
+    {
+        return allJudgesMap;
+    }
 }

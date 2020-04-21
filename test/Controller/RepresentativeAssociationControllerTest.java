@@ -506,7 +506,7 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
-    public void createJudge_exists() throws Exception
+    public void createJudge_exists_inSubscriberDb() throws Exception
     {
         try
         {
@@ -519,6 +519,21 @@ public class RepresentativeAssociationControllerTest
         }
         try
         {
+            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Judge already exists in the system", e.getMessage());
+        }
+    }
+
+    @Test
+    public void createJudge_exists_inJudgeDb() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username", new Judge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE));
             representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
@@ -553,8 +568,6 @@ public class RepresentativeAssociationControllerTest
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
             representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
             representativeAssociationController.removeJudge("username");
-//            Judge judge = JudgeDbInMemory.getInstance().getJudge("username");
-
         }
         catch (Exception e)
         {
@@ -563,12 +576,35 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
-    public void removeJudge_notExists() throws Exception
+    public void removeJudge_notExists_inJudgeDb() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
             representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            representativeAssociationController.removeJudge("username2");
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Judge not found", e.getMessage());
+        }
+    }
+
+    @Test
+    public void removeJudge_notExists_inSubscriberDb() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username2", new Judge("username2", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE));
         }
         catch (Exception e)
         {
