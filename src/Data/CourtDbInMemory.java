@@ -1,6 +1,7 @@
 package Data;
 
 import Model.Court;
+import Model.Team;
 import Model.UsersTypes.Player;
 
 import java.util.HashMap;
@@ -37,6 +38,17 @@ public class CourtDbInMemory implements CourtDb {
         }
         courts.put(court.getCourtName(), court);
     }
+
+    @Override
+    public void addTeamToCourt(Court court, Team team) throws Exception {
+        if (!courts.containsKey(court.getCourtName())) {
+            throw new Exception("Court not exists");
+        }
+        Court fromDb = courts.get(court.getCourtName());
+        HashMap<String, Team> teams = court.getTeams();
+        teams.put(team.getTeamName(),team);
+    }
+
 
     @Override
     public void deleteAll() {

@@ -123,6 +123,9 @@ public class TeamController {
             player = playerDb.getPlayer(emailAddress);
             /*get the team of the player if there is a team already, will throw exception*/
             if (player.getTeam() != null) {
+                if(teamName.equals(player.getTeam().getTeamName())){
+                    throw new Exception("Player associated this team");
+                }
                 throw new Exception("Player associated with a team");
             }
             /*check if the player's details match with the DB details*/
@@ -203,6 +206,9 @@ public class TeamController {
             teamManager = teamManagerDb.getTeamManager(emailAddress);
             /*get the team of the teamManager if there is a team already, will throw exception*/
             if (teamManager.getTeam() != null) {
+                if(teamName.equals(teamManager.getTeam().getTeamName())){
+                    throw new Exception("TeamManager associated with a this team");
+                }
                 throw new Exception("Team Manager associated with a team");
             }
             /*check if the teamManager's details match with the DB details*/
@@ -278,6 +284,9 @@ public class TeamController {
             coach = coachDb.getCoach(emailAddress);
             /*get the team of the coach if there is a team already, will throw exception*/
             if (coach.getTeam() != null) {
+                if(teamName.equals(coach.getTeam().getTeamName())){
+                    throw new Exception("Coach associated this team");
+                }
                 throw new Exception("Coach associated with a team");
             }
             /*check if the coach's details match with the DB details*/
@@ -343,13 +352,13 @@ public class TeamController {
         checkPermissions(ownerEmail,teamName,PermissionType.ADD_COURT);
         /*check if the team exists*/
         checkTeamStatusIsActive(team);
-        if(team.getCourt() != null){
-            throw new Exception("team already associated with court");
-        }
         Court court;
         try {
             /*check if the court already in the db*/
             court = courtDb.getCourt(courtName);
+            if(team.getCourt()!= null){
+                throw new Exception("team already associated with court");
+            }
             if (!courtCity.equals(court.getCourtCity())) {
                 throw new Exception("The court name isn't match to the city");
             }
@@ -360,6 +369,7 @@ public class TeamController {
 //                throw new Exception("There is a court associated with this team");
             court = new Court(courtName, courtCity);
             courtDb.createCourt(court);
+            courtDb.addTeamToCourt(court,team);
         }
         teamDb.addCourt(teamName, court);
     }
