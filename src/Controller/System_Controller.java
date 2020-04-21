@@ -8,15 +8,15 @@ import java.util.List;
 
 public class System_Controller {
 
-    static CoachController coachController;
+//    static CoachController coachController;
     static FanController fanController;
     static JudgeController judgeController;
-    static PlayerController playerController;
+//    static PlayerController playerController;
     static RepresentativeAssociationController representativeAssociationController;
     static SubscriberController subscriberController;
     static TeamController teamController;
-    static TeamManagerController teamManagerController;
-    static TeamOwnerController teamOwnerController;
+//    static TeamManagerController teamManagerController;
+//    static TeamOwnerController teamOwnerController;
     static SystemAdministrator systemAdministrator;
 
     private static boolean isInitialize= false;
@@ -95,15 +95,15 @@ public class System_Controller {
                 systemAdministrators.add(systemAdministrator);
                 //systemAdministrator = new SystemAdministrator(systemAdministrator);
                 //todo
-                coachController = new CoachController();
+//                coachController = new CoachController();
                 fanController= new FanController();
                 judgeController = new JudgeController();
-                playerController= new PlayerController();
+//                playerController= new PlayerController();
                 representativeAssociationController= new RepresentativeAssociationController();
                 subscriberController= new SubscriberController();
                 teamController= new TeamController();
-                teamManagerController= new TeamManagerController();
-                teamOwnerController= new TeamOwnerController();
+//                teamManagerController= new TeamManagerController();
+//                teamOwnerController= new TeamOwnerController();
                 isInitialize = true;
             } else {
                 ArrayList whereIsDetailsProblem= problemWithTheDetails(isDetailsCorrect);

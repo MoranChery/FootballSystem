@@ -3,6 +3,7 @@ package Service;
 import Controller.TeamController;
 import Model.Court;
 import Model.Enums.*;
+import Model.Team;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
@@ -12,12 +13,16 @@ import java.util.List;
 import java.util.Map;
 
 public class TeamService {
-    TeamController teamController;
+    private TeamController teamController;
 
     public TeamService() {
         this.teamController = new TeamController();
     }
-    public void createNewTeam(String teamName, String teamOwnerEmail, List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers, Court court,Double budget) throws Exception {
+    public Team getTeam(String teamName) throws Exception {
+         return teamController.getTeam(teamName);
+    }
+
+        public void createNewTeam(String teamName, String teamOwnerEmail, List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers, Court court,Double budget) throws Exception {
         teamController.createNewTeam(teamName, teamOwnerEmail, players,  coaches, teamManagers, court,budget);
     }
         /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
@@ -78,8 +83,7 @@ public class TeamService {
     }
 
     public void changeStatusToActive(String teamName, String emailAddress) throws Exception {
-        teamController.changeStatus(teamName,emailAddress,TeamStatus.ACTIVE);
-    }
+        teamController.changeStatus(teamName,emailAddress,TeamStatus.ACTIVE); }
 
     public void updatePlayerDetails(String teamName,String teamOwnerMail, String playerMail, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
         teamController.updatePlayerDetails(teamName,teamOwnerMail,playerMail,firstName,lastName, birthDate, playerRole);

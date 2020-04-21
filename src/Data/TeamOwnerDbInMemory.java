@@ -22,6 +22,9 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
     }
     @Override
     public void createTeamOwner(TeamOwner teamOwner) throws Exception {
+        if(teamOwner == null) {
+            throw new NullPointerException("bad input");
+        }
         String teamOwnerEmailAddress = teamOwner.getEmailAddress();
         if (teamOwners.containsKey(teamOwnerEmailAddress)) {
             throw new Exception("TeamOwner already exists");
