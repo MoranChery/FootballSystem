@@ -2,16 +2,15 @@ package Controller;
 
 import Data.LeagueDbInMemory;
 
+import Data.SystemAdministratorDb;
 import Model.LogFunctionality;
 import Model.UsersTypes.SystemAdministrator;
-
-import java.util.ArrayList;
 
 public class System_Controller {
 
     private static SubscriberController subscriberController;
-    private static  SystemAdministratorController systemAdministratorController;
     private static LeagueDbInMemory leagueDbInMemory;
+    private static SystemAdministratorDb systemAdministratorDb;
     private LogFunctionality log;
     private static boolean isInitialize = false;
     private static System_Controller ourInstance;
@@ -45,19 +44,17 @@ public class System_Controller {
      * @throws Exception - Something went wrong with this method
      */
     public static void startInitializeTheSystem(Object AccountingSystem, Object TaxLawSystem ) throws Exception {
-        if (connectionToExternalSystems(AccountingSystem, TaxLawSystem)) {
-            //todo
-        }
+        connectionToExternalSystems(AccountingSystem, TaxLawSystem);
     }
 
     /**
      * This method will show the user the home screen
      */
     public void displayHomeScreen() throws Exception {
-        try{
+        if(isInitialize){
             //todo
         }
-        catch (Exception e){
+        else{
             throw new Exception("The system must be rebooted first");
         }
     }
@@ -73,8 +70,8 @@ public class System_Controller {
             if (allDetails != null && allDetails.length == 5) {
                 boolean[] isDetailsCorrect = checkDetails(allDetails);
                 boolean isProblem = false;
-                for (int i = 0; i < isDetailsCorrect.length; i++) {
-                    if (!isDetailsCorrect[i]) {
+                for (boolean b : isDetailsCorrect) {
+                    if (!b) {
                         isProblem = true;
                         break;
                     }
@@ -85,18 +82,15 @@ public class System_Controller {
                     Integer id = Integer.parseInt(allDetails[2]);
                     String firstName = allDetails[3];
                     String lastName = allDetails[4];
-                    //todo- Change - used the function from controller of systemManagerController
                     SystemAdministrator systemAdministrator = new SystemAdministrator(username, password, id, firstName, lastName);
                     subscriberController = new SubscriberController();
-                    systemAdministratorController = new SystemAdministratorController();
-                    //todo- systemAdministratorController.create(systemAdministrator)-something like this
+                    systemAdministratorDb = Data.SystemAdministratorDbInMemory.getInstance();
+                    systemAdministratorDb.createSystemAdministrator(systemAdministrator);
                     leagueDbInMemory = LeagueDbInMemory.getInstance();
-                    //todo- ComplaintsDb
                     ourInstance = new System_Controller();
                     isInitialize = true;
                 } else {
-                    ArrayList whereIsDetailsProblem = problemWithTheDetails(isDetailsCorrect);
-                    ShowAgainAdminRegistrationForm(whereIsDetailsProblem);
+                    throw new Exception("Problem-initialAdministratorRegistration");
                 }
             }
             else {
@@ -122,25 +116,7 @@ public class System_Controller {
         }
     }
 
-    private static void ShowAgainAdminRegistrationForm(ArrayList<Integer> whereIsDetailsProblem) {
-
-        //todo
-    }
-
-    private static ArrayList problemWithTheDetails(boolean[] isDetailsCorrect){
-
-            ArrayList<Integer> whereIsDetailsProblem = new ArrayList<>();
-            for (int i= 0; i<isDetailsCorrect.length ; i++) {
-                if(!isDetailsCorrect[i]){
-                    whereIsDetailsProblem.add(i);
-                }
-            }
-            return whereIsDetailsProblem;
-
-
-    }
-
-    private static boolean[] checkDetails(String[] allDetails) throws Exception {
+    private static boolean[] checkDetails(String[] allDetails){
             boolean[] isCorrect= new boolean[allDetails.length];
             for (int i = 0 ; i<allDetails.length ; i++){
                 if(i!=2){
