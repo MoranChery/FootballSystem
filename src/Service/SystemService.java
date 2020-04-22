@@ -13,9 +13,9 @@ public class SystemService{
      * Initial boot of the system, reboot the external systems,
      * and finally display an initial administrator registration form
      */
-    public void startInitializeTheSystem(){
+    public void startInitializeTheSystem(Object AccountingSystem, Object TaxLawSystem ){
         try {
-            system_controller.startInitializeTheSystem();
+            system_controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
             alert("Successfully connected to external systems");
             displayFormInitialAdministratorRegistration();
         }
@@ -45,7 +45,7 @@ public class SystemService{
     /**
      * This method will display the home screen
      */
-    private void displayHomeScreen(){
+    private void displayHomeScreen() throws Exception {
        system_controller.displayHomeScreen();
     }
 
@@ -59,7 +59,7 @@ public class SystemService{
     /**
      * This method will be called when a user attempts to access the system
      */
-    public void openingTheSystemByUser(){
+    public void openingTheSystemByUser() throws Exception {
         if(system_controller.isTheSystemInitialize()){
             displayHomeScreen();
         }

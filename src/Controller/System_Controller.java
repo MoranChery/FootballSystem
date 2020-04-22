@@ -44,24 +44,22 @@ public class System_Controller {
      * When the user presses the system reboot for the first time, we use this method
      * @throws Exception - Something went wrong with this method
      */
-    public static void startInitializeTheSystem() throws Exception {
-        try {
-            if (connectionToExternalSystems()) {
-            } else {
-                throw new Exception("Something got wrong- function: startInitializeTheSystem in System_Controller");
-            }
+    public static void startInitializeTheSystem(Object AccountingSystem, Object TaxLawSystem ) throws Exception {
+        if (connectionToExternalSystems(AccountingSystem, TaxLawSystem)) {
+            //todo
         }
-        catch (Exception e){
-            throw new Exception("The system must be rebooted first");
-        }
-
     }
 
     /**
      * This method will show the user the home screen
      */
-    public void displayHomeScreen() {
-        //todo
+    public void displayHomeScreen() throws Exception {
+        try{
+            //todo
+        }
+        catch (Exception e){
+            throw new Exception("The system must be rebooted first");
+        }
     }
 
     /**
@@ -71,34 +69,42 @@ public class System_Controller {
      * @throws Exception - If the registry could not be made from any error, this error will cause an appropriate message
      */
     public static void initialAdministratorRegistration(String[] allDetails) throws Exception {
-        if(allDetails!=null && allDetails.length == 5) {
-            boolean[] isDetailsCorrect = checkDetails(allDetails);
-            boolean isProblem = false;
-            for (int i = 0; i < isDetailsCorrect.length; i++) {
-                if (!isDetailsCorrect[i]) {
-                    isProblem = true;
-                    break;
+        try {
+            if (allDetails != null && allDetails.length == 5) {
+                boolean[] isDetailsCorrect = checkDetails(allDetails);
+                boolean isProblem = false;
+                for (int i = 0; i < isDetailsCorrect.length; i++) {
+                    if (!isDetailsCorrect[i]) {
+                        isProblem = true;
+                        break;
+                    }
+                }
+                if (!isProblem) {
+                    String username = allDetails[0];
+                    String password = allDetails[1];
+                    Integer id = Integer.parseInt(allDetails[2]);
+                    String firstName = allDetails[3];
+                    String lastName = allDetails[4];
+                    //todo- Change - used the function from controller of systemManagerController
+                    SystemAdministrator systemAdministrator = new SystemAdministrator(username, password, id, firstName, lastName);
+                    subscriberController = new SubscriberController();
+                    systemAdministratorController = new SystemAdministratorController();
+                    //todo- systemAdministratorController.create(systemAdministrator)-something like this
+                    leagueDbInMemory = LeagueDbInMemory.getInstance();
+                    //todo- ComplaintsDb
+                    ourInstance = new System_Controller();
+                    isInitialize = true;
+                } else {
+                    ArrayList whereIsDetailsProblem = problemWithTheDetails(isDetailsCorrect);
+                    ShowAgainAdminRegistrationForm(whereIsDetailsProblem);
                 }
             }
-            if (!isProblem) {
-                String username= allDetails[0];
-                String password= allDetails[1];
-                Integer id= Integer.parseInt(allDetails[2]);
-                String firstName= allDetails[3];
-                String lastName= allDetails[4];
-                //todo- Change - used the function from controller of systemManagerController
-                SystemAdministrator systemAdministrator= new SystemAdministrator(username, password,id, firstName, lastName);
-                subscriberController= new SubscriberController();
-                systemAdministratorController = new SystemAdministratorController();
-                //todo- systemAdministratorController.create(systemAdministrator)-something like this
-                leagueDbInMemory = LeagueDbInMemory.getInstance();
-                //todo- ComplaintsDb
-                ourInstance = new System_Controller();
-                isInitialize = true;
-            } else {
-                ArrayList whereIsDetailsProblem= problemWithTheDetails(isDetailsCorrect);
-                ShowAgainAdminRegistrationForm(whereIsDetailsProblem);
+            else {
+                throw new Exception("Problem-initialAdministratorRegistration");
             }
+        }
+        catch (Exception e){
+            throw new Exception("Problem-initialAdministratorRegistration");
         }
 
     }
@@ -114,7 +120,6 @@ public class System_Controller {
         else {
             throw new Exception("Cant create log");
         }
-
     }
 
     private static void ShowAgainAdminRegistrationForm(ArrayList<Integer> whereIsDetailsProblem) {
@@ -122,8 +127,8 @@ public class System_Controller {
         //todo
     }
 
-    private static ArrayList problemWithTheDetails(boolean[] isDetailsCorrect) throws Exception {
-        if(isDetailsCorrect!=null) {
+    private static ArrayList problemWithTheDetails(boolean[] isDetailsCorrect){
+
             ArrayList<Integer> whereIsDetailsProblem = new ArrayList<>();
             for (int i= 0; i<isDetailsCorrect.length ; i++) {
                 if(!isDetailsCorrect[i]){
@@ -131,15 +136,11 @@ public class System_Controller {
                 }
             }
             return whereIsDetailsProblem;
-        }
-        else {
-            throw new Exception("Something got wrong- function: problemWithTheDetails in System_Controller");
 
-        }
+
     }
 
     private static boolean[] checkDetails(String[] allDetails) throws Exception {
-        if(allDetails!=null && allDetails.length==5){
             boolean[] isCorrect= new boolean[allDetails.length];
             for (int i = 0 ; i<allDetails.length ; i++){
                 if(i!=2){
@@ -155,30 +156,37 @@ public class System_Controller {
                 }
             }
             return isCorrect;
-        }
-        else{
-            throw new Exception("Something got wrong- function: checkDetails in System_Controller");
-        }
     }
 
-    private static boolean connectionToExternalSystems() throws Exception {
-        if(!logInToTheAccountingSystem()){
+    private static boolean connectionToExternalSystems(Object AccountingSystem, Object TaxLawSystem ) throws Exception {
+        if(!logInToTheAccountingSystem(AccountingSystem)){
             throw new Exception("problem in login accounting system");
         }
-        if(!logInToTheTaxLawSystem()){
+        if(!logInToTheTaxLawSystem(TaxLawSystem)){
             throw new Exception("problem in login tax law system");
         }
         return true;
     }
 
-    private static boolean logInToTheTaxLawSystem(){
-        //todo
-        return true;
+    private static boolean logInToTheTaxLawSystem(Object o){
+        if(o!=null) {
+            //todo
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 
-    private static boolean logInToTheAccountingSystem() {
-        //todo
-        return true;
+    private static boolean logInToTheAccountingSystem(Object o) {
+        if(o!=null) {
+            //todo
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 }
