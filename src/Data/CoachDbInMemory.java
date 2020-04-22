@@ -1,6 +1,9 @@
 package Data;
 
+import Model.Enums.CoachRole;
+import Model.Enums.QualificationCoach;
 import Model.UsersTypes.Coach;
+import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 
 import java.util.HashMap;
@@ -45,6 +48,18 @@ public class CoachDbInMemory implements CoachDb {
     public void removeCoach(Coach coachToRemove) throws Exception {
         coaches.remove(coachToRemove.getEmailAddress());
     }
+
+    public void updateCoachDetails(String coachEmailAddress, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws NotFoundException {
+        if(!coaches.containsKey(coachEmailAddress)){
+            throw new NotFoundException("Player not found");
+        }
+        Coach coach = coaches.get(coachEmailAddress);
+        coach.setFirstName(firstName);
+        coach.setLastName(lastName);
+        coach.setCoachRole(coachRole);
+        coach.setQualificationCoach(qualificationCoach);
+    }
+
 
     @Override
     public void deleteAll() {

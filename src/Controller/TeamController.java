@@ -680,6 +680,9 @@ public class TeamController {
      * @throws Exception
      */
     public void updatePlayerDetails(String teamName,String ownerEmailAddress,String playerEmailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
+        if(teamName == null || ownerEmailAddress == null || playerEmailAddress == null || firstName == null || firstName == null || lastName == null || birthDate == null || playerRole == null) {
+            throw new NullPointerException("bad input");
+        }
         checkPermissions(ownerEmailAddress,teamName,PermissionType.OWNER);
         /*check if the teamOwner in Db, than check if the player want to change is in teamOwner's team*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(ownerEmailAddress);
@@ -688,12 +691,33 @@ public class TeamController {
             throw new Exception("Player not associated with teamOwner's team");
         }
             Player playerFromDb = playerDb.getPlayer(playerEmailAddress);
-            playerFromDb.setFirstName(firstName);
-            playerFromDb.setLastName(lastName);
-            playerFromDb.setBirthDate(birthDate);
-            playerFromDb.setPlayerRole(playerRole);
-            playerDb.updatePlayerDetails(playerFromDb);
+            playerDb.updatePlayerDetails(playerEmailAddress,firstName,lastName,birthDate,playerRole);
     }
+
+    /**
+     * update teamManager's details
+     * @param ownerEmailAddress
+     * @param coachEmailAddress
+     * @param firstName
+     * @param lastName
+     * @param coachRole
+     * @throws Exception
+     */
+    public void updateCoachDetails(String teamName,String ownerEmailAddress,String coachEmailAddress, String firstName, String lastName, CoachRole coachRole,QualificationCoach qualificationCoach) throws Exception {
+        if(teamName == null || ownerEmailAddress == null || coachEmailAddress == null || firstName == null || firstName == null || lastName == null || coachRole == null || qualificationCoach == null) {
+            throw new NullPointerException("bad input");
+        }
+        checkPermissions(ownerEmailAddress,teamName,PermissionType.OWNER);
+        /*check if the teamOwner in Db, than check if the player want to change is in teamOwner's team*/
+        TeamOwner teamOwner = teamOwnerDb.getTeamOwner(ownerEmailAddress);
+        Map<String, Coach> coaches = getTeam(teamName).getCoaches();
+        if(!coaches.containsKey(coachEmailAddress)) {
+            throw new Exception("Coach not associated with teamOwner's team");
+        }
+        Coach coachFromDb = coachDb.getCoach(coachEmailAddress);
+        coachDb.updateCoachDetails(coachEmailAddress,firstName,lastName,coachRole,qualificationCoach);
+    }
+
 
     private void checkPermissions(String emailAddress,String teamName,PermissionType permissionType) throws Exception {
         SubscriberDbInMemory subscriberDbInMemory = SubscriberDbInMemory.getInstance();
