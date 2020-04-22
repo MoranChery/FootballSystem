@@ -38,17 +38,17 @@ public class TeamController {
 
     }
 
-    /**
-     * create team in db
-     * @param teamName
-     * @throws Exception
-     */
-    public void createTeam(String teamName) throws Exception {
-        if(teamName == null) {
-            throw new NullPointerException("bad input");
-        }
-        teamDb.createTeam(teamName);
-    }
+//    /**
+//     * create team in db
+//     * @param teamName
+//     * @throws Exception
+//     */
+//    public void createTeam(String teamName) throws Exception {
+//        if(teamName == null) {
+//            throw new NullPointerException("bad input");
+//        }
+//        teamDb.createTeam(teamName);
+//    }
 
     /**
      * get team from db
@@ -82,6 +82,7 @@ public class TeamController {
         teamDb.createTeam(teamName);
         teamOwnerDb.updateTeamOwnerTeam(teamDb.getTeam(teamName),teamOwnerEmail);
         for (Player player : players) {
+
             addPlayer(teamName,teamOwnerEmail,player.getEmailAddress(),player.getId(),player.getFirstName(),player.getLastName(),player.getBirthDate(),player.getPlayerRole());
         }
         for (Coach coach : coaches) {
@@ -291,7 +292,7 @@ public class TeamController {
                 boolean isCanBePlayer = false;
                 /*check if the player has subscriber with TeamOwner type in the same team*/
                 for (Role role : roles) {
-                    if(RoleType.TEAM_OWNER.equals(role.getRoleType())){
+                    if(RoleType.TEAM_OWNER.equals(role.getRoleType()) || RoleType.TEAM_MANAGER.equals(role.getRoleType()) || RoleType.PLAYER.equals(role.getRoleType())){
                         if(teamName.equals(role.getTeamName())) {
                             isCanBePlayer = true;
                         }else{

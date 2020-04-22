@@ -34,6 +34,9 @@ public class TeamDbInMemory implements TeamDb {
      */
     @Override
     public void createTeam(String teamName) throws Exception {
+        if(teamName == null) {
+            throw new NullPointerException("bad input");
+        }
         if(teams.containsKey(teamName)) {
             throw new Exception("Team already exist in the system");
         }

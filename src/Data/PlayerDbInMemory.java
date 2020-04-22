@@ -27,6 +27,9 @@ public class PlayerDbInMemory implements PlayerDb {
      */
     @Override
     public void createPlayer(Player player) throws Exception {
+        if(player == null){
+            throw new NullPointerException("bad input");
+        }
         String playerEmailAddress = player.getEmailAddress();
         if(players.containsKey(playerEmailAddress)) {
             throw new Exception("Player already exists");

@@ -33,6 +33,9 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
      */
     @Override
     public void createTeamManager(TeamManager teamManager) throws Exception {
+        if(teamManager == null) {
+            throw new NullPointerException("bad input");
+        }
         String emailAddress = teamManager.getEmailAddress();
         if(teamManagers.containsKey(emailAddress)) {
             throw new Exception("Team Manager already exists");

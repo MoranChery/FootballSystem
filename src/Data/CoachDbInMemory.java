@@ -31,6 +31,9 @@ public class CoachDbInMemory implements CoachDb {
 
     @Override
     public void createCoach(Coach coach) throws Exception {
+        if(coach == null) {
+            throw new NullPointerException("bad input");
+        }
         String emailAddress = coach.getEmailAddress();
         if(coaches.containsKey(emailAddress)) {
             throw new Exception("Coach already exists");
