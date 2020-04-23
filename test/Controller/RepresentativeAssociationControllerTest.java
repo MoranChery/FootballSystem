@@ -1,9 +1,9 @@
 package Controller;
 
-import Controller.RepresentativeAssociationController;
 import Data.*;
 import Model.*;
 import Model.Enums.*;
+import Model.UsersTypes.Fan;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.RepresentativeAssociation;
 import Model.UsersTypes.Subscriber;
@@ -90,14 +90,59 @@ public class RepresentativeAssociationControllerTest
     }
     //endregion
 
+    @Test
+    public void createLeague_no() throws Exception
+    {
+        try
+        {
+            Subscriber subscriber = new Fan("username/emailAddress", "password", 12345, "firstName", "lastName");
+            RoleDbInMemory.getInstance().createRoleInSystem("username/emailAddress", RoleType.FAN);
+//            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague("username/emailAddress","leagueName");
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+
     //region createLeague_Tests
     @Test
-    public void createLeague_null() throws Exception
+    public void createLeague_null_all() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague(null);
+            representativeAssociationController.createLeague(null, null);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void createLeague_null_email() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague(null, "leagueName");
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void createLeague_null_leagueName() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague("username/emailAddress", null);
         }
         catch (Exception e)
         {
@@ -107,12 +152,26 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
+    public void createLeague_noPermissions() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague("username/emailAddress2", "leagueName");
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
     public void createLeague_legal() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
+            representativeAssociationController.createLeague("username/emailAddress","leagueName");
         }
         catch (Exception e)
         {
@@ -128,7 +187,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
         }
         catch (Exception e)
         {
@@ -136,7 +195,7 @@ public class RepresentativeAssociationControllerTest
         }
         try
         {
-            representativeAssociationController.createLeague("leagueName");
+            representativeAssociationController.createLeague("username/emailAddress","leagueName");
         }
         catch (Exception e)
         {
@@ -147,12 +206,40 @@ public class RepresentativeAssociationControllerTest
 
     //region createSeason_Tests
     @Test
-    public void createSeason_null() throws Exception
+    public void createSeason_null_all() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createSeason(null);
+            representativeAssociationController.createSeason(null, null);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void createSeason_null_email() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createSeason(null, "seasonName");
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void createSeason_null_seasonName() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createSeason("username/emailAddress", null);
         }
         catch (Exception e)
         {
@@ -162,12 +249,26 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
+    public void createSeason_noPermissions() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createSeason("username/emailAddress2", "seasonName");
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
     public void createSeason_legal() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createSeason("seasonName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
         }
         catch (Exception e)
         {
@@ -183,7 +284,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createSeason("seasonName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
         }
         catch (Exception e)
         {
@@ -191,7 +292,7 @@ public class RepresentativeAssociationControllerTest
         }
         try
         {
-            representativeAssociationController.createSeason("seasonName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
         }
         catch (Exception e)
         {
@@ -207,14 +308,29 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague(null, null, null, null);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague(null, null, null, null, null);
         }
         catch (Exception e)
         {
-            Assert.assertTrue(e instanceof NullPointerException);
-            Assert.assertEquals("One or more of the SeasonLeague details incorrect", e.getMessage());
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void createSeasonLeague_null_email() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague(null, "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
 
@@ -224,9 +340,9 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague(null, "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", null, "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         }
         catch (Exception e)
         {
@@ -241,9 +357,9 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName",null, CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName",null, CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         }
         catch (Exception e)
         {
@@ -258,9 +374,9 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", null, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", null, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         }
         catch (Exception e)
         {
@@ -275,9 +391,9 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, null);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, null);
         }
         catch (Exception e)
         {
@@ -287,14 +403,30 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
+    public void createSeasonLeague_noPermissions() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress2", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
     public void createSeasonLeague_legal() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         }
         catch (Exception e)
         {
@@ -310,9 +442,9 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         }
         catch (Exception e)
         {
@@ -320,7 +452,7 @@ public class RepresentativeAssociationControllerTest
         }
         try
         {
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         }
         catch (Exception e)
         {
@@ -334,9 +466,9 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "season2Name", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "season2Name", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         }
         catch (Exception e)
         {
@@ -350,9 +482,9 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("league2Name", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "league2Name", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         }
         catch (Exception e)
         {
@@ -368,12 +500,25 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge(null, null, null, null, null, null, null);
+            representativeAssociationController.createJudge(null,null, null, null, null, null, null, null);
         }
         catch (Exception e)
         {
-            Assert.assertTrue(e instanceof NullPointerException);
-            Assert.assertEquals("One or more of the Judge details incorrect", e.getMessage());
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void createJudge_null_email() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createJudge(null,"username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
 
@@ -383,7 +528,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge(null, "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", null, "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -398,7 +543,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", null, 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", null, 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -413,7 +558,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", null, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", null, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -428,7 +573,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", 12345, null, "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, null, "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -443,7 +588,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", null, QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", null, QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -458,7 +603,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", null, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", null, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -473,7 +618,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, null);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, null);
         }
         catch (Exception e)
         {
@@ -483,12 +628,26 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
+    public void createJudge_noPermissions() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createJudge("username/emailAddress2", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
     public void createJudge_legal() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -511,7 +670,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -519,7 +678,7 @@ public class RepresentativeAssociationControllerTest
         }
         try
         {
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -534,7 +693,7 @@ public class RepresentativeAssociationControllerTest
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
             JudgeDbInMemory.getInstance().getAllJudgesMap().put("username", new Judge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE));
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -545,13 +704,43 @@ public class RepresentativeAssociationControllerTest
 
     //region removeJudge_Tests
     @Test
-    public void removeJudge_null() throws Exception
+    public void removeJudge_null_all() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
-            representativeAssociationController.removeJudge(null);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.removeJudge(null, null);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void removeJudge_null_email() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.removeJudge(null, "username");
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void removeJudge_null_judgeUser() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.removeJudge("username/emailAddress", null);
         }
         catch (Exception e)
         {
@@ -561,13 +750,28 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
+    public void removeJudge_noPermissions() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.removeJudge("username/emailAddress2", "username");
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
     public void removeJudge_legal() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
-            representativeAssociationController.removeJudge("username");
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.removeJudge("username/emailAddress", "username");
         }
         catch (Exception e)
         {
@@ -581,7 +785,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
         }
         catch (Exception e)
         {
@@ -589,7 +793,7 @@ public class RepresentativeAssociationControllerTest
         }
         try
         {
-            representativeAssociationController.removeJudge("username2");
+            representativeAssociationController.removeJudge("username/emailAddress", "username2");
         }
         catch (Exception e)
         {
@@ -603,7 +807,7 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
             JudgeDbInMemory.getInstance().getAllJudgesMap().put("username2", new Judge("username2", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE));
         }
         catch (Exception e)
@@ -612,7 +816,7 @@ public class RepresentativeAssociationControllerTest
         }
         try
         {
-            representativeAssociationController.removeJudge("username2");
+            representativeAssociationController.removeJudge("username/emailAddress", "username2");
         }
         catch (Exception e)
         {
@@ -628,16 +832,33 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
-            representativeAssociationController.createJudgeSeasonLeague(null, null);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudgeSeasonLeague(null,null, null);
         }
         catch (Exception e)
         {
-            Assert.assertTrue(e instanceof NullPointerException);
-            Assert.assertEquals("One or more of the JudgeSeasonLeague details incorrect", e.getMessage());
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void createJudgeSeasonLeague_null_email() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudgeSeasonLeague(null,"seasonName_leagueName", "username");
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
 
@@ -647,11 +868,11 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
-            representativeAssociationController.createJudgeSeasonLeague(null, "username");
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudgeSeasonLeague("username/emailAddress", null, "username");
         }
         catch (Exception e)
         {
@@ -666,11 +887,11 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
-            representativeAssociationController.createJudgeSeasonLeague("seasonName_leagueName", null);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName", null);
         }
         catch (Exception e)
         {
@@ -680,16 +901,34 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
+    public void createJudgeSeasonLeague_noPermissions() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudgeSeasonLeague("username/emailAddress2", "seasonName_leagueName", "username");
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
     public void createJudgeSeasonLeague_legal() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
-            representativeAssociationController.createJudgeSeasonLeague("seasonName_leagueName", "username");
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName", "username");
         }
         catch (Exception e)
         {
@@ -705,11 +944,11 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
-            representativeAssociationController.createJudgeSeasonLeague("seasonName_leagueName", "username");
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName", "username");
         }
         catch (Exception e)
         {
@@ -717,7 +956,7 @@ public class RepresentativeAssociationControllerTest
         }
         try
         {
-            representativeAssociationController.createJudgeSeasonLeague("seasonName_leagueName", "username");
+            representativeAssociationController.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName", "username");
         }
         catch (Exception e)
         {
@@ -731,11 +970,11 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
-            representativeAssociationController.createJudgeSeasonLeague("seasonName_leagueName2", "username");
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName2", "username");
         }
         catch (Exception e)
         {
@@ -749,11 +988,11 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.createJudge("username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
-            representativeAssociationController.createJudgeSeasonLeague("seasonName_leagueName", "username2");
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationController.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName", "username2");
         }
         catch (Exception e)
         {
@@ -769,15 +1008,31 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.changeCalculateLeaguePointsPolicy(null, null);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.changeCalculateLeaguePointsPolicy(null, null, null);
         }
         catch (Exception e)
         {
-            Assert.assertTrue(e instanceof NullPointerException);
-            Assert.assertEquals("SeasonLeague or CalculateLeaguePointsPolicy details incorrect", e.getMessage());
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void changeCalculateLeaguePointsPolicy_null_email() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.changeCalculateLeaguePointsPolicy(null, "seasonName_LeagueName", null);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
 
@@ -787,10 +1042,10 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.changeCalculateLeaguePointsPolicy(null, CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.changeCalculateLeaguePointsPolicy("username/emailAddress", null, CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1);
         }
         catch (Exception e)
         {
@@ -805,10 +1060,10 @@ public class RepresentativeAssociationControllerTest
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.changeCalculateLeaguePointsPolicy("seasonName_LeagueName", null);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.changeCalculateLeaguePointsPolicy("username/emailAddress", "seasonName_LeagueName", null);
         }
         catch (Exception e)
         {
@@ -818,15 +1073,32 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
+    public void changeCalculateLeaguePointsPolicy_noPermissions() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.changeCalculateLeaguePointsPolicy("username/emailAddress2", "seasonName_leagueName", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
+        }
+    }
+
+    @Test
     public void changeCalculateLeaguePointsPolicy_legal() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.changeCalculateLeaguePointsPolicy("seasonName_leagueName", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.changeCalculateLeaguePointsPolicy("username/emailAddress", "seasonName_leagueName", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1);
         }
         catch (Exception e)
         {
@@ -837,15 +1109,15 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
-    public void changeCalculateLeaguePointsPolicy_exsist() throws Exception
+    public void changeCalculateLeaguePointsPolicy_exists() throws Exception
     {
         try
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("leagueName");
-            representativeAssociationController.createSeason("seasonName");
-            representativeAssociationController.createSeasonLeague("leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationController.changeCalculateLeaguePointsPolicy("seasonName_leagueName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0);
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            representativeAssociationController.changeCalculateLeaguePointsPolicy("username/emailAddress", "seasonName_leagueName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0);
         }
         catch (Exception e)
         {
@@ -855,5 +1127,4 @@ public class RepresentativeAssociationControllerTest
         Assert.assertEquals(CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, seasonLeague.getCalculateLeaguePoints());
     }
     //endregion
-
 }
