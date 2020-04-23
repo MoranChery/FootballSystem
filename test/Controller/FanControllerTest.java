@@ -59,6 +59,7 @@ public class FanControllerTest {
         fanController.createFan(fan);
         try {
             Fan newFan = new Fan("email@gmail.com", "fan1234",1,"Lionel","Messi");
+            fanController.createFan(newFan);
         }
         catch (Exception e){
             Assert.assertEquals("Fan already exists", e.getMessage());

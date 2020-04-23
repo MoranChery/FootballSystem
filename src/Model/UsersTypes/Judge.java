@@ -22,6 +22,7 @@ public class Judge extends Subscriber
         this.qualificationJudge = qualificationJudge;
 //        this.seasonLeagueId_JudgeSeasonLeagueId = new HashMap<>();
         this.seasonLeagueName_JudgeSeasonLeagueName = new HashMap<>();
+        theJudgeGameList = new HashMap<>();
         judgeType = theJudgeType;
     }
 

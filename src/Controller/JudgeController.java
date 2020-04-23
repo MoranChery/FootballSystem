@@ -5,6 +5,7 @@ import Model.Enums.QualificationJudge;
 import Model.Game;
 import Model.Page;
 import Model.TeamPage;
+import Model.UsersTypes.Fan;
 import Model.UsersTypes.Judge;
 
 import java.util.Map;
@@ -23,6 +24,18 @@ public class JudgeController {
         }
         judgeDb.createJudge(judge);
     }
+    /**
+     * This function get string that represent judge id - his email address and returns Judge class instance
+     * @param judgeEmailAddress String - the id of the judge - his email address
+     * @return Judge - the instance of the judge in the db
+     * @throws Exception NullPointerException if the mail is null - the judge is not found in the db
+     */
+    public Judge getJudge(String judgeEmailAddress) throws Exception{
+        if(judgeEmailAddress == null){
+            throw new NullPointerException("Judge not found");
+        }
+        return judgeDb.getJudge(judgeEmailAddress);
+    }
 
     /**
      * this function enable the judge to edit qualification
@@ -34,12 +47,9 @@ public class JudgeController {
      */
     public void wantToEditQualification(String judgeMail, String newQualification) throws Exception {
         if(judgeMail == null || newQualification == null){
-            throw new NullPointerException("bad input");
+            throw new NullPointerException("Something went wrong in editing judge's qualification");
         }
         Judge judge = judgeDb.getJudge(judgeMail);
-        if(judge == null){
-            throw new NotFoundException("Judge not found to edit the qualification");
-        }
         QualificationJudge theJudgeNewQualification = QualificationJudge.valueOf(newQualification);
         if(judge.getQualificationJudge().equals(theJudgeNewQualification)){
             throw new Exception("This qualification equal the previous");
@@ -57,18 +67,13 @@ public class JudgeController {
      */
     public void addGameToTheJudge(String judgeMail, Game gameToAdd) throws Exception {
         if(judgeMail == null || judgeMail.isEmpty() || gameToAdd == null){
-            throw new NullPointerException("bad input");
+            throw new NullPointerException("One or more of the inputs wrong");
         }
         Judge judge = judgeDb.getJudge(judgeMail);
-        if(judge == null){
-            throw new NotFoundException("Judge not found");
-        }
         Map<Integer, Game> judgeGamesMap = judge.getTheJudgeGameList();
         Integer gameID = gameToAdd.getGameID();
         Game testGame = gameDb.getGame(gameID);
-        if(!testGame.equals(gameToAdd)){
-            throw new Exception("One or more of the details incorrect");
-        }
+        /** check if the game exist in the db **/
         if(judgeGamesMap.containsKey(gameID)){
             throw new Exception("This game already in the system");
         }

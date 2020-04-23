@@ -30,6 +30,9 @@ public class JudgeDbInMemory implements JudgeDb
     @Override
     public void createJudge(Judge judge) throws Exception
     {
+        if (judge == null){
+            throw new NullPointerException("Can't create this judge");
+        }
         if(allJudgesMap.containsKey(judge.getEmailAddress()))
         {
             throw new Exception("Judge already exists in the system");
@@ -43,17 +46,21 @@ public class JudgeDbInMemory implements JudgeDb
      * "pull" Judge from DB.
      *
      * @param judgeEmailAddress-emailAddress of the Judge.
-     * @return the Judge.
+     * @return Judge - the instance of the judge in the db
      * @throws Exception-if details are incorrect.
      */
     @Override
     public Judge getJudge(String judgeEmailAddress) throws Exception
     {
+        Judge judge = allJudgesMap.get(judgeEmailAddress);
+        if(judge == null){
+            throw new NullPointerException("Judge not found");
+        }
         if (!allJudgesMap.containsKey(judgeEmailAddress))
         {
             throw new Exception("Judge not found");
         }
-        return allJudgesMap.get(judgeEmailAddress);
+        return judge;
     }
 
     /**
@@ -118,7 +125,7 @@ public class JudgeDbInMemory implements JudgeDb
     @Override
     public void addGameToTheJudge(String judgeMail, Game gameToAdd) throws Exception {
         if(judgeMail.isEmpty() || judgeMail == null || gameToAdd == null){
-            throw new Exception("One or more of the inputs wrong");
+            throw new NullPointerException("One or more of the inputs wrong");
         }
         Judge theJudge = allJudgesMap.get(judgeMail);
         if(theJudge == null){
