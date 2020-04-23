@@ -40,58 +40,6 @@ public class RepresentativeAssociationServiceTest
         }
     }
 
-    //region createRepresentativeAssociation_Tests
-    @Test
-    public void createRepresentativeAssociation_null() throws Exception
-    {
-        try
-        {
-            representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(null);
-        }
-        catch (Exception e)
-        {
-            Assert.assertTrue(e instanceof NullPointerException);
-            Assert.assertEquals("No RepresentativeAssociation been created", e.getMessage());
-        }
-    }
-
-    @Test
-    public void createRepresentativeAssociation_legal() throws Exception
-    {
-        try
-        {
-            representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        RepresentativeAssociation representativeAssociation = RepresentativeAssociationDbInMemory.getInstance().getRepresentativeAssociation("username/emailAddress");
-        Assert.assertEquals("username/emailAddress", representativeAssociation.getEmailAddress());
-    }
-
-    @Test
-    public void createRepresentativeAssociation_exists() throws Exception
-    {
-        try
-        {
-            representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        try
-        {
-            representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-        }
-        catch (Exception e)
-        {
-            Assert.assertEquals("RepresentativeAssociation already exists in the system", e.getMessage());
-        }
-    }
-    //endregion
-
     //region createLeague_Tests
     @Test
     public void createLeague_null_all() throws Exception
