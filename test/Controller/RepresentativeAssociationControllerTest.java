@@ -90,23 +90,6 @@ public class RepresentativeAssociationControllerTest
     }
     //endregion
 
-    @Test
-    public void createLeague_no() throws Exception
-    {
-        try
-        {
-            Subscriber subscriber = new Fan("username/emailAddress", "password", 12345, "firstName", "lastName");
-            RoleDbInMemory.getInstance().createRoleInSystem("username/emailAddress", RoleType.FAN);
-//            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationController.createLeague("username/emailAddress","leagueName");
-        }
-        catch (Exception e)
-        {
-            Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
-        }
-    }
-
-
     //region createLeague_Tests
     @Test
     public void createLeague_null_all() throws Exception
@@ -1127,4 +1110,15 @@ public class RepresentativeAssociationControllerTest
         Assert.assertEquals(CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, seasonLeague.getCalculateLeaguePoints());
     }
     //endregion
+
+    @Test
+    public void checkPermissionOfRepresentativeAssociation_withPreviousRole() throws Exception
+    {
+        Boolean permission;
+        Subscriber subscriber = new Fan("username/emailAddress", "password", 12345, "firstName", "lastName");
+        RoleDbInMemory.getInstance().createRoleInSystem("username/emailAddress", RoleType.FAN);
+        representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+        permission = representativeAssociationController.checkPermissionOfRepresentativeAssociation("username/emailAddress");
+        Assert.assertEquals(Boolean.TRUE, permission);
+    }
 }

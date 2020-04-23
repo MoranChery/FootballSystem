@@ -243,7 +243,7 @@ public class RepresentativeAssociationController
      * @return if the online Subscriber has RoleType of Representative_Association.
      * @throws Exception
      */
-    private boolean checkPermissionOfRepresentativeAssociation(String representativeAssociationEmailAddress) throws Exception
+    protected boolean checkPermissionOfRepresentativeAssociation(String representativeAssociationEmailAddress) throws Exception
     {
         if(representativeAssociationEmailAddress != null)
         {
