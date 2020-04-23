@@ -17,7 +17,7 @@ public class Fan extends Subscriber {
 
     private Set<String> myPages;
     private Set<Search> mySearchHistory;
-    protected GamesAlert gamesAlert = GamesAlert.ALERTS_OFF;
+    protected GamesAlert gamesAlert;
     private AlertWay alertWay = null;
 
 
@@ -25,6 +25,7 @@ public class Fan extends Subscriber {
         setRegisteringDetails(emailAddress, password, id, firstName, lastName);
         myPages = new HashSet<>();
         mySearchHistory = new HashSet<>();
+        gamesAlert = GamesAlert.ALERTS_OFF;
     }
 
     // getters & setters

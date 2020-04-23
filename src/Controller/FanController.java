@@ -17,11 +17,9 @@ import static Model.Enums.GamesAlert.ALERTS_ON;
 public class FanController {
 
     private FanDb fanDb;
-    private PageDb pageDb;
 
     public FanController() {
         this.fanDb = FanDbInMemory.getInstance();
-        pageDb = PageDbInMemory.getInstance();
     }
 
     /**
@@ -31,9 +29,23 @@ public class FanController {
      */
     public void createFan(Fan theFan) throws Exception{
         if(theFan == null){
-            throw new NullPointerException("Can't create this fan");
+            throw new NullPointerException("Something went wrong with creating this fan");
         }
         fanDb.createFan(theFan);
+    }
+
+
+    /**
+     * This function get string that represent fan id - his email address and returns Fan class instance
+     * @param fanMail String - the id of the fan - his email address
+     * @return Fan - the instance of the fan in the db
+     * @throws Exception NullPointerException if the mail is null - the fan is not found in the db
+     */
+    public Fan getFan(String fanMail) throws Exception{
+        if(fanMail == null){
+            throw new NullPointerException("Fan not found");
+        }
+        return fanDb.getFan(fanMail);
     }
 
     /**
@@ -50,9 +62,6 @@ public class FanController {
             throw new NullPointerException("One or more of the inputs is wrong");
         }
         Fan fan = fanDb.getFan(fanMail);
-        if (fan == null){
-            throw new NotFoundException("Fan not found");
-        }
         if(fan.getGamesAlert().equals(ALERTS_ON)){
             throw new Exception("You are already signed to get alerts about games");
         }
@@ -69,17 +78,14 @@ public class FanController {
      */
     public void addPageToFanListOfPages(String fanMail, String pageID) throws Exception {
         if(fanMail == null || pageID == null){
-            throw new NullPointerException("bad input");
+            throw new NullPointerException("One or more of the inputs is null");
         }
         if(fanMail.isEmpty() || pageID.isEmpty()){
             throw new Exception("the input has no value");
         }
         Fan fan = fanDb.getFan(fanMail);
-        if(fan == null ){
-            throw new NotFoundException("fan not found");
-        }
         if(fan.getMyPages().contains(pageID)){
-            throw new Exception("You already follow this page");
+            throw new Exception("You already following this page");
         }
         fanDb.addPageToFanListOfPages(fanMail,pageID);
     }
