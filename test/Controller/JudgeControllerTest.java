@@ -79,7 +79,9 @@ public class JudgeControllerTest {
         Judge judge = judgeController.getJudge("email");
         Assert.assertEquals(judge.getEmailAddress(), newJudge.getEmailAddress());
     }
+
     /** Tests for the function wantToEditQualification **/
+
     @Test
     public void testWantToEditQualificationNullInput() throws Exception{
         try {
@@ -121,6 +123,7 @@ public class JudgeControllerTest {
         judgeController.wantToEditQualification("email", theQualificationJudge);
         Assert.assertEquals(newJudge.getQualificationJudge().toString(),theQualificationJudge);
     }
+
     /** Tests for the function addGameToTheJudge **/
 
     @Test

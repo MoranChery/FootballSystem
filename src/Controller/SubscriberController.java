@@ -34,14 +34,26 @@ public class SubscriberController {
     }
 
     /**
-     *
-     * @param emailAddress
-     * @return
-     * @throws Exception if the subscriber with the emailAddress isn't in the system
+     * This function creates new subscriber in the DB
+     * @param subscriber Subscriber - the subscriber you want to add to the DB
+     * @throws Exception NullPointerException if input is null
+     */
+    public void createSubscriber(Subscriber subscriber) throws Exception{
+        if (subscriber == null){
+            throw new NullPointerException("Can't create this subscriber");
+        }
+        subscriberDb.createSubscriber(subscriber);
+    }
+
+    /**
+     * This function get string that represent subscriber id - his email address and returns subscriber class instance
+     * @param emailAddress String - the id of the subscriber - his email address
+     * @return Subscriber - the instance of the subscriber in the db
+     * @throws Exception if the subscriber with the given emailAddress isn't in the system
      */
     public Subscriber getSubscriber(String emailAddress) throws Exception {
         if (emailAddress == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("Subscriber not found");
         }
         return subscriberDb.getSubscriber(emailAddress);
     }
@@ -56,14 +68,11 @@ public class SubscriberController {
      */
     public void logOut(String subscriberMail) throws Exception {
         if(subscriberMail == null){
-            throw new NullPointerException("bad input");
+            throw new NullPointerException("subscriber not found");
         }
         Subscriber subscriber = subscriberDb.getSubscriber(subscriberMail);
-        if (subscriber == null){
-            throw new NotFoundException("subscriber not found");
-        }
         if(subscriber.getStatus().equals(Status.OFFLINE)){
-            throw new Exception("You are already disconnected to the system");
+            throw new Exception("You are already disconnected from the system");
         }
         subscriberDb.logOut(subscriberMail);
     }
@@ -78,14 +87,11 @@ public class SubscriberController {
      */
     public void wantToEditPassword(String subscriberMail, String newPassword) throws Exception {
         if(subscriberMail == null || newPassword == null){
-            throw new NullPointerException("bad input");
+            throw new NullPointerException("Something went wrong in editing subscriber the password");
         }
         Subscriber subscriber = subscriberDb.getSubscriber(subscriberMail);
-        if(subscriber == null){
-            throw new NotFoundException("subscriber not found");
-        }
         if(subscriber.getPassword().equals(newPassword)){
-            throw new Exception("This password is the same as the old one");
+            throw new Exception("You are already using this password");
         }
         subscriberDb.wantToEditPassword(subscriberMail, newPassword);
     }
@@ -100,14 +106,11 @@ public class SubscriberController {
      */
     public void wantToEditFirstName(String subscriberMail, String newFirstName) throws Exception {
         if(subscriberMail == null || newFirstName == null){
-            throw new NullPointerException("bad input");
+            throw new NullPointerException("Something went wrong in editing subscriber's the first name");
         }
         Subscriber subscriber = subscriberDb.getSubscriber(subscriberMail);
-        if(subscriber == null){
-            throw new NotFoundException("subscriber not found");
-        }
         if(subscriber.getFirstName().equals(newFirstName)){
-            throw new Exception("This name is the same as the old one");
+            throw new Exception("You are already using this name as first name");
         }
         subscriberDb.wantToEditFirstName(subscriberMail, newFirstName);
     }
@@ -122,14 +125,11 @@ public class SubscriberController {
      */
     public void wantToEditLastName(String subscriberMail, String newLastName) throws Exception {
         if(subscriberMail == null || newLastName == null){
-            throw new NullPointerException("bad input");
+            throw new NullPointerException("Something went wrong in editing the last name of the subscriber");
         }
         Subscriber subscriber = subscriberDb.getSubscriber(subscriberMail);
-        if(subscriber == null){
-            throw new NotFoundException("subscriber not found");
-        }
         if(subscriber.getLastName().equals(newLastName)){
-            throw new Exception("This password is the same as the old one");
+            throw new Exception("You are already using this name as last name");
         }
         subscriberDb.wantToEditLastName(subscriberMail, newLastName);
     }

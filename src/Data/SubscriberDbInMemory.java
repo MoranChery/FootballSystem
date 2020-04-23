@@ -25,13 +25,12 @@ public class SubscriberDbInMemory implements SubscriberDb {
     }
 
 
-    /**
-     * for the tests - create player in DB
-     * @param subscriber
-     * @throws Exception
-     */
+
     @Override
     public void createSubscriber(Subscriber subscriber) throws Exception {
+        if(subscriber == null){
+            throw new NullPointerException("Can't create this subscriber");
+        }
         if(subscribers.containsKey(subscriber.getEmailAddress())) {
             throw new Exception("subscriber already exists");
         }
@@ -41,10 +40,14 @@ public class SubscriberDbInMemory implements SubscriberDb {
 
     @Override
     public Subscriber getSubscriber(String emailAddress) throws Exception {
-        if (!subscribers.containsKey(emailAddress)) {
-            throw new NotFoundException("Subscriber not found");
+        Subscriber subscriber = subscribers.get(emailAddress);
+        if(subscriber == null){
+            throw new NullPointerException("subscriber not found");
         }
-        return subscribers.get(emailAddress);
+        if (!subscribers.containsKey(emailAddress)) {
+            throw new NotFoundException("subscriber not found");
+        }
+        return subscriber;
     }
 
     @Override
@@ -63,14 +66,14 @@ public class SubscriberDbInMemory implements SubscriberDb {
     @Override
     public void logOut(String subscriberMail) throws Exception{
         if(subscriberMail == null){
-            throw new Exception("subscriber not found");
+            throw new NullPointerException("subscriber not found");
         }
         Subscriber subscriber = subscribers.get(subscriberMail);
         if(subscriber == null){
             throw new Exception("subscriber not found");
         }
         if(subscriber.getStatus().equals(OFFLINE)){
-            throw new Exception("You are already out of the system");
+            throw new Exception("You are already disconnected from the system");
         }
         subscriber.setStatus(OFFLINE);
         System.out.println("You are now disconnected");
@@ -78,7 +81,7 @@ public class SubscriberDbInMemory implements SubscriberDb {
     @Override
     public void wantToEditPassword(String subscriberMail, String newPassword) throws Exception {
         if(subscriberMail == null || newPassword == null){
-            throw new Exception("Something went wrong in editing subscriber the password");
+            throw new NullPointerException("Something went wrong in editing subscriber the password");
         }
         Subscriber subscriber = subscribers.get(subscriberMail);
         if(subscriber == null){
@@ -93,7 +96,7 @@ public class SubscriberDbInMemory implements SubscriberDb {
     @Override
     public void wantToEditFirstName(String subscriberMail, String newFirstName) throws Exception {
         if(subscriberMail == null || newFirstName == null){
-            throw new Exception("Something went wrong in editing subscriber's the first name");
+            throw new NullPointerException("Something went wrong in editing subscriber's the first name");
         }
         Subscriber subscriber = subscribers.get(subscriberMail);
         if(subscriber == null){

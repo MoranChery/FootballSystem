@@ -18,6 +18,12 @@ public class JudgeController {
         this.judgeDb = JudgeDbInMemory.getInstance();
         gameDb = GameDbInMemory.getInstance();
     }
+
+    /**
+     * This function creates new judge in the DB
+     * @param judge Judge the judge you want to add to the DB
+     * @throws Exception NullPointerException if input is null
+     */
     public void createJudge(Judge judge) throws Exception{
         if (judge == null){
             throw new NullPointerException("Can't create this judge");
