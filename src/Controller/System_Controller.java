@@ -11,7 +11,6 @@ import Model.UsersTypes.SystemAdministrator;
 
 public class System_Controller {
 
-    private static SubscriberController subscriberController;
     private static LeagueDbInMemory leagueDbInMemory;
     private static SystemAdministratorDb systemAdministratorDb;
     private LogFunctionality log;
@@ -51,8 +50,6 @@ public class System_Controller {
     public static void startInitializeTheSystem(Object AccountingSystem, Object TaxLawSystem ) throws Exception {
         connectionToExternalSystems(AccountingSystem, TaxLawSystem);
     }
-
-
     /**
      *When the user clicks the submit button
      * To register the administrator, use this method

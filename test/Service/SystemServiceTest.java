@@ -48,31 +48,22 @@ public class SystemServiceTest {
     @Test
     public void addSystemAdministratorSuccessful() throws Exception {
         systemService.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
-        String[] allDetails = {"username4","password4","12345","firstName","lastName"};
-        systemService.addSystemAdministrator(allDetails);
+        if(!System_Controller.isTheSystemInitialize()) {
+            systemService.addPrimarySystemAdministrator();
+        }
     }
 
-    @Rule
-    public ExpectedException exceptionRuleInitialAdministratorRegistration= ExpectedException.none();
-    @Test
-    public void addSystemAdministratorFail() throws Exception {
-        exceptionRuleInitialAdministratorRegistration.expectMessage("Administrator creation failed - please try again");
-        String[] allDetails =null;
-        systemService.addSystemAdministrator(allDetails);
-    }
     @Test
     public void openingTheSystemByUser() throws Exception {
         systemService.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
-        String[] allDetails = {"usernamee","passwordd","1234","firstName","lastName"};
-        systemService.addSystemAdministrator(allDetails);
+        systemService.addPrimarySystemAdministrator();
         systemService.openingTheSystemByUser(AccountingSystem,TaxLawSystem);
 
     }
     @Test
     public void openingTheSystemByUserFail() throws Exception {
-        exceptionRuleInitialAdministratorRegistration.expectMessage("Administrator creation failed - please try again");
-        String[] allDetails = {"usernamee","passwordd","1234","firstName","lastName"};
-        systemService.addSystemAdministrator(allDetails);
+        expectedExceptionStartInitializeTheSystem.expectMessage("Problem-initialAdministratorRegistration");
+        systemService.addPrimarySystemAdministrator();
         systemService.openingTheSystemByUser(null,TaxLawSystem);
 
     }

@@ -25,17 +25,10 @@ public class SystemService{
 
     /**
      * Add a primary administrator
-     * @param allDetails - All the details of the manager
      */
-    public void addSystemAdministrator(String[] allDetails) throws Exception {
-        try {
-            System_Controller.addSystemAdministrator(allDetails);
-        }
-        catch (Exception e){
-            throw new Exception("Administrator creation failed - please try again");
-
-        }
-
+    public void addPrimarySystemAdministrator() throws Exception {
+        String[] allDetails={"primaryAdmin","admin","123456789","adminName","adminLastName"};
+        System_Controller.addSystemAdministrator(allDetails);
     }
 
     /**
