@@ -46,10 +46,10 @@ public class JudgeControllerTest {
     }
     @Test
     public void createJudgeExist() throws Exception{
-        Judge judge = new Judge("email", "1234",1,"first","last", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+        Judge judge = new Judge("email", "1234",1,"first","last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
         judgeController.createJudge(judge);
         try {
-            Judge newJudge = new Judge("email", "1234",1,"first","last", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            Judge newJudge = new Judge("email", "1234",1,"first","last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
             judgeController.createJudge(newJudge);
         }
         catch (Exception e){
@@ -58,7 +58,7 @@ public class JudgeControllerTest {
     }
     @Test
     public void createJudgeLegal() throws Exception {
-        Judge newJudge = new Judge("email", "1234",1,"first","last", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+        Judge newJudge = new Judge("email", "1234",1,"first","last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
         judgeController.createJudge(newJudge);
         Judge testJudge = JudgeDbInMemory.getInstance().getJudge("email");
         Assert.assertEquals(newJudge.getEmailAddress(), testJudge.getEmailAddress());
@@ -74,7 +74,7 @@ public class JudgeControllerTest {
     }
     @Test
     public void getJudgeLegal() throws Exception {
-        Judge newJudge = new Judge("email", "1234",1,"first","last", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+        Judge newJudge = new Judge("email", "1234",1,"first","last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
         judgeController.createJudge(newJudge);
         Judge judge = judgeController.getJudge("email");
         Assert.assertEquals(judge.getEmailAddress(), newJudge.getEmailAddress());
@@ -105,7 +105,7 @@ public class JudgeControllerTest {
     @Test
     public void wantToEditQualificationSameQ() throws Exception{
         try {
-            Judge newJudge = new Judge("email", "1234",1,"first","last", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            Judge newJudge = new Judge("email", "1234",1,"first","last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
             judgeDb.createJudge(newJudge);
             String theQualificationJudge = newJudge.getQualificationJudge().toString();
             judgeController.wantToEditQualification("email", theQualificationJudge);
@@ -117,9 +117,9 @@ public class JudgeControllerTest {
 
     @Test
     public void wantToEditQualificationLegal() throws Exception {
-        Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+        Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
         judgeDb.createJudge(newJudge);
-        String theQualificationJudge = QualificationJudge.BEACH_FOOTBALL.toString();
+        String theQualificationJudge = QualificationJudge.NATIONAL.toString();
         judgeController.wantToEditQualification("email", theQualificationJudge);
         Assert.assertEquals(newJudge.getQualificationJudge().toString(),theQualificationJudge);
     }
@@ -156,7 +156,7 @@ public class JudgeControllerTest {
     @Test
     public void addGameToTheJudgeGameNotFound() throws Exception{
         try {
-            Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
             Team homeTeam = new Team();
             Team awayTeam = new Team();
@@ -174,7 +174,7 @@ public class JudgeControllerTest {
     @Test
     public void addGameToTheJudgeGameAlreadyExist() throws Exception{
         try {
-            Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+            Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
             judgeController.createJudge(newJudge);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
             Team homeTeam = new Team();
@@ -196,7 +196,7 @@ public class JudgeControllerTest {
 
     @Test
     public void addGameToTheJudgeGameLegal() throws Exception {
-        Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.FOOTBALL, JudgeType.MAJOR_JUDGE);
+        Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
         judgeController.createJudge(newJudge);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Team homeTeam = new Team();
