@@ -13,7 +13,7 @@ import java.util.Set;
 import static Model.Enums.GamesAlert.ALERTS_ON;
 import static Model.Enums.Status.OFFLINE;
 
-public class FanDbInMemory implements FanDb{
+public class FanDbInMemory implements FanDb {
 
     private Map<String, Fan> allFans;
     private static FanDbInMemory ourInstance = new FanDbInMemory();
@@ -25,10 +25,10 @@ public class FanDbInMemory implements FanDb{
     }
 
     @Override
-    public Fan getFan(String fanMail) throws NotFoundException {
+    public Fan getFan(String fanMail) throws Exception {
         Fan fan = allFans.get(fanMail);
         if(fan == null){
-            throw new NotFoundException("Fan not found");
+            throw new NullPointerException("Fan not found");
         }
         return fan;
     }
@@ -36,7 +36,7 @@ public class FanDbInMemory implements FanDb{
     @Override
     public void createFan(Fan theFan) throws Exception {
         if(theFan == null){
-            throw new Exception("Something went wrong with creating this fan");
+            throw new NullPointerException("Something went wrong with creating this fan");
         }
         String fanMail = theFan.getEmailAddress();
         if(allFans.containsKey(fanMail)){
@@ -51,11 +51,8 @@ public class FanDbInMemory implements FanDb{
             throw new NullPointerException("One or more of the inputs is wrong");
         }
         Fan theFan = allFans.get(fanMail);
-        if(theFan == null){
-            throw new Exception("Fan not found");
-        }
         if(theFan.getGamesAlert().equals(ALERTS_ON)){
-            throw new Exception("You are already list to get alerts about games");
+            throw new Exception("You are already signed to get alerts about games");
         }
         theFan.setGamesAlert(ALERTS_ON);
         theFan.setAlertWay(alertWay);
@@ -74,9 +71,12 @@ public class FanDbInMemory implements FanDb{
         if(fanMail == null || pageID == null){
             throw new NullPointerException("One or more of the inputs is null");
         }
+        if(fanMail.isEmpty() || pageID.isEmpty()){
+            throw new Exception("the input has no value");
+        }
         Fan fan = allFans.get(fanMail);
         if(fan == null){
-            throw new NotFoundException("fan not found");
+            throw new NotFoundException("Fan not found");
         }
         Set<String> theFanPages = fan.getMyPages();
         if(theFanPages.contains(pageID)){
@@ -84,5 +84,10 @@ public class FanDbInMemory implements FanDb{
         }
         theFanPages.add(pageID);
         fan.setMyPages(theFanPages);
+    }
+
+    @Override
+    public void deleteAll() {
+        allFans.clear();
     }
 }
