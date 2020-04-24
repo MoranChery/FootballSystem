@@ -11,19 +11,11 @@ public class GuestService {
 
 
     public void registerSubscriber(String userType) {
-        try {
-            guestController.registerSubscriber(userType);
-        } catch (Exception e) {
-            System.out.println("try again!");
-        }
+       guestController.registerSubscriber(userType);
     }
 
 
-    public void login(String emailAddress, String password) {
-        try {
-            guestController.login(emailAddress, password);
-        } catch (Exception e) {
-            System.out.println("try again to login!");
-        }
+    public boolean login(String emailAddress, String password) throws Exception {
+        return guestController.login(emailAddress, password);
     }
 }

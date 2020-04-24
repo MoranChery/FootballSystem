@@ -38,7 +38,7 @@ public class GuestController {
     }
 
     //todo: call use case 2.2 from UI
-    public void registerSubscriber(String userType) throws Exception {
+    public void registerSubscriber(String userType) {
 //        Subscriber subscriber = null;
 //        switch (userType) {
 //            case "Coach":
