@@ -58,4 +58,9 @@ public class GameDbInMemory implements GameDb {
         }
         return theGame;
     }
+
+    @Override
+    public void deleteAll() {
+        allGamesMap.clear();
+    }
 }

@@ -1,61 +1,127 @@
 package Controller;
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class System_ControllerTest {
+    Object AccountingSystem;
+    Object TaxLawSystem;
 
-    System_Controller system_controller;
+    @Before
+    public void setUp() throws Exception {
+        AccountingSystem= new Object();
+        TaxLawSystem =new Object();
+    }
+
 
     @Test
-    public void isIsInitialize() throws Exception {
-        assertEquals(system_controller.isIsInitialize(),false);
-        System_Controller.startInitializeTheSystem();
-        String[] allDetails = {"username","password","123","firstName","lastName"};
-        System_Controller.initialAdministratorRegistration(allDetails);
-        assertTrue(system_controller.isIsInitialize());
+    public void isTheSystemInitialize(){
+        assertFalse(System_Controller.isTheSystemInitialize());
     }
 
     @Rule
     public ExpectedException exceptionRuleGetInstance= ExpectedException.none();
-
     @Test
     public void getInstance() throws Exception {
-        exceptionRuleGetInstance.expect(Exception.class);
         exceptionRuleGetInstance.expectMessage("The system must be rebooted first");
-        system_controller.getInstance();
-        String[] allDetails = {"username","password","123","firstName","lastName"};
-     //   System_Controller.(allDetails);
-        assertNotNull(system_controller.getInstance());
+        System_Controller.getInstance();
     }
 
     @Rule
-    public ExpectedException exceptionRuleStartInitializeTheSystem= ExpectedException.none();
+    public ExpectedException expectedExceptionStartInitializeTheSystem= ExpectedException.none();
+    @Test
+    public void startInitializeTheSystemAllNull() throws Exception {
+        expectedExceptionStartInitializeTheSystem.expectMessage("problem in login accounting system");
+        System_Controller.startInitializeTheSystem(null, null);
+    }
+
+
+    @Test
+    public void startInitializeTheSystemAccountingSystemNull() throws Exception {
+        expectedExceptionStartInitializeTheSystem.expectMessage("problem in login tax law system");
+        System_Controller.startInitializeTheSystem(AccountingSystem, null);
+        System_Controller.startInitializeTheSystem(null, TaxLawSystem);
+    }
+
+    @Test
+    public void startInitializeTheSystemTaxLawSystemNull() throws Exception {
+        expectedExceptionStartInitializeTheSystem.expectMessage("problem in login tax law system");
+        System_Controller.startInitializeTheSystem(AccountingSystem, null);
+    }
+
+
     @Test
     public void startInitializeTheSystem() throws Exception {
-        exceptionRuleGetInstance.expect(Exception.class);
-        exceptionRuleGetInstance.expectMessage("The system must be rebooted first");
-        system_controller.startInitializeTheSystem();
+        System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
     }
-
     @Rule
-    public ExpectedException exceptionRuleDisplayHomeScreen= ExpectedException.none();
+    public ExpectedException exceptionRuleInitialAdministratorRegistration= ExpectedException.none();
+
     @Test
-    public void displayHomeScreen() {
-        exceptionRuleDisplayHomeScreen.expect(Exception.class);
-        exceptionRuleDisplayHomeScreen.expectMessage("The system must be rebooted first");
-        system_controller.displayHomeScreen();
+    public void initialAdministratorRegistrationDetailsNull() throws Exception {
+        exceptionRuleInitialAdministratorRegistration.expectMessage("Problem-initialAdministratorRegistration");
+        System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
+        String[] allDetails =null;
+        System_Controller.initialAdministratorRegistration(allDetails);
+    }
+    @Test
+    public void initialAdministratorRegistrationProblemDetails() throws Exception {
+        exceptionRuleInitialAdministratorRegistration.expectMessage("Problem-initialAdministratorRegistration");
+        System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
+        String[] allDetails = {"username","password","aa","firstName","lastName"};
+        System_Controller.initialAdministratorRegistration(allDetails);
     }
 
     @Test
-    public void initialAdministratorRegistration() {
+    public void initialAdministratorRegistrationLesThen5() throws Exception {
+        exceptionRuleInitialAdministratorRegistration.expectMessage("Problem-initialAdministratorRegistration");
+        System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
+        String[] allDetails = {"username","password","firstName","lastName"};
+        System_Controller.initialAdministratorRegistration(allDetails);
     }
 
     @Test
-    public void createLog() {
+    public void initialAdministratorRegistrationMoreThen5() throws Exception {
+        exceptionRuleInitialAdministratorRegistration.expectMessage("Problem-initialAdministratorRegistration");
+        System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
+        String[] allDetails = {"username","password","123","firstName","lastName", "222"};
+        System_Controller.initialAdministratorRegistration(allDetails);
+    }
+    @Test
+    public void initialAdministratorRegistration() throws Exception {
+        System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
+        String[] allDetails = {"username","password","123","firstName","lastName"};
+        System_Controller.initialAdministratorRegistration(allDetails);
+        assertTrue(System_Controller.isTheSystemInitialize());
+        assertNotNull(System_Controller.getInstance());
     }
 
+    @Test
+    public void displayHomeScreen() throws Exception {
+        System_Controller.getInstance().displayHomeScreen();
+    }
+    @Rule
+    public ExpectedException exceptionRuleCantCreateLog= ExpectedException.none();
+
+    @Test
+    public void createLogPathNull() throws Exception {
+        exceptionRuleCantCreateLog.expectMessage("Cant create log");
+        System_Controller system_controller = System_Controller.getInstance();
+        system_controller.createLog(null);
+    }
+
+    @Test
+    public void createLogPathEmpty() throws Exception {
+        exceptionRuleCantCreateLog.expectMessage("Cant create log");
+        System_Controller system_controller = System_Controller.getInstance();
+        system_controller.createLog("");
+    }
+
+    @Test
+    public void createLog() throws Exception {
+        System_Controller system_controller = System_Controller.getInstance();
+        system_controller.createLog("good");
+    }
 }
