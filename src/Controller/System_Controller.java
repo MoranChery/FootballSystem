@@ -8,7 +8,6 @@ import Data.SystemAdministratorDb;
 import Model.Enums.RoleType;
 import Model.LogFunctionality;
 import Model.UsersTypes.SystemAdministrator;
-import com.sun.deploy.security.ruleset.Rule;
 
 public class System_Controller {
 
