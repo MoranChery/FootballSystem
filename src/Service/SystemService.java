@@ -31,8 +31,7 @@ public class SystemService{
      */
     public void addSystemAdministrator(String[] allDetails) throws Exception {
         try {
-            system_controller.initialAdministratorRegistration(allDetails);
-            system_controller= System_Controller.getInstance();
+            System_Controller.initialAdministratorRegistration(allDetails);
             alert("Administrator registration successfully completed");
             displayHomeScreen();
         }

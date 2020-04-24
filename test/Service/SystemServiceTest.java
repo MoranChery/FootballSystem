@@ -15,14 +15,11 @@ public class SystemServiceTest {
     public ExpectedException expectedExceptionOpeningTheSystemByUser= ExpectedException.none();
 
     @Before
-    public void setUp() throws Exception {
-        exceptionRuleCantCreateLog.expectMessage("System not booted - Unable to connect");
+    public void setUp(){
         systemService = new SystemService();
-        AccountingSystem= new Object();
-        TaxLawSystem =new Object();
-        systemService.openingTheSystemByUser();
+        AccountingSystem = new Object();
+        TaxLawSystem = new Object();
     }
-
 
     @Test
     public void startInitializeTheSystem() throws Exception {
@@ -51,7 +48,7 @@ public class SystemServiceTest {
     @Test
     public void addSystemAdministratorSuccessful() throws Exception {
         systemService.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
-        String[] allDetails = {"username","password","123","firstName","lastName"};
+        String[] allDetails = {"username4","password4","12345","firstName","lastName"};
         systemService.addSystemAdministrator(allDetails);
     }
 
@@ -84,7 +81,9 @@ public class SystemServiceTest {
 
     @Test
     public void createLogFail() throws Exception {
-        exceptionRuleCantCreateLog.expectMessage("Can't create Log");
-        systemService.createLog(null);
+        if(systemService!=null) {
+            exceptionRuleCantCreateLog.expectMessage("Can't create Log");
+            systemService.createLog(null);
+        }
     }
 }
