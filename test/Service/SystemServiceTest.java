@@ -65,9 +65,18 @@ public class SystemServiceTest {
         systemService.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
         String[] allDetails = {"usernamee","passwordd","1234","firstName","lastName"};
         systemService.addSystemAdministrator(allDetails);
-        systemService.openingTheSystemByUser();
+        systemService.openingTheSystemByUser(AccountingSystem,TaxLawSystem);
 
     }
+    @Test
+    public void openingTheSystemByUserFail() throws Exception {
+        exceptionRuleInitialAdministratorRegistration.expectMessage("Administrator creation failed - please try again");
+        String[] allDetails = {"usernamee","passwordd","1234","firstName","lastName"};
+        systemService.addSystemAdministrator(allDetails);
+        systemService.openingTheSystemByUser(null,TaxLawSystem);
+
+    }
+
 
     @Rule
     public ExpectedException exceptionRuleCantCreateLog= ExpectedException.none();

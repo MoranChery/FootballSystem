@@ -64,14 +64,14 @@ public class System_ControllerTest {
         exceptionRuleInitialAdministratorRegistration.expectMessage("Problem-initialAdministratorRegistration");
         System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
         String[] allDetails =null;
-        System_Controller.initialAdministratorRegistration(allDetails);
+        System_Controller.addSystemAdministrator(allDetails);
     }
     @Test
     public void initialAdministratorRegistrationProblemDetails() throws Exception {
         exceptionRuleInitialAdministratorRegistration.expectMessage("Problem-initialAdministratorRegistration");
         System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
         String[] allDetails = {"username","password","aa","firstName","lastName"};
-        System_Controller.initialAdministratorRegistration(allDetails);
+        System_Controller.addSystemAdministrator(allDetails);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class System_ControllerTest {
         exceptionRuleInitialAdministratorRegistration.expectMessage("Problem-initialAdministratorRegistration");
         System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
         String[] allDetails = {"username","password","firstName","lastName"};
-        System_Controller.initialAdministratorRegistration(allDetails);
+        System_Controller.addSystemAdministrator(allDetails);
     }
 
     @Test
@@ -87,21 +87,18 @@ public class System_ControllerTest {
         exceptionRuleInitialAdministratorRegistration.expectMessage("Problem-initialAdministratorRegistration");
         System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
         String[] allDetails = {"username","password","123","firstName","lastName", "222"};
-        System_Controller.initialAdministratorRegistration(allDetails);
+        System_Controller.addSystemAdministrator(allDetails);
     }
     @Test
     public void initialAdministratorRegistration() throws Exception {
         System_Controller.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
         String[] allDetails = {"username","password","123","firstName","lastName"};
-        System_Controller.initialAdministratorRegistration(allDetails);
+        System_Controller.addSystemAdministrator(allDetails);
         assertTrue(System_Controller.isTheSystemInitialize());
         assertNotNull(System_Controller.getInstance());
     }
 
-    @Test
-    public void displayHomeScreen() throws Exception {
-        System_Controller.getInstance().displayHomeScreen();
-    }
+
     @Rule
     public ExpectedException exceptionRuleCantCreateLog= ExpectedException.none();
 

@@ -2,9 +2,13 @@ package Controller;
 
 import Data.LeagueDbInMemory;
 
+import Data.RoleDb;
+import Data.SubscriberDb;
 import Data.SystemAdministratorDb;
+import Model.Enums.RoleType;
 import Model.LogFunctionality;
 import Model.UsersTypes.SystemAdministrator;
+import com.sun.deploy.security.ruleset.Rule;
 
 public class System_Controller {
 
@@ -14,6 +18,8 @@ public class System_Controller {
     private LogFunctionality log;
     private static boolean isInitialize = false;
     private static System_Controller ourInstance;
+    private static SubscriberDb subscriberDb;
+    private static RoleDb roleDb;
 
     private System_Controller() { }
 
@@ -47,17 +53,6 @@ public class System_Controller {
         connectionToExternalSystems(AccountingSystem, TaxLawSystem);
     }
 
-    /**
-     * This method will show the user the home screen
-     */
-    public void displayHomeScreen() throws Exception {
-        if(isInitialize){
-            //todo
-        }
-        else{
-            throw new Exception("The system must be rebooted first");
-        }
-    }
 
     /**
      *When the user clicks the submit button
@@ -65,7 +60,7 @@ public class System_Controller {
      * @param allDetails - All parameters on the administrator
      * @throws Exception - If the registry could not be made from any error, this error will cause an appropriate message
      */
-    public static void initialAdministratorRegistration(String[] allDetails) throws Exception {
+    public static void addSystemAdministrator(String[] allDetails) throws Exception {
         try {
             if (allDetails != null && allDetails.length == 5) {
                 boolean[] isDetailsCorrect = checkDetails(allDetails);
@@ -77,15 +72,18 @@ public class System_Controller {
                     }
                 }
                 if (!isProblem) {
-                    String username = allDetails[0];
+                    String emailAddress = allDetails[0];
                     String password = allDetails[1];
                     Integer id = Integer.parseInt(allDetails[2]);
                     String firstName = allDetails[3];
                     String lastName = allDetails[4];
-                    SystemAdministrator systemAdministrator = new SystemAdministrator(username, password, id, firstName, lastName);
-                    subscriberController = new SubscriberController();
+                    SystemAdministrator systemAdministrator = new SystemAdministrator(emailAddress, password, id, firstName, lastName);
                     systemAdministratorDb = Data.SystemAdministratorDbInMemory.getInstance();
                     systemAdministratorDb.createSystemAdministrator(systemAdministrator);
+                    subscriberDb= Data.SubscriberDbInMemory.getInstance();
+                    subscriberDb.createSubscriber(systemAdministrator);
+                    roleDb = Data.RoleDbInMemory.getInstance();
+                    roleDb.createRoleInSystem( emailAddress, RoleType.SYSTEM_ADMINISTRATOR);
                     leagueDbInMemory = LeagueDbInMemory.getInstance();
                     ourInstance = new System_Controller();
                     isInitialize = true;
