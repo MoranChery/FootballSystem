@@ -6,8 +6,8 @@ import org.junit.rules.ExpectedException;
 import static org.junit.Assert.*;
 
 public class System_ControllerTest {
-    Object AccountingSystem= new Object();
-    Object TaxLawSystem =new Object();
+    Object AccountingSystem;
+    Object TaxLawSystem;
 
     @Before
     public void setUp() throws Exception {
