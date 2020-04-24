@@ -4,9 +4,12 @@ import Model.Search;
 
 public class UserController {
 
-    //ui
-    public void showInfo(){ }
+
+    public void showInfo(){
+        // TODO
+    }
     public Search searchInfo(){
+        // TODO
         return null;
     }
 

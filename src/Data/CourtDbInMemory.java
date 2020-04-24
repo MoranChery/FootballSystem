@@ -2,6 +2,7 @@ package Data;
 
 import Model.Court;
 import Model.Team;
+import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 
 import java.util.HashMap;
@@ -47,6 +48,14 @@ public class CourtDbInMemory implements CourtDb {
         Court fromDb = courts.get(court.getCourtName());
         HashMap<String, Team> teams = court.getTeams();
         teams.put(team.getTeamName(),team);
+    }
+
+    public void updateCourtDetails(String courtName, String courtCity) throws NotFoundException {
+        if(!courts.containsKey(courtName)){
+            throw new NotFoundException("Court not found");
+        }
+        Court court = courts.get(courtName);
+        court.setCourtCity(courtCity);
     }
 
 

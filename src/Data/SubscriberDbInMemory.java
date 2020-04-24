@@ -40,14 +40,14 @@ public class SubscriberDbInMemory implements SubscriberDb {
 
     @Override
     public Subscriber getSubscriber(String emailAddress) throws Exception {
-        Subscriber subscriber = subscribers.get(emailAddress);
-        if(subscriber == null){
-            throw new NullPointerException("subscriber not found");
+//        Subscriber subscriber = subscribers.get(emailAddress);
+        if(emailAddress == null){
+            throw new NullPointerException("bad input");
         }
         if (!subscribers.containsKey(emailAddress)) {
             throw new NotFoundException("subscriber not found");
         }
-        return subscriber;
+        return subscribers.get(emailAddress);
     }
 
     @Override

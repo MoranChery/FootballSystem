@@ -99,7 +99,7 @@ public class SubscriberControllerTest {
             subscriberController.logOut("id");
         }
         catch (Exception e){
-            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertTrue(e instanceof NotFoundException);
             Assert.assertEquals("subscriber not found", e.getMessage());
         }
     }
@@ -143,7 +143,7 @@ public class SubscriberControllerTest {
             subscriberController.wantToEditPassword("id", "psw");
         }
         catch (Exception e){
-            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertTrue(e instanceof NotFoundException);
             Assert.assertEquals("subscriber not found", e.getMessage());
         }
     }
@@ -185,7 +185,7 @@ public class SubscriberControllerTest {
             subscriberController.wantToEditFirstName("id", "name");
         }
         catch (Exception e){
-            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertTrue(e instanceof NotFoundException);
             Assert.assertEquals("subscriber not found", e.getMessage());
         }
     }
@@ -227,7 +227,7 @@ public class SubscriberControllerTest {
             subscriberController.wantToEditLastName("id", "name");
         }
         catch (Exception e){
-            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertTrue(e instanceof NotFoundException);
             Assert.assertEquals("subscriber not found", e.getMessage());
         }
     }

@@ -2,6 +2,7 @@ package Data;
 
 import Model.Court;
 import Model.Enums.FinancialActivityType;
+import Model.Enums.PermissionType;
 import Model.Enums.TeamStatus;
 import Model.FinancialActivity;
 import Model.Team;
@@ -10,7 +11,10 @@ import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TeamDbInMemory implements TeamDb {
@@ -84,7 +88,7 @@ public class TeamDbInMemory implements TeamDb {
     }
 
     @Override
-    public void addTeamManager(String teamName, TeamManager teamManager, String ownedByEmail) throws Exception {
+    public void addTeamManager(String teamName, TeamManager teamManager, List<PermissionType> permissionTypes, String ownedByEmail) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
@@ -98,6 +102,7 @@ public class TeamDbInMemory implements TeamDb {
         teamManagers.put(emailAddress, teamManager);
         teamManager.setTeam(team);
         teamManager.setOwnedByEmail(ownedByEmail);
+        teamManager.setPermissionTypes(permissionTypes);
     }
 
     @Override
@@ -165,6 +170,7 @@ public class TeamDbInMemory implements TeamDb {
         TeamManager teamManager = teamManagers.remove(teamManagerEmailAddress);
         //TODO check if needed
         teamManager.setTeam(null);
+        teamManager.setPermissionTypes(new ArrayList<>());
     }
 
     @Override

@@ -49,6 +49,7 @@ public class CoachDbInMemory implements CoachDb {
         coaches.remove(coachToRemove.getEmailAddress());
     }
 
+    @Override
     public void updateCoachDetails(String coachEmailAddress, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws NotFoundException {
         if(!coaches.containsKey(coachEmailAddress)){
             throw new NotFoundException("Player not found");

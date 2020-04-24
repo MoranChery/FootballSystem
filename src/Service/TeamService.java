@@ -22,7 +22,7 @@ public class TeamService {
          return teamController.getTeam(teamName);
     }
 
-        public void createNewTeam(String teamName, String teamOwnerEmail, List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers, Court court,Double budget) throws Exception {
+    public void createNewTeam(String teamName, String teamOwnerEmail, List<Player> players, List<Coach> coaches, List<TeamManager> teamManagers, Court court,Double budget) throws Exception {
         teamController.createNewTeam(teamName, teamOwnerEmail, players,  coaches, teamManagers, court,budget);
     }
         /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
@@ -30,8 +30,8 @@ public class TeamService {
         teamController.addPlayer(teamName,ownerEmail,emailAddress,playerId, firstName, lastName, birthDate, playerRole);
     }
 
-    public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName, String lastName,String ownedByEmail) throws Exception {
-        teamController.addTeamManager(teamName,emailAddress, teamManagerId, firstName, lastName,ownedByEmail);
+    public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName, String lastName,List<PermissionType> permissionTypes,String ownedByEmail) throws Exception {
+        teamController.addTeamManager(teamName,emailAddress, teamManagerId, firstName, lastName,permissionTypes,ownedByEmail);
     }
 
     public void addCoach(String teamName, String ownerEmail, String emailAddress, Integer coachId, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
@@ -88,5 +88,13 @@ public class TeamService {
     public void updatePlayerDetails(String teamName,String teamOwnerMail, String playerMail, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
         teamController.updatePlayerDetails(teamName,teamOwnerMail,playerMail,firstName,lastName, birthDate, playerRole);
         }
-
+    public void updateTeamManagerDetails(String teamName,String teamOwnerMail, String teamManagerMail, String firstName, String lastName,List<PermissionType> permissionTypes) throws Exception {
+        teamController.updateTeamManagerDetails(teamName,teamOwnerMail,teamManagerMail,firstName,lastName,permissionTypes);
+    }
+    public void updateCoachDetails(String teamName,String teamOwnerMail, String coachMail, String firstName, String lastName,CoachRole coachRole,QualificationCoach qualificationCoach) throws Exception {
+        teamController.updateCoachDetails(teamName,teamOwnerMail,coachMail,firstName,lastName,coachRole,qualificationCoach);
+    }
+    public void updateCourtDetails(String teamName,String ownerEmailAddress,String courtName, String courtCity) throws Exception {
+        teamController.updateCourtDetails(teamName,ownerEmailAddress, courtName,courtCity);
+    }
     }
