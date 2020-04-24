@@ -1,6 +1,9 @@
 package Data;
 
+import Model.Enums.CoachRole;
+import Model.Enums.QualificationCoach;
 import Model.UsersTypes.Coach;
+import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 
 import java.util.HashMap;
@@ -31,6 +34,9 @@ public class CoachDbInMemory implements CoachDb {
 
     @Override
     public void createCoach(Coach coach) throws Exception {
+        if(coach == null) {
+            throw new NullPointerException("bad input");
+        }
         String emailAddress = coach.getEmailAddress();
         if(coaches.containsKey(emailAddress)) {
             throw new Exception("Coach already exists");
@@ -42,6 +48,19 @@ public class CoachDbInMemory implements CoachDb {
     public void removeCoach(Coach coachToRemove) throws Exception {
         coaches.remove(coachToRemove.getEmailAddress());
     }
+
+    @Override
+    public void updateCoachDetails(String coachEmailAddress, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws NotFoundException {
+        if(!coaches.containsKey(coachEmailAddress)){
+            throw new NotFoundException("Player not found");
+        }
+        Coach coach = coaches.get(coachEmailAddress);
+        coach.setFirstName(firstName);
+        coach.setLastName(lastName);
+        coach.setCoachRole(coachRole);
+        coach.setQualificationCoach(qualificationCoach);
+    }
+
 
     @Override
     public void deleteAll() {

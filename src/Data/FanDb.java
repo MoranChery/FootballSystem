@@ -10,15 +10,11 @@ import Model.UsersTypes.Fan;
 
 import java.util.Set;
 
-public interface FanDb {
+public interface FanDb extends Db{
 
-    Fan getFan(String fanMail) throws NotFoundException;
+    Fan getFan(String fanMail) throws Exception;
     void createFan(Fan theFan) throws Exception;
-    void logOut(String fanMail) throws Exception;
     void askToGetAlerts(String fanMail, AlertWay alertWay) throws Exception;
-    void wantToEditPassword(String fanMail, String newPassword) throws Exception;
-    void wantToEditFirstName(String fanMail, String newFirstName) throws Exception;
-    void wantToEditLastName(String fanMail, String newLastName) throws Exception;
     void removeFan(Fan fan) throws Exception;
     void addPageToFanListOfPages(String fanMail, String pageID) throws Exception;
 

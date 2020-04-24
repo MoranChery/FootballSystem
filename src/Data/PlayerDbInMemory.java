@@ -1,8 +1,10 @@
 package Data;
 
+import Model.Enums.PlayerRole;
 import Model.Team;
 import Model.UsersTypes.Player;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +29,9 @@ public class PlayerDbInMemory implements PlayerDb {
      */
     @Override
     public void createPlayer(Player player) throws Exception {
+        if(player == null){
+            throw new NullPointerException("bad input");
+        }
         String playerEmailAddress = player.getEmailAddress();
         if(players.containsKey(playerEmailAddress)) {
             throw new Exception("Player already exists");
@@ -48,12 +53,15 @@ public class PlayerDbInMemory implements PlayerDb {
         return players.get(playerEmailAddress);
     }
 
-    public void updatePlayerDetails(Player player) throws NotFoundException {
-        String emailAddress = player.getEmailAddress();
-        if(!players.containsKey(emailAddress)){
+    public void updatePlayerDetails(String playerEmailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws NotFoundException {
+        if(!players.containsKey(playerEmailAddress)){
             throw new NotFoundException("Player not found");
         }
-        players.put(player.getEmailAddress(),player);
+        Player player = players.get(playerEmailAddress);
+        player.setFirstName(firstName);
+        player.setLastName(lastName);
+        player.setBirthDate(birthDate);
+        player.setPlayerRole(playerRole);
     }
 
     @Override

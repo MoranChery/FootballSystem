@@ -2,6 +2,7 @@ package Data;
 
 import Model.Enums.PermissionType;
 import Model.Team;
+import Model.UsersTypes.Coach;
 import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamManager;
 import Model.UsersTypes.TeamOwner;
@@ -33,6 +34,9 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
      */
     @Override
     public void createTeamManager(TeamManager teamManager) throws Exception {
+        if(teamManager == null) {
+            throw new NullPointerException("bad input");
+        }
         String emailAddress = teamManager.getEmailAddress();
         if(teamManagers.containsKey(emailAddress)) {
             throw new Exception("Team Manager already exists");
@@ -85,6 +89,17 @@ public class TeamManagerDbInMemory implements TeamManagerDb{
             }
         }
         return teamManagersOwnedBy;
+    }
+    @Override
+    public void updateTeamManagerDetails(String teamManagerEmailAddress, String firstName, String lastName, List<PermissionType> permissionTypes) throws NotFoundException {
+        if(!teamManagers.containsKey(teamManagerEmailAddress)){
+            throw new NotFoundException("TeamManager not found");
+        }
+        TeamManager teamManager = teamManagers.get(teamManagerEmailAddress);
+        teamManager.setFirstName(firstName);
+        teamManager.setLastName(lastName);
+        List<PermissionType> permissionTypesList = teamManager.getPermissionTypes();
+        teamManager.setPermissionTypes(permissionTypes);
     }
 
     @Override

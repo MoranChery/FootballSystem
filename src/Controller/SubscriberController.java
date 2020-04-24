@@ -1,7 +1,6 @@
 package Controller;
 
-import Data.SubscriberDb;
-import Data.SubscriberDbInMemory;
+import Data.*;
 
 import java.util.Date;
 
@@ -11,191 +10,129 @@ import Model.UsersTypes.*;
 
 public class SubscriberController {
     private SubscriberDb subscriberDb;
+//    private CoachDb coachDb;
+//    private JudgeDb judgeDb;
+//    private PlayerDb playerDb;
+//    private TeamManagerDb teamManagerDb;
+//    private TeamOwnerDb teamOwnerDb;
+//    private FanDb fanDb;
+//    private RoleDb roleDb;
+//    private SystemAdministratorDb systemAdministratorDb;
+//    private RepresentativeAssociationDb representativeAssociationDb;
 
     public SubscriberController() {
-        subscriberDb = new SubscriberDbInMemory();
+        subscriberDb = SubscriberDbInMemory.getInstance();
+//        coachDb = CoachDbInMemory.getInstance();
+//        judgeDb = JudgeDbInMemory.getInstance();
+//        playerDb = PlayerDbInMemory.getInstance();
+//        teamManagerDb = TeamManagerDbInMemory.getInstance();
+//        teamOwnerDb = TeamOwnerDbInMemory.getInstance();
+//        fanDb = FanDbInMemory.getInstance();
+//        roleDb= RoleDbInMemory.getInstance();
+//        systemAdministratorDb= SystemAdministratorDbInMemory.getInstance();
+//        representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
     }
 
-    //todo: call use case 2.2 from UI
-    public void registerSubscriber(String userType) throws Exception {
-        Subscriber subscriber = null;
-        switch (userType) {
-            case "Coach":
-                break;
-            case "Fan":
-                break;
-            case "Judge":
-                break;
-            case "MajorJudge":
-                break;
-            case "Player":
-                break;
-            case "RepresentativeAssociation":
-                break;
-            case "SystemAdministrator":
-                break;
-            case "TeamManager":
-                break;
-            case "TeamOwner":
-                break;
+    /**
+     * This function creates new subscriber in the DB
+     * @param subscriber Subscriber - the subscriber you want to add to the DB
+     * @throws Exception NullPointerException if input is null
+     */
+    public void createSubscriber(Subscriber subscriber) throws Exception{
+        if (subscriber == null){
+            throw new NullPointerException("Can't create this subscriber");
         }
+        subscriberDb.createSubscriber(subscriber);
     }
 
-    public void registerCoach(String username, String password, Integer id, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
-            throw new Exception("you should use only letters and numbers!");
-        }
-        Coach coach = new Coach(username, password, id, firstName, lastName, coachRole, qualificationCoach);
-        subscriberDb.createSubscriber(coach);
-    }
-
-    public void registerFan(String username, String password, Integer id, String firstName, String lastName) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
-            throw new Exception("you should use only letters and numbers!");
-        }
-        Fan fan = new Fan(username, password, id, firstName, lastName);
-        subscriberDb.createSubscriber(fan);
-    }
-
-
-    public void registerJudge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theJudgeType) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
-            throw new Exception("you should use only letters and numbers!");
-        }
-        Judge judge = new Judge(username, password, id, firstName, lastName, qualificationJudge, theJudgeType);
-        subscriberDb.createSubscriber(judge);
-    }
-
-    public void registerPlayer(String username, String password, Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
-            throw new Exception("you should use only letters and numbers!");
-        }
-        Player player = new Player(username, password, id, firstName, lastName, birthDate, playerRole);
-        subscriberDb.createSubscriber(player);
-    }
-
-    public void registerRepresentativeAssociation(String username, String password, Integer id, String firstName, String lastName) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
-            throw new Exception("you should use only letters and numbers!");
-        }
-        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation(username, password, id, firstName, lastName);
-        subscriberDb.createSubscriber(representativeAssociation);
-    }
-
-    public void registerSystemAdministrator(String username, String password, Integer id, String firstName, String lastName) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
-            throw new Exception("you should use only letters and numbers!");
-        }
-        SystemAdministrator systemAdministrator = new SystemAdministrator(username, password, id, firstName, lastName);
-        subscriberDb.createSubscriber(systemAdministrator);
-    }
-
-    public void registerTeamManager(String username, String password, Integer id, String firstName, String lastName, String ownedByEmail) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
-            throw new Exception("you should use only letters and numbers!");
-        }
-        TeamManager teamManager = new TeamManager(username, password, id, firstName, lastName, ownedByEmail);
-        subscriberDb.createSubscriber(teamManager);
-    }
-
-    public void registerTeamOwner(String username, String password, Integer id, String firstName, String lastName, Team team) throws Exception {
-        if (!checkAllInputDetails(username, password, id, firstName, lastName)) {
-            throw new Exception("you should use only letters and numbers!");
-        }
-        TeamOwner teamOwner = new TeamOwner(username, password, id, firstName, lastName, team);
-        subscriberDb.createSubscriber(teamOwner);
-    }
-
-
+    /**
+     * This function get string that represent subscriber id - his email address and returns subscriber class instance
+     * @param emailAddress String - the id of the subscriber - his email address
+     * @return Subscriber - the instance of the subscriber in the db
+     * @throws Exception if the subscriber with the given emailAddress isn't in the system
+     */
     public Subscriber getSubscriber(String emailAddress) throws Exception {
         if (emailAddress == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("Subscriber not found");
         }
         return subscriberDb.getSubscriber(emailAddress);
     }
 
-    //use case 2.3
-
     /**
-     * @param username
-     * @param password
-     * @return true if the login successfully
-     * @throws Exception
+     * function for the subscriber to logout of the system
+     * the function set the subscriber's status to offline
+     * @param subscriberMail String the subscriber id - subscriber email
+     * @throws Exception nullPointerException if the input is null
+     * NotFoundException if the subscriber is not in the db
+     * Exception if the subscriber's status is already OFFLINE
      */
-    public boolean login(String username, String password) throws Exception {
-        if (username == null || password == null) {
-            return false;
+    public void logOut(String subscriberMail) throws Exception {
+        if(subscriberMail == null){
+            throw new NullPointerException("subscriber not found");
         }
-        Subscriber subscriber = subscriberDb.getSubscriber(username);
-        if (subscriber != null && subscriber.getPassword().equals(password)) {
-            subscriber.setStatus(Status.ONLINE);
-            return true;
-        } else return false;
-    }
-
-    //todo:use case 2.4
-    public void showInformation(String subject) {
-
-    }
-
-    //todo: use case 2.5
-
-    /**
-     * @param input
-     * @return true if there are results that match to the search input
-     */
-    public boolean searchInformation(String input) {
-        return false;
+        Subscriber subscriber = subscriberDb.getSubscriber(subscriberMail);
+        if(subscriber.getStatus().equals(Status.OFFLINE)){
+            throw new Exception("You are already disconnected from the system");
+        }
+        subscriberDb.logOut(subscriberMail);
     }
 
     /**
-     * @param username
-     * @param password
-     * @param id
-     * @param firstName
-     * @param lastName
-     * @return if all the details are meet the requirements
+     * this function enable the subscriber to edit his password
+     * @param subscriberMail String the subscriber id- email address
+     * @param newPassword String the new password the subscriber want to change to
+     * @throws Exception NullPointerException - if one or more of the inputs is null
+     * NotFoundException - if the subscriber is not in the db
+     * Exception - if the new password is equal to the current password of the subscriber
      */
-    private boolean checkAllInputDetails(String username, String password, Integer id, String firstName, String lastName) {
-        if (!isLegalName(firstName) || !isLegalName(lastName) ||
-                !isLegalUsernameAndPassword(username) || !isLegalUsernameAndPassword(password) ||
-                id.toString().length() != 9) {
-            return false;
+    public void wantToEditPassword(String subscriberMail, String newPassword) throws Exception {
+        if(subscriberMail == null || newPassword == null){
+            throw new NullPointerException("Something went wrong in editing subscriber the password");
         }
-        return true;
+        Subscriber subscriber = subscriberDb.getSubscriber(subscriberMail);
+        if(subscriber.getPassword().equals(newPassword)){
+            throw new Exception("You are already using this password");
+        }
+        subscriberDb.wantToEditPassword(subscriberMail, newPassword);
     }
 
     /**
-     * @param name first name or last name
-     * @return if the name is include only from letters
+     * this function enable the subscriber to edit his first name
+     * @param subscriberMail String the subscriber id- email address
+     * @param newFirstName String the new first name the subscriber want to change to
+     * @throws Exception NullPointerException - if one or more of the inputs is null
+     * NotFoundException - if the subscriber is not in the db
+     * Exception - if the new first name is equal to the current first name of the subscriber
      */
-    private boolean isLegalName(String name) {
-        if (name == null || name.length() == 0 || name.equals("")) {
-            return false;
+    public void wantToEditFirstName(String subscriberMail, String newFirstName) throws Exception {
+        if(subscriberMail == null || newFirstName == null){
+            throw new NullPointerException("Something went wrong in editing subscriber's the first name");
         }
-        for (int i = 0; i < name.length(); i++) {
-            char ch = name.charAt(i);
-            if ((!(ch >= 'A' && ch <= 'Z')) && (!(ch >= 'a' && ch <= 'z'))) {
-                return false;
-            }
+        Subscriber subscriber = subscriberDb.getSubscriber(subscriberMail);
+        if(subscriber.getFirstName().equals(newFirstName)){
+            throw new Exception("You are already using this name as first name");
         }
-        return true;
+        subscriberDb.wantToEditFirstName(subscriberMail, newFirstName);
     }
 
     /**
-     * @param word: username or password
-     * @return true if the terms to the username and the password are good
+     * this function enable the subscriber to edit his last name
+     * @param subscriberMail String the subscriber id- email address
+     * @param newLastName String the new last name the subscriber want to change to
+     * @throws Exception NullPointerException - if one or more of the inputs is null
+     * NotFoundException - if the subscriber is not in the db
+     * Exception - if the new last name is equal to the current last name of the subscriber
      */
-    private boolean isLegalUsernameAndPassword(String word) {
-        if (word == null || word.length() == 0 || word.equals("")) {
-            return false;
+    public void wantToEditLastName(String subscriberMail, String newLastName) throws Exception {
+        if(subscriberMail == null || newLastName == null){
+            throw new NullPointerException("Something went wrong in editing the last name of the subscriber");
         }
-        for (int i = 0; i < word.length(); i++) {
-            char ch = word.charAt(i);
-            if ((!(ch >= 'A' && ch <= 'Z')) && (!(ch >= 'a' && ch <= 'z')) && (!(ch >= '0' && ch <= '9'))) {
-                return false;
-            }
+        Subscriber subscriber = subscriberDb.getSubscriber(subscriberMail);
+        if(subscriber.getLastName().equals(newLastName)){
+            throw new Exception("You are already using this name as last name");
         }
-        return true;
+        subscriberDb.wantToEditLastName(subscriberMail, newLastName);
     }
+
+
 }

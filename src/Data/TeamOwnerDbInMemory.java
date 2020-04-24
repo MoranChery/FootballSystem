@@ -4,10 +4,7 @@ import Model.Team;
 import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamOwner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TeamOwnerDbInMemory implements TeamOwnerDb{
 
@@ -25,6 +22,9 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
     }
     @Override
     public void createTeamOwner(TeamOwner teamOwner) throws Exception {
+        if(teamOwner == null) {
+            throw new NullPointerException("bad input");
+        }
         String teamOwnerEmailAddress = teamOwner.getEmailAddress();
         if (teamOwners.containsKey(teamOwnerEmailAddress)) {
             throw new Exception("TeamOwner already exists");
@@ -97,6 +97,11 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
             }
         }
         return teamOwnersOwnedBy;
+    }
+
+    @Override
+    public Set<String> getAllTeamOwnersInDB() {
+        return teamOwners.keySet();
     }
 
     @Override

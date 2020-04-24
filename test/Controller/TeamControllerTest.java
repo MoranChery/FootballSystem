@@ -1,12 +1,12 @@
 package Controller;
 
-import Controller.*;
 import Data.*;
 import Model.Court;
 import Model.Enums.*;
 import Model.FinancialActivity;
 import Model.Team;
 import Model.UsersTypes.*;
+import Service.TeamService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,10 +15,11 @@ import java.util.*;
 
 public class TeamControllerTest {
     private TeamController teamController = new TeamController();
-    private PlayerController playerController = new PlayerController();
-    private TeamManagerController teamManagerController = new TeamManagerController();
-    private TeamOwnerController teamOwnerController = new TeamOwnerController();
-    private CoachController coachController = new CoachController();
+    private TeamDb teamDb = TeamDbInMemory.getInstance();
+    private PlayerDb playerDb = PlayerDbInMemory.getInstance();
+    private TeamManagerDb teamManagerDb = TeamManagerDbInMemory.getInstance();
+    private TeamOwnerDb teamOwnerDb =  TeamOwnerDbInMemory.getInstance();
+    private CoachDb coachDb =  CoachDbInMemory.getInstance();
 
     @Before
     public void init() {
@@ -42,7 +43,7 @@ public class TeamControllerTest {
     @Test
     public void createTeamNull() throws Exception {
         try {
-            teamController.createTeam(null);
+            teamDb.createTeam(null);
         }catch (Exception e){
             Assert.assertTrue(e instanceof NullPointerException);
             Assert.assertEquals("bad input", e.getMessage());
@@ -50,7 +51,7 @@ public class TeamControllerTest {
     }
     @Test
     public void createTeamLegal() throws Exception {
-        teamController.createTeam("Team");
+        teamDb.createTeam("Team");
         Team team = TeamDbInMemory.getInstance().getTeam("Team");
         Assert.assertEquals("Team",team.getTeamName());
     }
@@ -66,17 +67,93 @@ public class TeamControllerTest {
     }
     @Test
     public void getTeamLegal() throws Exception {
-        teamController.createTeam("Team");
+        teamDb.createTeam("Team");
         Team team = teamController.getTeam("Team");
         Assert.assertEquals("Team",team.getTeamName());
     }
+
+    ///////////////////////////////// playerController///////////////////////////////////
+    @Test
+    public void testCreatePlayerNull(){
+        try {
+            playerDb.createPlayer(null);
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void testCreatePlayerLegal() throws Exception {
+            Player player = new Player("email@gmail.com", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+            playerDb.createPlayer(player);
+            Assert.assertEquals(player,PlayerDbInMemory.getInstance().getPlayer("email@gmail.com"));
+    }
+
+    ///////////////////////////////// playerController///////////////////////////////////
+    @Test
+    public void testCreateCoachNull(){
+        try {
+            coachDb.createCoach(null);
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void testCreateCoachLegal() throws Exception {
+        Coach coach = new Coach("email@gmail.com", 2, "firstTeamOwnerName", "lastTeamOwnerName",CoachRole.MAJOR,QualificationCoach.UEFA_A);
+        coachDb.createCoach(coach);
+        Assert.assertEquals(coach,CoachDbInMemory.getInstance().getCoach("email@gmail.com"));
+    }
+
+    ///////////////////////////////// TeamOwnerController///////////////////////////////////
+    @Test
+    public void testCreateTeamOwnerNull(){
+        try {
+            teamOwnerDb.createTeamOwner(null);
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void testCreateTeamOwnerLegal() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        Assert.assertEquals(teamOwner,TeamOwnerDbInMemory.getInstance().getTeamOwner(ownerEmail));
+    }
+
+    ///////////////////////////////// TeamManagerController///////////////////////////////////
+    @Test
+    public void testTeamManagerCoachNull(){
+        try {
+            teamManagerDb.createTeamManager(null);
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void testTeamManagerLegal() throws Exception {
+        TeamManager teamManager = new TeamManager( "email@gmail.com","1111", 1, "firstTeamManager", "lastTeamManager", "ownerEmail");
+        teamManagerDb.createTeamManager(teamManager);
+        Assert.assertEquals(teamManager,TeamManagerDbInMemory.getInstance().getTeamManager("email@gmail.com"));
+    }
+
 //////////////////////////////////// addPlayer /////////////////////////////////
     @Test
     public void testAddPlayerInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+            teamDb.createTeam(teamName);
+            teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.addPlayer(teamName,null, "email@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER);
             Assert.fail("Should throw NullPointerException");
@@ -89,16 +166,16 @@ public class TeamControllerTest {
     @Test
     public void testAddPlayerOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
+        teamDb.createTeam(teamName);
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -118,16 +195,16 @@ public class TeamControllerTest {
     @Test
     public void testAddPlayerOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
+        teamDb.createTeam(teamName);
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -144,17 +221,15 @@ public class TeamControllerTest {
     @Test
     public void testAddPlayerOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
+        teamDb.createTeam(teamName);
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
-
-        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
-        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -169,8 +244,8 @@ public class TeamControllerTest {
     public void testAddPlayerTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+            teamDb.createTeam(teamName);
+            teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.addPlayer("notExists", "owner@gmail.com","email@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER);
             Assert.fail("Should throw NotFoundException");
@@ -183,15 +258,15 @@ public class TeamControllerTest {
     @Test
     public void testAddPlayerTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
+        teamDb.createTeam(teamName);
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);
         try {
-            teamController.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER);
+        teamController.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This Team's status - Inactive", e.getMessage());
@@ -201,11 +276,11 @@ public class TeamControllerTest {
     @Test
     public void testAddPlayerNotExistsPlayer() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
+        teamDb.createTeam(teamName);
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -234,39 +309,71 @@ public class TeamControllerTest {
     }
 
     @Test
-    public void testAddPlayerExistsPlayerAssociatedWithOtherTeam() throws Exception {
+    public void testAddPlayerExistsPlayerAssociatedWithSameTeam() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
 
-        teamController.createTeam(teamName);
+        teamDb.createTeam(teamName);
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
-        Player player = new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+//        Player player = new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
 //        SubscriberDbInMemory.getInstance().createSubscriber(player);
-        playerController.createPlayer(player);
         teamController.addPlayer(teamName, "owner@gmail.com","email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
         try {
             teamController.addPlayer(teamName, "owner@gmail.com","email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("Player associated this team", e.getMessage());
+        }
+    }
+    @Test
+    public void testAddPlayerExistsPlayerAssociatedWithOtherTeam() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+        teamDb.createTeam("Other");
+
+        teamDb.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        teamController.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+
+
+        String ownerEmail2 = "owner2@gmail.com";
+        TeamOwner teamOwner2 = new TeamOwner(ownerEmail2, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
+        teamOwnerDb.createTeamOwner(teamOwner2);
+        RoleDbInMemory.getInstance().createRole(ownerEmail2,"Other",RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner2);
+
+        try {
+            teamController.addPlayer("Other", ownerEmail2,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("Player associated with a team", e.getMessage());
         }
     }
 
+
+
     @Test
     public void testAddPlayerExistsPlayerIdDifferentDetails() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
+        teamDb.createTeam(teamName);
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);  playerController.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);  playerDb.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
         try {
             teamController.addPlayer(teamName,ownerEmail, "email@gmail.com", 1, "firstPlayerOther", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
             Assert.fail("Should throw Exception");
@@ -275,16 +382,13 @@ public class TeamControllerTest {
         }
     }
 
-
     @Test
     public void testAddPlayerExistsPlayerAsDifferentSubscriber() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -303,12 +407,11 @@ public class TeamControllerTest {
     public void testAddPlayerExistSubscriberWithTeamOwnerAndSameTeam() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
-        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+         teamDb.createTeam(teamName);RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -341,14 +444,12 @@ public class TeamControllerTest {
     public void testAddPlayerExistSubscriberWithTeamOwnerAndDifferentTeam() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
-        String otherTeam = "other";
-        teamController.createTeam(otherTeam);
-        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+         teamDb.createTeam(teamName);String otherTeam = "other";
+ teamDb.createTeam(otherTeam);RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -369,12 +470,11 @@ public class TeamControllerTest {
     public void testAddPlayerExistSubscriberWithDifferentTypeAndSameTeam() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
-        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+         teamDb.createTeam(teamName);RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -395,15 +495,14 @@ public class TeamControllerTest {
     @Test
     public void testAddPlayerExistsPlayer() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         Date birthDate = new Date();
-        playerController.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        playerDb.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
         teamController.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         Team team = teamController.getTeam(teamName);
         Map<String, Player> players = team.getPlayers();
@@ -425,10 +524,9 @@ public class TeamControllerTest {
     public void testAddTeamManagerInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
-            teamController.addTeamManager(null, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", "email2@gmail.com");
+            teamController.addTeamManager(null, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),"email2@gmail.com");
             Assert.fail("Should throw NullPointerException");
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NullPointerException);
@@ -438,16 +536,15 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -456,7 +553,7 @@ public class TeamControllerTest {
         teamController.subscriptionTeamManager(teamName,ownerEmail, withoutPermissionsOwnerEmail,permissionTypes);
         Assert.assertEquals(RoleType.TEAM_MANAGER,RoleDbInMemory.getInstance().getRole(withoutPermissionsOwnerEmail).getRoleType());
         try {
-            teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer",withoutPermissionsOwnerEmail);
+            teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer",new ArrayList<>(),withoutPermissionsOwnerEmail);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
@@ -467,16 +564,15 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -485,7 +581,7 @@ public class TeamControllerTest {
         Thread.sleep(100);
         teamController.subscriptionTeamManager(teamName,ownerEmail, withPermissionsEmail,permissionTypes);
         Assert.assertEquals(RoleType.TEAM_MANAGER,RoleDbInMemory.getInstance().getRole(withPermissionsEmail).getRoleType());
-        teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer",withPermissionsEmail);
+        teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer",new ArrayList<>(), withPermissionsEmail);
         Assert.assertEquals(2,teamController.getTeam(teamName).getTeamManagers().size());
         Assert.assertTrue(teamController.getTeam(teamName).getTeamManagers().containsKey("email@gmail.com"));
     }
@@ -493,22 +589,18 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
-
-        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
-        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);
+String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
-            teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer", withoutPermissionsOwnerEmail);
+            teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer", new ArrayList<>(),withoutPermissionsOwnerEmail);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
@@ -520,15 +612,13 @@ public class TeamControllerTest {
     public void testAddTeamManagerTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-
-            String ownerEmail = "owner@gmail.com";
+             teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
             TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-            teamOwnerController.createTeamOwner(teamOwner);
+            teamOwnerDb.createTeamOwner(teamOwner);
             RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
             SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
-            teamController.addTeamManager("notExists", "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", ownerEmail);
+            teamController.addTeamManager("notExists", "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
             Assert.fail("Should throw NotFoundException");
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NotFoundException);
@@ -539,16 +629,13 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName, ownerEmail,TeamStatus.INACTIVE);
-        try {
-            teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", ownerEmail);
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);try {
+            teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This Team's status - Inactive", e.getMessage());
@@ -558,12 +645,11 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerTeamOwnerNotExists() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         try {
-            teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", ownerEmail);
+            teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
@@ -573,16 +659,14 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerNotExistsTeamManager() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String teamManagerToAdd = "email@gmail.com";
-        teamController.addTeamManager(teamName, teamManagerToAdd, 1, "firstTeamManager", "lastTeamManager", ownerEmail);
+        teamController.addTeamManager(teamName, teamManagerToAdd, 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
         Team team = teamController.getTeam(teamName);
         Map<String, TeamManager> teamManagers = team.getTeamManagers();
         Assert.assertEquals(1, teamManagers.size());
@@ -603,45 +687,66 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerExistsTeamManagerAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
-        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", ownerEmail);
+        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
 
         String other = "Other";
-        teamController.createTeam(other);
+        teamDb.createTeam(other);
         String otherOwnerEmail = "otherOwner@gmail.com";
         TeamOwner otherTeamOwner = new TeamOwner(otherOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(other));
-        teamOwnerController.createTeamOwner(otherTeamOwner);
+        teamOwnerDb.createTeamOwner(otherTeamOwner);
         RoleDbInMemory.getInstance().createRole(otherOwnerEmail,other,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(otherTeamOwner);
 
         try {
-            teamController.addTeamManager(other, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", otherOwnerEmail);
+            teamController.addTeamManager(other, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager",new ArrayList<>(), otherOwnerEmail);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("Team Manager associated with a team", e.getMessage());
+        }
+    }
+    @Test
+    public void testAddTeamManagerExistsManagerAssociatedWithSameTeam() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+
+        teamDb.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+//        Player player = new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+//        SubscriberDbInMemory.getInstance().createSubscriber(player);
+        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+
+        try {
+            teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("TeamManager associated with a this team", e.getMessage());
         }
     }
 
     @Test
     public void testAddTeamManagerExistsTeamManagerIdDifferentDetails() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
-        teamManagerController.createTeamManager(new TeamManager("email@gmail.com", 1, "firstTeamManager", "lastTeamManager", null));
+        teamManagerDb.createTeamManager(new TeamManager("email@gmail.com", 1, "firstTeamManager", "lastTeamManager", null));
         try {
-            teamController.addTeamManager(teamName, "email@gmail.com", 2, "firstTeamManagerOther", "lastTeamManager", ownerEmail);
+            teamController.addTeamManager(teamName, "email@gmail.com", 2, "firstTeamManagerOther", "lastTeamManager", new ArrayList<>(),ownerEmail);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("One or more of the details incorrect", e.getMessage());
@@ -652,27 +757,25 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerExistsTeamManagerIdAssociatedWithOwnedBy() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String otherOwnerEmail = "otherOwner@gmail.com";
         TeamOwner otherTeamOwner = new TeamOwner(otherOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(otherTeamOwner);
+        teamOwnerDb.createTeamOwner(otherTeamOwner);
         RoleDbInMemory.getInstance().createRoleInSystem(otherOwnerEmail,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(otherTeamOwner);
 
-        teamManagerController.createTeamManager(new TeamManager("email@gmail.com", 1, "firstTeamManager", "lastTeamManager", "email3@gmail.com"));
+        teamManagerDb.createTeamManager(new TeamManager("email@gmail.com", 1, "firstTeamManager", "lastTeamManager", "email3@gmail.com"));
         RoleDbInMemory.getInstance().createRoleInSystem("email@gmail.com",RoleType.TEAM_MANAGER);
         TeamManagerDbInMemory.getInstance().getTeamManager("email@gmail.com").setOwnedByEmail(otherOwnerEmail);
 //        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", otherOwnerEmail);
 
         try {
-            teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", ownerEmail);
+            teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("Team Manager owned by another teamOwner", e.getMessage());
@@ -682,12 +785,11 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerExistSubscriberWithTeamOwnerAndSameTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+         teamDb.createTeam(teamName);RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -697,7 +799,7 @@ public class TeamControllerTest {
         RoleDbInMemory.getInstance().createRole(managerToAdd,teamName,RoleType.TEAM_OWNER);
         Assert.assertEquals(RoleType.TEAM_OWNER,roleDbInMemory.getRole(managerToAdd).getRoleType());
         Thread.sleep(100);
-        teamController.addTeamManager(teamName, managerToAdd, 1, "first", "last", ownerEmail);
+        teamController.addTeamManager(teamName, managerToAdd, 1, "first", "last", new ArrayList<>(),ownerEmail);
 
         Team team = teamController.getTeam(teamName);
         Map<String, TeamManager> teamManagers = team.getTeamManagers();
@@ -718,14 +820,12 @@ public class TeamControllerTest {
     public void testAddTeamManagerExistSubscriberWithTeamOwnerAndDifferentTeam() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
-        String otherTeam = "other";
-        teamController.createTeam(otherTeam);
-        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+         teamDb.createTeam(teamName);String otherTeam = "other";
+ teamDb.createTeam(otherTeam);RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -735,7 +835,7 @@ public class TeamControllerTest {
         RoleDbInMemory.getInstance().createRole(managerToAdd,otherTeam,RoleType.TEAM_OWNER);
         Assert.assertEquals(RoleType.TEAM_OWNER,roleDbInMemory.getRole(managerToAdd).getRoleType());
         try {
-            teamController.addTeamManager(teamName, managerToAdd, 1, "first", "last",ownerEmail);
+            teamController.addTeamManager(teamName, managerToAdd, 1, "first", "last",new ArrayList<>(),ownerEmail);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("The teamManager to added already has other team", e.getMessage());
@@ -745,12 +845,11 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerExistSubscriberWithDifferentTypeAndSameTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+         teamDb.createTeam(teamName);RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -761,7 +860,7 @@ public class TeamControllerTest {
         Assert.assertEquals(RoleType.COACH,roleDbInMemory.getRole(playerToAdd).getRoleType());
 
         try {
-            teamController.addTeamManager(teamName, playerToAdd, 1, "first", "last",ownerEmail);
+            teamController.addTeamManager(teamName, playerToAdd, 1, "first", "last",new ArrayList<>(),ownerEmail);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("The teamManager to added already has other subscriber type", e.getMessage());
@@ -771,16 +870,15 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerExistsTeamManager() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
-        teamManagerController.createTeamManager(new TeamManager("email@gmail.com", 1, "firstTeamManager", "lastTeamManager", null));
+        teamManagerDb.createTeamManager(new TeamManager("email@gmail.com", 1, "firstTeamManager", "lastTeamManager", null));
 
-        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", ownerEmail);
+        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager",new ArrayList<>(), ownerEmail);
         Team team = teamController.getTeam(teamName);
         Map<String, TeamManager> teamManagers = team.getTeamManagers();
         Assert.assertEquals(1, teamManagers.size());
@@ -797,18 +895,16 @@ public class TeamControllerTest {
     @Test
     public void testAddTeamManagerExistsTeamManagerAsDifferentSubscriber() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         Coach coach = new Coach("email@gmail.com", 1, "first", "last", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         SubscriberDbInMemory.getInstance().createSubscriber(coach);
         try {
-            teamController.addTeamManager(teamName, "email@gmail.com", 1, "first", "last", ownerEmail);
+            teamController.addTeamManager(teamName, "email@gmail.com", 1, "first", "last", new ArrayList<>(),ownerEmail);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("The teamManager to added already has other subscriber type", e.getMessage());
@@ -820,8 +916,7 @@ public class TeamControllerTest {
     public void testAddCoachInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.addCoach(null, "owner@gmail.com","email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
             Assert.fail("Should throw NullPointerException");
@@ -834,16 +929,15 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
@@ -864,16 +958,15 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -891,18 +984,14 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
-
-        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
 
@@ -918,10 +1007,9 @@ public class TeamControllerTest {
     public void testAddCoachTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            String ownerEmail = "owner@gmail.com";
+             teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
             TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-            teamOwnerController.createTeamOwner(teamOwner);
+            teamOwnerDb.createTeamOwner(teamOwner);
             RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
             SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
             teamController.addCoach("notExists",ownerEmail, "email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
@@ -935,15 +1023,13 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName, ownerEmail,TeamStatus.INACTIVE);
-        try {
-            teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);try {
+teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This Team's status - Inactive", e.getMessage());
@@ -953,10 +1039,9 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachNotExistsCoach() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -983,32 +1068,65 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachExistsCoachAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
+        teamDb.createTeam("Other");
+
+        teamDb.createTeam(teamName);
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        coachController.createCoach(new Coach("email2@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
+
         teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+
+
+        String ownerEmail2 = "owner2@gmail.com";
+        TeamOwner teamOwner2 = new TeamOwner(ownerEmail2, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
+        teamOwnerDb.createTeamOwner(teamOwner2);
+        RoleDbInMemory.getInstance().createRole(ownerEmail2,"Other",RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner2);
         try {
-            teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            teamController.addCoach("Other", ownerEmail2,"email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("Coach associated with a team", e.getMessage());
         }
     }
 
+
+    @Test
+    public void testAddCoachExistsCoachAssociatedWithSameTeam() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+
+        teamDb.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+//        Player player = new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+//        SubscriberDbInMemory.getInstance().createSubscriber(player);
+        teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstCoachOther", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+
+        try {
+            teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstCoachOther", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("Coach associated this team", e.getMessage());
+        }
+    }
+
     @Test
     public void testAddCoachExistsCoachIdDifferentDetails() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        coachController.createCoach(new Coach("email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
+        coachDb.createCoach(new Coach("email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
         try {
             teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstCoachOther", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
             Assert.fail("Should throw Exception");
@@ -1021,12 +1139,11 @@ public class TeamControllerTest {
     @Test
     public void testAddTCoachExistSubscriberWithTeamOwnerAndSameTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+         teamDb.createTeam(teamName);RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -1056,14 +1173,12 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachExistSubscriberWithTeamOwnerAndDifferentTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String otherTeam = "other";
-        teamController.createTeam(otherTeam);
-        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+         teamDb.createTeam(teamName);String otherTeam = "other";
+ teamDb.createTeam(otherTeam);RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -1083,12 +1198,11 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachExistSubscriberWithDifferentTypeAndSameTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+         teamDb.createTeam(teamName);RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -1110,13 +1224,12 @@ public class TeamControllerTest {
     @Test
     public void testAddCoachExistsCoach() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        coachController.createCoach(new Coach("email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
+        coachDb.createCoach(new Coach("email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
         teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         Team team = teamController.getTeam(teamName);
         Map<String, Coach> coaches = team.getCoaches();
@@ -1136,10 +1249,9 @@ public class TeamControllerTest {
     public void testAddCoachExistsCoachAsDifferentSubscriber() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -1158,8 +1270,7 @@ public class TeamControllerTest {
     public void testAddCourtInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.addCourt(teamName, "owner@gmail.com",null, "courtCity");
             Assert.fail("Should throw NullPointerException");
@@ -1171,16 +1282,15 @@ public class TeamControllerTest {
     @Test
     public void testAddCourtOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -1201,16 +1311,15 @@ public class TeamControllerTest {
     @Test
     public void testAddCourtOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -1227,17 +1336,14 @@ public class TeamControllerTest {
     @Test
     public void testAddCourtOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
-
-        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -1252,10 +1358,9 @@ public class TeamControllerTest {
     public void testAddCourtTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            String ownerEmail = "owner@gmail.com";
+             teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
             TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-            teamOwnerController.createTeamOwner(teamOwner);
+            teamOwnerDb.createTeamOwner(teamOwner);
             RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
             SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
             teamController.addCourt("notExists", ownerEmail,"courtName", "courtCity");
@@ -1269,15 +1374,13 @@ public class TeamControllerTest {
     @Test
     public void testAddCourtTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName, ownerEmail,TeamStatus.INACTIVE);
-        try {
-            teamController.addCourt(teamName, ownerEmail,"courtName", "courtCity");
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);try {
+teamController.addCourt(teamName, ownerEmail,"courtName", "courtCity");
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This Team's status - Inactive", e.getMessage());
@@ -1285,12 +1388,11 @@ public class TeamControllerTest {
     }
 
     @Test
-    public void testAddCourtExistsCourtAssociatedWithOtherTeam() throws Exception {
+    public void testAddCourtExistsCourtAssociatedWithSameTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -1306,13 +1408,35 @@ public class TeamControllerTest {
     }
 
     @Test
-    public void testAddCourtNotExistsCourt() throws Exception {
+    public void testAddCourtExistsCourtAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
+        teamDb.createTeam("Other");
+        teamDb.createTeam(teamName);
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        teamController.addCourt(teamName, ownerEmail,"courtName", "courtCity");
+
+        String ownerEmail2 = "owner2@gmail.com";
+        TeamOwner teamOwner2 = new TeamOwner(ownerEmail2, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
+        teamOwnerDb.createTeamOwner(teamOwner2);
+        RoleDbInMemory.getInstance().createRole(ownerEmail2,"Other",RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner2);
+        teamController.addCourt("Other", ownerEmail2,"courtName", "courtCity");
+        Assert.assertTrue(CourtDbInMemory.getInstance().getCourt("courtName").getTeams().containsKey(teamName));
+        Assert.assertTrue(CourtDbInMemory.getInstance().getCourt("courtName").getTeams().containsKey("Other"));
+    }
+
+    @Test
+    public void testAddCourtNotExistsCourt() throws Exception {
+        String teamName = "Exists";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -1327,10 +1451,9 @@ public class TeamControllerTest {
     @Test
     public void testAddCourtIncorrectCityName() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         CourtDbInMemory courtDbInMemory = CourtDbInMemory.getInstance();
@@ -1346,10 +1469,9 @@ public class TeamControllerTest {
     @Test
     public void testAddCourtExistsCourt() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -1369,8 +1491,7 @@ public class TeamControllerTest {
     public void testRemovePlayerInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.removePlayer(teamName, null,"email@gmail.com");
             Assert.fail("Should throw NullPointerException");
@@ -1383,16 +1504,15 @@ public class TeamControllerTest {
     @Test
     public void testRemovePlayerOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -1412,17 +1532,16 @@ public class TeamControllerTest {
     @Test
     public void testRemovePlayerOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         teamController.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER);
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -1439,17 +1558,14 @@ public class TeamControllerTest {
     @Test
     public void testRemovePlayerOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
-
-        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -1464,8 +1580,7 @@ public class TeamControllerTest {
     public void testRemovePlayerTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.removePlayer("notExists", "owner@gmail.com","email@gmail.com");
             Assert.fail("Should throw NotFoundException");
@@ -1478,15 +1593,13 @@ public class TeamControllerTest {
     @Test
     public void testRemovePlayerTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName, ownerEmail,TeamStatus.INACTIVE);
-        try {
-            teamController.removePlayer(teamName, ownerEmail,"email@gmail.com");
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);try {
+teamController.removePlayer(teamName, ownerEmail,"email@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This Team's status - Inactive", e.getMessage());
@@ -1496,10 +1609,9 @@ public class TeamControllerTest {
     @Test
     public void testRemovePlayerNotExistsPlayer() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         try {
@@ -1512,23 +1624,22 @@ public class TeamControllerTest {
     @Test
     public void testRemovePlayerExistsPlayerAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamController.createTeam("Other");
-
+         teamDb.createTeam(teamName);
+         teamDb.createTeam("Other");
         String otherOwnerEmail = "otherOwner@gmail.com";
         TeamOwner otherOwner = new TeamOwner(otherOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
-        teamOwnerController.createTeamOwner(otherOwner);
+        teamOwnerDb.createTeamOwner(otherOwner);
         RoleDbInMemory.getInstance().createRole(otherOwnerEmail,"Other",RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(otherOwner);
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         Date birthDate = new Date();
-        playerController.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        playerDb.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
         teamController.addPlayer("Other", otherOwnerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         try {
             teamController.removePlayer(teamName, ownerEmail,"email@gmail.com");
@@ -1542,12 +1653,11 @@ public class TeamControllerTest {
     public void testRemovePlayerNotAssociatedWithTeam() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner); playerController.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner); playerDb.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
         try {
             teamController.removePlayer(teamName, "owner@gmail.com","email@gmail.com");
             Assert.fail("Should throw Exception");
@@ -1560,10 +1670,9 @@ public class TeamControllerTest {
     public void testRemovePlayerExistsAndAssociatedWithTeam() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -1590,8 +1699,7 @@ public class TeamControllerTest {
     public void testRemoveTeamManagerInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.removeTeamManager(teamName, null,"email@gmail.com");
             Assert.fail("Should throw NullPointerException");
@@ -1604,16 +1712,15 @@ public class TeamControllerTest {
     @Test
     public void testRemoveTeamManagerOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -1633,17 +1740,16 @@ public class TeamControllerTest {
     @Test
     public void testRemoveTeamManagerOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer",ownerEmail);
+        teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer",new ArrayList<>(),ownerEmail);
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -1663,17 +1769,14 @@ public class TeamControllerTest {
     @Test
     public void testRemoveTeamManagerOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
-
-        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
-        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);
+String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -1687,8 +1790,7 @@ public class TeamControllerTest {
     public void testRemoveTeamManagerTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.removePlayer("notExists", "owner@gmail.com","email@gmail.com");
             Assert.fail("Should throw NotFoundException");
@@ -1701,15 +1803,13 @@ public class TeamControllerTest {
     @Test
     public void testRemoveTeamManagerTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName,"owner@gmail.com", TeamStatus.INACTIVE);
-        try {
+        teamController.changeStatus(teamName,"owner@gmail.com",TeamStatus.INACTIVE);
+try {
             teamController.removeTeamManager(teamName, "owner@gmail.com","email@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
@@ -1720,10 +1820,9 @@ public class TeamControllerTest {
     @Test
     public void testRemoveTeamManagerNotExistsPlayer() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         try {
@@ -1736,23 +1835,22 @@ public class TeamControllerTest {
     @Test
     public void testRemoveTeamManagerExistsTeamManagerAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
+        teamDb.createTeam(teamName);
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
-        teamController.createTeam("Other");
-
+        teamDb.createTeam("Other");
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String otherOwnerEmail = "otherOwner@gmail.com";
         TeamOwner otherOwner = new TeamOwner(otherOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
-        teamOwnerController.createTeamOwner(otherOwner);
+        teamOwnerDb.createTeamOwner(otherOwner);
         RoleDbInMemory.getInstance().createRole(otherOwnerEmail,"Other",RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(otherOwner);
 
-        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstPlayer", "lastPlayer", ownerEmail);
+        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstPlayer", "lastPlayer", new ArrayList<>(),ownerEmail);
 
         try {
             teamController.removeTeamManager("Other", otherOwnerEmail,"email@gmail.com");
@@ -1765,13 +1863,12 @@ public class TeamControllerTest {
     @Test
     public void testRemoveTeamManagerNotAssociatedWithTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamManagerController.createTeamManager(new TeamManager("email@gmail.com", 1, "firstPlayer", "lastPlayer", null));
+        teamManagerDb.createTeamManager(new TeamManager("email@gmail.com", 1, "firstPlayer", "lastPlayer", null));
         try {
             teamController.removeTeamManager(teamName, ownerEmail,"email@gmail.com");
             Assert.fail("Should throw Exception");
@@ -1783,14 +1880,13 @@ public class TeamControllerTest {
     @Test
     public void testRemoveTeamManagerExistsAndAssociatedWithTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
-        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstPlayer", "lastPlayer", ownerEmail);
+        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstPlayer", "lastPlayer", new ArrayList<>(),ownerEmail);
         Team team = teamController.getTeam(teamName);
         RoleDbInMemory teamRoleDbInMemory = RoleDbInMemory.getInstance();
         List<Role> roles = teamRoleDbInMemory.getRoles("email@gmail.com");
@@ -1810,10 +1906,9 @@ public class TeamControllerTest {
     public void testRemoveCoachInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            String ownerEmail = "owner@gmail.com";
+             teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
             TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-            teamOwnerController.createTeamOwner(teamOwner);
+            teamOwnerDb.createTeamOwner(teamOwner);
             RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
             SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -1828,17 +1923,16 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCoachOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         teamController.addCoach(teamName,ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer",CoachRole.GOALKEEPER,QualificationCoach.UEFA_A);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
@@ -1857,17 +1951,16 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCoachOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         teamController.addCoach(teamName,ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer",CoachRole.GOALKEEPER,QualificationCoach.UEFA_A);
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -1884,16 +1977,15 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCoachOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -1907,9 +1999,8 @@ public class TeamControllerTest {
     public void testRemoveCoachTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            String ownerMail = "owner@gmail.com";
-            teamOwnerController.createTeamOwner(new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);String ownerMail = "owner@gmail.com";
+            teamOwnerDb.createTeamOwner(new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.removeCoach("notExists",ownerMail, "email@gmail.com");
             Assert.fail("Should throw NotFoundException");
@@ -1922,15 +2013,13 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCoachTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
-        try {
-            teamController.removeCoach(teamName, ownerEmail,"email@gmail.com");
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);try {
+teamController.removeCoach(teamName, ownerEmail,"email@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This Team's status - Inactive", e.getMessage());
@@ -1940,10 +2029,10 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCoachNotExistsCoach() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);
+         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         try {
@@ -1956,13 +2045,13 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCoachNotAssociatedWithTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);
+         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        coachController.createCoach(new Coach("email@gmail.com", 1, "firstPlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A));
+        coachDb.createCoach(new Coach("email@gmail.com", 1, "firstPlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A));
         try {
             teamController.removeCoach(teamName, ownerEmail,"email@gmail.com");
             Assert.fail("Should throw Exception");
@@ -1974,14 +2063,14 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCoachExistsAndAssociatedWithTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);
+         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         String coachToRemove = "email@gmail.com";
-        coachController.createCoach(new Coach(coachToRemove, 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
+        coachDb.createCoach(new Coach(coachToRemove, 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
         teamController.addCoach(teamName,ownerEmail, coachToRemove, 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         Team team = teamController.getTeam(teamName);
         RoleDbInMemory teamRoleDbInMemory = RoleDbInMemory.getInstance();
@@ -2005,8 +2094,8 @@ public class TeamControllerTest {
     public void testRemoveCourtInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);
+             teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.removeCourt(teamName,null, "courtName");
             Assert.fail("Should throw NullPointerException");
@@ -2020,16 +2109,16 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCourtOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);
+         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -2049,17 +2138,17 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCourtOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);
+         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         teamController.addCourt(teamName,ownerEmail,"courtName","cityName");
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -2075,16 +2164,16 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCourtOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);
+         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -2099,11 +2188,9 @@ public class TeamControllerTest {
     public void testRemoveCourtTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-
-            String ownerEmail = "owner@gmail.com";
+             teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
             TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-            teamOwnerController.createTeamOwner(teamOwner);
+            teamOwnerDb.createTeamOwner(teamOwner);
             RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
             SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -2118,13 +2205,13 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCourtTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);teamController.changeStatus(teamName,"owner@gmail.com", TeamStatus.INACTIVE);
-        try {
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.changeStatus(teamName,"owner@gmail.com",TeamStatus.INACTIVE);
+try {
             teamController.removeCourt(teamName, ownerEmail,"courtName");
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
@@ -2135,10 +2222,9 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCourtNotExistsCourt() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         try {
@@ -2151,11 +2237,9 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCourtNotAssociatedWithTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -2173,10 +2257,9 @@ public class TeamControllerTest {
     @Test
     public void testRemoveCourtExistsAndAssociatedWithTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -2201,8 +2284,7 @@ public class TeamControllerTest {
     public void testAddFinancialActivityInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
             teamController.addFinancialActivity(null, "owner@gmail.com",1000.0, "Description", FinancialActivityType.OUTCOME);
             Assert.fail("Should throw NullPointerException");
@@ -2214,17 +2296,16 @@ public class TeamControllerTest {
     @Test
     public void testAddFinanacialActivityOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamController.getTeam(teamName).setBudget(100.0);
+         teamDb.createTeam(teamName);teamController.getTeam(teamName).setBudget(100.0);
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -2244,18 +2325,17 @@ public class TeamControllerTest {
     @Test
     public void testAddFinancialActivityOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamController.getTeam(teamName).setBudget(100.0);
+         teamDb.createTeam(teamName);teamController.getTeam(teamName).setBudget(100.0);
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -2272,16 +2352,15 @@ public class TeamControllerTest {
     @Test
     public void testAddFinancialActivityOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -2296,11 +2375,9 @@ public class TeamControllerTest {
     public void testAddFinancialActivityTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-
-            String ownerEmail = "owner@gmail.com";
+             teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
             TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-            teamOwnerController.createTeamOwner(teamOwner);
+            teamOwnerDb.createTeamOwner(teamOwner);
             RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
             SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -2315,10 +2392,9 @@ public class TeamControllerTest {
     @Test
     public void testAddFinancialActivityWithOutcomeExceedsBudget() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         Team team = teamController.getTeam(teamName);
@@ -2335,10 +2411,9 @@ public class TeamControllerTest {
     @Test
     public void testAddFinancialActivityWithOutcomeUnderBudget() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         Team team = teamController.getTeam(teamName);
@@ -2350,10 +2425,9 @@ public class TeamControllerTest {
     @Test
     public void testAddFinancialActivityWithOutcomeEqualBudget() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         Team team = teamController.getTeam(teamName);
@@ -2372,10 +2446,9 @@ public class TeamControllerTest {
     @Test
     public void testAddFinancialActivityWithIncomeEqualBudget() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         Team team = teamController.getTeam(teamName);
@@ -2392,10 +2465,9 @@ public class TeamControllerTest {
     @Test
     public void testAddFinancialActivityWithIncomeUnderBudget() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -2411,10 +2483,9 @@ public class TeamControllerTest {
     public void testChangeStatusInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com" ,"1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com" ,"1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
-            teamController.changeStatus(null,"owner@gmail.com", TeamStatus.ACTIVE);
+            teamController.changeStatus(null,"owner@gmail.com",TeamStatus.ACTIVE);
             Assert.fail("Should throw NullPointerException");
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NullPointerException);
@@ -2426,16 +2497,15 @@ public class TeamControllerTest {
     @Test
     public void testChangeStatusOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -2455,16 +2525,15 @@ public class TeamControllerTest {
     @Test
     public void testChangeStatusOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(managerToAdd);
+        playerDb.createPlayer(managerToAdd);
         RoleDbInMemory.getInstance().createRole(withPermissionsEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(managerToAdd);
 
@@ -2481,15 +2550,13 @@ public class TeamControllerTest {
     @Test
     public void testChangeStatusOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+         teamDb.createTeam(teamName);String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
-            teamController.changeStatus(teamName,withoutPermissionsOwnerEmail, TeamStatus.INACTIVE);
+            teamController.changeStatus(teamName,withoutPermissionsOwnerEmail,TeamStatus.INACTIVE);
 
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
@@ -2501,10 +2568,9 @@ public class TeamControllerTest {
         try {
             String teamName = "Exists";
 
-            teamController.createTeam(teamName);
-            String ownerEmail = "owner@gmail.com";
+             teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
             TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-            teamOwnerController.createTeamOwner(teamOwner);
+            teamOwnerDb.createTeamOwner(teamOwner);
             RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
             SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -2519,48 +2585,44 @@ public class TeamControllerTest {
     @Test
     public void testChangeStatusFromActiveToInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         Team team = teamController.getTeam(teamName);
         team.setTeamStatus(TeamStatus.ACTIVE);
-        teamController.changeStatus(teamName,"owner@gmail.com", TeamStatus.INACTIVE);
-        Assert.assertEquals(TeamStatus.INACTIVE, team.getTeamStatus());
+        teamController.changeStatus(teamName,"owner@gmail.com",TeamStatus.INACTIVE);
+Assert.assertEquals(TeamStatus.INACTIVE, team.getTeamStatus());
     }
 
     @Test
     public void testChangeStatusFromInactiveToActive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String teamOwnerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String teamOwnerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(teamOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(teamOwnerEmail,teamName,RoleType.TEAM_OWNER);
 
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         Team team = teamController.getTeam(teamName);
-        team.setTeamStatus(TeamStatus.ACTIVE);
-        teamController.changeStatus(teamName, teamOwnerEmail,TeamStatus.INACTIVE);
-        Assert.assertEquals(TeamStatus.INACTIVE, team.getTeamStatus());
+        team.setTeamStatus(TeamStatus.INACTIVE);
+        teamController.changeStatus(teamName, teamOwnerEmail,TeamStatus.ACTIVE);
+        Assert.assertEquals(TeamStatus.ACTIVE, team.getTeamStatus());
     }
 
     @Test
     public void testChangeStatusFromActiveToActive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         Team team = teamController.getTeam(teamName);
         team.setTeamStatus(TeamStatus.ACTIVE);
         try {
-            teamController.changeStatus(teamName,"owner@gmail.com", TeamStatus.ACTIVE);
+            teamController.changeStatus(teamName,"owner@gmail.com",TeamStatus.ACTIVE);
         }catch (Exception e){
             Assert.assertEquals("The team already ACTIVE",e.getMessage());
         }
@@ -2568,18 +2630,17 @@ public class TeamControllerTest {
     @Test
     public void testChangeStatusFromInctiveToInctive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         Team team = teamController.getTeam(teamName);
         team.setTeamStatus(TeamStatus.INACTIVE);
         try {
-            teamController.changeStatus(teamName, "owner@gmail.com",TeamStatus.INACTIVE);
-        }catch (Exception e){
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);
+        } catch (Exception e){
             Assert.assertEquals("The team already INACTIVE",e.getMessage());
         }
     }
@@ -2587,18 +2648,36 @@ public class TeamControllerTest {
 
 
     ////////////////////////////////////////////// updatePlayer ///////////////////////////////////////////
+
+    @Test
+    public void testUpdatePlayerInvalidInputs() {
+        try {
+            String teamName = "Exists";
+            teamDb.createTeam(teamName);
+            Date birthDate = new Date();
+            teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com" ,"1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+            RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
+            teamController.updatePlayerDetails(teamName,"owner@gmail.com", "email@gmail.com", "changePlayer", null, birthDate, PlayerRole.GOALKEEPER);
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+
     @Test
     public void testUpdatePlayerExistsPlayerChangeDetails() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        Date birthDate = new Date();
+         teamDb.createTeam(teamName);
+         Date birthDate = new Date();
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
-        playerController.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        playerDb.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
         teamController.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         teamController.updatePlayerDetails(teamName,ownerEmail, "email@gmail.com", "changePlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         Team team = teamController.getTeam(teamName);
@@ -2610,17 +2689,14 @@ public class TeamControllerTest {
     public void testUpdatePlayerOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
         Date birthDate = new Date();
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
-
-        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
-        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -2635,12 +2711,11 @@ public class TeamControllerTest {
     @Test
     public void testUpdatePlayerNotExistsChangeDetails() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        Date birthDate = new Date();
-        playerController.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+         teamDb.createTeam(teamName);Date birthDate = new Date();
+        playerDb.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         teamController.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
@@ -2656,8 +2731,7 @@ public class TeamControllerTest {
     @Test
     public void testUpdatePlayerTeamOwnerNotExists() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        Date birthDate = new Date();
+         teamDb.createTeam(teamName);Date birthDate = new Date();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
@@ -2676,18 +2750,17 @@ public class TeamControllerTest {
     @Test
     public void testUpdatePlayerTeamOwnerExistsWithDifferentTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamController.createTeam("Other");
-
+        teamDb.createTeam(teamName);
+         teamDb.createTeam("Other");
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String otherOwnerEmail = "otherOwner@gmail.com";
         TeamOwner otherTeamOwner = new TeamOwner(otherOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
-        teamOwnerController.createTeamOwner(otherTeamOwner);
+        teamOwnerDb.createTeamOwner(otherTeamOwner);
         RoleDbInMemory.getInstance().createRole(otherOwnerEmail,"Other",RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(otherTeamOwner);
 
@@ -2717,16 +2790,15 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamOwnerOwnerWithOtherTeamNotPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -2752,15 +2824,13 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamOwnerTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName, ownerEmail,TeamStatus.INACTIVE);
-        try {
-            teamController.subscriptionTeamOwner(teamName, ownerEmail, "teamOwnerToAdd@gmail.com");
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);try {
+teamController.subscriptionTeamOwner(teamName, ownerEmail, "teamOwnerToAdd@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This Team's status - Inactive", e.getMessage());
@@ -2770,8 +2840,7 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamOwnerOwnerNotExists() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -2787,14 +2856,13 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamOwnerSubscriberNotExist() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamOwnerController.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+         teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
         try {
             teamController.subscriptionTeamOwner(teamName, "teamOwner@gmail.com", "teamOwnerToAdd@gmail.com");
             ;
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
-            Assert.assertEquals("Subscriber not found", e.getMessage());
+            Assert.assertEquals("subscriber not found", e.getMessage());
         }
     }
 
@@ -2802,15 +2870,16 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamOwnerTeamRoleWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamController.createTeam("Other");
+        teamDb.createTeam(teamName);
+        teamDb.createTeam("Other");
+
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         Player player = new Player("teamOwnerToAdd@gmail.com", 1, "firstPlayerName", "lastPlayerName", new Date(), PlayerRole.GOALKEEPER);
-        playerController.createPlayer(player);
+        playerDb.createPlayer(player);
         SubscriberDbInMemory.getInstance().createSubscriber(player);
         RoleDbInMemory.getInstance().createRole("teamOwnerToAdd@gmail.com", "Other", RoleType.PLAYER);
         try {
@@ -2825,14 +2894,13 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamOwnerTeamRoleTeamOwnerExists() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         TeamOwner teamOwnerToAdd = new TeamOwner("teamOwnerToAdd@gmail.com", "1234", 3, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwnerToAdd);
+        teamOwnerDb.createTeamOwner(teamOwnerToAdd);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwnerToAdd);
         RoleDbInMemory.getInstance().createRole("teamOwnerToAdd@gmail.com", teamName, RoleType.TEAM_OWNER);
 
@@ -2847,11 +2915,9 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamOwnerLegalSubscription() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -2873,16 +2939,14 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamOwnerWithoutAssociatedTeamSubscription() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         Player player = new Player("teamOwnerToAdd@gmail.com", 1, "firstPlayerName", "lastPlayerName", new Date(), PlayerRole.GOALKEEPER);
-        playerController.createPlayer(player);
+        playerDb.createPlayer(player);
         RoleDbInMemory.getInstance().createRole("teamOwnerToAdd@gmail.com", null, RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(player);
 
@@ -2903,8 +2967,7 @@ public class TeamControllerTest {
     public void testRemoveSubscriptionTeamOwnerInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             teamController.removeSubscriptionTeamOwner(null, "email@gmail.com", "emailToRemove@gmail.com");
             Assert.fail("Should throw NullPointerException");
         } catch (Exception e) {
@@ -2916,16 +2979,15 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamOwnerOwnerWithOtherTeamNotPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -2939,8 +3001,7 @@ public class TeamControllerTest {
     public void testRemoveSubscriptionTeamOwnerTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             teamController.removeSubscriptionTeamOwner("notExists", "email@gmail.com","emailToRemove@gmail.com");
             Assert.fail("Should throw NotFoundException");
         } catch (Exception e) {
@@ -2952,16 +3013,13 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamOwnerTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-        teamController.changeStatus(teamName, ownerEmail,TeamStatus.INACTIVE);
-        try {
-            teamController.removeSubscriptionTeamOwner(teamName, ownerEmail,"emailToRemove@gmail.com");
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);try {
+teamController.removeSubscriptionTeamOwner(teamName, ownerEmail,"emailToRemove@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This Team's status - Inactive", e.getMessage());
@@ -2971,10 +3029,9 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamOwnerOwnerNotExists() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         try {
@@ -2987,11 +3044,11 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamOwnerOwnerWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamController.createTeam("Other");
+    teamDb.createTeam(teamName);teamDb.createTeam("Other");
+
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         try {
@@ -3005,10 +3062,9 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamOwnerOwnerToRemoveNotExist() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         try {
@@ -3022,23 +3078,21 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamOwnerOwnerToRemoveAssociatedWithOtherTeamOwner() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String differentOwnerEmail = "differentTeamOwner@gmail.com";
         TeamOwner differentOwner = new TeamOwner(differentOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(differentOwner);
+        teamOwnerDb.createTeamOwner(differentOwner);
         RoleDbInMemory.getInstance().createRole(differentOwnerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(differentOwner);
 
 
         Player teamOwnerToAdd = new Player("teamOwnerToAdd@gmail.com",  4, "firstPlayerName", "lastPlayerName",new Date(), PlayerRole.GOALKEEPER);
-        playerController.createPlayer(teamOwnerToAdd);
+        playerDb.createPlayer(teamOwnerToAdd);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwnerToAdd);
 
         teamController.subscriptionTeamOwner(teamName,differentOwnerEmail,"teamOwnerToAdd@gmail.com");
@@ -3054,17 +3108,17 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamOwnerOwnerToRemoveAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamController.createTeam("Other");
+    teamDb.createTeam(teamName);teamDb.createTeam("Other");
+
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail, teamName, RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         TeamOwner teamOwnerDifferent = new TeamOwner("teamOwnerDifferent@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
-        teamOwnerController.createTeamOwner(teamOwnerDifferent);
+        teamOwnerDb.createTeamOwner(teamOwnerDifferent);
         RoleDbInMemory.getInstance().createRole("teamOwnerDifferent@gmail.com", "Other", RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwnerDifferent);
 
@@ -3081,13 +3135,11 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamOwnerOwnerToRemoveWithOthersTeamOwnerOwnedByTeamOwnerToRemoveTwoLevels() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String teamOwnerMail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String teamOwnerMail = "owner@gmail.com";
         String ownerToAdd = "teamOwnerToAdd@gmail.com";
 
         TeamOwner teamOwner = new TeamOwner(teamOwnerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(teamOwnerMail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -3122,15 +3174,13 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamOwnerOwnerToRemoveWithOthersTeamOwnerOwnedByTeamOwnerToRemoveThreeLevels() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String teamOwnerMail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String teamOwnerMail = "owner@gmail.com";
         String ownerToAdd = "teamOwnerToAdd@gmail.com";
         String ownerToAddUnder = "teamOwnerToAddUnder@gmail.com";
         String ownerToAddUnderSecond = "teamOwnerToAddUnderSecond@gmail.com";
 
         TeamOwner teamOwner = new TeamOwner(teamOwnerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(teamOwnerMail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -3178,11 +3228,9 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamOwnerOwnerToRemoveWithOthersTeamOwnerOwnedByTeamOwnerToRemoveWithTeamManager() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -3231,8 +3279,7 @@ public class TeamControllerTest {
         try {
 
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             teamController.removeSubscriptionTeamManager(null, "email@gmail.com", "emailToRemove@gmail.com");
             Assert.fail("Should throw NullPointerException");
         } catch (Exception e) {
@@ -3245,16 +3292,15 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamManagerOwnerWithOtherTeamNotPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+         teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -3269,8 +3315,7 @@ public class TeamControllerTest {
     public void testRemoveSubscriptionTeamManagerTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+             teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
 
             teamController.removeSubscriptionTeamManager("notExists", "email@gmail.com","emailToRemove@gmail.com");
             Assert.fail("Should throw NotFoundException");
@@ -3283,16 +3328,14 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamManagerTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
-        try {
-            teamController.removeSubscriptionTeamManager(teamName, ownerEmail,"emailToRemove@gmail.com");
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);try {
+teamController.removeSubscriptionTeamManager(teamName, ownerEmail,"emailToRemove@gmail.com");
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
             Assert.assertEquals("This Team's status - Inactive", e.getMessage());
@@ -3302,8 +3345,7 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamManagerOwnerNotExists() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -3317,11 +3359,11 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamManagerOwnerWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamController.createTeam("Other");
+                    teamDb.createTeam(teamName);
+         teamDb.createTeam("Other");
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner); try {
             teamController.removeSubscriptionTeamManager(teamName, "owner@gmail.com", "managerToRemove@gmail.com");
@@ -3334,10 +3376,9 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamManagerManagerToRemoveNotExist() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         try {
@@ -3351,21 +3392,19 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamManagerManagerToRemoveAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String otherTeamName = "Other";
-        teamController.createTeam(otherTeamName);
+        teamDb.createTeam(teamName);String otherTeamName = "Other";
+        teamDb.createTeam(otherTeamName);
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
 
         String ownerEmailDifferent = "teamOwnerDifferent@gmail.com";
         TeamOwner teamOwnerEmailDifferent = new TeamOwner(ownerEmailDifferent, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(otherTeamName));
-        teamOwnerController.createTeamOwner(teamOwnerEmailDifferent);
+        teamOwnerDb.createTeamOwner(teamOwnerEmailDifferent);
         RoleDbInMemory.getInstance().createRole(ownerEmailDifferent,otherTeamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwnerEmailDifferent);
 
@@ -3384,18 +3423,17 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamManagerManagerToRemoveAssociatedWithOtherTeamOwner() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String teamOwnerMail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String teamOwnerMail = "owner@gmail.com";
         String teamManagerToRemove = "teamManagerToRemove@gmail.com";
 
 
         TeamOwner teamOwner = new TeamOwner(teamOwnerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(teamOwnerMail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         TeamOwner differentTeamOwner = new TeamOwner("differentTeamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(differentTeamOwner);
+        teamOwnerDb.createTeamOwner(differentTeamOwner);
         RoleDbInMemory.getInstance().createRole("differentTeamOwner@gmail.com",teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(differentTeamOwner);
 
@@ -3412,13 +3450,11 @@ public class TeamControllerTest {
     @Test
     public void testRemoveSubscriptionTeamManagerLegalRemove() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String teamOwnerMail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String teamOwnerMail = "owner@gmail.com";
         String managerToRemove = "managerToRemove@gmail.com";
 
         TeamOwner teamOwner = new TeamOwner(teamOwnerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(teamOwnerMail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -3448,8 +3484,7 @@ public class TeamControllerTest {
     public void testsSubscriptionTeamManagerInvalidInputs() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+            teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             teamController.subscriptionTeamManager("Exists", "owner@gmail.com",null, new ArrayList<>());
             Assert.fail("Should throw NullPointerException");
         } catch (Exception e) {
@@ -3463,16 +3498,15 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamManagerOwnerWithOtherTeamNotPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -3486,8 +3520,7 @@ public class TeamControllerTest {
     public void testSubscriptionTeamManagerTeamNotFound() {
         try {
             String teamName = "Exists";
-            teamController.createTeam(teamName);
-            teamOwnerController.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+            teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
             teamController.subscriptionTeamManager("notExists", "teamOwner@gmail.com", "teamOwnerToAdd@gmail.com",new ArrayList<>());
             Assert.fail("Should throw NotFoundException");
         } catch (Exception e) {
@@ -3499,16 +3532,14 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamManagerTeamInactive() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
-        teamController.changeStatus(teamName,ownerEmail, TeamStatus.INACTIVE);
-        try {
-            teamController.subscriptionTeamManager(teamName, ownerEmail, "teamManagerToAdd@gmail.com",new ArrayList<>());
+        teamController.changeStatus(teamName,ownerEmail,TeamStatus.INACTIVE);try {
+        teamController.subscriptionTeamManager(teamName, ownerEmail, "teamManagerToAdd@gmail.com",new ArrayList<>());
             ;
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
@@ -3519,8 +3550,7 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamManagerOwnerNotExists() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
@@ -3538,13 +3568,12 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamManagerSubscriberNotExist() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamOwnerController.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+            teamDb.createTeam(teamName);teamOwnerDb.createTeamOwner(new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
         try {
             teamController.subscriptionTeamManager(teamName, "teamOwner@gmail.com", "TeamManagerToAdd@gmail.com",new ArrayList<>());
             Assert.fail("Should throw Exception");
         } catch (Exception e) {
-            Assert.assertEquals("Subscriber not found", e.getMessage());
+            Assert.assertEquals("subscriber not found", e.getMessage());
         }
     }
 
@@ -3552,18 +3581,17 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamManagerTeamRoleWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        teamController.createTeam("Other");
-
-        String ownerMail = "owner@gmail.com";
+                    teamDb.createTeam(teamName);
+                    teamDb.createTeam("Other");
+                    String ownerMail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerMail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String otherOwnerMail = "otherOwner@gmail.com";
         TeamOwner otherTeamOwner = new TeamOwner(otherOwnerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
-        teamOwnerController.createTeamOwner(otherTeamOwner);
+        teamOwnerDb.createTeamOwner(otherTeamOwner);
         RoleDbInMemory.getInstance().createRole(otherOwnerMail,"Other",RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(otherTeamOwner);
 
@@ -3580,18 +3608,16 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamManagerTeamRoleTeamOwnerExists() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "teamOwner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "teamOwner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 3, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail, teamName, RoleType.TEAM_OWNER);
 
         String managerToAdd = "teamManagerToAdd@gmail.com";
 
         TeamOwner teamManager = new TeamOwner(managerToAdd, "1234", 3, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamManager);
+        teamOwnerDb.createTeamOwner(teamManager);
         SubscriberDbInMemory.getInstance().createSubscriber(teamManager);
         RoleDbInMemory.getInstance().createRole(managerToAdd, teamName, RoleType.TEAM_OWNER);
 
@@ -3605,16 +3631,14 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamManagerTeamRoleTeamManagerExists() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String managerToAdd = "teamManagerToAdd@gmail.com";
-        teamController.addTeamManager(teamName,managerToAdd,3, "firstTeamOwnerName", "lastTeamOwnerName",ownerEmail);
+        teamController.addTeamManager(teamName,managerToAdd,3, "firstTeamOwnerName", "lastTeamOwnerName",new ArrayList<>(),ownerEmail);
         try {
             teamController.subscriptionTeamManager(teamName, ownerEmail, managerToAdd,new ArrayList<>());
             Assert.fail("Should throw Exception");
@@ -3626,10 +3650,9 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamManagerLegalSubscription() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -3645,17 +3668,15 @@ public class TeamControllerTest {
     @Test
     public void testSubscriptionTeamManagerWithoutAssociatedTeamSubscription() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-
-        String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String managerToAdd = "teamManagerToAdd@gmail.com";
         Player player = new Player(managerToAdd, 1, "firstPlayerName", "lastPlayerName", new Date(), PlayerRole.GOALKEEPER);
-        playerController.createPlayer(player);
+        playerDb.createPlayer(player);
         RoleDbInMemory.getInstance().createRole(managerToAdd, null, RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(player);
 
@@ -3669,7 +3690,7 @@ public class TeamControllerTest {
         Assert.assertEquals(ownerEmail, teamManager.getOwnedByEmail());
         Assert.assertEquals(teamName, teamManager.getTeam().getTeamName());
     }
-/////////////////////// createNewTeam ///////////////
+/////////////////////////////////// createNewTeam ///////////////////////////////////////
 @Test
 public void testsCreateNewTeamInvalidInputs() {
     try {
@@ -3683,16 +3704,15 @@ public void testsCreateNewTeamInvalidInputs() {
     @Test
     public void testCreateNewTeamNotPermissions() throws Exception {
         String teamName = "Exists";
-        teamController.createTeam(teamName);
-        String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
         String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
-        playerController.createPlayer(withoutPermissionsOwner);
+        playerDb.createPlayer(withoutPermissionsOwner);
         RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
         SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
         try {
@@ -3708,24 +3728,24 @@ public void testsCreateNewTeamInvalidInputs() {
         try {
             String ownerEmail = "owner@gmail.com";
             TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-            teamOwnerController.createTeamOwner(teamOwner);
+            teamOwnerDb.createTeamOwner(teamOwner);
             RoleDbInMemory.getInstance().createRoleInSystem(ownerEmail,RoleType.TEAM_OWNER);
             SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
             teamController.createNewTeam("Team", "notExist", new ArrayList<Player>(), new ArrayList<Coach>(), new ArrayList< TeamManager>(), new Court("courtName", "courtCity"),1000.0);
             Assert.fail("Should throw NullPointerException");
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NotFoundException);
-            Assert.assertEquals("Subscriber not found", e.getMessage());
+            Assert.assertEquals("subscriber not found", e.getMessage());
         }
     }
 
     @Test
     public void testsCreateNewTeamTeamAlreadyExists() {
         try {
-            teamController.createTeam("Team");
+            teamDb.createTeam("Team");
             String ownerEmail = "owner@gmail.com";
             TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-            teamOwnerController.createTeamOwner(teamOwner);
+            teamOwnerDb.createTeamOwner(teamOwner);
             RoleDbInMemory.getInstance().createRoleInSystem(ownerEmail,RoleType.TEAM_OWNER);
             SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -3740,10 +3760,9 @@ public void testsCreateNewTeamInvalidInputs() {
     public void testsCreateNewTeamTeamOwnerHasTeam() throws Exception {
         try{
             String teamName = "Team";
-            teamController.createTeam(teamName);
-            String ownerEmail = "owner@gmail.com";
+            teamDb.createTeam(teamName);String ownerEmail = "owner@gmail.com";
             TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
-            teamOwnerController.createTeamOwner(teamOwner);
+            teamOwnerDb.createTeamOwner(teamOwner);
             RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
             SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);            teamController.createNewTeam("newTeam", "owner@gmail.com", new ArrayList<Player>(), new ArrayList<Coach>(),new ArrayList<TeamManager>(),new Court("courtName","courtCity"),1000.0);
         Assert.fail("Should throw Exception");
@@ -3757,7 +3776,7 @@ public void testsCreateNewTeamInvalidInputs() {
         String teamName = "Team";
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
         teamController.createNewTeam(teamName, ownerEmail, new ArrayList<Player>(), new ArrayList<Coach>(),new ArrayList<TeamManager>(),new Court("courtName","courtCity"),1000.0);
@@ -3770,7 +3789,7 @@ public void testsCreateNewTeamInvalidInputs() {
         String teamName = "Team";
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);        ArrayList<Player> players = new ArrayList<>();
         players.add(new Player("email1@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
@@ -3789,7 +3808,7 @@ public void testsCreateNewTeamInvalidInputs() {
         String teamName = "Team";
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);        ArrayList<Coach> coaches = new ArrayList<>();
         coaches.add(new Coach("email1@gmail.com", 1, "first", "last",CoachRole.MAJOR,QualificationCoach.UEFA_A));
@@ -3808,7 +3827,7 @@ public void testsCreateNewTeamInvalidInputs() {
         String teamName = "Team";
         String ownerMail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerMail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -3836,7 +3855,7 @@ public void testsCreateNewTeamInvalidInputs() {
 
         String ownerMail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerMail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -3857,7 +3876,7 @@ public void testsCreateNewTeamInvalidInputs() {
         CourtDbInMemory.getInstance().createCourt(court);
 
         TeamOwner teamOwner = new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-        teamOwnerController.createTeamOwner(teamOwner);
+        teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerMail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
 
@@ -3902,7 +3921,373 @@ public void testsCreateNewTeamInvalidInputs() {
         Assert.assertEquals(teamName,team.getTeamPage().getPageID());
     }
 
+//////////////////////////////// updateCoach ////////////////////////////////////////
 
+    @Test
+    public void testUpdateCoachInvalidInputs() {
+        try {
+            String teamName = "Exists";
+            teamDb.createTeam(teamName);
+            Date birthDate = new Date();
+            teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com" ,"1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+            RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
+            teamController.updateCoachDetails(teamName,"owner@gmail.com", "email@gmail.com", null, "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void testUpdateCoachExistsCoachChangeDetails() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);Date birthDate = new Date();
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        teamController.updateCoachDetails(teamName,"owner@gmail.com", "email@gmail.com", "changePlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        Team team = teamController.getTeam(teamName);
+        Map<String, Coach> coaches = team.getCoaches();
+        Coach coach = coaches.get("email@gmail.com");
+        Assert.assertEquals("changePlayer", coach.getFirstName());
+    }
+    @Test
+    public void testUpdateCoachOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+        teamDb.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerDb.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+
+        try {
+            teamController.updateCoachDetails(teamName,withoutPermissionsOwnerEmail, "email@gmail.com", "changePlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateCoachNotExistsChangeDetails() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        try {
+            teamController.updateCoachDetails(teamName,ownerEmail, "NotExists@gmail.com", "changePlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            Assert.fail("Should throw NotFoundException");
+        } catch (Exception e) {
+//                Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("Coach not associated with teamOwner's team", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateCoachTeamOwnerNotExists() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);Date birthDate = new Date();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer",CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        try {
+            teamController.updateCoachDetails(teamName, "emailNotExists@gmail.com","email@gmail.com", "changePlayer", "lastPlayer",  CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            Assert.fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+//                Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("subscriber not found", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateCoachTeamOwnerExistsWithDifferentTeam() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);
+        teamDb.createTeam("Other");
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        String otherOwnerEmail = "otherOwner@gmail.com";
+        TeamOwner otherTeamOwner = new TeamOwner(otherOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
+        teamOwnerDb.createTeamOwner(otherTeamOwner);
+        RoleDbInMemory.getInstance().createRole(otherOwnerEmail,"Other",RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(otherTeamOwner);
+
+        teamController.addCoach("Other", otherOwnerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer",CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        try {
+            teamController.updateCoachDetails(teamName,ownerEmail, "email@gmail.com", "firstPlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+            Assert.fail("Should throw NotFoundException");
+        } catch (Exception e) {
+//                Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("Coach not associated with teamOwner's team", e.getMessage());
+        }
+    }
+
+    ////////////////////////////////// updateCourt //////////////////////////////////////
+
+    @Test
+    public void testUpdateCourtInvalidInputs() {
+        try {
+            String teamName = "Exists";
+            teamDb.createTeam(teamName);
+            Date birthDate = new Date();
+            teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com" ,"1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+            RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
+            teamController.updateCourtDetails(teamName,"owner@gmail.com", null, "courtCity");
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void testUpdateCourtExistsCourtChangeDetails() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);Date birthDate = new Date();
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        teamController.addCourt(teamName, ownerEmail, "courtName","cityName");
+        teamController.updateCourtDetails(teamName,"owner@gmail.com", "courtName", "courtCity");
+        Team team = teamController.getTeam(teamName);
+        Court court = team.getCourt();
+        Assert.assertEquals("courtCity", court.getCourtCity());
+    }
+    @Test
+    public void testUpdateCourtOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+        teamDb.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerDb.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+
+        try {
+            teamController.updateCourtDetails(teamName,withoutPermissionsOwnerEmail, "courtName", "courtCity");
+
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateCourtNotExistsChangeDetails() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        try {
+            teamController.updateCourtDetails(teamName,ownerEmail, "NotExists", "courtCity");
+            Assert.fail("Should throw NotFoundException");
+        } catch (Exception e) {
+//                Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("Court not associated with teamOwner's team", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateCourtTeamOwnerNotExists() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);Date birthDate = new Date();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.addCourt(teamName, ownerEmail, "courtName","cityName");
+
+        try {
+            teamController.updateCourtDetails(teamName,"emailNotExists@gmail.com", "courtName", "courtCity");
+            Assert.fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+//                Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("subscriber not found", e.getMessage());
+        }
+    }
+//////////////////////////////// updateTeamManager ////////////////////////////////////////
+
+    @Test
+    public void testUpdateTeamManagerInvalidInputs() {
+        try {
+            String teamName = "Exists";
+            teamDb.createTeam(teamName);
+            Date birthDate = new Date();
+            teamOwnerDb.createTeamOwner(new TeamOwner("owner@gmail.com" ,"1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName)));
+            RoleDbInMemory.getInstance().createRoleInSystem("owner@gmail.com",RoleType.TEAM_OWNER);
+            teamController.updateTeamManagerDetails(teamName,"owner@gmail.com", "email@gmail.com", null, "lastPlayer",new ArrayList<>());
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void testUpdateTeamManagerExistsTeamManagerChangeDetails() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail, teamName, RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        List<PermissionType> permissionTypes = new ArrayList<>();
+        permissionTypes.add(PermissionType.ADD_FINANCIAL);
+        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstPlayer", "lastPlayer", new ArrayList<>(),ownerEmail);
+        teamManagerDb.getTeamManager("email@gmail.com").setPermissionTypes(permissionTypes);
+
+
+        List<PermissionType> permissionTypesToChange = new ArrayList<>();
+        permissionTypesToChange.add(PermissionType.ADD_FINANCIAL);
+        permissionTypesToChange.add(PermissionType.REMOVE_COURT);
+        teamController.updateTeamManagerDetails(teamName, "owner@gmail.com", "email@gmail.com", "changePlayer", "lastPlayer", permissionTypesToChange);
+        Team team = teamController.getTeam(teamName);
+        Map<String, TeamManager> teamManagers = team.getTeamManagers();
+        TeamManager teamManager = teamManagers.get("email@gmail.com");
+        Assert.assertEquals("changePlayer", teamManager.getFirstName());
+        Assert.assertTrue(teamManager.getPermissionTypes().contains(PermissionType.ADD_FINANCIAL));
+        Assert.assertTrue(teamManager.getPermissionTypes().contains(PermissionType.REMOVE_COURT));
+    }
+
+    @Test
+    public void testUpdateTeamManagerOwnerWithoutPermissions() throws Exception {
+        String teamName = "Exists";
+        Date birthDate = new Date();
+        teamDb.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+        Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(),PlayerRole.GOALKEEPER);
+        playerDb.createPlayer(withoutPermissionsOwner);
+        RoleDbInMemory.getInstance().createRole(withoutPermissionsOwnerEmail,teamName,RoleType.PLAYER);
+        SubscriberDbInMemory.getInstance().createSubscriber(withoutPermissionsOwner);
+
+        try {
+            teamController.updateTeamManagerDetails(teamName, withoutPermissionsOwnerEmail, "email@gmail.com", "firstName", "lastName", new ArrayList<>());
+
+            Assert.fail("Should throw Exception");
+        } catch (Exception e) {
+            Assert.assertEquals("This user hasn't Permissions for this operation", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateTeamManagerNotExistsChangeDetails() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer",new ArrayList<>(),ownerEmail);
+        try {
+            teamController.updateTeamManagerDetails(teamName, ownerEmail, "NotExists@gmail.com", "firstName", "lastName", new ArrayList<>());
+
+            Assert.fail("Should throw NotFoundException");
+        } catch (Exception e) {
+//                Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("TeamManager not associated with teamOwner's team", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdatTeamManagerTeamOwnerNotExists() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);Date birthDate = new Date();
+
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        teamController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer",new ArrayList<>(),ownerEmail);
+        try {
+            teamController.updateTeamManagerDetails(teamName, "emailNotExists@gmail.com", "email@gmail.com", "firstName", "lastName", new ArrayList<>());
+        } catch (NotFoundException e) {
+//                Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("subscriber not found", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateTeamManagerTeamOwnerExistsWithDifferentTeam() throws Exception {
+        String teamName = "Exists";
+        teamDb.createTeam(teamName);
+        teamDb.createTeam("Other");
+        String ownerEmail = "owner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));
+        teamOwnerDb.createTeamOwner(teamOwner);
+        RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+
+        String otherOwnerEmail = "otherOwner@gmail.com";
+        TeamOwner otherTeamOwner = new TeamOwner(otherOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam("Other"));
+        teamOwnerDb.createTeamOwner(otherTeamOwner);
+        RoleDbInMemory.getInstance().createRole(otherOwnerEmail,"Other",RoleType.TEAM_OWNER);
+        SubscriberDbInMemory.getInstance().createSubscriber(otherTeamOwner);
+
+        teamController.addTeamManager("Other","email@gmail.com", 1, "firstPlayer", "lastPlayer",new ArrayList<>(),otherOwnerEmail);
+        try {
+            teamController.updateTeamManagerDetails(teamName, ownerEmail, "email@gmail.com", "firstName", "lastName", new ArrayList<>());
+
+            Assert.fail("Should throw NotFoundException");
+        } catch (Exception e) {
+//                Assert.assertTrue(e instanceof NotFoundException);
+            Assert.assertEquals("TeamManager not associated with teamOwner's team", e.getMessage());
+        }
+    }
 
 }
 

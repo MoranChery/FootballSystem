@@ -28,10 +28,6 @@ public interface JudgeDb extends Db
      * @throws Exception-if details are incorrect.
      */
     void removeJudge(String judgeEmailAddress) throws Exception;
-
-    void wantToEditPassword(String judgeMail, String newPassword) throws Exception;
-    void wantToEditFirstName(String judgeMail, String newFirstName) throws Exception;
-    void wantToEditLastName(String judgeMail, String newLastName) throws Exception;
     void wantToEditQualification(String judgeMail, String newQualification) throws Exception;
 
     /**

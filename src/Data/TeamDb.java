@@ -1,6 +1,7 @@
 package Data;
 
 import Model.Court;
+import Model.Enums.PermissionType;
 import Model.Enums.TeamStatus;
 import Model.FinancialActivity;
 import Model.Team;
@@ -9,12 +10,14 @@ import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 
+import java.util.List;
+
 public interface TeamDb extends Db {
     void createTeam(String teamName) throws Exception;
 
     void addPlayer(String teamName, Player player) throws Exception;
 
-    void addTeamManager(String teamName, TeamManager player, String ownedByEmail) throws Exception;
+    void addTeamManager(String teamName, TeamManager teamManager, List<PermissionType> permissionTypes, String ownedByEmail) throws Exception;
 
     Team getTeam(String teamName) throws Exception;
     

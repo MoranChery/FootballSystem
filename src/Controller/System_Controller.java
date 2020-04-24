@@ -1,39 +1,40 @@
 package Controller;
 
-import Model.System;
-import Model.UsersTypes.SystemAdministrator;
+import Data.LeagueDbInMemory;
 
-import java.util.ArrayList;
-import java.util.List;
+import Data.RoleDb;
+import Data.SubscriberDb;
+import Data.SystemAdministratorDb;
+import Model.Enums.RoleType;
+import Model.LogFunctionality;
+import Model.UsersTypes.SystemAdministrator;
 
 public class System_Controller {
 
-    static CoachController coachController;
-    static FanController fanController;
-    static JudgeController judgeController;
-    static PlayerController playerController;
-    static RepresentativeAssociationController representativeAssociationController;
-    static SubscriberController subscriberController;
-    static TeamController teamController;
-    static TeamManagerController teamManagerController;
-    static TeamOwnerController teamOwnerController;
-    static SystemAdministrator systemAdministrator;
+    private static SubscriberController subscriberController;
+    private static LeagueDbInMemory leagueDbInMemory;
+    private static SystemAdministratorDb systemAdministratorDb;
+    private LogFunctionality log;
+    private static boolean isInitialize = false;
+    private static System_Controller ourInstance;
+    private static SubscriberDb subscriberDb;
+    private static RoleDb roleDb;
 
-    private static boolean isInitialize= false;
-    private System system;
+    private System_Controller() { }
 
-    public static boolean isIsInitialize() {
+    /**
+     * if we want to know if the system initialized
+     * @return is the system initialized- return true, else- false
+     */
+    public static boolean isTheSystemInitialize() {
         return isInitialize;
     }
 
-    private static List<SystemAdministrator> systemAdministrators;
-    private static System_Controller ourInstance= new System_Controller();
-
-    private System_Controller() {
-        system = System.getInstance();
-        systemAdministrators = system.getAllSystemAdministrators();
-    }
-
+    /**
+     * get the System Controller
+     * @return System_Controller
+     * @throws Exception - if the system were not initialized
+     */
     public static System_Controller getInstance() throws Exception {
         if(isInitialize){
             return ourInstance;
@@ -47,26 +48,10 @@ public class System_Controller {
      * When the user presses the system reboot for the first time, we use this method
      * @throws Exception - Something went wrong with this method
      */
-    public static void startInitializeTheSystem() throws Exception {
-        try {
-            if (connectionToExternalSystems()) {
-            } else {
-                throw new Exception("Something got wrong- function: startInitializeTheSystem in System_Controller");
-            }
-        }
-        catch (Exception e){
-            throw new Exception("The system must be rebooted first");
-        }
-
+    public static void startInitializeTheSystem(Object AccountingSystem, Object TaxLawSystem ) throws Exception {
+        connectionToExternalSystems(AccountingSystem, TaxLawSystem);
     }
 
-    /**
-     * This method will show the user the home screen
-     */
-    //todo
-    public void displayHomeScreen() {
-
-    }
 
     /**
      *When the user clicks the submit button
@@ -74,68 +59,61 @@ public class System_Controller {
      * @param allDetails - All parameters on the administrator
      * @throws Exception - If the registry could not be made from any error, this error will cause an appropriate message
      */
-    public static void initialAdministratorRegistration(String[] allDetails) throws Exception {
-        if(allDetails!=null && allDetails.length == 5) {
-            boolean[] isDetailsCorrect = checkDetails(allDetails);
-            boolean isProblem = false;
-            for (int i = 0; i < isDetailsCorrect.length; i++) {
-                if (!isDetailsCorrect[i]) {
-                    isProblem = true;
-                    break;
+    public static void addSystemAdministrator(String[] allDetails) throws Exception {
+        try {
+            if (allDetails != null && allDetails.length == 5) {
+                boolean[] isDetailsCorrect = checkDetails(allDetails);
+                boolean isProblem = false;
+                for (boolean b : isDetailsCorrect) {
+                    if (!b) {
+                        isProblem = true;
+                        break;
+                    }
+                }
+                if (!isProblem) {
+                    String emailAddress = allDetails[0];
+                    String password = allDetails[1];
+                    Integer id = Integer.parseInt(allDetails[2]);
+                    String firstName = allDetails[3];
+                    String lastName = allDetails[4];
+                    SystemAdministrator systemAdministrator = new SystemAdministrator(emailAddress, password, id, firstName, lastName);
+                    systemAdministratorDb = Data.SystemAdministratorDbInMemory.getInstance();
+                    systemAdministratorDb.createSystemAdministrator(systemAdministrator);
+                    subscriberDb= Data.SubscriberDbInMemory.getInstance();
+                    subscriberDb.createSubscriber(systemAdministrator);
+                    roleDb = Data.RoleDbInMemory.getInstance();
+                    roleDb.createRoleInSystem( emailAddress, RoleType.SYSTEM_ADMINISTRATOR);
+                    leagueDbInMemory = LeagueDbInMemory.getInstance();
+                    ourInstance = new System_Controller();
+                    isInitialize = true;
+                } else {
+                    throw new Exception("Problem-initialAdministratorRegistration");
                 }
             }
-            if (!isProblem) {
-                String username= allDetails[0];
-                String password= allDetails[1];
-                Integer id= Integer.parseInt(allDetails[2]);
-                String firstName= allDetails[3];
-                String lastName= allDetails[4];
-                //todo- Change - used the function from controller of systemManagerController
-                SystemAdministrator systemAdministrator= new SystemAdministrator(username, password,id, firstName, lastName);
-                systemAdministrators.add(systemAdministrator);
-                //systemAdministrator = new SystemAdministrator(systemAdministrator);
-                //todo
-                coachController = new CoachController();
-                fanController= new FanController();
-                judgeController = new JudgeController();
-                playerController= new PlayerController();
-                representativeAssociationController= new RepresentativeAssociationController();
-                subscriberController= new SubscriberController();
-                teamController= new TeamController();
-                teamManagerController= new TeamManagerController();
-                teamOwnerController= new TeamOwnerController();
-                isInitialize = true;
-            } else {
-                ArrayList whereIsDetailsProblem= problemWithTheDetails(isDetailsCorrect);
-                ShowAgainAdminRegistrationForm(whereIsDetailsProblem);
+            else {
+                throw new Exception("Problem-initialAdministratorRegistration");
             }
+        }
+        catch (Exception e){
+            throw new Exception("Problem-initialAdministratorRegistration");
         }
 
     }
 
-    private static void ShowAgainAdminRegistrationForm(ArrayList<Integer> whereIsDetailsProblem) {
-
-        //todo
-    }
-
-    private static ArrayList problemWithTheDetails(boolean[] isDetailsCorrect) throws Exception {
-        if(isDetailsCorrect!=null) {
-            ArrayList<Integer> whereIsDetailsProblem = new ArrayList<>();
-            for (int i= 0; i<isDetailsCorrect.length ; i++) {
-                if(!isDetailsCorrect[i]){
-                    whereIsDetailsProblem.add(i);
-                }
-            }
-            return whereIsDetailsProblem;
+    /**
+     * This method creates the log file
+     * @param path - The path where to save the log file
+     */
+    public void createLog(String path) throws Exception {
+        if(path!=null && path.length()>0){
+            this.log = new LogFunctionality(path);
         }
         else {
-            throw new Exception("Something got wrong- function: problemWithTheDetails in System_Controller");
-
+            throw new Exception("Cant create log");
         }
     }
 
-    private static boolean[] checkDetails(String[] allDetails) throws Exception {
-        if(allDetails!=null && allDetails.length==5){
+    private static boolean[] checkDetails(String[] allDetails){
             boolean[] isCorrect= new boolean[allDetails.length];
             for (int i = 0 ; i<allDetails.length ; i++){
                 if(i!=2){
@@ -151,45 +129,37 @@ public class System_Controller {
                 }
             }
             return isCorrect;
-        }
-        else{
-            throw new Exception("Something got wrong- function: checkDetails in System_Controller");
-        }
     }
 
-    private static boolean connectionToExternalSystems() throws Exception {
-        if(!logInToTheAccountingSystem()){
+    private static boolean connectionToExternalSystems(Object AccountingSystem, Object TaxLawSystem ) throws Exception {
+        if(!logInToTheAccountingSystem(AccountingSystem)){
             throw new Exception("problem in login accounting system");
         }
-        if(!logInToTheTaxLawSystem()){
+        if(!logInToTheTaxLawSystem(TaxLawSystem)){
             throw new Exception("problem in login tax law system");
         }
         return true;
     }
 
-    //todo
-    private static boolean logInToTheTaxLawSystem() {
-        return true;
-    }
-
-    //todo
-    private static boolean logInToTheAccountingSystem() {
-        return true;
-    }
-
-    /**
-     * This method creates the log file
-     * @param path - The path where to save the log file
-     */
-    public void createLog(String path) {
-        system.creteLog(path);
+    private static boolean logInToTheTaxLawSystem(Object o){
+        if(o!=null) {
+            //todo
+            return true;
+        }
+        else {
+            return false;
+        }
 
     }
 
-    public static void main(String[] args){
-
+    private static boolean logInToTheAccountingSystem(Object o) {
+        if(o!=null) {
+            //todo
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-
-
 
 }

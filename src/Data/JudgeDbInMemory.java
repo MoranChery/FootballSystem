@@ -30,6 +30,9 @@ public class JudgeDbInMemory implements JudgeDb
     @Override
     public void createJudge(Judge judge) throws Exception
     {
+        if (judge == null){
+            throw new NullPointerException("Can't create this judge");
+        }
         if(allJudgesMap.containsKey(judge.getEmailAddress()))
         {
             throw new Exception("Judge already exists in the system");
@@ -43,17 +46,21 @@ public class JudgeDbInMemory implements JudgeDb
      * "pull" Judge from DB.
      *
      * @param judgeEmailAddress-emailAddress of the Judge.
-     * @return the Judge.
+     * @return Judge - the instance of the judge in the db
      * @throws Exception-if details are incorrect.
      */
     @Override
     public Judge getJudge(String judgeEmailAddress) throws Exception
     {
+        Judge judge = allJudgesMap.get(judgeEmailAddress);
+        if(judge == null){
+            throw new NullPointerException("Judge not found");
+        }
         if (!allJudgesMap.containsKey(judgeEmailAddress))
         {
             throw new Exception("Judge not found");
         }
-        return allJudgesMap.get(judgeEmailAddress);
+        return judge;
     }
 
     /**
@@ -72,51 +79,6 @@ public class JudgeDbInMemory implements JudgeDb
             throw new Exception("Judge not found");
         }
         allJudgesMap.remove(judgeEmailAddress);
-    }
-
-    @Override
-    public void wantToEditPassword(String judgeMail, String newPassword) throws Exception {
-        if(judgeMail == null || newPassword == null){
-            throw new Exception("Something went wrong in editing judge the password");
-        }
-        Judge theJudge = allJudgesMap.get(judgeMail);
-        if(theJudge == null){
-            throw new NotFoundException("Couldn't get this judge");
-        }
-        if(theJudge.getPassword().equals(newPassword)){
-            throw new Exception("You are already using this password");
-        }
-        theJudge.setPassword(newPassword);
-    }
-
-    @Override
-    public void wantToEditFirstName(String judgeMail, String newFirstName) throws Exception {
-        if(judgeMail == null || newFirstName == null){
-            throw new Exception("Something went wrong in editing judge's first name");
-        }
-        Judge theJudge = allJudgesMap.get(judgeMail);
-        if(theJudge == null){
-            throw new NotFoundException("Couldn't get this judge");
-        }
-        if(theJudge.getFirstName().equals(newFirstName)){
-            throw new Exception("You are already using this name as first name");
-        }
-        theJudge.setFirstName(newFirstName);
-    }
-
-    @Override
-    public void wantToEditLastName(String judgeMail, String newLastName) throws Exception {
-        if(judgeMail == null || newLastName == null){
-            throw new Exception("Something went wrong in editing judge's last name");
-        }
-        Judge theJudge = allJudgesMap.get(judgeMail);
-        if(theJudge == null){
-            throw new NotFoundException("Couldn't get this judge");
-        }
-        if(theJudge.getLastName().equals(newLastName)){
-            throw new Exception("You are already using this name as last name");
-        }
-        theJudge.setLastName(newLastName);
     }
 
     @Override
@@ -163,7 +125,7 @@ public class JudgeDbInMemory implements JudgeDb
     @Override
     public void addGameToTheJudge(String judgeMail, Game gameToAdd) throws Exception {
         if(judgeMail.isEmpty() || judgeMail == null || gameToAdd == null){
-            throw new Exception("One or more of the inputs wrong");
+            throw new NullPointerException("One or more of the inputs wrong");
         }
         Judge theJudge = allJudgesMap.get(judgeMail);
         if(theJudge == null){

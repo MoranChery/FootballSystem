@@ -18,4 +18,6 @@ public interface TeamManagerDb extends Db {
     void removeSubscriptionTeamManager(String managerToRemoveEmail) throws Exception;
 
     List<String> getAllTeamManagersOwnedBy(String ownerToRemove);
+
+    void updateTeamManagerDetails(String teamManagerEmailAddress, String firstName, String lastName, List<PermissionType> permissionTypes) throws NotFoundException;
 }
