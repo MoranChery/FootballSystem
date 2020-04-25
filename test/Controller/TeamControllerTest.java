@@ -4,9 +4,9 @@ import Data.*;
 import Model.Court;
 import Model.Enums.*;
 import Model.FinancialActivity;
+import Model.Role;
 import Model.Team;
 import Model.UsersTypes.*;
-import Service.TeamService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -785,7 +785,8 @@ String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";Player with
     @Test
     public void testAddTeamManagerExistSubscriberWithTeamOwnerAndSameTeam() throws Exception {
         String teamName = "Exists";
-         teamDb.createTeam(teamName);RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
+         teamDb.createTeam(teamName);
+         RoleDbInMemory roleDbInMemory = RoleDbInMemory.getInstance();
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamController.getTeam(teamName));

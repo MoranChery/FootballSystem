@@ -1,6 +1,7 @@
 package Data;
 
 import Model.Enums.RoleType;
+import Model.Role;
 
 import java.util.List;
 

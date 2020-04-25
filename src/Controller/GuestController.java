@@ -34,7 +34,7 @@ public class GuestController {
         systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
         representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
         pageDb = PageDbInMemory.getInstance();
-        teamDb=TeamDbInMemory.getInstance();
+        teamDb =TeamDbInMemory.getInstance();
     }
 
     //todo: call use case 2.2 from UI

@@ -1,11 +1,8 @@
 package Service;
 
 import Data.*;
+import Model.*;
 import Model.Enums.*;
-import Model.JudgeSeasonLeague;
-import Model.League;
-import Model.Season;
-import Model.SeasonLeague;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.RepresentativeAssociation;
 import Model.UsersTypes.Subscriber;
