@@ -1,6 +1,7 @@
 package Controller;
 
 import Data.*;
+import Model.Enums.PermissionType;
 import Model.Enums.RoleType;
 import Model.Enums.TeamStatus;
 import Model.Game;
@@ -8,7 +9,9 @@ import Model.Page;
 import Model.Team;
 import Model.UsersTypes.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SystemAdministratorController {
     private TeamDb teamDb;
@@ -26,7 +29,7 @@ public class SystemAdministratorController {
     private RoleDb roleDb;
     private SystemAdministratorDb systemAdministratorDb;
     private RepresentativeAssociationDb representativeAssociationDb;
-
+    private PermissionsDb permissionDb;
 
     public SystemAdministratorController() {
         teamDb = TeamDbInMemory.getInstance();
@@ -44,6 +47,7 @@ public class SystemAdministratorController {
         roleDb= RoleDbInMemory.getInstance();
         systemAdministratorDb=SystemAdministratorDbInMemory.getInstance();
         representativeAssociationDb=RepresentativeAssociationDbInMemory.getInstance();
+        permissionDb = PermissionDbInMemory.getInstance();
     }
 
     //use case 8.1
@@ -52,6 +56,7 @@ public class SystemAdministratorController {
      * @param teamName that the system administrator want to close for ever
      */
     public void closeTeamForEver(String teamName) throws Exception {
+        //todo delete all the connections between the team and what it connect to
         Team teamToClose = teamDb.getTeam(teamName);
         teamToClose.setTeamStatus(TeamStatus.CLOSE);
         //todo: send alert to the team owners and to the team managers
@@ -63,13 +68,16 @@ public class SystemAdministratorController {
     //use case 8.2
 
     /**
-     * @param email of the subscriber that the system administrator want to remove
+     *
+     * @param emailToRemove of the subscriber that the system administrator want to remove
+     * @param emailOfSA email of the system administrator
+     * @throws Exception
      */
-    public void removeSubscriber(String email) throws Exception {
-        if(email==null){
+    public void removeSubscriber(String emailToRemove,String emailOfSA) throws Exception {
+        if(emailToRemove==null || emailOfSA==null || !checkPermissionOfSystemAdministrator( emailOfSA)){
             throw new Exception("null email");
         }
-            Subscriber subscriberToRemove = subscriberDb.getSubscriber(email);
+            Subscriber subscriberToRemove = subscriberDb.getSubscriber(emailToRemove);
             //remove the subscriber from subscriberDB
             subscriberDb.removeSubscriberFromDB(subscriberToRemove);
 
@@ -97,7 +105,7 @@ public class SystemAdministratorController {
             if(subscriberToRemove instanceof SystemAdministrator){
                 removeSystemAdministrator(subscriberToRemove);
             }
-            System.out.println("the chosen subscriber with the Email " + email + " deleted successfully :)");
+            System.out.println("the chosen subscriber with the Email " + emailToRemove + " deleted successfully :)");
     }
 
     /**
@@ -143,9 +151,11 @@ public class SystemAdministratorController {
         //casting
         Fan fan = (Fan) subscriberToRemove;
         //remove the fan from personalPages that he followed after
-        for (String pageID : fan.getMyPages()) {
-            Page page = pageDb.getPage(pageID);
-            page.getFansFollowingThisPage().remove(fan);
+        Set set= fan.getMyPages();
+        for (Object pageID : set) {
+            Page pageString=(Page)pageID;
+//            Page page = pageDb.getPage(pageString);
+            pageString.getFansFollowingThisPage().remove(fan);
         }
         //remove fan from fanDB
         fanDb.removeFan(fan);
@@ -167,17 +177,25 @@ public class SystemAdministratorController {
             throw new Exception();
         }
         //casting
-        TeamOwner teamOwner = (TeamOwner) subscriberToRemove;
+        TeamOwner teamOwnerToRemove = (TeamOwner) subscriberToRemove;
+        Team team =teamOwnerToRemove.getTeam();
+        checkTeamStatusIsActive(team);
         //remove all the teamOwner's subscribers
-        for (TeamOwner owner : teamOwner.getTeamOwnersByThis().values()) {
+        for (TeamOwner owner : teamOwnerToRemove.getTeamOwnersByThis().values()) {
             removeTeamOwner(owner);
         }
+        //remove all the teamManager's subscribers
+        List<String> allTeamManagersOwnedBy = teamManagerDb.getAllTeamManagersOwnedBy(teamOwnerToRemove.getEmailAddress());
+        for (String emailToRemove: allTeamManagersOwnedBy) {
+            teamManagerDb.removeSubscriptionTeamManager(emailToRemove);
+            roleDb.removeRole(emailToRemove,RoleType.TEAM_MANAGER);
+        }
         //remove teamOwner from teamOwnerDb
-        teamOwnerDb.removeSubscriptionTeamOwner(teamOwner.getEmailAddress());
+        teamOwnerDb.removeSubscriptionTeamOwner(teamOwnerToRemove.getEmailAddress());
         //remove teamOwner from roleDB
-        roleDb.removeRole(teamOwner.getEmailAddress(), RoleType.TEAM_OWNER);
+        roleDb.removeRole(teamOwnerToRemove.getEmailAddress(), RoleType.TEAM_OWNER);
         try {
-            subscriberDb.removeSubscriberFromDB(teamOwner);
+            subscriberDb.removeSubscriberFromDB(teamOwnerToRemove);
         } catch (Exception e) {
         }
     }
@@ -189,15 +207,19 @@ public class SystemAdministratorController {
     private void removeCoach(Subscriber subscriberToRemove) throws Exception {
         //casting
         Coach coach = (Coach) subscriberToRemove;
+        checkTeamStatusIsActive(coach.getTeam());
         //remove the personalPage from its followers
         Page coachPage = coach.getCoachPage();
         for (String fanEmail : coachPage.getFansFollowingThisPage().keySet()) {
             fanDb.getFan(fanEmail).getMyPages().remove(coachPage);
         }
+        if(coach.getTeam()!=null){
+            teamDb.removeCoach(coach.getTeam().getTeamName(), coach.getEmailAddress());
+            //remove the coach from his team
+            coach.getTeam().getCoaches().remove(coach);
+        }
         //remove the personal page of the coach from PersonalPageDb
         pageDb.removePersonalPageFromDb(coachPage.getPageID());
-        //remove the coach from his team
-        coach.getTeam().getCoaches().remove(coach);
         //remove the coach from the coachDB
         coachDb.removeCoach(coach);
         //remove coach from roleDB
@@ -236,6 +258,7 @@ public class SystemAdministratorController {
     private void removePlayer(Subscriber subscriberToRemove) throws Exception {
         //casting
         Player player = (Player) subscriberToRemove;
+        checkTeamStatusIsActive(player.getTeam());
         //remove the personalPage from its followers
         Page playerPage = player.getPlayerPage();
         for (String fanEmail : playerPage.getFansFollowingThisPage().keySet()) {
@@ -244,7 +267,7 @@ public class SystemAdministratorController {
         //remove the personal page of the player from PersonalPageDb
         pageDb.removePersonalPageFromDb(player.getPlayerPage().getPageID());
         //remove the player from his team
-        player.getTeam().getPlayers().remove(player.getId());
+        teamDb.removePlayer(player.getTeam().getTeamName(), player.getEmailAddress());
         //remove the player from the playerDB
         playerDb.removePlayerFromDb(player);
         //remove player from roleDB
@@ -252,18 +275,53 @@ public class SystemAdministratorController {
     }
 
     /**
-     * @param subscriberToRemove that is als teamManager
-     * @throws Exception if the teamManager is already removed from teamManagerDB
+     *
+     * @param subscriber (team manager) to remove
+     * @throws Exception
      */
-    private void removeTeamManager(Subscriber subscriberToRemove) throws Exception {
-        //casting
-        TeamManager teamManager = (TeamManager) subscriberToRemove;
-        //remove teamManager from his team
-        teamManager.getTeam().getTeamManagers().remove(teamManager.getOwnedByEmail());
-        //remove the teamManager from teamManagerDB
-        teamManagerDb.removeSubscriptionTeamManager(teamManager.getOwnedByEmail());
-        //remove teamManager from roleDB
-        roleDb.removeRole(teamManager.getEmailAddress(), RoleType.TEAM_MANAGER);
+    private void removeTeamManager(Subscriber subscriber) throws Exception {
+        TeamManager teamManagerToRemove=(TeamManager)subscriber;
+        Team team = teamManagerToRemove.getTeam();
+        checkTeamStatusIsActive(team);
+        teamDb.removeTeamManager(team.getTeamName(),teamManagerToRemove.getEmailAddress());
+        roleDb.removeRoleFromTeam(teamManagerToRemove.getEmailAddress(),team.getTeamName(), RoleType.TEAM_MANAGER);
     }
 
+    /**
+     * in case that the status is INACTIVE, will not can do any functions
+     * @param team
+     * @throws Exception
+     */
+    private void checkTeamStatusIsActive(Team team) throws Exception {
+        if(TeamStatus.INACTIVE.equals(team.getTeamStatus())){
+            throw new Exception("This Team's status - Inactive");
+        }
+    }
+
+    /**
+     * Check if the online Subscriber has RoleType of SystemAdministrator
+     * If yes, he allowed to use SystemAdministrator functions-return TRUE.
+     * Else (no), he doesn't allow to use SystemAdministrator functions-return FALSE.
+     * @param systemAdministratorEmailAddress-username/emailAddress of the online SystemAdministrator.
+     * @return if the online Subscriber has RoleType of SystemAdministrator.
+     * @throws Exception
+     */
+    private boolean checkPermissionOfSystemAdministrator(String systemAdministratorEmailAddress) throws Exception
+    {
+        if(systemAdministratorEmailAddress != null)
+        {
+            List<Role> subscriberRoleList = roleDb.getRoles(systemAdministratorEmailAddress);
+            if(subscriberRoleList.size() > 0)
+            {
+                for (Role role : subscriberRoleList)
+                {
+                    if (role.getRoleType().equals(RoleType.SYSTEM_ADMINISTRATOR))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

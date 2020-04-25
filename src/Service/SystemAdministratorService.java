@@ -19,11 +19,11 @@ public class SystemAdministratorService {
         }
     }
 
-    public void removeSubscriber(String email) throws Exception {
+    public void removeSubscriber(String emailToRemove,String emailOfSystemManager) throws Exception {
         try {
-            systemAdministratorController.removeSubscriber(email);
+            systemAdministratorController.removeSubscriber(emailToRemove,emailOfSystemManager);
         } catch (Exception e) {
-            throw new Exception("the subscriber with the Email " + email + " doesn't in the system!");
+            throw new Exception("the subscriber with the Email " + emailToRemove + "or the Email "+emailOfSystemManager+" doesn't in the system!");
         }
     }
 

@@ -1,5 +1,6 @@
 package Service;
 
+import Controller.GuestController;
 import Data.*;
 import Model.Enums.RoleType;
 import Model.Team;
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class SystemAdministratorServiceTest {
     private SystemAdministratorService systemAdministratorService=new SystemAdministratorService();
+    GuestController guestController=new GuestController();
 
     @Before
     public void init()
@@ -40,6 +42,11 @@ public class SystemAdministratorServiceTest {
         for (Db db : dbs)
         {
             db.deleteAll();
+        }
+        try {
+            guestController.registerSystemAdministrator("noy@gmail.com","ae646",123456789,"noy","harary");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -73,11 +80,27 @@ public class SystemAdministratorServiceTest {
     }
 
     @Test
+    public void removeNullSubscriberAndNullAdmin(){
+        try {
+            systemAdministratorService.removeSubscriber(null,null);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+    }
+    @Test
+    public void removeSubscriberWithNullAdmin(){
+        try {
+            systemAdministratorService.removeSubscriber("hila",null);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+    }
+    @Test
     public void removeNullSubscriber(){
         try {
-            systemAdministratorService.removeSubscriber(null);
+            systemAdministratorService.removeSubscriber(null,"hila");
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(),"the subscriber with the Email " + null + " doesn't in the system!");
+            Assert.assertTrue(true);
         }
     }
 
@@ -92,7 +115,7 @@ public class SystemAdministratorServiceTest {
             Assert.assertEquals(e.getMessage(),null);
         }
         try {
-            systemAdministratorService.removeSubscriber(fan.getEmailAddress());
+            systemAdministratorService.removeSubscriber(fan.getEmailAddress(),"noy@gmail.com");
         } catch (Exception e) {
             Assert.assertEquals(e.getMessage(),"the subscriber with the Email " + fan.getEmailAddress() + " doesn't in the system!");
         }

@@ -34,7 +34,7 @@ public class GuestController {
         systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
         representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
         pageDb = PageDbInMemory.getInstance();
-        teamDb=TeamDbInMemory.getInstance();
+        teamDb = TeamDbInMemory.getInstance();
     }
 
     //todo: call use case 2.2 from UI
@@ -95,7 +95,7 @@ public class GuestController {
      * @throws Exception if the coach is already exist
      */
     public void registerCoach(String emailAddress, String password, Integer id, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws Exception {
-        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName) || coachRole==null||qualificationCoach==null) {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName) || coachRole == null || qualificationCoach == null) {
             throw new Exception("try to enter details again!");
         }
         Coach coach = new Coach(emailAddress, password, id, firstName, lastName, coachRole, qualificationCoach);
@@ -103,6 +103,7 @@ public class GuestController {
         coachDb.createCoach(coach);
         roleDb.createRoleInSystem(emailAddress, RoleType.COACH);
         pageDb.createPersonalPage(coach.getEmailAddress(), coach);
+
     }
 
     /**
@@ -138,7 +139,7 @@ public class GuestController {
      * @throws Exception if the judge is already exist
      */
     public void registerJudge(String emailAddress, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theJudgeType) throws Exception {
-        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)||qualificationJudge==null||theJudgeType==null) {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName) || qualificationJudge == null || theJudgeType == null) {
             throw new Exception("try to enter details again!");
         }
         Judge judge = new Judge(emailAddress, password, id, firstName, lastName, qualificationJudge, theJudgeType);
@@ -161,7 +162,7 @@ public class GuestController {
      * @throws Exception if the player is already exist
      */
     public void registerPlayer(String emailAddress, String password, Integer id, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws Exception {
-        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)||birthDate==null||playerRole==null) {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName) || birthDate == null || playerRole == null) {
             throw new Exception("try to enter details again!");
         }
         Player player = new Player(emailAddress, password, id, firstName, lastName, birthDate, playerRole);
@@ -226,14 +227,9 @@ public class GuestController {
         if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName) || !isValidEmail(ownedByEmail)) {
             throw new Exception("try to enter details again!");
         }
-        try{
-            //check if the owned is in the subscriberDb and in the teamOwnerDb
-            subscriberDb.getSubscriber(ownedByEmail);
-            teamOwnerDb.getTeamOwner(ownedByEmail);
-        }
-        catch (Exception e){
-            throw new Exception("try to enter details again!");
-        }
+        //check if the owned is in the subscriberDb and in the teamOwnerDb
+        subscriberDb.getSubscriber(ownedByEmail);
+        teamOwnerDb.getTeamOwner(ownedByEmail);
         TeamManager teamManager = new TeamManager(emailAddress, password, id, firstName, lastName, ownedByEmail);
         subscriberDb.createSubscriber(teamManager);
         teamManagerDb.createTeamManager(teamManager);
@@ -252,13 +248,12 @@ public class GuestController {
      * @throws Exception if the team owner is already exist
      */
     public void registerTeamOwner(String emailAddress, String password, Integer id, String firstName, String lastName, Team team) throws Exception {
-        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)||team==null) {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName) || team == null) {
             throw new Exception("try to enter details again!");
         }
         try {
             teamDb.getTeam(team.getTeamName());
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new Exception("try to enter details again!");
         }
         TeamOwner teamOwner = new TeamOwner(emailAddress, password, id, firstName, lastName, team);
@@ -276,8 +271,8 @@ public class GuestController {
      * @return if all the details are meet the requirements
      */
     private boolean checkAllInputDetails(String emailAddress, String password, Integer id, String firstName, String lastName) {
-        if (!isLegalName(firstName) || !isLegalName(lastName) ||!isLegalEmail(emailAddress) || !isLegalPassword(password) ||id==null
-                ||id.toString().length() != 9 || id<0) {
+        if (!isLegalName(firstName) || !isLegalName(lastName) || !isLegalEmail(emailAddress) || !isLegalPassword(password) || id == null
+                || id.toString().length() != 9 || id < 0) {
             return false;
         }
         return true;
