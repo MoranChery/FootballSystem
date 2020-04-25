@@ -31,4 +31,8 @@ public abstract class Page {
         this.pageID = pageID;
     }
 
+    public void addFanFollowingThisPage(Fan fan){
+        fansFollowingThisPage.put(fan.getEmailAddress(),fan);
+    }
+
 }

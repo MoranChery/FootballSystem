@@ -1,17 +1,17 @@
 package Controller;
 
 import Data.*;
+import Model.*;
 import Model.Enums.*;
-import Model.Page;
-import Model.PersonalPage;
-import Model.Team;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Fan;
+import Model.UsersTypes.Judge;
 import Model.UsersTypes.Player;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class SystemAdministratorControllerTest {
@@ -128,9 +128,9 @@ public class SystemAdministratorControllerTest {
         Fan fan = null;
         try {
             player = PlayerDbInMemory.getInstance().getPlayer("player@gmail.com");
-            //create player page
             //PageDbInMemory.getInstance().createPersonalPage("player@gmail.com",player);
             fan = FanDbInMemory.getInstance().getFan("fan@gmail.com");
+            PageDbInMemory.getInstance().getPage("player@gmail.com").addFanFollowingThisPage(fan);
             Set pageSet = new LinkedHashSet();
             pageSet.add(PageDbInMemory.getInstance().getPage("player@gmail.com"));
             fan.setMyPages(pageSet);
@@ -168,19 +168,20 @@ public class SystemAdministratorControllerTest {
     public void removeCoach() throws Exception {
         guestController.registerCoach("coach@gmail.com", "23bkh", 123456789, "noy", "harary", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         TeamDbInMemory.getInstance().createTeam("team");
-        Team team=TeamDbInMemory.getInstance().getTeam("team");
+        Team team = TeamDbInMemory.getInstance().getTeam("team");
         team.setTeamStatus(TeamStatus.ACTIVE);
-        Coach coach=CoachDbInMemory.getInstance().getCoach("coach@gmail.com");
+        Coach coach = CoachDbInMemory.getInstance().getCoach("coach@gmail.com");
         //connect coach to team
-        team.getCoaches().put("coach@gmail.com",coach);
+        team.getCoaches().put("coach@gmail.com", coach);
         coach.setTeam(team);
         //register fan to follow coach page
         guestController.registerFan("fan1@gmail.com", "L1o8oy", 111111111, "Noy", "Harary");
-        Fan fan=FanDbInMemory.getInstance().getFan("fan1@gmail.com");
+        Fan fan = FanDbInMemory.getInstance().getFan("fan1@gmail.com");
+        PageDbInMemory.getInstance().getPage("coach@gmail.com").addFanFollowingThisPage(fan);
         Set pageSet = new LinkedHashSet();
         pageSet.add(PageDbInMemory.getInstance().getPage("coach@gmail.com"));
         fan.setMyPages(pageSet);
-        systemAdministratorController.removeSubscriber("coach@gmail.com","noy@gmail.com");
+        systemAdministratorController.removeSubscriber("coach@gmail.com", "noy@gmail.com");
         //check if the fan deleted properly
         try {
             SubscriberDbInMemory.getInstance().getSubscriber("coach@gmail.com");
@@ -190,7 +191,7 @@ public class SystemAdministratorControllerTest {
         try {
             CoachDbInMemory.getInstance().getCoach("coach@gmail.com");
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "coach not found");
+            Assert.assertEquals(e.getMessage(), "Coach not found");
         }
         //check if coach page removed
         try {
@@ -199,12 +200,44 @@ public class SystemAdministratorControllerTest {
             Assert.assertTrue(true);
         }
         //check if the page removed from the fan
-       if(fan.getMyPages().size()>0)
-           Assert.assertTrue(false);
-       else Assert.assertTrue(true);
+        if (fan.getMyPages().size() > 0)
+            Assert.assertTrue(false);
+        else Assert.assertTrue(true);
 
 
     }
 
-
+    @Test
+    public void removeJudge() throws Exception {
+        //initializing
+        guestController.registerJudge("judge@gmail.com", "23bkh", 123456789, "noy", "harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+        SeasonLeague seasonLeague = new SeasonLeague("season", "league", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        SeasonLeagueDbInMemory.getInstance().createSeasonLeague(seasonLeague);
+        JudgeSeasonLeague judgeSeasonLeague = new JudgeSeasonLeague(seasonLeague.getSeasonLeagueName(), "judge@gmail.com");
+        SeasonLeagueDbInMemory.getInstance().createJudgeSeasonLeague(judgeSeasonLeague);
+        Judge judge = JudgeDbInMemory.getInstance().getJudge("judge@gmail.com");
+        Set judges = new LinkedHashSet();
+        judges.add(judge);
+        Game game = new Game(11, null, seasonLeague, null, null, null, judges);
+        GameDbInMemory.getInstance().createGame(game);
+        judge.addGameToList(game);
+        //remove judge
+        systemAdministratorController.removeSubscriber("judge@gmail.com", "noy@gmail.com");
+        //check if the fan deleted properly
+        try {
+            JudgeSeasonLeagueDbInMemory.getInstance().getJudgeSeasonLeague(judgeSeasonLeague.getJudgeSeasonLeagueName());
+        } catch (Exception e) {
+            Assert.assertEquals(e.getMessage(), "JudgeSeasonLeague not found");
+        }
+        for (Game game1 : judge.getTheJudgeGameList().values()) {
+            if (game1.getJudgesOfTheGameList().contains(judge))
+                Assert.assertTrue(false);
+            else Assert.assertTrue(true);
+        }
+        try {
+            JudgeDbInMemory.getInstance().getJudge("judge@gmail.com");
+        } catch (Exception e) {
+            Assert.assertEquals("Judge not found", e.getMessage());
+        }
+    }
 }

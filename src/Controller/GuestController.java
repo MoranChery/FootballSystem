@@ -2,6 +2,7 @@ package Controller;
 
 import Data.*;
 import Model.Enums.*;
+import Model.PersonalPage;
 import Model.Team;
 import Model.UsersTypes.*;
 
@@ -103,6 +104,8 @@ public class GuestController {
         coachDb.createCoach(coach);
         roleDb.createRoleInSystem(emailAddress, RoleType.COACH);
         pageDb.createPersonalPage(coach.getEmailAddress(), coach);
+        PersonalPage personalPage=(PersonalPage)pageDb.getPage(coach.getEmailAddress());
+        coach.setCoachPage(personalPage);
     }
 
     /**

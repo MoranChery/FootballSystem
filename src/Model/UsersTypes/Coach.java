@@ -23,6 +23,10 @@ public class Coach extends Subscriber {
         this.qualificationCoach = qualificationCoach;
     }
 
+    public void setCoachPage(PersonalPage coachPage) {
+        this.coachPage = coachPage;
+    }
+
     public Team getTeam() {
         return team;
     }

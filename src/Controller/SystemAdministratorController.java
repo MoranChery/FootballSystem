@@ -6,6 +6,7 @@ import Model.Enums.RoleType;
 import Model.Enums.TeamStatus;
 import Model.Game;
 import Model.Page;
+import Model.Role;
 import Model.Team;
 import Model.UsersTypes.*;
 
@@ -215,8 +216,6 @@ public class SystemAdministratorController {
         }
         if(coach.getTeam()!=null){
             teamDb.removeCoach(coach.getTeam().getTeamName(), coach.getEmailAddress());
-            //remove the coach from his team
-            coach.getTeam().getCoaches().remove(coach);
         }
         //remove the personal page of the coach from PersonalPageDb
         pageDb.removePersonalPageFromDb(coachPage.getPageID());
