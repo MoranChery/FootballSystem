@@ -107,7 +107,7 @@ public class FanServiceTest {
         Assert.assertTrue(fanPages.contains("teamName"));
     }
 
-    /** Test fo the function **/
+    /** Test for the function askToGetAlerts**/
     @Test
     public void askToGetAlertsLegal() throws Exception{
         try {

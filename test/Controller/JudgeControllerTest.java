@@ -208,6 +208,7 @@ public class JudgeControllerTest {
         gameDb.createGame(game);
         judgeController.addGameToTheJudge(newJudge.getEmailAddress(), game);
         Assert.assertTrue(newJudge.getTheJudgeGameList().containsKey(game.getGameID()));
+
     }
 
 

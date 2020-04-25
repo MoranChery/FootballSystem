@@ -103,7 +103,6 @@ public class GuestController {
         coachDb.createCoach(coach);
         roleDb.createRoleInSystem(emailAddress, RoleType.COACH);
         pageDb.createPersonalPage(coach.getEmailAddress(), coach);
-
     }
 
     /**
