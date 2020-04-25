@@ -11,10 +11,10 @@ import Model.UsersTypes.TeamManager;
 import java.util.Date;
 import java.util.List;
 
-public class TeamService {
+public class TeamOwnerService {
     private TeamOwnerController teamOwnerController;
 
-    public TeamService() {
+    public TeamOwnerService() {
         this.teamOwnerController = new TeamOwnerController();
     }
     public Team getTeam(String teamName) throws Exception {

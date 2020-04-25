@@ -226,14 +226,9 @@ public class GuestController {
         if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName) || !isValidEmail(ownedByEmail)) {
             throw new Exception("try to enter details again!");
         }
-        try{
-            //check if the owned is in the subscriberDb and in the teamOwnerDb
-            subscriberDb.getSubscriber(ownedByEmail);
-            teamOwnerDb.getTeamOwner(ownedByEmail);
-        }
-        catch (Exception e){
-            throw new Exception("try to enter details again!");
-        }
+        //check if the owned is in the subscriberDb and in the teamOwnerDb
+        subscriberDb.getSubscriber(ownedByEmail);
+        teamOwnerDb.getTeamOwner(ownedByEmail);
         TeamManager teamManager = new TeamManager(emailAddress, password, id, firstName, lastName, ownedByEmail);
         subscriberDb.createSubscriber(teamManager);
         teamManagerDb.createTeamManager(teamManager);
