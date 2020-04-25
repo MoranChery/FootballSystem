@@ -66,6 +66,9 @@ public class SystemAdministratorController {
      * @param email of the subscriber that the system administrator want to remove
      */
     public void removeSubscriber(String email) throws Exception {
+        if(email==null){
+            throw new Exception("null email");
+        }
             Subscriber subscriberToRemove = subscriberDb.getSubscriber(email);
             //remove the subscriber from subscriberDB
             subscriberDb.removeSubscriberFromDB(subscriberToRemove);
