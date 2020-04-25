@@ -7,7 +7,7 @@ import Model.UsersTypes.*;
 
 import java.util.*;
 
-public class TeamController {
+public class TeamOwnerController {
     private TeamDb teamDb;
     private PlayerDb playerDb;
     private TeamManagerDb teamManagerDb;
@@ -20,7 +20,7 @@ public class TeamController {
     private PageDb pageDb;
     private PermissionsDb permissionDb;
 
-    public TeamController(){
+    public TeamOwnerController(){
         teamDb =  TeamDbInMemory.getInstance();
         playerDb = PlayerDbInMemory.getInstance();
         teamManagerDb = TeamManagerDbInMemory.getInstance();

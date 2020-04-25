@@ -1,89 +1,49 @@
-//package Service;
-//
-//import Controller.SystemController;
-//import org.junit.Before;
-//import org.junit.Rule;
-//import org.junit.Test;
-//import org.junit.rules.ExpectedException;
-//
-//public class SystemServiceTest {
-//    SystemService systemService;
-//    Object AccountingSystem;
-//    Object TaxLawSystem;
-//
-//    @Rule
-//    public ExpectedException expectedExceptionOpeningTheSystemByUser= ExpectedException.none();
-//
-//    @Before
-//    public void setUp(){
-//        systemService = new SystemService();
-//        AccountingSystem = new Object();
-//        TaxLawSystem = new Object();
-//    }
-//
-//    @Test
-//    public void startInitializeTheSystem() throws Exception {
-//        systemService.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
-//    }
-//
-//    @Rule
-//    public ExpectedException expectedExceptionStartInitializeTheSystem= ExpectedException.none();
-//    @Test
-//    public void startInitializeTheSystemFailAccountingSystem() throws Exception {
-//        expectedExceptionStartInitializeTheSystem.expectMessage("problem in login accounting system");
-//        systemService.startInitializeTheSystem(null, TaxLawSystem );
-//    }
-//    @Test
-//    public void startInitializeTheSystemFail() throws Exception {
-//        expectedExceptionStartInitializeTheSystem.expectMessage("problem in login accounting system");
-//        systemService.startInitializeTheSystem(null, null );
-//    }
-//    @Test
-//    public void startInitializeTheSystemFailTax() throws Exception {
-//        expectedExceptionStartInitializeTheSystem.expectMessage("problem in login tax law system");
-//        systemService.startInitializeTheSystem(AccountingSystem, null );
-//    }
-//
-//
-//    @Test
-//    public void addSystemAdministratorSuccessful() throws Exception {
-//        systemService.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
-//        if(!SystemController.isTheSystemInitialize()) {
-//            systemService.addPrimarySystemAdministrator();
-//        }
-//    }
-//
-//    @Test
-//    public void openingTheSystemByUser() throws Exception {
-//        systemService.startInitializeTheSystem(AccountingSystem, TaxLawSystem);
-//        systemService.addPrimarySystemAdministrator();
-//        systemService.openingTheSystemByUser(AccountingSystem,TaxLawSystem);
-//
-//    }
-//    @Test
-//    public void openingTheSystemByUserFail() throws Exception {
-//        expectedExceptionStartInitializeTheSystem.expectMessage("Problem-initialAdministratorRegistration");
-//        systemService.addPrimarySystemAdministrator();
-//        systemService.openingTheSystemByUser(null,TaxLawSystem);
-//
-//    }
-//
-//
-//    @Rule
-//    public ExpectedException exceptionRuleCantCreateLog= ExpectedException.none();
-//
-//    @Test
-//    public void createLog() throws Exception {
-//        if(SystemController.isTheSystemInitialize()) {
-//            systemService.createLog("good");
-//        }
-//    }
-//
-//    @Test
-//    public void createLogFail() throws Exception {
-//        if(systemService!=null) {
-//            exceptionRuleCantCreateLog.expectMessage("Can't create Log");
-//            systemService.createLog(null);
-//        }
-//    }
-//}
+package Service;
+
+import Controller.SystemController;
+import Data.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class SystemServiceTest {
+
+    private SystemController systemController;
+    private SystemService systemService = new SystemService();
+    private static SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();
+    private static RoleDb roleDb = RoleDbInMemory.getInstance();
+    private static SystemAdministratorDb systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
+
+
+    @Before
+    public void init() {
+        final List<Db> dbs = new ArrayList<>();
+        dbs.add(SubscriberDbInMemory.getInstance());
+        dbs.add(RoleDbInMemory.getInstance());
+        dbs.add(SystemAdministratorDbInMemory.getInstance());
+        for (Db db : dbs) {
+            db.deleteAll();
+        }
+        systemController = new SystemController();
+    }
+    @After
+    public void after(){
+        systemController = null;
+    }
+
+    @Test
+    public void createLogTest() throws Exception{
+        systemService.createLog("path");
+    }
+
+
+
+
+
+
+}

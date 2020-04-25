@@ -26,14 +26,15 @@ public class SystemController {
         taxLawSystem = new TaxLawSystem();
     }
 
+    /**
+     * initializing the SystemController for the first and only time
+     * add first SystemAdministrator to the system
+     * should be privet but for the tests - public
+     */
     private static SystemController ourInstance;
-    static {
-        try {
-            ourInstance = new SystemController();
-            addSystemAdministrator();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static void initialSystem() throws Exception {
+        ourInstance = new SystemController();
+        addSystemAdministrator();
     }
 
     public static SystemController getInstance() {
@@ -41,28 +42,55 @@ public class SystemController {
     }
 
 
-    public boolean connectionToExternalSystems() throws Exception {
-        if (!connectToTheAccountingSystem()) {
-            throw new Exception("problem in connection with accounting system");
-        }
-        if (!connectToTheTaxLawSystem()) {
-            throw new Exception("problem in connection with tax law system");
-        }
-        return true;
+    /**
+     * This function represent the connection of the system with the external systems:
+     * the AccountingSystem and the TaxLawSystem
+     * should be privet but for the tests - public
+     * should be not static but for the tests - static
+     * @throws Exception if the system couldn't connect with the external systems
+     */
+    public static void connectionToExternalSystems() /*throws Exception*/ {
+        //TODO
+
+//        if (!connectToTheAccountingSystem()) {
+//            throw new Exception("problem in connection with accounting system");
+//        }
+//        if (!connectToTheTaxLawSystem()) {
+//            throw new Exception("problem in connection with tax law system");
+//        }
     }
 
-    private boolean connectToTheAccountingSystem() {
+    /**
+     * This function represent the connection of our system with the AccountingSystem
+     * next iteration
+     * should be privet but for the tests - protected
+     * @return boolean - true if the connection ended successfully
+     */
+    protected boolean connectToTheAccountingSystem() {
         //todo
         return true;
     }
 
-    private boolean connectToTheTaxLawSystem() {
+    /**
+     * This function represent the connection of our system with the TaxLawSystem
+     * next iteration
+     * should be privet but for the tests - protected
+     * @return boolean - true if the connection ended successfully
+     */
+    protected boolean connectToTheTaxLawSystem() {
         //todo
         return true;
     }
 
 
-    private static void addSystemAdministrator() throws Exception {
+    /**
+     * This function create the first SystemAdministrator in the system
+     * using default id - email address the system try to find if the SystemAdministrator already in the DB
+     * if he isn't - create one using default data
+     * should be privet but for the tests - public
+     * @throws Exception if couldn't create the SystemAdministrator
+     */
+    public static void addSystemAdministrator() throws Exception {
         String emailAddress = "admin@gmail.com";
         try {
             systemAdministratorDb.getSystemAdministrator(emailAddress);
@@ -72,8 +100,6 @@ public class SystemController {
             subscriberDb.createSubscriber(systemAdministrator);
             systemAdministratorDb.createSystemAdministrator(systemAdministrator);
             roleDb.createRoleInSystem(emailAddress, RoleType.SYSTEM_ADMINISTRATOR);
-        }catch(Exception e){
-            throw new Exception("Problem-initialAdministratorRegistration");
         }
     }
 
