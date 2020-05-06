@@ -23,6 +23,7 @@ public class JudgeControllerTest {
     private JudgeController judgeController = new JudgeController();
     private JudgeDb judgeDb = JudgeDbInMemory.getInstance();
     private GameDb gameDb = GameDbInMemory.getInstance();
+    private GameEventsLogDb gameEventsLogDb = GameEventsLogDbInMemory.getInstance();
 
     @Before
     public void init() {
@@ -145,7 +146,7 @@ public class JudgeControllerTest {
             SeasonLeague seasonLeague = new SeasonLeague("A","B", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
             Set<Judge> judges = new HashSet<>();
             Court court = new Court("court", "Netanya");
-            Game game = new Game(1, simpleDateFormat,null,new Team(), new Team(), null, judges);
+            Game game = new Game("1", simpleDateFormat,null,new Team(), new Team(), null, judges,null,simpleDateFormat);
             judgeController.addGameToTheJudge("judgeMail",game);
         }
         catch (Exception e){
@@ -163,7 +164,7 @@ public class JudgeControllerTest {
             SeasonLeague seasonLeague = new SeasonLeague("A","B", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
             Set<Judge> judges = new HashSet<>();
             Court court = new Court("court", "Netanya");
-            Game game = new Game(1, simpleDateFormat,null,new Team(), new Team(), null, judges);
+            Game game = new Game("1", simpleDateFormat,null,new Team(), new Team(), null, judges,null,simpleDateFormat);
             judgeController.createJudge(newJudge);
             judgeController.addGameToTheJudge(newJudge.getEmailAddress(),game);
         }
@@ -182,10 +183,10 @@ public class JudgeControllerTest {
             SeasonLeague seasonLeague = new SeasonLeague("A","B", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
             Set<Judge> judges = new HashSet<>();
             Court court = new Court("court", "Netanya");
-            Game game = new Game(1, simpleDateFormat,null,new Team(), new Team(), null, judges);
+            Game game = new Game("1", simpleDateFormat,null,new Team(), new Team(), null, judges,null,simpleDateFormat);
             gameDb.createGame(game);
-            Map<Integer, Game> gameMap = newJudge.getTheJudgeGameList();
-            gameMap.put(1,game);
+            List<String> gameMap = newJudge.getTheJudgeGameList();
+            gameMap.add("1");
             newJudge.setTheJudgeGameList(gameMap);
             judgeController.addGameToTheJudge(newJudge.getEmailAddress(),game);
         }
@@ -204,10 +205,10 @@ public class JudgeControllerTest {
         SeasonLeague seasonLeague = new SeasonLeague("A", "B", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         Set<Judge> judges = new HashSet<>();
         Court court = new Court("court", "Netanya");
-        Game game = new Game(1, simpleDateFormat, null, new Team(), new Team(), null, judges);
+        Game game = new Game("1", simpleDateFormat, null, new Team(), new Team(), null, judges,null,simpleDateFormat);
         gameDb.createGame(game);
         judgeController.addGameToTheJudge(newJudge.getEmailAddress(), game);
-        Assert.assertTrue(newJudge.getTheJudgeGameList().containsKey(game.getGameID()));
+        Assert.assertTrue(newJudge.getTheJudgeGameList().contains(game.getGameID()));
 
     }
 

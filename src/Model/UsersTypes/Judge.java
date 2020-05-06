@@ -13,14 +13,14 @@ public class Judge extends Subscriber {
     private QualificationJudge qualificationJudge;
     private Map<String, String> seasonLeagueName_JudgeSeasonLeagueName;
     private JudgeType judgeType;
-    private Map<Integer, Game> theJudgeGameList; // gameId_game
+    private List<String> theJudgeGameList; // gameId_game
 
     public Judge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theJudgeType) {
         setRegisteringDetails(username, password, id, firstName, lastName);
         this.qualificationJudge = qualificationJudge;
 //        this.seasonLeagueId_JudgeSeasonLeagueId = new HashMap<>();
         this.seasonLeagueName_JudgeSeasonLeagueName = new HashMap<>();
-        theJudgeGameList = new HashMap<>();
+        theJudgeGameList = new ArrayList<>();
         judgeType = theJudgeType;
     }
 
@@ -39,6 +39,10 @@ public class Judge extends Subscriber {
     }
     //endregion
 
+    public void setTheJudgeGameList(List<String> theJudgeGameList) {
+        this.theJudgeGameList = theJudgeGameList;
+    }
+
     public JudgeType getJudgeType() {
         return judgeType;
     }
@@ -47,16 +51,12 @@ public class Judge extends Subscriber {
         this.judgeType = judgeType;
     }
 
-    public Map<Integer, Game> getTheJudgeGameList() {
+    public List<String> getTheJudgeGameList() {
         return theJudgeGameList;
     }
 
-    public void setTheJudgeGameList(Map<Integer, Game> theJudgeGameList) {
-        this.theJudgeGameList = theJudgeGameList;
-    }
-
     public void addGameToList(Game game) {
-        theJudgeGameList.put(game.getGameID(), game);
+        theJudgeGameList.add(game.getGameID());
     }
     //endregion
 

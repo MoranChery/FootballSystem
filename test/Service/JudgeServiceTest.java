@@ -74,10 +74,10 @@ public class JudgeServiceTest {
         SeasonLeague seasonLeague = new SeasonLeague("A", "B", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         Set<Judge> judges = new HashSet<>();
         Court court = new Court("court", "Netanya");
-        Game game = new Game(1, simpleDateFormat, null, new Team(), new Team(), null, judges);
+        Game game = new Game("1", simpleDateFormat, null, new Team(), new Team(), null, judges,null,null);
         gameDb.createGame(game);
         judgeService.addGameToTheJudge(newJudge.getEmailAddress(), game);
-        Assert.assertTrue(newJudge.getTheJudgeGameList().containsKey(game.getGameID()));
+        Assert.assertTrue(newJudge.getTheJudgeGameList().contains(game.getGameID()));
     }
 
 

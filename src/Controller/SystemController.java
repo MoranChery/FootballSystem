@@ -12,7 +12,7 @@ public class SystemController {
     private static RoleDb roleDb;
     private static SystemAdministratorDb systemAdministratorDb;
 
-    private LogFunctionality log;
+    private LoggerHandler loggerHandler;
     public  AccountingSystem accountingSystem;
     public  TaxLawSystem taxLawSystem;
 
@@ -21,7 +21,7 @@ public class SystemController {
         systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
         subscriberDb = SubscriberDbInMemory.getInstance();
         roleDb = RoleDbInMemory.getInstance();
-        log = new LogFunctionality();
+        loggerHandler = new LoggerHandler(SystemController.class.getName());
         accountingSystem = new AccountingSystem();
         taxLawSystem = new TaxLawSystem();
     }

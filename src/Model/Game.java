@@ -4,11 +4,13 @@ package Model;
 import Model.UsersTypes.Judge;
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
 
 
 public class Game {
-    private Integer gameID;
+    private String gameID;
     private SimpleDateFormat gameDate;
     private SeasonLeague seasonLeague;
     private Team hostTeam;
@@ -17,9 +19,11 @@ public class Game {
     private Integer hostTeamScore;
     private Integer guestTeamScore;
     private Set<Judge> judgesOfTheGameList;
-    private EventsLog eventLog;
+    private GameEventsLog eventLog;
+    private String majorJudge;
+    private SimpleDateFormat endGameTime;
 
-    public Game(Integer gameID, SimpleDateFormat gameDate, SeasonLeague seasonLeague, Team hostTeam, Team guestTeam, Court court, Set<Judge> judges) {
+    public Game(String gameID, SimpleDateFormat gameDate, SeasonLeague seasonLeague, Team hostTeam, Team guestTeam, Court court, Set<Judge> judges,String majorJudge,SimpleDateFormat endGameTime) {
         this.gameID = gameID;
         this.gameDate = gameDate;
         this.seasonLeague = seasonLeague;
@@ -29,14 +33,34 @@ public class Game {
         this.hostTeamScore = 0;
         this.guestTeamScore = 0;
         this.judgesOfTheGameList = judges;
-        this.eventLog = new EventsLog();
+        this.eventLog = new GameEventsLog();
+        this.majorJudge = majorJudge;
+        this.endGameTime = endGameTime;
     }
 
-    public Integer getGameID() {
+    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+    public SimpleDateFormat getEndGameTime() {
+        return endGameTime;
+    }
+
+    public void setEndGameTime(SimpleDateFormat endGameTime) {
+        this.endGameTime = endGameTime;
+    }
+
+    public String getMajorJudge() {
+        return majorJudge;
+    }
+
+    public void setMajorJudge(String majorJudge) {
+        this.majorJudge = majorJudge;
+    }
+
+    public String getGameID() {
         return gameID;
     }
 
-    public void setGameID(Integer gameID) {
+    public void setGameID(String gameID) {
         this.gameID = gameID;
     }
 
@@ -103,11 +127,11 @@ public class Game {
     public void setJudgesOfTheGameList(Set<Judge> judgesOfTheGameList) {
         this.judgesOfTheGameList = judgesOfTheGameList;
     }
-    public EventsLog getEventLog() {
+    public GameEventsLog getEventLog() {
         return eventLog;
     }
 
-    public void setEventLog(EventsLog eventLog) {
+    public void setEventLog(GameEventsLog eventLog) {
         this.eventLog = eventLog;
     }
 

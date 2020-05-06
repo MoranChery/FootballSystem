@@ -6,6 +6,7 @@ import Model.JudgeSeasonLeague;
 import Model.UsersTypes.Judge;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JudgeDbInMemory implements JudgeDb
@@ -131,16 +132,21 @@ public class JudgeDbInMemory implements JudgeDb
         if(theJudge == null){
             throw new NotFoundException("Judge not found");
         }
-        Map<Integer, Game> theGamesOfThisJudge = theJudge.getTheJudgeGameList();
-        Integer gameID = gameToAdd.getGameID();
-        if(theGamesOfThisJudge.containsKey(gameID)){
+        List<String> theGamesOfThisJudge = theJudge.getTheJudgeGameList();
+        String gameID = gameToAdd.getGameID();
+        if(theGamesOfThisJudge.contains(gameID)){
             throw new Exception("Game already belongs to this judge");
         }
-        theGamesOfThisJudge.put(gameID, gameToAdd);
+        theGamesOfThisJudge.add(gameID);
     }
 
     public Map<String, Judge> getAllJudgesMap()
     {
         return allJudgesMap;
+    }
+    @Override
+    public List<String> getJudgeGames(String judgeId){
+        Judge judge = allJudgesMap.get(judgeId);
+        return judge.getTheJudgeGameList();
     }
 }

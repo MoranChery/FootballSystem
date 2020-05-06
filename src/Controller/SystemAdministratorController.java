@@ -31,6 +31,7 @@ public class SystemAdministratorController {
     private SystemAdministratorDb systemAdministratorDb;
     private RepresentativeAssociationDb representativeAssociationDb;
     private PermissionsDb permissionDb;
+    private GameDb gameDb;
 
     public SystemAdministratorController() {
         teamDb = TeamDbInMemory.getInstance();
@@ -233,8 +234,9 @@ public class SystemAdministratorController {
         //casting
         Judge judge = (Judge) subscriberToRemove;
         //remove the judge from his connected games
-        for (Game game : judge.getTheJudgeGameList().values()) {
-            game.getJudgesOfTheGameList().remove(judge);
+        for (String game : judge.getTheJudgeGameList()) {
+            Game gameToRemove = gameDb.getGame(game);
+            gameToRemove.getJudgesOfTheGameList().remove(judge.getId());
         }
         // remove judge from association class of league and Season
         Map<String, String> seasonLeagueName_JudgeSeasonLeagueName = judge.getSeasonLeagueName_JudgeSeasonLeagueName();

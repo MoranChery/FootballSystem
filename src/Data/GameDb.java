@@ -7,6 +7,6 @@ public interface GameDb extends Db{
 
     void createGame(Game game) throws Exception;
     void addJudgeToGame(Integer gameID, Judge judgeToAdd) throws Exception;
-    Game getGame(Integer gameID) throws Exception;
+    Game getGame(String gameID) throws Exception;
 
 }

@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class GameDbInMemory implements GameDb {
 
-    private Map<Integer, Game> allGamesMap;
+    private Map<String, Game> allGamesMap;
     private static GameDbInMemory ourInstance = new GameDbInMemory();
 
     public GameDbInMemory() {
@@ -48,7 +48,7 @@ public class GameDbInMemory implements GameDb {
     }
 
     @Override
-    public Game getGame(Integer gameID) throws Exception {
+    public Game getGame(String gameID) throws Exception {
         if(gameID == null){
             throw new NullPointerException("bad input");
         }

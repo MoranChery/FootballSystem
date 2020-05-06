@@ -5,6 +5,8 @@ import Model.Game;
 import Model.JudgeSeasonLeague;
 import Model.UsersTypes.Judge;
 
+import java.util.List;
+
 public interface JudgeDb extends Db
 {
     /**
@@ -38,4 +40,6 @@ public interface JudgeDb extends Db
      */
     void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception;
     void addGameToTheJudge(String judgeMail, Game gameToAdd) throws Exception;
+
+    List<String> getJudgeGames(String judgeId);
 }

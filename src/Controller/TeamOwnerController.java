@@ -5,7 +5,9 @@ import Model.*;
 import Model.Enums.*;
 import Model.UsersTypes.*;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class TeamOwnerController {
     private TeamDb teamDb;
@@ -20,6 +22,14 @@ public class TeamOwnerController {
     private PageDb pageDb;
     private PermissionsDb permissionDb;
 
+    public TeamDb getTeamDb() {
+        return teamDb;
+    }
+
+    public TeamOwnerDb getTeamOwnerDb() {
+        return teamOwnerDb;
+    }
+
     public TeamOwnerController(){
         teamDb =  TeamDbInMemory.getInstance();
         playerDb = PlayerDbInMemory.getInstance();
@@ -32,7 +42,6 @@ public class TeamOwnerController {
         financialActivityDb =  FinancialActivityDbInMemory.getInstance();
         pageDb = PageDbInMemory.getInstance();
         permissionDb = PermissionDbInMemory.getInstance();
-
     }
 
     /**

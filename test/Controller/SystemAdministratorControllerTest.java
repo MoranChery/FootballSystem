@@ -38,6 +38,7 @@ public class SystemAdministratorControllerTest {
         dbs.add(RepresentativeAssociationDbInMemory.getInstance());
         dbs.add(TeamDbInMemory.getInstance());
         dbs.add(RoleDbInMemory.getInstance());
+        dbs.add(GameDbInMemory.getInstance());
         for (Db db : dbs) {
             db.deleteAll();
         }
@@ -218,7 +219,7 @@ public class SystemAdministratorControllerTest {
         Judge judge = JudgeDbInMemory.getInstance().getJudge("judge@gmail.com");
         Set judges = new LinkedHashSet();
         judges.add(judge);
-        Game game = new Game(11, null, seasonLeague, null, null, null, judges);
+        Game game = new Game("11", null, seasonLeague, null, null, null, judges,null,null);
         GameDbInMemory.getInstance().createGame(game);
         judge.addGameToList(game);
         //remove judge
@@ -229,8 +230,9 @@ public class SystemAdministratorControllerTest {
         } catch (Exception e) {
             Assert.assertEquals(e.getMessage(), "JudgeSeasonLeague not found");
         }
-        for (Game game1 : judge.getTheJudgeGameList().values()) {
-            if (game1.getJudgesOfTheGameList().contains(judge))
+        for (String game1 : judge.getTheJudgeGameList()) {
+            Game game2 = GameDbInMemory.getInstance().getGame(game1);
+            if (game2.getJudgesOfTheGameList().contains(judge))
                 Assert.assertTrue(false);
             else Assert.assertTrue(true);
         }

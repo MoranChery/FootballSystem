@@ -5,14 +5,19 @@ import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.Enums.JudgeType;
 import Model.Enums.QualificationJudge;
+import Model.LoggerHandler;
+
+import java.util.logging.Level;
 
 public class RepresentativeAssociationService
 {
     private RepresentativeAssociationController representativeAssociationController;
+    private LoggerHandler loggerHandler;
 
     public RepresentativeAssociationService()
     {
         this.representativeAssociationController = new RepresentativeAssociationController();
+        this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
     }
 
     /**
@@ -24,15 +29,21 @@ public class RepresentativeAssociationService
      */
     public void createLeague(String representativeAssociationEmailAddress, String leagueName) throws Exception
     {
-        if(representativeAssociationEmailAddress == null)
-        {
-            throw new Exception("Only RepresentativeAssociation has permissions to this action!");
+        try {
+            if(representativeAssociationEmailAddress == null)
+            {
+                throw new Exception("Only RepresentativeAssociation has permissions to this action!");
+            }
+            if(leagueName == null)
+            {
+                throw new NullPointerException("One or more of the League details incorrect");
+            }
+            representativeAssociationController.createLeague(representativeAssociationEmailAddress, leagueName);
+            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: League \"" + leagueName + "\" was created");
+        } catch (Exception e) {
+            loggerHandler.getLoggerErrors().log(Level.WARNING,"Created by: " + representativeAssociationEmailAddress+ " Description: League \"" + leagueName + "\" wasn't created because: " +  e.getMessage());
+            throw e;
         }
-        if(leagueName == null)
-        {
-            throw new NullPointerException("One or more of the League details incorrect");
-        }
-        representativeAssociationController.createLeague(representativeAssociationEmailAddress, leagueName);
     }
 
     /**
@@ -42,17 +53,21 @@ public class RepresentativeAssociationService
      * @param seasonName-name of the new Season.
      * @throws Exception-if details are incorrect.
      */
-    public void createSeason(String representativeAssociationEmailAddress, String seasonName) throws Exception
-    {
+    public void createSeason(String representativeAssociationEmailAddress, String seasonName) throws Exception {
+        try{
         if(representativeAssociationEmailAddress == null)
         {
             throw new Exception("Only RepresentativeAssociation has permissions to this action!");
         }
-        if(seasonName == null)
-        {
+        if(seasonName == null) {
             throw new NullPointerException("One or more of the Season details incorrect");
         }
-        representativeAssociationController.createSeason(representativeAssociationEmailAddress, seasonName);
+            representativeAssociationController.createSeason(representativeAssociationEmailAddress, seasonName);
+            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: Season \"" + seasonName + "\" was created");
+        } catch (Exception e) {
+            loggerHandler.getLoggerErrors().log(Level.WARNING,"Created by: " + representativeAssociationEmailAddress+ " Description: Season \"" + seasonName + "\" wasn't created because: " +  e.getMessage());
+            throw e;
+        }
     }
 
     /**
@@ -67,16 +82,20 @@ public class RepresentativeAssociationService
      */
     public void createSeasonLeague(String representativeAssociationEmailAddress, String leagueName, String seasonName, CalculateLeaguePoints calculateLeaguePoints, InlayGames inlayGames) throws Exception
     {
-        if(representativeAssociationEmailAddress == null)
-        {
-            throw new Exception("Only RepresentativeAssociation has permissions to this action!");
+        try {
+            if (representativeAssociationEmailAddress == null) {
+                throw new Exception("Only RepresentativeAssociation has permissions to this action!");
+            }
+            if (leagueName == null || seasonName == null || calculateLeaguePoints == null || inlayGames == null) {
+                throw new NullPointerException("One or more of the SeasonLeague details incorrect");
+            }
+            representativeAssociationController.createSeasonLeague(representativeAssociationEmailAddress, leagueName, seasonName, calculateLeaguePoints, inlayGames);
+            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: SeasonLeague \"" + seasonName + "\" \"" + leagueName + "\" was created");
+        } catch (Exception e) {
+            loggerHandler.getLoggerErrors().log(Level.WARNING,"Created by: " + representativeAssociationEmailAddress+ " Description: SeasonLeague \"" + seasonName +  "\" \"" + leagueName + "\" wasn't created because: " +  e.getMessage());
+            throw e;
         }
-        if(leagueName == null || seasonName == null || calculateLeaguePoints == null || inlayGames == null)
-        {
-            throw new NullPointerException("One or more of the SeasonLeague details incorrect");
         }
-        representativeAssociationController.createSeasonLeague(representativeAssociationEmailAddress, leagueName, seasonName, calculateLeaguePoints, inlayGames);
-    }
 
     /**
      * Will receive from the Service the judge's details, want to create Judge.
