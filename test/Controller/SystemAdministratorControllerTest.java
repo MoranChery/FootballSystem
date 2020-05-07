@@ -211,7 +211,7 @@ public class SystemAdministratorControllerTest {
     @Test
     public void removeJudge() throws Exception {
         //initializing
-        guestController.registerJudge("judge@gmail.com", "23bkh", 123456789, "noy", "harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+        guestController.registerJudge("judge@gmail.com", "23bkh", 123456789, "noy", "harary", QualificationJudge.NATIONAL);
         SeasonLeague seasonLeague = new SeasonLeague("season", "league", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         SeasonLeagueDbInMemory.getInstance().createSeasonLeague(seasonLeague);
         JudgeSeasonLeague judgeSeasonLeague = new JudgeSeasonLeague(seasonLeague.getSeasonLeagueName(), "judge@gmail.com");

@@ -72,15 +72,16 @@ public class GuestController {
      * @return true if the login successfully
      * @throws Exception
      */
-    public boolean login(String emailAddress, String password) throws Exception {
+    public void login(String emailAddress, String password) throws Exception {
         if (emailAddress == null || password == null || !isValidEmail(emailAddress)) {
-            return false;
+            throw new NullPointerException("bad input");
         }
+        //check if subscriber exists
         Subscriber subscriber = subscriberDb.getSubscriber(emailAddress);
-        if (subscriber != null && subscriber.getPassword().equals(password)) {
-            subscriber.setStatus(Status.ONLINE);
-            return true;
-        } else return false;
+        if (!password.equals(subscriber.getPassword())) {
+            throw new Exception("Wrong password");
+        }
+        subscriberDb.changeStatusToOnline(subscriber);
     }
 
     /**
@@ -140,11 +141,11 @@ public class GuestController {
      * @param theJudgeType
      * @throws Exception if the judge is already exist
      */
-    public void registerJudge(String emailAddress, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theJudgeType) throws Exception {
-        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName) || qualificationJudge == null || theJudgeType == null) {
+    public void registerJudge(String emailAddress, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName) || qualificationJudge == null ) {
             throw new Exception("try to enter details again!");
         }
-        Judge judge = new Judge(emailAddress, password, id, firstName, lastName, qualificationJudge, theJudgeType);
+        Judge judge = new Judge(emailAddress, password, id, firstName, lastName, qualificationJudge);
         subscriberDb.createSubscriber(judge);
         judgeDb.createJudge(judge);
         roleDb.createRoleInSystem(emailAddress, RoleType.JUDGE);

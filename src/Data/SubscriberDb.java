@@ -10,5 +10,6 @@ public interface SubscriberDb extends Db{
         void wantToEditFirstName(String subscriberMail, String newFirstName) throws Exception;
         void wantToEditLastName(String subscriberMail, String newLastName) throws Exception;
         void logOut(String subscriberMail) throws Exception;
+        void changeStatusToOnline(Subscriber subscriber) throws Exception;
 
 }

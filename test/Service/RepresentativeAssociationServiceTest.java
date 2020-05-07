@@ -430,7 +430,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge(null,null, null, null, null, null, null, null);
+            representativeAssociationService.createJudge(null,null, null, null, null, null, null);
         }
         catch (Exception e)
         {
@@ -444,7 +444,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge(null,"username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge(null,"username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -458,7 +458,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", null, "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", null, "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -473,7 +473,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", null, 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", null, 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -488,7 +488,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", null, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", null, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -503,7 +503,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, null, "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, null, "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -518,7 +518,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", null, QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", null, QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -533,7 +533,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", null, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", null);
         }
         catch (Exception e)
         {
@@ -548,7 +548,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, null);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -563,7 +563,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress2", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress2", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -577,7 +577,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -600,7 +600,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -608,7 +608,7 @@ public class RepresentativeAssociationServiceTest
         }
         try
         {
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -622,8 +622,8 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username", new Judge("username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username", new Judge("username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -639,7 +639,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.removeJudge(null, null);
         }
         catch (Exception e)
@@ -654,7 +654,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.removeJudge(null, "username");
         }
         catch (Exception e)
@@ -669,7 +669,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.removeJudge("username/emailAddress", null);
         }
         catch (Exception e)
@@ -685,7 +685,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.removeJudge("username/emailAddress2", "username");
         }
         catch (Exception e)
@@ -700,7 +700,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.removeJudge("username/emailAddress", "username");
         }
         catch (Exception e)
@@ -715,7 +715,7 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
         {
@@ -737,8 +737,8 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
-            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username2", new Judge("username2", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE));
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
+            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username2", new Judge("username2", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
         }
         catch (Exception e)
         {
@@ -765,7 +765,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.createJudgeSeasonLeague(null,null, null);
         }
         catch (Exception e)
@@ -783,7 +783,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.createJudgeSeasonLeague(null,"seasonName_leagueName", "username");
         }
         catch (Exception e)
@@ -801,7 +801,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.createJudgeSeasonLeague("username/emailAddress", null, "username");
         }
         catch (Exception e)
@@ -820,7 +820,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName", null);
         }
         catch (Exception e)
@@ -839,7 +839,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.createJudgeSeasonLeague("username/emailAddress2", "seasonName_leagueName", "username");
         }
         catch (Exception e)
@@ -857,7 +857,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName", "username");
         }
         catch (Exception e)
@@ -877,7 +877,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName", "username");
         }
         catch (Exception e)
@@ -903,7 +903,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName2", "username");
         }
         catch (Exception e)
@@ -921,7 +921,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
             representativeAssociationService.createJudgeSeasonLeague("username/emailAddress", "seasonName_leagueName", "username2");
         }
         catch (Exception e)

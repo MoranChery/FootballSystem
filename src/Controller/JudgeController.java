@@ -5,27 +5,29 @@ import Model.*;
 import Model.Enums.GameEventType;
 import Model.Enums.QualificationJudge;
 import Model.Enums.RoleType;
-import Model.UsersTypes.Fan;
 import Model.UsersTypes.Judge;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.sql.Time;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class JudgeController {
     private JudgeDb judgeDb;
     private GameDb gameDb;
-    private GameEventsLogDb gameEventsLogDb;
+    private GameEventsDb gameEventsDb;
     private RoleDb roleDb;
+    private Gson gson = new Gson();
+    private Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
 
     public JudgeController() {
         this.judgeDb = JudgeDbInMemory.getInstance();
         gameDb = GameDbInMemory.getInstance();
         roleDb = RoleDbInMemory.getInstance();
-        gameEventsLogDb = GameEventsLogDbInMemory.getInstance();
+        gameEventsDb = GameEventsDbInMemory.getInstance();
     }
 
     /**
@@ -96,7 +98,7 @@ public class JudgeController {
     }
 
 
-    public void addEventToGame(String judgeMail, String gameId, Time eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
+    public void addEventToGame(String judgeMail, String gameId, Date eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
         if(judgeMail == null || gameId == null || eventTime == null || eventMinute == null ||gameEventType == null || description == null ){
             throw new NullPointerException("bad input");
         }
@@ -110,13 +112,13 @@ public class JudgeController {
                 throw new Exception("This game doesnt associated with current judge");
             }
             GameEvent gameEvent = new GameEvent(gameId,game.getGameDate(),eventTime,eventMinute,gameEventType,description);
-            gameEventsLogDb.addEvent(gameEvent);
+            gameEventsDb.addEvent(gameEvent);
     }
 
 
-    public void updateGameEventAfterGame(String judgeMail, String gameId,String eventId, Time eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
-        if(judgeMail == null || gameId == null){
-            throw new Exception("bad input");
+    public void updateGameEventAfterEnd(String judgeMail, String gameId,String eventId, Date eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
+        if(judgeMail == null || gameId == null || eventTime == null || eventMinute == null ||gameEventType == null || description == null ){
+            throw new NullPointerException("bad input");
         }
         checkPermissionsJudge(judgeMail);
         //check if the judge and game located in db
@@ -128,23 +130,38 @@ public class JudgeController {
         if(!judgeMail.equals(game.getMajorJudge())){
             throw new Exception("This judge is not a major judge in this game");
         }
-
-        //todo if less than 5 hour from the end of the game
+        long now = System.currentTimeMillis();
+        long timeEndGame = game.getEndGameTime().getTime();
+        long passedTime = TimeUnit.MILLISECONDS.toHours(now - timeEndGame);
+        if(passedTime > 5){
+            throw new Exception("5 hours from the end of the game passed");
+        }
         GameEvent gameEvent = new GameEvent(gameId,game.getGameDate(),eventTime,eventMinute,gameEventType,description);
-        gameEventsLogDb.setUpdatedDetails(gameEvent);
-//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-//        LocalDateTime now = LocalDateTime.now();
-//        System.out.println(dtf.format(now));
-//        if(5 >= (now - game.getEndGameTime())){
-//            throw new Exception("5 hours from the end of the game passed");
-//        }
+        gameEvent.setEventId(eventId);
+        gameEventsDb.setUpdatedDetails(gameEvent);
+    }
+
+    public void createReportForGame(String path,String judgeMail, String gameId) throws Exception {
+        if(path == null || judgeMail == null || gameId == null){
+            throw new NullPointerException("bad input");
+        }
+        //check if it's judge
+        checkPermissionsJudge(judgeMail);
+        //check if the judge and game located in db
+        Game game = gameDb.getGame(gameId);
+        List<String> theJudgeGameList = judgeDb.getJudgeGames(judgeMail);
+        if (!theJudgeGameList.contains(gameId)) {
+            throw new Exception("This game doesnt associated with current judge");
+        }
+        Map<String, GameEvent> eventsLog = gameEventsDb.getGameEvents(gameId);
+        BufferedWriter report = new BufferedWriter(new FileWriter(path + gameId));
+        report.write(prettyGson.toJson(eventsLog));
+        report.flush();
+        report.close();
     }
 
     private void checkPermissionsJudge(String judgeMail) throws Exception
     {
-        if(judgeMail == null){
-            throw new NullPointerException("bad input");
-        }
             List<Role> subscriberRoleList = roleDb.getRoles(judgeMail);
             Judge judge = judgeDb.getJudge(judgeMail);
             boolean isJudge = false;
@@ -162,5 +179,4 @@ public class JudgeController {
             throw new Exception("This subscriber hasn't judge permissions");
         }
     }
-
 }

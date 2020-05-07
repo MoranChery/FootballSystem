@@ -26,7 +26,7 @@ public class LoggerHandler {
     }
     public FileHandler createLogFile(String path, Level level){
         try {
-            FileHandler logFileHandler = new FileHandler(path,true);
+            FileHandler logFileHandler = new FileHandler(path,5000,100,true);
             logFileHandler.setFormatter(new SimpleFormatter());
             logFileHandler.setLevel(level);
             return logFileHandler;

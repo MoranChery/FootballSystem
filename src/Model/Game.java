@@ -5,13 +5,14 @@ import Model.UsersTypes.Judge;
 
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 
 public class Game {
     private String gameID;
-    private SimpleDateFormat gameDate;
+    private Date gameDate;
     private SeasonLeague seasonLeague;
     private Team hostTeam;
     private Team guestTeam;
@@ -21,9 +22,9 @@ public class Game {
     private Set<Judge> judgesOfTheGameList;
     private GameEventsLog eventLog;
     private String majorJudge;
-    private SimpleDateFormat endGameTime;
+    private Date endGameTime;
 
-    public Game(String gameID, SimpleDateFormat gameDate, SeasonLeague seasonLeague, Team hostTeam, Team guestTeam, Court court, Set<Judge> judges,String majorJudge,SimpleDateFormat endGameTime) {
+    public Game(String gameID, Date gameDate, SeasonLeague seasonLeague, Team hostTeam, Team guestTeam, Court court, Set<Judge> judges,String majorJudge,Date endGameTime) {
         this.gameID = gameID;
         this.gameDate = gameDate;
         this.seasonLeague = seasonLeague;
@@ -40,11 +41,11 @@ public class Game {
 
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
-    public SimpleDateFormat getEndGameTime() {
+    public Date getEndGameTime() {
         return endGameTime;
     }
 
-    public void setEndGameTime(SimpleDateFormat endGameTime) {
+    public void setEndGameTime(Date endGameTime) {
         this.endGameTime = endGameTime;
     }
 
@@ -64,11 +65,11 @@ public class Game {
         this.gameID = gameID;
     }
 
-    public SimpleDateFormat getGameDate() {
+    public Date getGameDate() {
         return gameDate;
     }
 
-    public void setGameDate(SimpleDateFormat gameDate) {
+    public void setGameDate(Date gameDate) {
         this.gameDate = gameDate;
     }
 

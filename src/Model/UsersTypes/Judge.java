@@ -1,6 +1,5 @@
 package Model.UsersTypes;
 
-import Model.Enums.JudgeType;
 import Model.Enums.QualificationJudge;
 import Model.Game;
 
@@ -12,16 +11,14 @@ import java.util.Map;
 public class Judge extends Subscriber {
     private QualificationJudge qualificationJudge;
     private Map<String, String> seasonLeagueName_JudgeSeasonLeagueName;
-    private JudgeType judgeType;
     private List<String> theJudgeGameList; // gameId_game
 
-    public Judge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge, JudgeType theJudgeType) {
+    public Judge(String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) {
         setRegisteringDetails(username, password, id, firstName, lastName);
         this.qualificationJudge = qualificationJudge;
 //        this.seasonLeagueId_JudgeSeasonLeagueId = new HashMap<>();
         this.seasonLeagueName_JudgeSeasonLeagueName = new HashMap<>();
         theJudgeGameList = new ArrayList<>();
-        judgeType = theJudgeType;
     }
 
 
@@ -41,14 +38,6 @@ public class Judge extends Subscriber {
 
     public void setTheJudgeGameList(List<String> theJudgeGameList) {
         this.theJudgeGameList = theJudgeGameList;
-    }
-
-    public JudgeType getJudgeType() {
-        return judgeType;
-    }
-
-    public void setJudgeType(JudgeType judgeType) {
-        this.judgeType = judgeType;
     }
 
     public List<String> getTheJudgeGameList() {

@@ -3,6 +3,7 @@ package Data;
 import java.util.HashMap;
 import java.util.Map;
 
+import Model.Enums.Status;
 import Model.UsersTypes.Fan;
 import Model.UsersTypes.Subscriber;
 
@@ -121,6 +122,12 @@ public class SubscriberDbInMemory implements SubscriberDb {
             throw new Exception("You are already using this name as last name");
         }
         subscriber.setLastName(newLastName);
+    }
+
+    @Override
+    public void changeStatusToOnline(Subscriber subscriber) throws Exception{
+        Subscriber onlineSubscriber = subscribers.get(subscriber.getEmailAddress());
+        onlineSubscriber.setStatus(Status.ONLINE);
     }
 
 

@@ -61,21 +61,39 @@ public class GuestControllerTest {
         Fan fan = new Fan("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "Harary");
         subscriberDb.createSubscriber(fan);
         //good login
-        Assert.assertEquals(guestController.login("noY12@gmail.com", "L1o8oy"), true);
-        //wrong email
-        Assert.assertEquals(guestController.login("noY1211", "L1o8oy"), false);
+        guestController.login("noY12@gmail.com", "L1o8oy");
+        Assert.assertEquals(Status.ONLINE,subscriberDb.getSubscriber("noY12@gmail.com").getStatus()
+        );
         //wrong password
-        Assert.assertEquals(guestController.login("noY12@gmail.com", "L1o8oy4652"), false);
+        try {
+            guestController.login("noY12@gmail.com", "L1o8oy4652");
+            Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+            Assert.assertEquals("Wrong password", e.getMessage());
+        }
         //wrong password and email
         try {
             guestController.login("no@gmail.com", "L1o8oy646");
+            Assert.fail("Should throw NullPointerException");
         } catch (Exception e) {
             Assert.assertEquals(e.getMessage(), "subscriber not found");
         }
         //null email
-        Assert.assertEquals(guestController.login(null, "L1o8oy646"), false);
+        try{
+        guestController.login(null, "L1o8oy646");
+        Assert.fail("Should throw NullPointerException");
+        } catch (Exception e) {
+        Assert.assertTrue(e instanceof NullPointerException);
+        Assert.assertEquals("bad input", e.getMessage());
+         }
         //null password
-        Assert.assertEquals(guestController.login("no@gmail.com", null), false);
+        try{
+        guestController.login("no@gmail.com", null);
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+
     }
 
     @Test
@@ -323,124 +341,124 @@ public class GuestControllerTest {
     @Test
     public void judgeRegistering() {
         try {
-            guestController.registerJudge("moran@gmail.com", "L1o8oy", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("moran@gmail.com", "L1o8oy", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals(0, 1);
         }
         try {
             //register fan with exist email in subscriberDb
-            guestController.registerJudge("moran@gmail.com", "L1o8oy", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("moran@gmail.com", "L1o8oy", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("subscriber already exists", e.getMessage());
         }
 
         //null email
         try {
-            guestController.registerJudge(null, "L1o8oy", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge(null, "L1o8oy", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //not valid email
         try {
-            guestController.registerJudge("bla", "L1o8oy", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("bla", "L1o8oy", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //wrong password
         try {
-            guestController.registerJudge("noa@gmail.com", "//nsco12", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noa@gmail.com", "//nsco12", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //null password
         try {
-            guestController.registerJudge("noY12@gmail.com", null, 207785070, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", null, 207785070, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //empty password
         try {
-            guestController.registerJudge("noY12@gmail.com", "", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "", 207785070, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //not valid id
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid id
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", -12, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", -12, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid id
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 1111111111, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 1111111111, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid id
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", null, "Noy", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", null, "Noy", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //not valid first name
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid first name
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, null, "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, null, "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid first name
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "noy132", "Harary", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "noy132", "Harary", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //not valid last name
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid last name
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "Noy", null, QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "Noy", null, QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid last name
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy123", QualificationJudge.NATIONAL, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy123", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //null QualificationJudge
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy123", null, JudgeType.MAJOR_JUDGE);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy123", null);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //null JudgeType
         try {
-            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy123", QualificationJudge.NATIONAL, null);
+            guestController.registerJudge("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy123", QualificationJudge.NATIONAL);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }

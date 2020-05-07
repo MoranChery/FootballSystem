@@ -6,17 +6,20 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static java.lang.Math.toIntExact;
 
 public class GameEvent {
     private String gameId;
     private String eventId;
-    private SimpleDateFormat gameDate;
-    private Time eventTime;
+    private Date gameDate;
+    private Date eventTime;
     private Integer eventMinute;
     private GameEventType gameEventType;
     private String description;
 
-    public GameEvent(String gameId, SimpleDateFormat gameDate, Time eventTime, Integer eventMinute, GameEventType gameEventType, String description) {
+    public GameEvent(String gameId, Date gameDate, Date eventTime, Integer eventMinute,GameEventType gameEventType, String description) {
         this.eventId = UUID.randomUUID().toString();
         this.gameDate = gameDate;
         this.eventTime = eventTime;
@@ -42,19 +45,19 @@ public class GameEvent {
         this.eventId = eventId;
     }
 
-    public SimpleDateFormat getGameDate() {
+    public Date getGameDate() {
         return gameDate;
     }
 
-    public void setGameDate(SimpleDateFormat gameDate) {
+    public void setGameDate(Date gameDate) {
         this.gameDate = gameDate;
     }
 
-    public Time getEventTime() {
+    public Date getEventTime() {
         return eventTime;
     }
 
-    public void setEventTime(Time eventTime) {
+    public void setEventTime(Date eventTime) {
         this.eventTime = eventTime;
     }
 
@@ -80,5 +83,18 @@ public class GameEvent {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "GameEvent{" +
+                "gameId='" + gameId + '\'' +
+                ", eventId='" + eventId + '\'' +
+                ", gameDate=" + gameDate +
+                ", eventTime=" + eventTime +
+                ", eventMinute=" + eventMinute +
+                ", gameEventType=" + gameEventType +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

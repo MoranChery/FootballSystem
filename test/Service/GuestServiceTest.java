@@ -35,7 +35,7 @@ public class GuestServiceTest {
     @Test
     public void loginTest() throws Exception {
         try {
-            guestController.registerFan("registerFan@gmail.com","hi123",123456789,"noy","harary");
+            guestController.registerFan("registerFan@gmail.com","hi123",123456789,"noy","harari");
         } catch (Exception e) {
             Assert.assertEquals(0,1);
         }
@@ -47,14 +47,16 @@ public class GuestServiceTest {
             Assert.assertEquals(0,1);
         }
         //wrong password
-        Assert.assertEquals(guestService.login("registerFan@gmail.com","hi1135156"),false);
+        try {
+            guestService.login("registerFan@gmail.com","hi1135156");
+        } catch (Exception e) {
+            Assert.assertEquals(e.getMessage(),"Wrong password");
+        }
         //unexist email
         try {
             guestService.login("Fan@gmail.com","hi1135156");
         }catch (Exception e){
             Assert.assertEquals(e.getMessage(),"subscriber not found");
         }
-        //invalid email
-        Assert.assertEquals(guestService.login("registerFan.com","hi1135156"),false);
     }
 }

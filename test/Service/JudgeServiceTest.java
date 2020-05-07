@@ -1,11 +1,9 @@
 package Service;
 
-import Controller.JudgeController;
 import Data.*;
 import Model.Court;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
-import Model.Enums.JudgeType;
 import Model.Enums.QualificationJudge;
 import Model.Game;
 import Model.SeasonLeague;
@@ -16,10 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class JudgeServiceTest {
 
@@ -48,7 +43,7 @@ public class JudgeServiceTest {
     }
     @Test
     public void wantToEditQualificationLegal() throws Exception {
-        Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
+        Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         judgeDb.createJudge(newJudge);
         String theQualificationJudge = QualificationJudge.NATIONAL.toString();
         judgeService.wantToEditQualification("email", theQualificationJudge);
@@ -66,7 +61,7 @@ public class JudgeServiceTest {
     }
     @Test
     public void addGameToTheJudgeGameLegal() throws Exception {
-        Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR, JudgeType.MAJOR_JUDGE);
+        Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         judgeDb.createJudge(newJudge);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Team homeTeam = new Team();
@@ -74,7 +69,7 @@ public class JudgeServiceTest {
         SeasonLeague seasonLeague = new SeasonLeague("A", "B", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         Set<Judge> judges = new HashSet<>();
         Court court = new Court("court", "Netanya");
-        Game game = new Game("1", simpleDateFormat, null, new Team(), new Team(), null, judges,null,null);
+        Game game = new Game("1", new Date(), null, new Team(), new Team(), null, judges,null,null);
         gameDb.createGame(game);
         judgeService.addGameToTheJudge(newJudge.getEmailAddress(), game);
         Assert.assertTrue(newJudge.getTheJudgeGameList().contains(game.getGameID()));
