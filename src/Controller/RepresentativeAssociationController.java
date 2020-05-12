@@ -6,9 +6,12 @@ import Model.Enums.*;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.RepresentativeAssociation;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class RepresentativeAssociationController
+public class RepresentativeAssociationController extends Observable implements Observer
 {
     private RepresentativeAssociationDb representativeAssociationDb;
     private SubscriberDb subscriberDb;
@@ -18,6 +21,7 @@ public class RepresentativeAssociationController
     private SeasonLeagueDb seasonLeagueDb;
     private JudgeDb judgeDb;
     private JudgeSeasonLeagueDb judgeSeasonLeagueDb;
+    private GameDb gameDb;
 
     public RepresentativeAssociationController()
     {
@@ -29,6 +33,7 @@ public class RepresentativeAssociationController
         this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
         this.judgeDb = JudgeDbInMemory.getInstance();
         this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
+        this.gameDb = GameDbInMemory.getInstance();
     }
 
     /**
@@ -257,5 +262,37 @@ public class RepresentativeAssociationController
             }
         }
         return false;
+    }
+
+
+    public void changeGameLocation(String repMail, String newLocation, String gameID) throws Exception {
+
+        if(repMail.isEmpty() || newLocation.isEmpty() || gameID.isEmpty()){
+            throw new Exception("The value is empty");
+        }
+        if(repMail == null || newLocation == null || gameID == null){
+            throw new NullPointerException("bad input");
+        }
+        Game game = gameDb.getGame(gameID);
+        if(game == null){
+            throw new NotFoundException("game not in DB");
+        }
+        Court theGameCourt = game.getCourt();
+        if(theGameCourt.getCourtCity().equals(newLocation)){
+            throw new Exception("same location");
+        }
+
+
+
+
+
+    }
+    public void changeGameDate(String repMail, Date newDate, String gameID){
+
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
     }
 }

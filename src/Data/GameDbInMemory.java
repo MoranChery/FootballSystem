@@ -1,5 +1,6 @@
 package Data;
 
+import Model.Court;
 import Model.Game;
 import Model.UsersTypes.Judge;
 
@@ -57,6 +58,16 @@ public class GameDbInMemory implements GameDb {
             throw new NotFoundException("Game not found");
         }
         return theGame;
+    }
+
+    @Override
+    public void changeGameLocation(String newLocation, String gameID) throws Exception {
+        if(!allGamesMap.containsKey(gameID)){
+            throw new Exception("The game is not in the DB");
+        }
+        Game theGame = allGamesMap.get(gameID);
+        Court court = theGame.getCourt();
+        court.setCourtCity(newLocation);
     }
 
     @Override

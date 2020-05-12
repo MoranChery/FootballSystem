@@ -12,9 +12,10 @@ import Model.UsersTypes.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Set;
 
-public class SystemAdministratorController {
+public class SystemAdministratorController extends Observable {
     private TeamDb teamDb;
     private SubscriberDb subscriberDb;
     private CoachDb coachDb;

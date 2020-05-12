@@ -138,7 +138,7 @@ public class GuestController {
      * @param firstName
      * @param lastName
      * @param qualificationJudge
-     * @param theJudgeType
+//     * @param theJudgeType
      * @throws Exception if the judge is already exist
      */
     public void registerJudge(String emailAddress, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {

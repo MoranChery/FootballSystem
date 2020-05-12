@@ -60,7 +60,6 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
     public void removeRepresentativeAssociation(String email) throws Exception{
         representativeAssociationMap.remove(email);
     }
-
     /**
      * For the tests-Clear the RepresentativeAssociation Map from the DB.
      */
