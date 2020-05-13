@@ -281,6 +281,8 @@ public class RepresentativeAssociationController extends Observable implements O
         if(theGameCourt.getCourtCity().equals(newLocation)){
             throw new Exception("same location");
         }
+        gameDb.changeGameLocation(newLocation,gameID);
+        notifyObservers("location");
 
 
 

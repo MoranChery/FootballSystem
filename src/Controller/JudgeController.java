@@ -15,19 +15,23 @@ import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class JudgeController {
+public class JudgeController implements Observer{
     private JudgeDb judgeDb;
     private GameDb gameDb;
     private GameEventsDb gameEventsDb;
     private RoleDb roleDb;
     private Gson gson = new Gson();
     private Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+    private RepresentativeAssociationController repController;
 
     public JudgeController() {
         this.judgeDb = JudgeDbInMemory.getInstance();
         gameDb = GameDbInMemory.getInstance();
         roleDb = RoleDbInMemory.getInstance();
         gameEventsDb = GameEventsDbInMemory.getInstance();
+    }
+    public void setRepController(RepresentativeAssociationController controller){
+        repController = controller;
     }
 
     /**
@@ -177,6 +181,15 @@ public class JudgeController {
             }
         if(!isJudge){
             throw new Exception("This subscriber hasn't judge permissions");
+        }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if(o == repController){
+            if(arg.equals("location")){
+
+            }
         }
     }
 }
