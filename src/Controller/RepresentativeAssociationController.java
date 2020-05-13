@@ -282,11 +282,11 @@ public class RepresentativeAssociationController extends Observable implements O
             throw new Exception("same location");
         }
         gameDb.changeGameLocation(newLocation,gameID);
-        notifyObservers("location");
-
-
-
-
+        String[] data = new String[2];
+        data[0] = "location";
+        data[1] = gameID;
+        setChanged();
+        notifyObservers(data);
 
     }
     public void changeGameDate(String repMail, Date newDate, String gameID){

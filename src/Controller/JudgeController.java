@@ -15,7 +15,7 @@ import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class JudgeController implements Observer{
+public class JudgeController {
     private JudgeDb judgeDb;
     private GameDb gameDb;
     private GameEventsDb gameEventsDb;
@@ -181,15 +181,6 @@ public class JudgeController implements Observer{
             }
         if(!isJudge){
             throw new Exception("This subscriber hasn't judge permissions");
-        }
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        if(o == repController){
-            if(arg.equals("location")){
-
-            }
         }
     }
 }

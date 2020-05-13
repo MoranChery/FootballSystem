@@ -11,7 +11,7 @@ public abstract class Subscriber extends User {
     protected Integer id;
     protected String firstName;
     protected String LastName;
-    protected Status status = Status.OFFLINE;
+    protected Status status = Status.ONLINE;
 
 
     public void setRegisteringDetails(String emailAddress, String password, Integer id, String firstName, String lastName){
