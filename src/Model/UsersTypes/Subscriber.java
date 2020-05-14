@@ -11,7 +11,7 @@ public abstract class Subscriber extends User {
     protected Integer id;
     protected String firstName;
     protected String LastName;
-    protected Status status = Status.ONLINE;
+    protected Status status;
 
 
     public void setRegisteringDetails(String emailAddress, String password, Integer id, String firstName, String lastName){
@@ -20,6 +20,7 @@ public abstract class Subscriber extends User {
         setLastName(lastName);
         setPassword(password);
         setEmailAddress(emailAddress);
+        status = Status.ONLINE;
     }
 
     public void setRegisteringDetails(String emailAddress,Integer id, String firstName, String lastName){
@@ -27,6 +28,7 @@ public abstract class Subscriber extends User {
         setFirstName(firstName);
         setId(id);
         setLastName(lastName);
+        //status = Status.ONLINE;
     }
 
     public void setId(Integer id) {

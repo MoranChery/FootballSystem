@@ -6,10 +6,7 @@ import Model.Enums.*;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.RepresentativeAssociation;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 public class RepresentativeAssociationController extends Observable implements Observer
 {
@@ -282,9 +279,11 @@ public class RepresentativeAssociationController extends Observable implements O
             throw new Exception("same location");
         }
         gameDb.changeGameLocation(newLocation,gameID);
-        String[] data = new String[2];
+        Set<Judge> judgesOfThisGame = game.getJudgesOfTheGameList();
+        Object[] data = new Object[3];
         data[0] = "location";
         data[1] = gameID;
+        data[2] = judgesOfThisGame;
         setChanged();
         notifyObservers(data);
 
