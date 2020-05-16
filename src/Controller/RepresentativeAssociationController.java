@@ -288,8 +288,30 @@ public class RepresentativeAssociationController extends Observable implements O
         notifyObservers(data);
 
     }
-    public void changeGameDate(String repMail, Date newDate, String gameID){
-
+    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
+        if(repMail.isEmpty() || gameID.isEmpty()){
+            throw new Exception("The value is empty");
+        }
+        if(newDate == null){
+            throw new NullPointerException("bad input");
+        }
+        Game game = gameDb.getGame(gameID);
+        if(game == null){
+            throw new NotFoundException("game not in DB");
+        }
+        Date theOriginalDate = game.getGameDate();
+        if(theOriginalDate.equals(newDate)){
+            throw new Exception("same date");
+        }
+        gameDb.changeGameDate(repMail, newDate, gameID);
+        Set<Judge> judgesOfThisGame = game.getJudgesOfTheGameList();
+        Object[] data = new Object[4];
+        data[0] = "date";
+        data[1] = game;
+        data[2] = judgesOfThisGame;
+        data[3] = newDate;
+        setChanged();
+        notifyObservers(data);
     }
 
     @Override

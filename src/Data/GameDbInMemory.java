@@ -5,6 +5,7 @@ import Model.Game;
 import Model.UsersTypes.Judge;
 
 import javax.print.attribute.standard.NumberUp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -68,6 +69,15 @@ public class GameDbInMemory implements GameDb {
         Game theGame = allGamesMap.get(gameID);
         Court court = theGame.getCourt();
         court.setCourtCity(newLocation);
+    }
+
+    @Override
+    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
+        if(!allGamesMap.containsKey(gameID)){
+            throw new Exception("The game is not in the DB");
+        }
+        Game theGame = allGamesMap.get(gameID);
+        theGame.setGameDate(newDate);
     }
 
     @Override

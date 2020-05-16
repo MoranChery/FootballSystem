@@ -103,7 +103,7 @@ public class RepresentativeAssociationService {
      * @param firstName-firstName                                         of the new Judge.
      * @param lastName-lastName                                           of the new Judge.
      * @param qualificationJudge-qualification                            of the new Judge.
-     * @param judgeType-type                                              of the new Judge.
+//     * @param judgeType-type                                              of the new Judge.
      * @throws Exception-if details are incorrect.
      */
     public void createJudge(String representativeAssociationEmailAddress, String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
