@@ -1,10 +1,12 @@
-package Model;
+package Controller;
 
 import Controller.RepresentativeAssociationController;
 import Controller.SubscriberController;
 import Data.GameDb;
 import Data.SubscriberDb;
+import Model.Alert;
 import Model.Enums.Status;
+import Model.Game;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.Subscriber;
 
@@ -13,11 +15,11 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
-public class Notification extends Observable implements Observer {
+public class NotificationController extends Observable implements Observer {
 
     private SubscriberDb subscriberDb;
     private Map<String, Subscriber> allSubscribersThatNeedToGetAlerts;
-    private Map<String,Alert> alertMapToSave; // <subscriberMail, Alert>
+    private Map<String, Alert> alertMapToSave; // <subscriberMail, Alert>
     private RepresentativeAssociationController repControll;
     private SubscriberController subscriberController;
     private GameDb gameDb;
