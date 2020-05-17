@@ -20,6 +20,7 @@ public class Notification extends Observable implements Observer {
     private Map<String,Alert> alertMapToSave; // <subscriberMail, Alert>
     private RepresentativeAssociationController repControll;
     private SubscriberController subscriberController;
+    private GameDb gameDb;
 
 
     @Override
@@ -30,6 +31,11 @@ public class Notification extends Observable implements Observer {
             if(theValues[0].equals("location")){
                 // there was change in the location of the game
                 Set<Judge> judges = (Set<Judge>) theValues[2];
+                try {
+                    Game theGame = gameDb.getGame(theValues[1].toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 for (Judge j: judges) {
                     if(j.getStatus().equals(Status.ONLINE)){
                         sendMessage();
@@ -54,10 +60,13 @@ public class Notification extends Observable implements Observer {
     }
 
 
-    public Alert createAlert(String typeOfMessage){
+    public Alert createAlert(String typeOfMessage/**, Object theObject **/){
         Alert alertToSend = null;
         if(typeOfMessage.equals("location")){
-            String header = "Dear judge";
+            String header = "Dear judge, There was change in the location of a game you assigned to";
+//            Game game = (Game)theObject;
+//            String body = "The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
+//                    + game.getGuestTeam().getTeamName() + " have new location. The new court is" + game.getCourt().getCourtCity();
         }
         return alertToSend;
     }
