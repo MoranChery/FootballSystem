@@ -1,12 +1,19 @@
 package Controller;
 
+import Data.AlertDb;
+import Data.AlertDbInMemory;
 import Data.SubscriberDb;
 import Data.SubscriberDbInMemory;
+import Model.Alert;
 import Model.Enums.Status;
 import Model.UsersTypes.Subscriber;
 
+import java.util.List;
+
 public class SubscriberController {
     private SubscriberDb subscriberDb;
+    private boolean wantAlertsInMail;
+    private AlertDb alertDb;
 //    private CoachDb coachDb;
 //    private JudgeDb judgeDb;
 //    private PlayerDb playerDb;
@@ -19,6 +26,8 @@ public class SubscriberController {
 
     public SubscriberController() {
         subscriberDb = SubscriberDbInMemory.getInstance();
+        alertDb = AlertDbInMemory.getInstance();
+        wantAlertsInMail = false;
 //        coachDb = CoachDbInMemory.getInstance();
 //        judgeDb = JudgeDbInMemory.getInstance();
 //        playerDb = PlayerDbInMemory.getInstance();
@@ -131,5 +140,25 @@ public class SubscriberController {
         subscriberDb.wantToEditLastName(subscriberMail, newLastName);
     }
 
+    public void afterLoginSendAlerts(String subscriberMail) throws Exception {
+        if(alertDb.haveAlertInDB(subscriberMail)){
+            List<Alert> userAlerts = alertDb.getAlertsForUser(subscriberMail);
+            for (Alert a: userAlerts) {
+                if(wantAlertsInMail){
+                    //TODO: send alert by mail
+                }
+                else {
+                    //TODO: send alert by system
+                }
+            }
+        }
+    }
 
+    public boolean isWantAlertsInMail() {
+        return wantAlertsInMail;
+    }
+
+    public void setWantAlertsInMail(boolean wantAlertsInMail) {
+        this.wantAlertsInMail = wantAlertsInMail;
+    }
 }
