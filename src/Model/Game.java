@@ -19,12 +19,12 @@ public class Game {
     private Court court;
     private Integer hostTeamScore;
     private Integer guestTeamScore;
-    private Set<Judge> judgesOfTheGameList;
+    private Set<String> judgesOfTheGameList;
     private GameEventsLog eventLog;
     private String majorJudge;
     private Date endGameTime;
 
-    public Game(String gameID, Date gameDate, SeasonLeague seasonLeague, Team hostTeam, Team guestTeam, Court court, Set<Judge> judges,String majorJudge,Date endGameTime) {
+    public Game(String gameID, Date gameDate, SeasonLeague seasonLeague, Team hostTeam, Team guestTeam, Court court, Set<String> judges,String majorJudge,Date endGameTime) {
         this.gameID = gameID;
         this.gameDate = gameDate;
         this.seasonLeague = seasonLeague;
@@ -121,11 +121,11 @@ public class Game {
         this.guestTeamScore = guestTeamScore;
     }
 
-    public Set<Judge> getJudgesOfTheGameList() {
+    public Set<String> getJudgesOfTheGameList() {
         return judgesOfTheGameList;
     }
 
-    public void setJudgesOfTheGameList(Set<Judge> judgesOfTheGameList) {
+    public void setJudgesOfTheGameList(Set<String> judgesOfTheGameList) {
         this.judgesOfTheGameList = judgesOfTheGameList;
     }
     public GameEventsLog getEventLog() {

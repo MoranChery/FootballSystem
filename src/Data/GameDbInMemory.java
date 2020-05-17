@@ -42,11 +42,11 @@ public class GameDbInMemory implements GameDb {
         if(theGame == null){
             throw new NotFoundException("Game not found");
         }
-        Set<Judge> theJudgesOfThisGameList = theGame.getJudgesOfTheGameList();
-        if(theJudgesOfThisGameList.contains(judgeToAdd)){
+        Set<String> theJudgesOfThisGameList = theGame.getJudgesOfTheGameList();
+        if(theJudgesOfThisGameList.contains(judgeToAdd.getEmailAddress())){
             throw new Exception("This judge already belong to this game");
         }
-        theJudgesOfThisGameList.add(judgeToAdd);
+        theJudgesOfThisGameList.add(judgeToAdd.getEmailAddress());
     }
 
     @Override
@@ -54,6 +54,7 @@ public class GameDbInMemory implements GameDb {
         if(gameID == null){
             throw new NullPointerException("bad input");
         }
+        //TODO : make sure that we get all of the details
         Game theGame = allGamesMap.get(gameID);
         if(theGame == null){
             throw new NotFoundException("Game not found");

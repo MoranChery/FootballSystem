@@ -30,18 +30,23 @@ public class Notification extends Observable implements Observer {
             Alert alert = createAlert(theValues[0].toString(), theValues[1]);
             if(theValues[0].equals("location")){
                 // there was change in the location of the game
-                Set<Judge> judges = (Set<Judge>) theValues[2];
+                Set<String> judges = (Set<String>) theValues[2];
                 try {
                     Game theGame = gameDb.getGame(theValues[1].toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                for (Judge j: judges) {
-                    if(j.getStatus().equals(Status.ONLINE)){
-                        sendMessage(alert);
-                    }
-                    else{
-                        alertMapToSave.put(j.getEmailAddress(), alert);
+                for (String j: judges) {
+                    try {
+                        Judge judge = (Judge) subscriberDb.getSubscriber(j);
+                        if(judge.getStatus().equals(Status.ONLINE)){
+                            sendMessage(alert);
+                        }
+                        else{
+                            alertMapToSave.put(judge.getEmailAddress(), alert);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
