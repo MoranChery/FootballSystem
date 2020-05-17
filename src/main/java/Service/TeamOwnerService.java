@@ -15,6 +15,7 @@ import Model.UsersTypes.TeamOwner;
 import components.CreateTeamRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -43,7 +44,12 @@ public class TeamOwnerService {
     @GetMapping(value = "teams/{teamName}")
     @ResponseStatus(HttpStatus.OK)
     public Team getTeam(@PathVariable String teamName) throws Exception {
-        return teamOwnerController.getTeam(teamName);
+        try {
+            return teamOwnerController.getTeam(teamName);
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found", e);
+        }
     }
 
     @PostMapping(value = "/teams")
