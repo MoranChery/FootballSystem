@@ -9,9 +9,9 @@ import Model.*;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.RepresentativeAssociation;
 
-import java.util.List;
+import java.util.*;
 
-public class RepresentativeAssociationController
+public class RepresentativeAssociationController extends Observable implements Observer
 {
     private RepresentativeAssociationDb representativeAssociationDb;
     private SubscriberDb subscriberDb;
@@ -21,6 +21,7 @@ public class RepresentativeAssociationController
     private SeasonLeagueDb seasonLeagueDb;
     private JudgeDb judgeDb;
     private JudgeSeasonLeagueDb judgeSeasonLeagueDb;
+    private GameDb gameDb;
 
     public RepresentativeAssociationController()
     {
@@ -32,6 +33,7 @@ public class RepresentativeAssociationController
         this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
         this.judgeDb = JudgeDbInMemory.getInstance();
         this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
+        this.gameDb = GameDbInMemory.getInstance();
     }
 
     /**
@@ -260,5 +262,64 @@ public class RepresentativeAssociationController
             }
         }
         return false;
+    }
+
+
+    public void changeGameLocation(String repMail, String newLocation, String gameID) throws Exception {
+
+        if(repMail.isEmpty() || newLocation.isEmpty() || gameID.isEmpty()){
+            throw new Exception("The value is empty");
+        }
+        if(repMail == null || newLocation == null || gameID == null){
+            throw new NullPointerException("bad input");
+        }
+        Game game = gameDb.getGame(gameID);
+        if(game == null){
+            throw new NotFoundException("game not in DB");
+        }
+        Court theGameCourt = game.getCourt();
+        if(theGameCourt.getCourtCity().equals(newLocation)){
+            throw new Exception("same location");
+        }
+        gameDb.changeGameLocation(newLocation,gameID);
+
+        Set<String> judgesOfThisGame = game.getJudgesOfTheGameList();
+        Object[] data = new Object[3];
+        data[0] = "location";
+        data[1] = game;
+        data[2] = judgesOfThisGame;
+        setChanged();
+        notifyObservers(data);
+
+    }
+    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
+        if(repMail.isEmpty() || gameID.isEmpty()){
+            throw new Exception("The value is empty");
+        }
+        if(newDate == null){
+            throw new NullPointerException("bad input");
+        }
+        Game game = gameDb.getGame(gameID);
+        if(game == null){
+            throw new NotFoundException("game not in DB");
+        }
+        Date theOriginalDate = game.getGameDate();
+        if(theOriginalDate.equals(newDate)){
+            throw new Exception("same date");
+        }
+        gameDb.changeGameDate(repMail, newDate, gameID);
+        Set<String> judgesOfThisGame = game.getJudgesOfTheGameList();
+        Object[] data = new Object[4];
+        data[0] = "date";
+        data[1] = game;
+        data[2] = judgesOfThisGame;
+        data[3] = newDate;
+        setChanged();
+        notifyObservers(data);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
     }
 }

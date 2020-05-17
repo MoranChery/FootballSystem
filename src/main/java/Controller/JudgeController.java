@@ -25,12 +25,16 @@ public class JudgeController {
     private RoleDb roleDb;
     private Gson gson = new Gson();
     private Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+    private RepresentativeAssociationController repController;
 
     public JudgeController() {
         judgeDb = JudgeDbInMemory.getInstance();
         gameDb = GameDbInMemory.getInstance();
         roleDb = RoleDbInMemory.getInstance();
         gameEventsDb = GameEventsDbInMemory.getInstance();
+    }
+    public void setRepController(RepresentativeAssociationController controller){
+        repController = controller;
     }
 
     /**
