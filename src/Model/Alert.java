@@ -7,6 +7,11 @@ public class Alert {
     private String msgHeader;
     private String msgBody;
 
+    public Alert(String msgHeader, String msgBody) {
+        this.msgHeader = msgHeader;
+        this.msgBody = msgBody;
+    }
+
 
     //getter and setters
     public String getMsgHeader() {

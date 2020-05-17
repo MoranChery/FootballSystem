@@ -38,7 +38,7 @@ public class Notification extends Observable implements Observer {
                 }
                 for (Judge j: judges) {
                     if(j.getStatus().equals(Status.ONLINE)){
-                        sendMessage();
+                        sendMessage(alert);
                     }
                     else{
                         alertMapToSave.put(j.getEmailAddress(), alert);
@@ -49,7 +49,7 @@ public class Notification extends Observable implements Observer {
                 Set<Judge> judges = (Set<Judge>) theValues[2];
                 for (Judge j: judges) {
                     if(j.getStatus().equals(Status.ONLINE)){
-                        sendMessage();
+                        sendMessage(alert);
                     }
                     else {
                         alertMapToSave.put(j.getEmailAddress(), alert);
@@ -60,6 +60,13 @@ public class Notification extends Observable implements Observer {
     }
 
 
+    /**
+     * This function create instance of alert that need to send.
+     * It's uses the info and create the head and the body of the alert
+     * @param typeOfMessage - String - the type of event that need to send alert
+     * @param theObject
+     * @return Alert - the alert that created
+     */
     public Alert createAlert(String typeOfMessage, Object theObject){
         Alert alertToSend = null;
         if(typeOfMessage.equals("location")){
@@ -67,11 +74,16 @@ public class Notification extends Observable implements Observer {
             Game game = (Game)theObject;
             String body = "The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
                     + game.getGuestTeam().getTeamName() + " have new location. The new court is" + game.getCourt().getCourtCity();
+            alertToSend = new Alert(header, body);
         }
         return alertToSend;
     }
 
-    public void sendMessage(){
+    /**
+     * This function send an alert to subscribers that need to get this message
+     * @param theAlert Alert - the message this function need to send
+     */
+    public void sendMessage(Alert theAlert){
 
     }
 }
