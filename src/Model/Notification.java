@@ -27,7 +27,7 @@ public class Notification extends Observable implements Observer {
     public void update(Observable o, Object arg) {
         if (o == repControll){
             Object[] theValues = (Object[]) arg;
-            Alert alert = createAlert(theValues[0].toString());
+            Alert alert = createAlert(theValues[0].toString(), theValues[1]);
             if(theValues[0].equals("location")){
                 // there was change in the location of the game
                 Set<Judge> judges = (Set<Judge>) theValues[2];
@@ -60,13 +60,13 @@ public class Notification extends Observable implements Observer {
     }
 
 
-    public Alert createAlert(String typeOfMessage/**, Object theObject **/){
+    public Alert createAlert(String typeOfMessage, Object theObject){
         Alert alertToSend = null;
         if(typeOfMessage.equals("location")){
             String header = "Dear judge, There was change in the location of a game you assigned to";
-//            Game game = (Game)theObject;
-//            String body = "The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
-//                    + game.getGuestTeam().getTeamName() + " have new location. The new court is" + game.getCourt().getCourtCity();
+            Game game = (Game)theObject;
+            String body = "The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
+                    + game.getGuestTeam().getTeamName() + " have new location. The new court is" + game.getCourt().getCourtCity();
         }
         return alertToSend;
     }
