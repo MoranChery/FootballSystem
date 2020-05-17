@@ -34,16 +34,21 @@ public class NotificationController extends Observable implements Observer {
             Set<String> judges = theGame.getJudgesOfTheGameList();
             for (String j: judges) {
                 try {
-                    Judge judge = (Judge) subscriberDb.getSubscriber(j);
-                    if(judge.getStatus().equals(Status.ONLINE)){
-                        sendMessage(alert);
-                    }
-                    else{
-                        alertDb.createAlertInDb(judge.getEmailAddress(), alert);
-                    }
+                    alertDb.createAlertInDb(j, alert);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+//                try {
+//                    Judge judge = (Judge) subscriberDb.getSubscriber(j);
+//                    if(judge.getStatus().equals(Status.ONLINE)){
+//                        sendMessage(alert);
+//                    }
+//                    else{
+//                        alertDb.createAlertInDb(judge.getEmailAddress(), alert);
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
             }
         }
     }
