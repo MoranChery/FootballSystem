@@ -6,6 +6,7 @@ import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
 import Model.LoggerHandler;
 
+import java.util.Date;
 import java.util.logging.Level;
 
 public class RepresentativeAssociationService {
@@ -103,7 +104,7 @@ public class RepresentativeAssociationService {
      * @param firstName-firstName                                         of the new Judge.
      * @param lastName-lastName                                           of the new Judge.
      * @param qualificationJudge-qualification                            of the new Judge.
-     * @param judgeType-type                                              of the new Judge.
+     *                                                                    //     * @param judgeType-type                                              of the new Judge.
      * @throws Exception-if details are incorrect.
      */
     public void createJudge(String representativeAssociationEmailAddress, String username, String password, Integer id, String firstName, String lastName, QualificationJudge qualificationJudge) throws Exception {
@@ -182,16 +183,16 @@ public class RepresentativeAssociationService {
      * @throws Exception
      */
     public void changeCalculateLeaguePointsPolicy(String representativeAssociationEmailAddress, String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception {
-       try{
-        if (representativeAssociationEmailAddress == null) {
-            throw new Exception("Only RepresentativeAssociation has permissions to this action!");
+        try {
+            if (representativeAssociationEmailAddress == null) {
+                throw new Exception("Only RepresentativeAssociation has permissions to this action!");
+            }
+            representativeAssociationController.changeCalculateLeaguePointsPolicy(representativeAssociationEmailAddress, seasonLeagueName, calculateLeaguePoints);
+            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  was changed to SeasonLeague \"" + seasonLeagueName + "\"");
+        } catch (Exception e) {
+            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  wasn't changed to SeasonLeague \"" + seasonLeagueName + "\" because: " + e.getMessage());
+            throw e;
         }
-        representativeAssociationController.changeCalculateLeaguePointsPolicy(representativeAssociationEmailAddress, seasonLeagueName, calculateLeaguePoints);
-        loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints +"\"  was changed to SeasonLeague \"" + seasonLeagueName + "\"");
-    } catch (Exception e) {
-        loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints +"\"  wasn't changed to SeasonLeague \"" + seasonLeagueName+ "\" because: " + e.getMessage());
-        throw e;
-    }
     }
 
     /**
@@ -201,6 +202,26 @@ public class RepresentativeAssociationService {
      */
     public RepresentativeAssociationController getRepresentativeAssociationController() {
         return representativeAssociationController;
+    }
+
+
+    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
+        if(repMail.isEmpty() || gameID.isEmpty()){
+            throw new Exception("The value is empty");
+        }
+        if (newDate == null){
+            throw new NullPointerException("bad input");
+        }
+        representativeAssociationController.changeGameDate(repMail, newDate, gameID);
+    }
+
+
+
+    public void changeGameLocation(String repMail, String newLocation, String gameID) throws Exception {
+        if(repMail.isEmpty() || gameID.isEmpty() || newLocation.isEmpty()){
+            throw new Exception("The value is empty");
+        }
+        representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
     }
 }
 

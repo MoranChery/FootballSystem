@@ -7,7 +7,7 @@ import Model.UsersTypes.*;
 
 import java.util.*;
 
-public class TeamOwnerController {
+public class TeamOwnerController implements Observer{
     private TeamDb teamDb;
     private PlayerDb playerDb;
     private TeamManagerDb teamManagerDb;
@@ -770,5 +770,10 @@ public class TeamOwnerController {
         if(!isPermitted){
             throw new Exception("This user hasn't Permissions for this operation");
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
     }
 }

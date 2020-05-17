@@ -25,12 +25,16 @@ public class JudgeController {
     private RoleDb roleDb;
     private Gson gson = new Gson();
     private Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+    private RepresentativeAssociationController repController;
 
     public JudgeController() {
-        this.judgeDb = JudgeDbInMemory.getInstance();
+        judgeDb = JudgeDbInMemory.getInstance();
         gameDb = GameDbInMemory.getInstance();
         roleDb = RoleDbInMemory.getInstance();
         gameEventsDb = GameEventsDbInMemory.getInstance();
+    }
+    public void setRepController(RepresentativeAssociationController controller){
+        repController = controller;
     }
 
     /**
@@ -162,6 +166,8 @@ public class JudgeController {
         report.flush();
         report.close();
     }
+
+
 
     private void checkPermissionsJudge(String judgeMail) throws Exception
     {

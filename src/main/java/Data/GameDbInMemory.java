@@ -1,8 +1,11 @@
 package Data;
 
+import Model.Court;
 import Model.Game;
 import Model.UsersTypes.Judge;
 
+import javax.print.attribute.standard.NumberUp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -39,11 +42,11 @@ public class GameDbInMemory implements GameDb {
         if(theGame == null){
             throw new NotFoundException("Game not found");
         }
-        Set<Judge> theJudgesOfThisGameList = theGame.getJudgesOfTheGameList();
-        if(theJudgesOfThisGameList.contains(judgeToAdd)){
+        Set<String> theJudgesOfThisGameList = theGame.getJudgesOfTheGameList();
+        if(theJudgesOfThisGameList.contains(judgeToAdd.getEmailAddress())){
             throw new Exception("This judge already belong to this game");
         }
-        theJudgesOfThisGameList.add(judgeToAdd);
+        theJudgesOfThisGameList.add(judgeToAdd.getEmailAddress());
     }
 
     @Override
@@ -51,11 +54,31 @@ public class GameDbInMemory implements GameDb {
         if(gameID == null){
             throw new NullPointerException("bad input");
         }
+        //TODO : make sure that we get all of the details
         Game theGame = allGamesMap.get(gameID);
         if(theGame == null){
             throw new NotFoundException("Game not found");
         }
         return theGame;
+    }
+
+    @Override
+    public void changeGameLocation(String newLocation, String gameID) throws Exception {
+        if(!allGamesMap.containsKey(gameID)){
+            throw new Exception("The game is not in the DB");
+        }
+        Game theGame = allGamesMap.get(gameID);
+        Court court = theGame.getCourt();
+        court.setCourtCity(newLocation);
+    }
+
+    @Override
+    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
+        if(!allGamesMap.containsKey(gameID)){
+            throw new Exception("The game is not in the DB");
+        }
+        Game theGame = allGamesMap.get(gameID);
+        theGame.setGameDate(newDate);
     }
 
     @Override
