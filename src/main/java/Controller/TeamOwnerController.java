@@ -71,7 +71,7 @@ public class TeamOwnerController implements Observer{
        }
         checkPermissions(teamOwnerEmail,null,PermissionType.CREATE_NEW_TEAM);
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
-        teamDb.createTeam(teamName);
+        teamDb.insertTeam(teamName,budget,TeamStatus.ACTIVE);
         teamOwnerDb.updateTeamOwnerTeam(teamDb.getTeam(teamName),teamOwnerEmail);
         for (Player player : players) {
 
@@ -85,7 +85,6 @@ public class TeamOwnerController implements Observer{
         }
         addCourt(teamName,teamOwnerEmail,court.getCourtName(),court.getCourtCity());
         Team team = getTeam(teamName);
-        team.setBudget(budget);
         TeamPage teamPage = new TeamPage(teamName, team);
         pageDb.createTeamPage(teamName, team);
         teamDb.addTeamPage(teamPage);

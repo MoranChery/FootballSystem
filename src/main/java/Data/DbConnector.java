@@ -21,7 +21,7 @@ public class DbConnector
 
     public static final String URL1 = "jdbc:mysql://localhost:3306/";
     public static final String USER = "root";
-    public static final String PASSWORD = "root";
+    public static final String PASSWORD = "roiL0210";
 
     private static final DbConnector instance = new DbConnector();
 
@@ -372,6 +372,11 @@ public class DbConnector
         Connection connectionDb = getConnection();
         Statement statement = connectionDb.createStatement();
         statement.executeUpdate(createTableSqlQuery);
+//        statement.addBatch();
+//        statement.addBatch();
+//        statement.addBatch();
+//        statement.addBatch();
+//        statement.executeBatch();
     }
 
     private void addConstraintToTables() throws SQLException

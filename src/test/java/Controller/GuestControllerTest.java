@@ -810,7 +810,7 @@ public class GuestControllerTest {
         //create for the test
         Team team=null;
         try {
-            teamDb.createTeam("ofakim");
+            teamDb.insertTeam("ofakim");
             team=teamDb.getTeam("ofakim");
         } catch (Exception e) {
             //not should get into the catch
@@ -957,7 +957,7 @@ public class GuestControllerTest {
     public void teamOwnerRegistering() {
         Team team = null;
         try {
-            teamDb.createTeam("team");
+            teamDb.insertTeam("team");
             team = teamDb.getTeam("team");
         } catch (Exception e) {
             //should't get here

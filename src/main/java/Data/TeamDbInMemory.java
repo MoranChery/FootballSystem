@@ -30,13 +30,20 @@ public class TeamDbInMemory implements TeamDb {
         return ourInstance;
     }
 
+    @Override
+    public void insertTeam(String teamName) throws Exception {
+
+    }
+
     /**
      * create team in DB
      * @param teamName
+     * @param budget
+     * @param active
      * @throws Exception
      */
     @Override
-    public void createTeam(String teamName) throws Exception {
+    public void insertTeam(String teamName, Double budget, TeamStatus active) throws Exception {
         if(teamName == null) {
             throw new NullPointerException("bad input");
         }
