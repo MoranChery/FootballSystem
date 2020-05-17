@@ -1,12 +1,14 @@
 package Controller;
 
 import Data.*;
+import Model.Alert;
 import Model.Enums.*;
 import Model.PersonalPage;
 import Model.Team;
 import Model.UsersTypes.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class GuestController {
@@ -22,6 +24,7 @@ public class GuestController {
     private RepresentativeAssociationDb representativeAssociationDb;
     private PageDb pageDb;
     private TeamDb teamDb;
+    private AlertDb alertDb;
 
     public GuestController() {
         subscriberDb = SubscriberDbInMemory.getInstance();
@@ -36,6 +39,7 @@ public class GuestController {
         representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
         pageDb = PageDbInMemory.getInstance();
         teamDb = TeamDbInMemory.getInstance();
+        alertDb = AlertDbInMemory.getInstance();
     }
 
     //todo: call use case 2.2 from UI
@@ -82,6 +86,13 @@ public class GuestController {
             throw new Exception("Wrong password");
         }
         subscriberDb.changeStatusToOnline(subscriber);
+        if(alertDb.haveAlertInDB(emailAddress)){
+            List<Alert> userAlerts = alertDb.getAlertsForUser(emailAddress);
+            for (Alert a: userAlerts) {
+                //TODO: send alert
+            }
+        }
+
     }
 
     /**
