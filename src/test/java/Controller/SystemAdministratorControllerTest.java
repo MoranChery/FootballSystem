@@ -51,7 +51,7 @@ public class SystemAdministratorControllerTest {
     @Test
     public void closeExistTeam() {
         try {
-            TeamDbInMemory.getInstance().createTeam("barca");
+            TeamDbInMemory.getInstance().insertTeam("barca");
             systemAdministratorController.closeTeamForEver("barca");
         } catch (Exception e) {
             //not should enter here
@@ -167,7 +167,7 @@ public class SystemAdministratorControllerTest {
     @Test
     public void removeCoach() throws Exception {
         guestController.registerCoach("coach@gmail.com", "23bkh", 123456789, "noy", "harary", CoachRole.MAJOR, QualificationCoach.UEFA_A);
-        TeamDbInMemory.getInstance().createTeam("team");
+        TeamDbInMemory.getInstance().insertTeam("team");
         Team team = TeamDbInMemory.getInstance().getTeam("team");
         team.setTeamStatus(TeamStatus.ACTIVE);
         Coach coach = CoachDbInMemory.getInstance().getCoach("coach@gmail.com");

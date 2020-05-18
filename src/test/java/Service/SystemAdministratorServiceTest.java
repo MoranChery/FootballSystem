@@ -3,6 +3,7 @@ package Service;
 import Controller.GuestController;
 import Data.*;
 import Model.Enums.RoleType;
+import Model.Enums.TeamStatus;
 import Model.UsersTypes.Fan;
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,7 +69,7 @@ public class SystemAdministratorServiceTest {
     @Test
     public void closeExistTeam(){
         try {
-            TeamDbInMemory.getInstance().createTeam("barca");
+            TeamDbInMemory.getInstance().insertTeam("barca");
             systemAdministratorService.closeTeamForEver("barca");
         } catch (Exception e) {
             //not should enter here

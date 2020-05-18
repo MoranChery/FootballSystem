@@ -238,33 +238,33 @@ public class TeamOwnerService {
         teamOwnerController.updateCourtDetails(teamName, ownerEmailAddress, courtName, courtCity);
     }
 
-
-    public static void main(String[] args) throws Exception {
-       TeamOwnerService teamOwnerService = new TeamOwnerService();
-        String teamName = "TeamName";
-        teamOwnerService.teamOwnerController.getTeamDb().createTeam(teamName);
-        String ownerMail = "owner@gmail.com";
-        Court court = new Court("courtName", "courtCity");
-        CourtDbInMemory.getInstance().createCourt(court);
-
-        TeamOwner teamOwner = new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-        teamOwnerService.teamOwnerController.getTeamOwnerDb().createTeamOwner(teamOwner);
-        RoleDbInMemory.getInstance().createRole(ownerMail, teamName, RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
-
-
-        ArrayList<TeamManager> teamManagers = new ArrayList<>();
-        teamManagers.add(new TeamManager("email1@gmail.com", 2, "first", "last", "owner@gmail.com"));
-        teamManagers.add(new TeamManager("email2@gmail.com", 3, "first", "last", "owner@gmail.com"));
-        ArrayList<Coach> coaches = new ArrayList<>();
-        coaches.add(new Coach("email3@gmail.com", 4, "first", "last", CoachRole.MAJOR, QualificationCoach.UEFA_A));
-        coaches.add(new Coach("email4@gmail.com", 5, "first", "last", CoachRole.MAJOR, QualificationCoach.UEFA_A));
-        ArrayList<Player> players = new ArrayList<>();
-        players.add(new Player("email5@gmail.com", 6, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
-        players.add(new Player("email6@gmail.com", 7, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
-
-
-//        teamOwnerService.createNewTeam(teamName, ownerMail, players, coaches, teamManagers, court, 1000.0);
-
-    }
+//
+//    public static void main(String[] args) throws Exception {
+//       TeamOwnerService teamOwnerService = new TeamOwnerService();
+//        String teamName = "TeamName";
+//        teamOwnerService.teamOwnerController.getTeamDb().insertTeam(teamName, budget, TeamStatus.ACTIVE);
+//        String ownerMail = "owner@gmail.com";
+//        Court court = new Court("courtName", "courtCity");
+//        CourtDbInMemory.getInstance().createCourt(court);
+//
+//        TeamOwner teamOwner = new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
+//        teamOwnerService.teamOwnerController.getTeamOwnerDb().createTeamOwner(teamOwner);
+//        RoleDbInMemory.getInstance().createRole(ownerMail, teamName, RoleType.TEAM_OWNER);
+//        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+//
+//
+//        ArrayList<TeamManager> teamManagers = new ArrayList<>();
+//        teamManagers.add(new TeamManager("email1@gmail.com", 2, "first", "last", "owner@gmail.com"));
+//        teamManagers.add(new TeamManager("email2@gmail.com", 3, "first", "last", "owner@gmail.com"));
+//        ArrayList<Coach> coaches = new ArrayList<>();
+//        coaches.add(new Coach("email3@gmail.com", 4, "first", "last", CoachRole.MAJOR, QualificationCoach.UEFA_A));
+//        coaches.add(new Coach("email4@gmail.com", 5, "first", "last", CoachRole.MAJOR, QualificationCoach.UEFA_A));
+//        ArrayList<Player> players = new ArrayList<>();
+//        players.add(new Player("email5@gmail.com", 6, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
+//        players.add(new Player("email6@gmail.com", 7, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
+//
+//
+////        teamOwnerService.createNewTeam(teamName, ownerMail, players, coaches, teamManagers, court, 1000.0);
+//
+//    }
 }
