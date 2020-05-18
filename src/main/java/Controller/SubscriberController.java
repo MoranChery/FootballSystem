@@ -153,6 +153,12 @@ public class SubscriberController {
             }
         }
     }
+    public void userWantAlertInMail(String userMail) throws Exception {
+        if(userMail.isEmpty()){
+            throw new Exception("bad input");
+        }
+        setWantAlertsInMail(true);
+    }
 
     public boolean isWantAlertsInMail() {
         return wantAlertsInMail;
