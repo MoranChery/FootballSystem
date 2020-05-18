@@ -4,7 +4,7 @@ import Model.Enums.PermissionType;
 
 import java.util.List;
 
-public interface PermissionsDb extends Db{
+public interface PermissionDb extends Db{
 
     void createPermission(String emailAddress, PermissionType permissionType) throws Exception;
 

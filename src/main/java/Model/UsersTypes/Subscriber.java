@@ -5,13 +5,26 @@ import Model.Enums.Status;
 import java.util.Objects;
 
 
-public abstract class Subscriber extends User {
+public class Subscriber extends User {
     protected String emailAddress;
     protected String password;
     protected Integer id;
     protected String firstName;
     protected String LastName;
     protected Status status;
+
+    public Subscriber(String userName, String password, Integer id, String first_name, String last_name, Status status) {
+        setFirstName(first_name);
+        setId(id);
+        setLastName(last_name);
+        setPassword(password);
+        setEmailAddress(userName);
+        setStatus(status);
+    }
+
+    public Subscriber() {
+
+    }
 
 
     public void setRegisteringDetails(String emailAddress, String password, Integer id, String firstName, String lastName){
@@ -95,5 +108,17 @@ public abstract class Subscriber extends User {
     @Override
     public int hashCode() {
         return Objects.hash(emailAddress, password, id, firstName, LastName, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Subscriber{" +
+                "emailAddress='" + emailAddress + '\'' +
+                ", password='" + password + '\'' +
+                ", id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

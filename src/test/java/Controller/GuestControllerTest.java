@@ -59,7 +59,7 @@ public class GuestControllerTest {
     @Test
     public void login() throws Exception {
         Fan fan = new Fan("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "Harary");
-        subscriberDb.createSubscriber(fan);
+        subscriberDb.insertSubscriber(fan);
         //good login
         guestController.login("noY12@gmail.com", "L1o8oy");
         Assert.assertEquals(Status.ONLINE,subscriberDb.getSubscriber("noY12@gmail.com").getStatus()

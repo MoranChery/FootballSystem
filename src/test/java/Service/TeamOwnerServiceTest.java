@@ -88,7 +88,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         Date birthDate = new Date();
 
@@ -121,7 +121,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         String teamManagerToAdd = "email@gmail.com";
         teamOwnerService.addTeamManager(teamName, teamManagerToAdd, 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
@@ -149,7 +149,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         String coachToAdd = "email@gmail.com";
         teamOwnerService.addCoach(teamName, ownerEmail,coachToAdd, 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
@@ -178,7 +178,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         teamOwnerService.addCourt(teamName, ownerEmail,"courtName", "courtCity");
         Team team = teamOwnerService.getTeam(teamName);
@@ -196,7 +196,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         teamOwnerService.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         Team team = teamOwnerService.getTeam(teamName);
@@ -221,7 +221,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         teamOwnerService.addTeamManager(teamName, "email@gmail.com", 1, "firstPlayer", "lastPlayer", new ArrayList<>(),ownerEmail);
         Team team = teamOwnerService.getTeam(teamName);
@@ -246,7 +246,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
         String coachToRemove = "email@gmail.com";
         coachDb.createCoach(new Coach(coachToRemove, 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
         teamOwnerService.addCoach(teamName,ownerEmail, coachToRemove, 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
@@ -274,7 +274,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         CourtDbInMemory courtDbInMemory = CourtDbInMemory.getInstance();
         courtDbInMemory.createCourt(new Court("courtName", "courtCity"));
@@ -298,7 +298,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
         Team team = teamOwnerService.getTeam(teamName);
         team.setBudget(1000.0);
         teamOwnerService.addFinancialActivity(teamName, ownerEmail,1000.0, "Description", FinancialActivityType.INCOME);
@@ -317,7 +317,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
         Team team = teamOwnerService.getTeam(teamName);
         team.setTeamStatus(TeamStatus.ACTIVE);
         teamOwnerService.changeStatusToInActive(teamName,"owner@gmail.com");
@@ -332,7 +332,7 @@ public class TeamOwnerServiceTest {
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(teamOwnerEmail,teamName,RoleType.TEAM_OWNER);
 
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
         Team team = teamOwnerService.getTeam(teamName);
         team.setTeamStatus(TeamStatus.INACTIVE);
         teamOwnerService.changeStatusToActive(teamName, teamOwnerEmail);
@@ -348,9 +348,9 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
-        playerDb.createPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
+        playerDb.insertPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
         teamOwnerService.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         teamOwnerService.updatePlayerDetails(teamName,ownerEmail, "email@gmail.com", "changePlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         Team team = teamOwnerService.getTeam(teamName);
@@ -366,12 +366,12 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         Player player = new Player("teamOwnerToAdd@gmail.com", 1, "firstPlayerName", "lastPlayerName", new Date(), PlayerRole.GOALKEEPER);
-        playerDb.createPlayer(player);
+        playerDb.insertPlayer(player);
         RoleDbInMemory.getInstance().createRole("teamOwnerToAdd@gmail.com", null, RoleType.PLAYER);
-        SubscriberDbInMemory.getInstance().createSubscriber(player);
+        SubscriberDbInMemory.getInstance().insertSubscriber(player);
 
         teamOwnerService.subscriptionTeamOwner(teamName, ownerEmail, "teamOwnerToAdd@gmail.com");
 
@@ -394,7 +394,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(teamOwnerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(teamOwnerMail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         teamOwnerService.addPlayer(teamName,teamOwnerMail,ownerToAdd,  4, "firstPlayerName", "lastPlayerName",new Date(), PlayerRole.GOALKEEPER);
         Thread.sleep(100);
@@ -433,7 +433,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(teamOwnerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(teamOwnerMail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         teamOwnerService.addPlayer(teamName,teamOwnerMail,managerToRemove,  4, "firstPlayerName", "lastPlayerName",new Date(), PlayerRole.GOALKEEPER);
         Thread.sleep(1000);
@@ -461,7 +461,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         String managerToAdd = "teamManagerToAdd@gmail.com";
         teamOwnerService.addPlayer(teamName, ownerEmail,managerToAdd, 1, "firstPlayerName", "lastPlayerName", new Date(), PlayerRole.GOALKEEPER);
@@ -482,7 +482,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerMail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
 
         ArrayList<TeamManager> teamManagers = new ArrayList<>();
@@ -533,7 +533,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         teamOwnerService.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         teamOwnerService.updateCoachDetails(teamName,"owner@gmail.com", "email@gmail.com", "changePlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
@@ -551,7 +551,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         teamOwnerService.addCourt(teamName, ownerEmail, "courtName","cityName");
         teamOwnerService.updateCourtDetails(teamName,"owner@gmail.com", "courtName", "courtCity");
@@ -568,7 +568,7 @@ public class TeamOwnerServiceTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamOwnerService.getTeam(teamName));
         teamOwnerDb.createTeamOwner(teamOwner);
         RoleDbInMemory.getInstance().createRole(ownerEmail, teamName, RoleType.TEAM_OWNER);
-        SubscriberDbInMemory.getInstance().createSubscriber(teamOwner);
+        SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         List<PermissionType> permissionTypes = new ArrayList<>();
         permissionTypes.add(PermissionType.ADD_FINANCIAL);

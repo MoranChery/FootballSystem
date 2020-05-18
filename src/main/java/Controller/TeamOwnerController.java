@@ -18,7 +18,7 @@ public class TeamOwnerController implements Observer{
     private RoleDb roleDb;
     private FinancialActivityDb financialActivityDb;
     private PageDb pageDb;
-    private PermissionsDb permissionDb;
+    private PermissionDb permissionDb;
 
     public TeamDb getTeamDb() {
         return teamDb;
@@ -114,7 +114,7 @@ public class TeamOwnerController implements Observer{
             player = playerDb.getPlayer(emailAddress);
             /*get the team of the player if there is a team already, will throw exception*/
             if (player.getTeam() != null) {
-                if(teamName.equals(player.getTeam().getTeamName())){
+                if(teamName.equals(player.getTeam())){
                     throw new Exception("Player associated this team");
                 }
                 throw new Exception("Player associated with a team");
@@ -146,11 +146,11 @@ public class TeamOwnerController implements Observer{
             } catch(NotFoundException ex) {
                 /*give random password to player when open new subscriber*/
                 currPlayer.setPassword(UUID.randomUUID().toString());
-                subscriberDb.createSubscriber(currPlayer);
+                subscriberDb.insertSubscriber(currPlayer);
                 /*Player doesnt exist in the db - add to players's db*/
                 // TODO: 14/04/2020 add message to the new subscriber
             }
-            playerDb.createPlayer(currPlayer);
+            playerDb.insertPlayer(currPlayer);
             player = currPlayer;
         }
         /*add to DB the player to the team*/
@@ -231,7 +231,7 @@ public class TeamOwnerController implements Observer{
             } catch(NotFoundException ex) {
                 /*give random password to player when open new subscriber*/
                 currTeamManager.setPassword(UUID.randomUUID().toString());
-                subscriberDb.createSubscriber(currTeamManager);
+                subscriberDb.insertSubscriber(currTeamManager);
                 /*teamManager doesnt exist in the db - add to teamManagers's db*/
                 // TODO: 14/04/2020 add message to the new subscriber
             }
@@ -275,7 +275,7 @@ public class TeamOwnerController implements Observer{
             coach = coachDb.getCoach(emailAddress);
             /*get the team of the coach if there is a team already, will throw exception*/
             if (coach.getTeam() != null) {
-                if(teamName.equals(coach.getTeam().getTeamName())){
+                if(teamName.equals(coach.getTeam())){
                     throw new Exception("Coach associated this team");
                 }
                 throw new Exception("Coach associated with a team");
@@ -307,7 +307,7 @@ public class TeamOwnerController implements Observer{
                 /*give random password to player when open new subscriber*/
                 currCoach.setPassword(UUID.randomUUID().toString());
                 /*create subscriber in db*/
-                subscriberDb.createSubscriber(currCoach);
+                subscriberDb.insertSubscriber(currCoach);
                 /*Coach doesnt exist in the db - add to coachs's db*/
                 // TODO: 14/04/2020 add message to the new subscriber
             }
@@ -382,8 +382,8 @@ public class TeamOwnerController implements Observer{
         /* get the player from the database*/
         Player player = playerDb.getPlayer(playerEmailAddress);
         /*check if the team that associated with the player match to the player want to delete*/
-        Team teamPlayer = player.getTeam();
-        if(teamPlayer == null || !teamName.equals(teamPlayer.getTeamName())) {
+        String teamPlayer = player.getTeam();
+        if(teamPlayer == null || !teamName.equals(teamPlayer)) {
             throw new Exception("Player is not part with associated team");
         }
         teamDb.removePlayer(teamName, playerEmailAddress);
@@ -432,8 +432,8 @@ public class TeamOwnerController implements Observer{
         /* get the coach from the database*/
         Coach coach = coachDb.getCoach(coachEmailAddress);
         /*check if the team that associated with the coach match to the coach want to delete*/
-        Team coachTeam = coach.getTeam();
-        if(coachTeam == null || !teamName.equals(coachTeam.getTeamName())) {
+        String coachTeam = coach.getTeam();
+        if(coachTeam == null || !teamName.equals(coachTeam)) {
             throw new Exception("Coach is not part with associated team");
         }
         teamDb.removeCoach(teamName, coachEmailAddress);

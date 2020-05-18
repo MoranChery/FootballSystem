@@ -148,7 +148,7 @@ public class SubscriberControllerTest {
     public void wantToEditPasswordSamePassword() throws Exception{
         try {
             Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
-            subscriberDb.createSubscriber(newSubscriber);
+            subscriberDb.insertSubscriber(newSubscriber);
             subscriberController.wantToEditPassword(newSubscriber.getEmailAddress(), "fan1234");
         }
         catch (Exception e){
@@ -159,7 +159,7 @@ public class SubscriberControllerTest {
     @Test
     public void wantToEditPasswordLegal() throws Exception {
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
-        subscriberDb.createSubscriber(newSubscriber);
+        subscriberDb.insertSubscriber(newSubscriber);
         subscriberController.wantToEditPassword(newSubscriber.getEmailAddress(), "newPsw");
         Assert.assertEquals("newPsw", newSubscriber.getPassword());
     }
@@ -190,7 +190,7 @@ public class SubscriberControllerTest {
     public void wantToEditFirstNameSameName() throws Exception{
         try {
             Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
-            subscriberDb.createSubscriber(newSubscriber);
+            subscriberDb.insertSubscriber(newSubscriber);
             subscriberController.wantToEditFirstName(newSubscriber.getEmailAddress(), "first");
         }
         catch (Exception e){
@@ -201,7 +201,7 @@ public class SubscriberControllerTest {
     @Test
     public void wantToEditFirstNameLegal() throws Exception {
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
-        subscriberDb.createSubscriber(newSubscriber);
+        subscriberDb.insertSubscriber(newSubscriber);
         subscriberController.wantToEditFirstName(newSubscriber.getEmailAddress(), "newName");
         Assert.assertEquals("newName",newSubscriber.getFirstName());
     }
@@ -232,7 +232,7 @@ public class SubscriberControllerTest {
     public void wantToEditLastNameSameName() throws Exception{
         try {
             Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
-            subscriberDb.createSubscriber(newSubscriber);
+            subscriberDb.insertSubscriber(newSubscriber);
             subscriberController.wantToEditLastName(newSubscriber.getEmailAddress(), "last");
         }
         catch (Exception e){
@@ -243,7 +243,7 @@ public class SubscriberControllerTest {
     @Test
     public void wantToEditLastNameLegal() throws Exception {
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
-        subscriberDb.createSubscriber(newSubscriber);
+        subscriberDb.insertSubscriber(newSubscriber);
         subscriberController.wantToEditLastName(newSubscriber.getEmailAddress(), "newName");
         Assert.assertEquals("newName",newSubscriber.getLastName());
     }

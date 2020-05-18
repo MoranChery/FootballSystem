@@ -6,7 +6,7 @@ import Model.PersonalPage;
 import Model.Team;
 
 public class Coach extends Subscriber {
-    private Team team;
+    private String team;
     private CoachRole coachRole;
     private QualificationCoach qualificationCoach;
     private PersonalPage coachPage;
@@ -27,11 +27,11 @@ public class Coach extends Subscriber {
         this.coachPage = coachPage;
     }
 
-    public Team getTeam() {
+    public String getTeam() {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(String team) {
         this.team = team;
     }
 

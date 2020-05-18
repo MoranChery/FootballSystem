@@ -90,7 +90,7 @@ public class TeamDbInMemory implements TeamDb {
             throw new Exception("Player already part of the team");
         }
         players.put(emailAddress, player);
-        player.setTeam(team);
+        player.setTeam(teamName);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class TeamDbInMemory implements TeamDb {
             throw new Exception("Coach already part of the team");
         }
         coaches.put(emailAddress, coach);
-        coach.setTeam(team);
+        coach.setTeam(teamName);
     }
 
     @Override

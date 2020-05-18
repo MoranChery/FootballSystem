@@ -3,7 +3,6 @@ package Service;
 import Controller.GuestController;
 import Data.*;
 import Model.Enums.RoleType;
-import Model.Enums.TeamStatus;
 import Model.UsersTypes.Fan;
 import org.junit.Assert;
 import org.junit.Before;
@@ -106,7 +105,7 @@ public class SystemAdministratorServiceTest {
     public void removeExistSubscriber(){
         Fan fan=new Fan("noa@gmail.com", "L1o8oy", 111111111, "Noy", "Harary");
         try {
-            SubscriberDbInMemory.getInstance().createSubscriber(fan);
+            SubscriberDbInMemory.getInstance().insertSubscriber(fan);
             FanDbInMemory.getInstance().createFan(fan);
             RoleDbInMemory.getInstance().createRoleInSystem(fan.getEmailAddress(), RoleType.FAN);
         } catch (Exception e) {

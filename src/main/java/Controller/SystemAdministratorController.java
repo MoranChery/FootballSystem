@@ -30,7 +30,7 @@ public class SystemAdministratorController extends Observable {
     private RoleDb roleDb;
     private SystemAdministratorDb systemAdministratorDb;
     private RepresentativeAssociationDb representativeAssociationDb;
-    private PermissionsDb permissionDb;
+    private PermissionDb permissionDb;
     private GameDb gameDb;
 
     public SystemAdministratorController() {
@@ -180,8 +180,8 @@ public class SystemAdministratorController extends Observable {
         }
         //casting
         TeamOwner teamOwnerToRemove = (TeamOwner) subscriberToRemove;
-        Team team =teamOwnerToRemove.getTeam();
-        checkTeamStatusIsActive(team);
+        Team team = teamOwnerToRemove.getTeam();
+        checkTeamStatusIsActive(team.getTeamName());
         //remove all the teamOwner's subscribers
         for (TeamOwner owner : teamOwnerToRemove.getTeamOwnersByThis().values()) {
             removeTeamOwner(owner);
@@ -216,7 +216,7 @@ public class SystemAdministratorController extends Observable {
             fanDb.getFan(fanEmail).getMyPages().remove(coachPage);
         }
         if(coach.getTeam()!=null){
-            teamDb.removeCoach(coach.getTeam().getTeamName(), coach.getEmailAddress());
+            teamDb.removeCoach(coach.getTeam(), coach.getEmailAddress());
         }
         //remove the personal page of the coach from PersonalPageDb
         pageDb.removePersonalPageFromDb(coachPage.getPageID());
@@ -268,7 +268,7 @@ public class SystemAdministratorController extends Observable {
         //remove the personal page of the player from PersonalPageDb
         pageDb.removePersonalPageFromDb(player.getPlayerPage().getPageID());
         //remove the player from his team
-        teamDb.removePlayer(player.getTeam().getTeamName(), player.getEmailAddress());
+        teamDb.removePlayer(player.getTeam(), player.getEmailAddress());
         //remove the player from the playerDB
         playerDb.removePlayerFromDb(player);
         //remove player from roleDB
@@ -281,9 +281,9 @@ public class SystemAdministratorController extends Observable {
      * @throws Exception
      */
     private void removeTeamManager(Subscriber subscriber) throws Exception {
-        TeamManager teamManagerToRemove=(TeamManager)subscriber;
+        TeamManager teamManagerToRemove = (TeamManager)subscriber;
         Team team = teamManagerToRemove.getTeam();
-        checkTeamStatusIsActive(team);
+        checkTeamStatusIsActive(team.getTeamName());
         teamDb.removeTeamManager(team.getTeamName(),teamManagerToRemove.getEmailAddress());
         roleDb.removeRoleFromTeam(teamManagerToRemove.getEmailAddress(),team.getTeamName(), RoleType.TEAM_MANAGER);
     }
@@ -293,8 +293,8 @@ public class SystemAdministratorController extends Observable {
      * @param team
      * @throws Exception
      */
-    private void checkTeamStatusIsActive(Team team) throws Exception {
-        if(TeamStatus.INACTIVE.equals(team.getTeamStatus())){
+    private void checkTeamStatusIsActive(String team) throws Exception {
+        if(TeamStatus.INACTIVE.equals(teamDb.getTeam(team).getTeamStatus())){
             throw new Exception("This Team's status - Inactive");
         }
     }
