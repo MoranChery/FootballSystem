@@ -48,7 +48,7 @@ public class TeamOwnerService {
             return teamOwnerController.getTeam(teamName);
         }
         catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "try Not Found", e);
         }
     }
 
