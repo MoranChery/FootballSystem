@@ -10,13 +10,15 @@ import Model.Enums.Status;
 import Model.Game;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.Subscriber;
-
+import com.sun.mail.smtp.SMTPTransport;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
 
 public class NotificationController extends Observable implements Observer {
 
@@ -37,8 +39,7 @@ public class NotificationController extends Observable implements Observer {
                 try {
                     Subscriber subscriber = subscriberDb.getSubscriber(j);
                     if(subscriber.isWantAlertInMail() == true){
-                        sendMessageInMail(alert);
-
+                        sendMessageInMail(j, alert);
                     }
                     else {
                         alertDb.createAlertInDb(j, alert);
@@ -83,7 +84,61 @@ public class NotificationController extends Observable implements Observer {
      * This function send an alert to subscribers that need to get this message
      * @param theAlert Alert - the message this function need to send
      */
-    public void sendMessageInMail(Alert theAlert){
+    public void sendMessageInMail(String userMail, Alert theAlert){
+//        String SMTP_SERVER = "smtp server ";
+//        String USERNAME = "";
+//        String PASSWORD = "";
+//        String EMAIL_FROM = "noasatla@gmail.com";
+//        String EMAIL_TO = userMail;
+//        String EMAIL_TO_CC = "";
+////        String EMAIL_SUBJECT = theAlert.getMsgHeader();
+////        String EMAIL_TEXT = theAlert.getMsgBody();
+//        String EMAIL_SUBJECT = "Test Send Email via SMTP";
+//        String EMAIL_TEXT = "Hello Java Mail \n ABC123";
+//        Properties prop = System.getProperties();
+//        prop.put("mail.smtp.host", SMTP_SERVER);
+//        prop.put("mail.smtp.auth", "true");
+//        prop.put("mail.smtp.port", "25");
+//        Session session = Session.getInstance(prop, null);
+//        Message msg = new MimeMessage(session);
+//        try {
+//            // from
+//            msg.setFrom(new InternetAddress(EMAIL_FROM));
+//
+//            // to
+//            msg.setRecipients(Message.RecipientType.TO,
+//                    InternetAddress.parse(EMAIL_TO, false));
+//
+//            // cc
+//            msg.setRecipients(Message.RecipientType.CC,
+//                    InternetAddress.parse(EMAIL_TO_CC, false));
+//
+//            // subject
+//            msg.setSubject(EMAIL_SUBJECT);
+//
+//            // content
+//            msg.setText(EMAIL_TEXT);
+//
+//            msg.setSentDate(new Date());
+//
+//            // Get SMTPTransport
+//            SMTPTransport t = (SMTPTransport) session.getTransport("smtp");
+//
+//            // connect
+//            t.connect(SMTP_SERVER, USERNAME, PASSWORD);
+//
+//            // send
+//            t.sendMessage(msg, msg.getAllRecipients());
+//
+//            System.out.println("Response: " + t.getLastServerResponse());
+//
+//            t.close();
+//
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+
+
 
     }
 //    public List<Alert> getAlert(String userMail) throws Exception {
@@ -97,3 +152,6 @@ public class NotificationController extends Observable implements Observer {
 //        return userAlerts;
 //    }
 }
+
+
+
