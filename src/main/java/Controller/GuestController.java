@@ -86,8 +86,7 @@ public class GuestController {
             throw new Exception("Wrong password");
         }
         subscriberDb.changeStatusToOnline(subscriber);
-        subscriberController.afterLoginSendAlerts(emailAddress);
-
+        subscriberController.getAlerts(subscriber.getEmailAddress());
 
     }
 

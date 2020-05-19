@@ -12,6 +12,7 @@ public abstract class Subscriber extends User {
     protected String firstName;
     protected String LastName;
     protected Status status;
+    protected boolean wantAlertInMail;
 
 
     public void setRegisteringDetails(String emailAddress, String password, Integer id, String firstName, String lastName){
@@ -21,6 +22,7 @@ public abstract class Subscriber extends User {
         setPassword(password);
         setEmailAddress(emailAddress);
         status = Status.ONLINE;
+        wantAlertInMail = false;
     }
 
     public void setRegisteringDetails(String emailAddress,Integer id, String firstName, String lastName){
@@ -77,6 +79,13 @@ public abstract class Subscriber extends User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    public boolean isWantAlertInMail() {
+        return wantAlertInMail;
+    }
+
+    public void setWantAlertInMail(boolean wantAlertInMail) {
+        this.wantAlertInMail = wantAlertInMail;
     }
 
     @Override

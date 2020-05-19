@@ -12,6 +12,7 @@ import Model.UsersTypes.Judge;
 import Model.UsersTypes.Subscriber;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -34,60 +35,21 @@ public class NotificationController extends Observable implements Observer {
             Set<String> judges = theGame.getJudgesOfTheGameList();
             for (String j: judges) {
                 try {
-                    alertDb.createAlertInDb(j, alert);
+                    Subscriber subscriber = subscriberDb.getSubscriber(j);
+                    if(subscriber.isWantAlertInMail() == true){
+                        sendMessageInMail(alert);
+
+                    }
+                    else {
+                        alertDb.createAlertInDb(j, alert);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-//                try {
-//                    Judge judge = (Judge) subscriberDb.getSubscriber(j);
-//                    if(judge.getStatus().equals(Status.ONLINE)){
-//                        sendMessage(alert);
-//                    }
-//                    else{
-//                        alertDb.createAlertInDb(judge.getEmailAddress(), alert);
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
             }
         }
     }
-//    @Override
-//    public void update(Observable o, Object arg) {
-//        if (o == repControll){
-//            Object[] theValues = (Object[]) arg;
-//            Alert alert = createAlert(theValues[0].toString(), theValues[1]);
-//            Game theGame = (Game) theValues[1];
-//            Set<String> judges = theGame.getJudgesOfTheGameList();
-//            if(theValues[0].equals("location")){
-//                // there was change in the location of the game
-//                for (String j: judges) {
-//                    try {
-//                        Judge judge = (Judge) subscriberDb.getSubscriber(j);
-//                        if(judge.getStatus().equals(Status.ONLINE)){
-//                            sendMessage(alert);
-//                        }
-//                        else{
-//                            alertDb.createAlertInDb(judge.getEmailAddress(), alert);
-//                        }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//            if(theValues[0].equals("date")){
-//                Set<Judge> judges = (Set<Judge>) theValues[2];
-//                for (Judge j: judges) {
-//                    if(j.getStatus().equals(Status.ONLINE)){
-//                        sendMessage(alert);
-//                    }
-//                    else {
-//                        alertMapToSave.put(j.getEmailAddress(), alert);
-//                    }
-//                }
-//            }
-//        }
-//    }
 
 
     /**
@@ -121,7 +83,17 @@ public class NotificationController extends Observable implements Observer {
      * This function send an alert to subscribers that need to get this message
      * @param theAlert Alert - the message this function need to send
      */
-    public void sendMessage(Alert theAlert){
+    public void sendMessageInMail(Alert theAlert){
 
     }
+//    public List<Alert> getAlert(String userMail) throws Exception {
+//        if(userMail.isEmpty()){
+//            throw new Exception("bad input");
+//        }
+//        List<Alert> userAlerts = null;
+//        if(alertDb.haveAlertInDB(userMail)){
+//            userAlerts = alertDb.getAlertsForUser(userMail);
+//        }
+//        return userAlerts;
+//    }
 }

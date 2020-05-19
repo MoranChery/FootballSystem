@@ -12,8 +12,8 @@ import java.util.List;
 
 public class SubscriberController {
     private SubscriberDb subscriberDb;
-    private boolean wantAlertsInMail;
     private AlertDb alertDb;
+//    private NotificationController notificationController;
 //    private CoachDb coachDb;
 //    private JudgeDb judgeDb;
 //    private PlayerDb playerDb;
@@ -27,7 +27,7 @@ public class SubscriberController {
     public SubscriberController() {
         subscriberDb = SubscriberDbInMemory.getInstance();
         alertDb = AlertDbInMemory.getInstance();
-        wantAlertsInMail = false;
+//        notificationController = new NotificationController();
 //        coachDb = CoachDbInMemory.getInstance();
 //        judgeDb = JudgeDbInMemory.getInstance();
 //        playerDb = PlayerDbInMemory.getInstance();
@@ -140,31 +140,14 @@ public class SubscriberController {
         subscriberDb.wantToEditLastName(subscriberMail, newLastName);
     }
 
-    public void afterLoginSendAlerts(String subscriberMail) throws Exception {
-        if(alertDb.haveAlertInDB(subscriberMail)){
-            List<Alert> userAlerts = alertDb.getAlertsForUser(subscriberMail);
-            for (Alert a: userAlerts) {
-                if(wantAlertsInMail){
-                    //TODO: send alert by mail
-                }
-                else {
-                    //TODO: send alert by system
-                }
-            }
-        }
-    }
-    public void userWantAlertInMail(String userMail) throws Exception {
-        if(userMail.isEmpty()){
+    public List<Alert> getAlerts(String subscriberMail) throws Exception {
+        if(subscriberMail.isEmpty()){
             throw new Exception("bad input");
         }
-        setWantAlertsInMail(true);
-    }
-
-    public boolean isWantAlertsInMail() {
-        return wantAlertsInMail;
-    }
-
-    public void setWantAlertsInMail(boolean wantAlertsInMail) {
-        this.wantAlertsInMail = wantAlertsInMail;
+        List<Alert> userAlerts = null;
+        if(alertDb.haveAlertInDB(subscriberMail)){
+            userAlerts = alertDb.getAlertsForUser(subscriberMail);
+        }
+        return userAlerts;
     }
 }
