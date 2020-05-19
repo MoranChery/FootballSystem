@@ -77,23 +77,16 @@ public class GuestController {
      * @throws Exception
      */
     public void login(String emailAddress, String password) throws Exception {
-
-            if (emailAddress == null || password == null || !isValidEmail(emailAddress)) {
-                throw new NullPointerException("bad input");
-            }
-            //check if subscriber exists
-            Subscriber subscriber = subscriberDb.getSubscriber(emailAddress);
-            if(subscriber ==null){
-                System.out.println("null1");
-            }
-            if (!password.equals(subscriber.getPassword())) {
-                throw new Exception("Wrong password");
-            }
-            subscriberDb.changeStatusToOnline(subscriber);
-            subscriberController.afterLoginSendAlerts(subscriber.getEmailAddress());
-
-
-
+        if (emailAddress == null || password == null || !isValidEmail(emailAddress)) {
+            throw new NullPointerException("bad input");
+        }
+        //check if subscriber exists
+        Subscriber subscriber = subscriberDb.getSubscriber(emailAddress);
+        if (!password.equals(subscriber.getPassword())) {
+            throw new Exception("Wrong password");
+        }
+        subscriberDb.changeStatusToOnline(subscriber);
+        subscriberController.getAlerts(subscriber.getEmailAddress());
 
     }
 
