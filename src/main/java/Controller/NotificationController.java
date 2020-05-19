@@ -35,14 +35,6 @@ public class NotificationController extends Observable implements Observer {
             Set<String> judges = theGame.getJudgesOfTheGameList();
             for (String j: judges) {
                 try {
-                    Subscriber subscriber = subscriberDb.getSubscriber(j);
-                    if(subscriber.isWantAlertInMail() == true){
-                        sendMessageInMail(alert);
-
-                    }
-                    else {
-                        alertDb.createAlertInDb(j, alert);
-                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
