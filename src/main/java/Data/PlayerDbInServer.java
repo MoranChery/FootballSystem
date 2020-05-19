@@ -12,19 +12,22 @@ public class PlayerDbInServer implements PlayerDb{
 
     @Override
     public void insertPlayer(Player player) throws Exception {
+        if(player == null){
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
         try
         {
             // the mysql insert statement
-            String query = " insert into player (email_address,birth_date,player_role)"
-                    + " values (?,?,?)";
+            String query = " insert into player (email_address,team, birth_date,player_role)"
+                    + " values (?,?,?,?)";
 
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString (1, player.getEmailAddress());
-//            preparedStmt.setString (2, player.getTeam().getTeamName());
-            preparedStmt.setDate (2, new java.sql.Date(player.getBirthDate().getTime()));
-            preparedStmt.setString (3, player.getPlayerRole().name());
+            preparedStmt.setString (2, player.getTeam());
+            preparedStmt.setDate (3, new java.sql.Date(player.getBirthDate().getTime()));
+            preparedStmt.setString (4, player.getPlayerRole().name());
 
             // execute the preparedstatement
             preparedStmt.execute();
@@ -58,7 +61,7 @@ public class PlayerDbInServer implements PlayerDb{
         String last_name = rs.getString("last_name");
         String status = rs.getString("status");
         String team = rs.getString("team");
-        Date birth_date = rs.getDate("birth_date");
+        Date birth_date =  new java.sql.Date(rs.getDate("birth_date").getTime());
         String player_role = rs.getString("player_role");
         conn.close();
 
@@ -72,7 +75,8 @@ public class PlayerDbInServer implements PlayerDb{
     @Override
     public void updatePlayerDetails(String playerEmailAddress, String firstName, String lastName, Date birthDate, PlayerRole playerRole) throws NotFoundException, SQLException {
         Connection conn = DbConnector.getConnection();
-        String query = "UPDATE player join subscriber SET first_name = " + firstName + ", last_Name = " + lastName + " , birth_date = "+ birthDate + ", player_role = " + playerRole.name()  + "  WHERE subscriber.email_address = "+ playerEmailAddress ;
+
+        String query = "UPDATE player join subscriber SET first_name = \'" + firstName + "\', last_Name = \'" + lastName + "\', birth_date = \'"+  new java.sql.Date(birthDate.getTime()) + "\', player_role = \'" + playerRole.name()  + "\'  WHERE subscriber.email_address =  \'"+ playerEmailAddress + "\' and player.email_address = '" + playerEmailAddress + "\'" ;
         PreparedStatement preparedStmt = conn.prepareStatement(query);
         preparedStmt.executeUpdate();
         conn.close();
@@ -89,10 +93,14 @@ public class PlayerDbInServer implements PlayerDb{
     }
 
     public static void main(String[] args) throws Exception {
-        Player player = new Player("player@gmail.com","12345",111111,"player","last",new Date(),PlayerRole.GOALKEEPER);
+        Player player = new Player("player3@gmail.com","12345",111111,"player","last",new Date(),PlayerRole.GOALKEEPER);
         PlayerDbInServer playerDbInServer = new PlayerDbInServer();
 //        playerDbInServer.insertPlayer(player);
         Player player1 = playerDbInServer.getPlayer("player@gmail.com");
+        System.out.println(player1.toString());
+
+        playerDbInServer.updatePlayerDetails("player@gmail.com","yeyy","change1",new Date(),PlayerRole.GOALKEEPER);
+        player1 = playerDbInServer.getPlayer("player@gmail.com");
         System.out.println(player1.toString());
     }
 }

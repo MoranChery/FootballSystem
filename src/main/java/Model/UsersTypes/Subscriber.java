@@ -33,7 +33,7 @@ public class Subscriber extends User {
         setLastName(lastName);
         setPassword(password);
         setEmailAddress(emailAddress);
-        status = Status.ONLINE;
+        status = Status.OFFLINE;
     }
 
     public void setRegisteringDetails(String emailAddress,Integer id, String firstName, String lastName){

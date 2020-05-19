@@ -54,4 +54,19 @@ public class Coach extends Subscriber {
     public PersonalPage getCoachPage() {
         return coachPage;
     }
+
+    @Override
+    public String toString() {
+        return "Coach{" +
+                "team='" + team + '\'' +
+                ", coachRole=" + coachRole +
+                ", qualificationCoach=" + qualificationCoach +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", password='" + password + '\'' +
+                ", id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

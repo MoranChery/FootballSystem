@@ -1,9 +1,10 @@
 package Data;
 
+import Model.Enums.CoachRole;
 import Model.Enums.PlayerRole;
+import Model.Enums.QualificationCoach;
 import Model.Enums.Status;
-import Model.UsersTypes.Player;
-import Model.UsersTypes.Subscriber;
+import Model.UsersTypes.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -100,9 +101,21 @@ public class SubscriberDbInServer implements SubscriberDb{
         Player player = new Player("player2@gmail.com","12345",111111,"player","last",new Date(), PlayerRole.GOALKEEPER);
         SubscriberDbInServer subscriberDbInServer = new SubscriberDbInServer();
 //        subscriberDbInServer.insertSubscriber(player);
-        Subscriber subscriber = subscriberDbInServer.getSubscriber("player3@gmail.com");
-        System.out.println(subscriber.toString());
+//        Subscriber subscriber = subscriberDbInServer.getSubscriber("player3@gmail.com");
+//        System.out.println(subscriber.toString());
+//        Coach coach = new Coach("coach@gmail.com", "1234",1, "first", "last", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+//        subscriberDbInServer.insertSubscriber(coach);
 
+//        Player player3 = new Player("player3@gmail.com","12345",111111,"player","last",new Date(),PlayerRole.GOALKEEPER);
+//        subscriberDbInServer.insertSubscriber(player3);
+
+        String ownerEmail = "ownedByOwner@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
+
+        subscriberDbInServer.insertSubscriber(teamOwner);
+//
+//        TeamManager teamManager = new TeamManager( "email@gmail.com","1111", 1, "firstTeamManager", "lastTeamManager", "owner@gmail.com");
+//        subscriberDbInServer.insertSubscriber(teamManager);
 
     }
 }

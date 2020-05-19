@@ -106,7 +106,7 @@ public class TeamDbInMemory implements TeamDb {
             throw new Exception("TeamManager already part of the team");
         }
         teamManagers.put(emailAddress, teamManager);
-        teamManager.setTeam(team);
+        teamManager.setTeam(team.getTeamName());
         teamManager.setOwnedByEmail(ownedByEmail);
         teamManager.setPermissionTypes(permissionTypes);
     }
@@ -246,7 +246,7 @@ public class TeamDbInMemory implements TeamDb {
 
    @Override
    public void addTeamPage(TeamPage teamPage) throws Exception {
-       String teamName = teamPage.getTeam().getTeamName();
+       Team teamName = teamPage.getTeam();
        if(teamPage == null || !teams.containsKey(teamName)) {
            throw new Exception("Team not found");
        }

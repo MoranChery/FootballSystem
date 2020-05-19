@@ -817,7 +817,7 @@ public class GuestControllerTest {
             Assert.assertEquals("1", "0");
         }
         try {
-            guestController.registerTeamOwner("owner@gmail.com", "L1o8oy", 207785070, "Noy", "Harary", team);
+            guestController.registerTeamOwner("owner@gmail.com", "L1o8oy", 207785070, "Noy", "Harary");
         } catch (Exception e) {
             //not should get into the catch
             Assert.assertEquals("1", "0");
@@ -964,124 +964,124 @@ public class GuestControllerTest {
             Assert.assertEquals(1, 0);
         }
         try {
-            guestController.registerTeamOwner("teamO@gmail.com", "L1o8oy", 207785070, "Noy", "Harary", team);
+            guestController.registerTeamOwner("teamO@gmail.com", "L1o8oy", 207785070, "Noy", "Harary");
         } catch (Exception e) {
             //should't get here
             Assert.assertEquals(1, 0);
         }
         try {
             //register teamOwner with exist email in subscriberDb
-            guestController.registerTeamOwner("teamO@gmail.com", "L1o8oy", 207785070, "Noy", "Harary", team);
+            guestController.registerTeamOwner("teamO@gmail.com", "L1o8oy", 207785070, "Noy", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("subscriber already exists", e.getMessage());
         }
 
         //null email
         try {
-            guestController.registerTeamOwner(null, "L1o8oy", 207785070, "Noy", "Harary", team);
+            guestController.registerTeamOwner(null, "L1o8oy", 207785070, "Noy", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //not valid email
         try {
-            guestController.registerTeamOwner("bla", "L1o8oy", 207785070, "Noy", "Harary", team);
+            guestController.registerTeamOwner("bla", "L1o8oy", 207785070, "Noy", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //wrong password
         try {
-            guestController.registerTeamOwner("noa@gmail.com", "//nsco12", 207785070, "Noy", "Harary", team);
+            guestController.registerTeamOwner("noa@gmail.com", "//nsco12", 207785070, "Noy", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //null password
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", null, 207785070, "Noy", "Harary", team);
+            guestController.registerTeamOwner("noY12@gmail.com", null, 207785070, "Noy", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //empty password
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "", 207785070, "Noy", "Harary", team);
+            guestController.registerTeamOwner("noY12@gmail.com", "", 207785070, "Noy", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //not valid id
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207, "Noy", "Harary", team);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207, "Noy", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid id
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", -12, "Noy", "Harary", team);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", -12, "Noy", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid id
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 1111111111, "Noy", "Harary", team);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 1111111111, "Noy", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid id
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", null, "Noy", "Harary", team);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", null, "Noy", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //not valid first name
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "", "Harary", team);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid first name
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, null, "Harary", team);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, null, "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid first name
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "noy132", "Harary", team);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "noy132", "Harary");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //not valid last name
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "", team);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid last name
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", null, team);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", null);
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //not valid last name
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy123", team);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy123");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
 
         //null team
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy", null);
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
         //unexist team
         try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy", new Team());
+            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy");
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }

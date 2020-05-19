@@ -31,7 +31,7 @@ public class TeamManagerDbInMemory implements TeamManagerDb {
      * @throws Exception
      */
     @Override
-    public void createTeamManager(TeamManager teamManager) throws Exception {
+    public void insertTeamManager(TeamManager teamManager) throws Exception {
         if(teamManager == null) {
             throw new NullPointerException("bad input");
         }
@@ -51,7 +51,7 @@ public class TeamManagerDbInMemory implements TeamManagerDb {
     }
 
     @Override
-    public void subscriptionTeamManager(Team team, String teamOwnerEmail, Subscriber subscriber, List<PermissionType> permissionTypes) throws Exception {
+    public void subscriptionTeamManager(String team, String teamOwnerEmail, Subscriber subscriber, List<PermissionType> permissionTypes) throws Exception {
         if(team == null || teamOwnerEmail == null || subscriber == null || permissionTypes == null){
             throw new NullPointerException();
         }
@@ -61,8 +61,8 @@ public class TeamManagerDbInMemory implements TeamManagerDb {
         TeamManager teamManager = new TeamManager(team,subscriber,teamOwnerEmail,permissionTypes);
         String managerEmailAddress = teamManager.getEmailAddress();
         teamManagers.put(managerEmailAddress,teamManager);
-        Map<String, TeamManager> teamManagers = team.getTeamManagers();
-        teamManagers.put(managerEmailAddress,teamManager);
+//        Map<String, TeamManager> teamManagers = team.getTeamManagers();
+//        teamManagers.put(managerEmailAddress,teamManager);
     }
 
     @Override
@@ -74,8 +74,8 @@ public class TeamManagerDbInMemory implements TeamManagerDb {
             throw new Exception("TeamManager not found");
         }
         TeamManager teamManager = teamManagers.remove(managerToRemoveEmail);
-        Map<String, TeamManager> teamManagers = teamManager.getTeam().getTeamManagers();
-        teamManagers.remove(managerToRemoveEmail);
+//        Map<String, TeamManager> teamManagers = teamManager.getTeam().getTeamManagers();
+//        teamManagers.remove(managerToRemoveEmail);
     }
 
     @Override

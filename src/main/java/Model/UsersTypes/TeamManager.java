@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class TeamManager extends Subscriber {
-    private Team team;
+    private String team;
     private String ownedByEmail;
     private List<PermissionType> permissionTypes;
 
@@ -18,7 +18,7 @@ public class TeamManager extends Subscriber {
         permissionTypes = new ArrayList<>();
     }
 
-    public TeamManager(Team team,Subscriber subscriber, String ownedById,List<PermissionType> permissionTypes) {
+    public TeamManager(String team,Subscriber subscriber, String ownedById,List<PermissionType> permissionTypes) {
         setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),subscriber.getLastName());
         this.team = team;
         this.ownedByEmail = ownedById;
@@ -30,11 +30,11 @@ public class TeamManager extends Subscriber {
         this.ownedByEmail = ownedById;
     }
 
-    public Team getTeam() {
+    public String getTeam() {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(String team) {
         this.team = team;
     }
 
@@ -66,5 +66,20 @@ public class TeamManager extends Subscriber {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), team);
+    }
+
+    @Override
+    public String toString() {
+        return "TeamManager{" +
+                "team='" + team + '\'' +
+                ", ownedByEmail='" + ownedByEmail + '\'' +
+                ", permissionTypes=" + permissionTypes +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", password='" + password + '\'' +
+                ", id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

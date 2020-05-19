@@ -48,7 +48,7 @@ public class RepresentativeAssociationController extends Observable implements O
         {
             throw new NullPointerException("No RepresentativeAssociation been created");
         }
-        representativeAssociationDb.createRepresentativeAssociation(representativeAssociation);
+        representativeAssociationDb.insertRepresentativeAssociation(representativeAssociation);
         roleDb.createRoleInSystem(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
     }
 

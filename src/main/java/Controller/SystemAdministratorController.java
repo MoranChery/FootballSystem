@@ -180,11 +180,12 @@ public class SystemAdministratorController extends Observable {
         }
         //casting
         TeamOwner teamOwnerToRemove = (TeamOwner) subscriberToRemove;
-        Team team = teamOwnerToRemove.getTeam();
-        checkTeamStatusIsActive(team.getTeamName());
+        String team = teamOwnerToRemove.getTeam();
+        checkTeamStatusIsActive(team);
         //remove all the teamOwner's subscribers
-        for (TeamOwner owner : teamOwnerToRemove.getTeamOwnersByThis().values()) {
-            removeTeamOwner(owner);
+        for (String owner : teamOwnerToRemove.getTeamOwnersByThis()) {
+            TeamOwner teamOwner = teamOwnerDb.getTeamOwner(owner);
+            removeTeamOwner(teamOwner);
         }
         //remove all the teamManager's subscribers
         List<String> allTeamManagersOwnedBy = teamManagerDb.getAllTeamManagersOwnedBy(teamOwnerToRemove.getEmailAddress());
@@ -282,10 +283,10 @@ public class SystemAdministratorController extends Observable {
      */
     private void removeTeamManager(Subscriber subscriber) throws Exception {
         TeamManager teamManagerToRemove = (TeamManager)subscriber;
-        Team team = teamManagerToRemove.getTeam();
-        checkTeamStatusIsActive(team.getTeamName());
-        teamDb.removeTeamManager(team.getTeamName(),teamManagerToRemove.getEmailAddress());
-        roleDb.removeRoleFromTeam(teamManagerToRemove.getEmailAddress(),team.getTeamName(), RoleType.TEAM_MANAGER);
+        String team = teamManagerToRemove.getTeam();
+        checkTeamStatusIsActive(team);
+        teamDb.removeTeamManager(team,teamManagerToRemove.getEmailAddress());
+        roleDb.removeRoleFromTeam(teamManagerToRemove.getEmailAddress(),team, RoleType.TEAM_MANAGER);
     }
 
     /**
