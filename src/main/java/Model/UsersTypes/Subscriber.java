@@ -5,14 +5,26 @@ import Model.Enums.Status;
 import java.util.Objects;
 
 
-public abstract class Subscriber extends User {
+public class Subscriber extends User {
     protected String emailAddress;
     protected String password;
     protected Integer id;
     protected String firstName;
     protected String LastName;
     protected Status status;
-    protected boolean wantAlertInMail;
+
+    public Subscriber(String userName, String password, Integer id, String first_name, String last_name, Status status) {
+        setFirstName(first_name);
+        setId(id);
+        setLastName(last_name);
+        setPassword(password);
+        setEmailAddress(userName);
+        setStatus(status);
+    }
+
+    public Subscriber() {
+
+    }
 
 
     public void setRegisteringDetails(String emailAddress, String password, Integer id, String firstName, String lastName){
@@ -21,8 +33,7 @@ public abstract class Subscriber extends User {
         setLastName(lastName);
         setPassword(password);
         setEmailAddress(emailAddress);
-        status = Status.ONLINE;
-        wantAlertInMail = false;
+        status = Status.OFFLINE;
     }
 
     public void setRegisteringDetails(String emailAddress,Integer id, String firstName, String lastName){
@@ -80,13 +91,6 @@ public abstract class Subscriber extends User {
     public void setPassword(String password) {
         this.password = password;
     }
-    public boolean isWantAlertInMail() {
-        return wantAlertInMail;
-    }
-
-    public void setWantAlertInMail(boolean wantAlertInMail) {
-        this.wantAlertInMail = wantAlertInMail;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -104,5 +108,17 @@ public abstract class Subscriber extends User {
     @Override
     public int hashCode() {
         return Objects.hash(emailAddress, password, id, firstName, LastName, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Subscriber{" +
+                "emailAddress='" + emailAddress + '\'' +
+                ", password='" + password + '\'' +
+                ", id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

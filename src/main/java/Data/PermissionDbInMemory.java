@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PermissionDbInMemory implements PermissionsDb {
+public class PermissionDbInMemory implements PermissionDb {
     Map<String, List<PermissionType>> permissions;
     private static PermissionDbInMemory ourInstance = new PermissionDbInMemory();
 

@@ -31,7 +31,7 @@ public class TeamDbInServer implements TeamDb{
         try
         {
             // the mysql insert statement
-            String query = " insert into teams (team_name,budget,team_status)"
+            String query = " insert into team (team_name,budget,team_status)"
                     + " values (?,?,?)";
 
             // create the mysql insert preparedstatement
@@ -114,6 +114,7 @@ public class TeamDbInServer implements TeamDb{
     public static void main(String[] args) throws Exception {
         TeamDbInServer teams = new TeamDbInServer();
         teams.insertTeam("noy",100.0,TeamStatus.ACTIVE);
+
     }
 }
 

@@ -173,7 +173,7 @@ public class SystemAdministratorControllerTest {
         Coach coach = CoachDbInMemory.getInstance().getCoach("coach@gmail.com");
         //connect coach to team
         team.getCoaches().put("coach@gmail.com", coach);
-        coach.setTeam(team);
+        coach.setTeam("team");
         //register fan to follow coach page
         guestController.registerFan("fan1@gmail.com", "L1o8oy", 111111111, "Noy", "Harary");
         Fan fan = FanDbInMemory.getInstance().getFan("fan1@gmail.com");

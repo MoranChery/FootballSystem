@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Player extends Subscriber {
-    private Team team;
+    private String team;
     private Date birthDate;
     private PlayerRole playerRole;
     private PersonalPage playerPage;
@@ -42,18 +42,18 @@ public class Player extends Subscriber {
         this.playerRole = playerRole;
     }
 
-    public Team getTeam() {
+    public String getTeam() {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(String team) {
         this.team = team;
     }
 
     public PersonalPage getPlayerPage() {
         return playerPage;
     }
-
+//
     public void setPlayerPage(PersonalPage playerPage) {
         this.playerPage = playerPage;
     }
@@ -73,7 +73,24 @@ public class Player extends Subscriber {
     public int hashCode() {
         return Objects.hash(super.hashCode(), team, birthDate, playerRole);
     }
-//    @Override
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "team='" + team + '\'' +
+                ", birthDate=" + birthDate +
+                ", playerRole=" + playerRole +
+//                ", playerPage=" + playerPage +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", password='" + password + '\'' +
+                ", id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", status=" + status +
+                '}';
+    }
+
+    //    @Override
 //    public boolean equals(Object o) {
 //        if (this == o) return true;
 //        if (!(o instanceof Player)) return false;

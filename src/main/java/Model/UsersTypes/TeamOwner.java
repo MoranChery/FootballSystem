@@ -2,46 +2,48 @@ package Model.UsersTypes;
 
 import Model.Team;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TeamOwner extends Subscriber {
 
-    private Team team;
-    private Map<String, TeamOwner> teamOwnersByThis;
+    private String team;
+    private List<String> teamOwnersByThis;
     private String ownedByEmailAddress;
 
-    public TeamOwner(String emailAddress, String password, Integer id,String firstName, String lastName, Team team ) {
+    public TeamOwner(String emailAddress, String password, Integer id,String firstName, String lastName,String team) {
         setRegisteringDetails(emailAddress,password,id,firstName,lastName);
         this.team = team;
-        this.teamOwnersByThis = new HashMap<>();
+        this.teamOwnersByThis = new ArrayList<>();
     }
 
     public TeamOwner(String emailAddress, String password, Integer id,String firstName, String lastName) {
         setRegisteringDetails(emailAddress,password,id,firstName,lastName);
-        this.teamOwnersByThis = new HashMap<>();
+        this.teamOwnersByThis = new ArrayList<>();
     }
 
-    public TeamOwner(Team team, Subscriber subscriber, String teamOwnerEmail) {
+    public TeamOwner(String team, Subscriber subscriber, String teamOwnerEmail) {
         setRegisteringDetails(subscriber.getEmailAddress(),subscriber.getId(),subscriber.getFirstName(),getLastName());
         this.team = team;
         this.ownedByEmailAddress = teamOwnerEmail;
-        this.teamOwnersByThis = new HashMap<>();
+        this.teamOwnersByThis = new ArrayList<>();
     }
 
-    public Team getTeam() {
+    public String getTeam() {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(String team) {
         this.team = team;
     }
 
-    public Map<String, TeamOwner> getTeamOwnersByThis() {
+    public List<String> getTeamOwnersByThis() {
         return teamOwnersByThis;
     }
 
-    public void setTeamOwnersByThis(Map<String, TeamOwner> teamOwnersByThis) {
+    public void setTeamOwnersByThis(List<String> teamOwnersByThis) {
         this.teamOwnersByThis = teamOwnersByThis;
     }
 
@@ -51,5 +53,20 @@ public class TeamOwner extends Subscriber {
 
     public void setOwnedByEmailAddress(String ownedByEmailAddress) {
         this.ownedByEmailAddress = ownedByEmailAddress;
+    }
+
+    @Override
+    public String toString() {
+        return "TeamOwner{" +
+                "team='" + team + '\'' +
+                ", teamOwnersByThis=" + teamOwnersByThis.toString() +
+                ", ownedByEmailAddress='" + ownedByEmailAddress + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", password='" + password + '\'' +
+                ", id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

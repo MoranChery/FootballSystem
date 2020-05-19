@@ -25,7 +25,7 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
      * @throws Exception-if details are incorrect.
      */
     @Override
-    public void createRepresentativeAssociation(RepresentativeAssociation representativeAssociation) throws Exception
+    public void insertRepresentativeAssociation(RepresentativeAssociation representativeAssociation) throws Exception
     {
         if(representativeAssociationMap.containsKey(representativeAssociation.getEmailAddress()))
         {

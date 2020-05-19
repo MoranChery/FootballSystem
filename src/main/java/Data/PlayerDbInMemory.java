@@ -27,7 +27,7 @@ public class PlayerDbInMemory implements PlayerDb {
      * @throws Exception
      */
     @Override
-    public void createPlayer(Player player) throws Exception {
+    public void insertPlayer(Player player) throws Exception {
         if(player == null){
             throw new NullPointerException("bad input");
         }
