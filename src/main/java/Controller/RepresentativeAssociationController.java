@@ -70,7 +70,7 @@ public class RepresentativeAssociationController extends Observable implements O
             throw new NullPointerException("One or more of the League details incorrect");
         }
         League league = new League(leagueName);
-        leagueDb.createLeague(league);
+        leagueDb.insertLeague(league);
     }
 
     /**
