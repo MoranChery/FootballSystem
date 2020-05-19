@@ -14,7 +14,6 @@ public class PageDbInMemory implements PageDb {
 
     private Map<String, Page> allPages;
 
-
     private static PageDbInMemory ourInstance = new PageDbInMemory();
 
     public PageDbInMemory() {
@@ -27,7 +26,7 @@ public class PageDbInMemory implements PageDb {
 
 
     @Override
-    public void addFanToPageListOfFans(String pageID, Fan fanToAdd) throws Exception {
+    public void addFanToPageFollowers(String pageID, Fan fanToAdd) throws Exception {
         if(fanToAdd == null || pageID == null){
             throw new NullPointerException("One or more of the input was null");
         }

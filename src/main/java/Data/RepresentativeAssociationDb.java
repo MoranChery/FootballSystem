@@ -10,7 +10,7 @@ public interface RepresentativeAssociationDb extends Db
      * @param representativeAssociation-the new RepresentativeAssociation.
      * @throws Exception-if details are incorrect.
      */
-    void createRepresentativeAssociation(RepresentativeAssociation representativeAssociation) throws Exception;
+    void insertRepresentativeAssociation(RepresentativeAssociation representativeAssociation) throws Exception;
 
     /**
      * Will receive from the Controller the representativeAssociation's emailAddress, return the RepresentativeAssociation.

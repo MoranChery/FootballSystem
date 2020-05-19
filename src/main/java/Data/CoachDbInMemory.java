@@ -31,7 +31,7 @@ public class CoachDbInMemory implements CoachDb {
     }
 
     @Override
-    public void createCoach(Coach coach) throws Exception {
+    public void insertCoach(Coach coach) throws Exception {
         if(coach == null) {
             throw new NullPointerException("bad input");
         }

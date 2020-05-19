@@ -48,7 +48,7 @@ public class RepresentativeAssociationController extends Observable implements O
         {
             throw new NullPointerException("No RepresentativeAssociation been created");
         }
-        representativeAssociationDb.createRepresentativeAssociation(representativeAssociation);
+        representativeAssociationDb.insertRepresentativeAssociation(representativeAssociation);
         roleDb.createRoleInSystem(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
     }
 
@@ -145,7 +145,7 @@ public class RepresentativeAssociationController extends Observable implements O
         Judge judge = new Judge(username, password, id, firstName, lastName, qualificationJudge);
         try
         {
-            subscriberDb.createSubscriber(judge);
+            subscriberDb.insertSubscriber(judge);
             try
             {
                 judgeDb.createJudge(judge);
@@ -290,7 +290,6 @@ public class RepresentativeAssociationController extends Observable implements O
         data[2] = judgesOfThisGame;
         setChanged();
         notifyObservers(data);
-
     }
     public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
         if(repMail.isEmpty() || gameID.isEmpty()){

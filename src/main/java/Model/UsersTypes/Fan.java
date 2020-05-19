@@ -17,6 +17,7 @@ public class Fan extends Subscriber {
 
 
     public Fan(String emailAddress,String password, Integer id, String firstName, String lastName) {
+        super();
         setRegisteringDetails(emailAddress, password, id, firstName, lastName);
         myPages = new HashSet<>();
         mySearchHistory = new HashSet<>();

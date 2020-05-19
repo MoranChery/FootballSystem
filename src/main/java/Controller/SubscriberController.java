@@ -39,7 +39,7 @@ public class SubscriberController {
         if (subscriber == null){
             throw new NullPointerException("Can't create this subscriber");
         }
-        subscriberDb.createSubscriber(subscriber);
+        subscriberDb.insertSubscriber(subscriber);
     }
 
     /**
