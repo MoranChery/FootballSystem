@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
 @RestController
 public class GuestService {
     private GuestController guestController;
@@ -36,12 +37,11 @@ public class GuestService {
     public Map<String, String> login(@PathVariable String email, @PathVariable String pass) throws Exception {
             String emailAddress = email;
             String password = pass;
-            try {
-             //   guestController.login(emailAddress, password);
 
-                //SubscriberController subscriberController = new SubscriberController();
-                //Subscriber subscriber= subscriberController.getSubscriber(emailAddress);
-                Subscriber subscriber = new TeamOwner("name", "name", 123123123,"name@gmail.com", "last");
+            try {
+                guestController.login(emailAddress, password);
+                SubscriberController subscriberController = new SubscriberController();
+                Subscriber subscriber= subscriberController.getSubscriber(emailAddress);
                 String type="";
                 if(subscriber instanceof TeamOwner){
                     type = "teamOwner";

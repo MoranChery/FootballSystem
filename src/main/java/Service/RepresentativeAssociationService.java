@@ -204,7 +204,6 @@ public class RepresentativeAssociationService {
         return representativeAssociationController;
     }
 
-
     public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
         if(repMail.isEmpty() || gameID.isEmpty()){
             throw new Exception("The value is empty");
@@ -214,8 +213,6 @@ public class RepresentativeAssociationService {
         }
         representativeAssociationController.changeGameDate(repMail, newDate, gameID);
     }
-
-
 
     public void changeGameLocation(String repMail, String newLocation, String gameID) throws Exception {
         if(repMail.isEmpty() || gameID.isEmpty() || newLocation.isEmpty()){

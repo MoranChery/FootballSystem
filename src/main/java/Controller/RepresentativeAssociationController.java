@@ -282,12 +282,10 @@ public class RepresentativeAssociationController extends Observable implements O
             throw new Exception("same location");
         }
         gameDb.changeGameLocation(newLocation,gameID);
-
-        Set<String> judgesOfThisGame = game.getJudgesOfTheGameList();
         Object[] data = new Object[3];
         data[0] = "location";
         data[1] = game;
-        data[2] = judgesOfThisGame;
+        data[2] = newLocation;
         setChanged();
         notifyObservers(data);
 
@@ -308,12 +306,10 @@ public class RepresentativeAssociationController extends Observable implements O
             throw new Exception("same date");
         }
         gameDb.changeGameDate(repMail, newDate, gameID);
-        Set<String> judgesOfThisGame = game.getJudgesOfTheGameList();
-        Object[] data = new Object[4];
+        Object[] data = new Object[3];
         data[0] = "date";
         data[1] = game;
-        data[2] = judgesOfThisGame;
-        data[3] = newDate;
+        data[2] = newDate;
         setChanged();
         notifyObservers(data);
     }

@@ -1,12 +1,14 @@
 package Controller;
 
 import Data.*;
+import Model.Alert;
 import Model.Enums.*;
 import Model.PersonalPage;
 import Model.Team;
 import Model.UsersTypes.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class GuestController {
@@ -22,6 +24,7 @@ public class GuestController {
     private RepresentativeAssociationDb representativeAssociationDb;
     private PageDb pageDb;
     private TeamDb teamDb;
+    private SubscriberController subscriberController;
 
     public GuestController() {
         subscriberDb = SubscriberDbInMemory.getInstance();
@@ -36,6 +39,7 @@ public class GuestController {
         representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
         pageDb = PageDbInMemory.getInstance();
         teamDb = TeamDbInMemory.getInstance();
+        subscriberController = new SubscriberController();
     }
 
     //todo: call use case 2.2 from UI
@@ -73,15 +77,24 @@ public class GuestController {
      * @throws Exception
      */
     public void login(String emailAddress, String password) throws Exception {
-        if (emailAddress == null || password == null || !isValidEmail(emailAddress)) {
-            throw new NullPointerException("bad input");
-        }
-        //check if subscriber exists
-        Subscriber subscriber = subscriberDb.getSubscriber(emailAddress);
-        if (!password.equals(subscriber.getPassword())) {
-            throw new Exception("Wrong password");
-        }
-        subscriberDb.changeStatusToOnline(subscriber);
+
+            if (emailAddress == null || password == null || !isValidEmail(emailAddress)) {
+                throw new NullPointerException("bad input");
+            }
+            //check if subscriber exists
+            Subscriber subscriber = subscriberDb.getSubscriber(emailAddress);
+            if(subscriber ==null){
+                System.out.println("null1");
+            }
+            if (!password.equals(subscriber.getPassword())) {
+                throw new Exception("Wrong password");
+            }
+            subscriberDb.changeStatusToOnline(subscriber);
+            subscriberController.afterLoginSendAlerts(subscriber.getEmailAddress());
+
+
+
+
     }
 
     /**
