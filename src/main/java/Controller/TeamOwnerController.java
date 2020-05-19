@@ -155,7 +155,7 @@ public class TeamOwnerController implements Observer{
         }
         /*add to DB the player to the team*/
         teamDb.addPlayer(teamName, player);
-        roleDb.createRole(emailAddress,teamName, RoleType.PLAYER);
+        roleDb.insertRole(emailAddress,teamName, RoleType.PLAYER);
     }
 
     /**
@@ -240,7 +240,7 @@ public class TeamOwnerController implements Observer{
         }
         /*add to DB the teamManager to the team*/
         teamDb.addTeamManager(teamName, teamManager,permissions,ownedByEmail);
-        roleDb.createRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
+        roleDb.insertRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
     }
 
     private boolean equalsDetailsTeamManager(TeamManager teamManagerInDb, TeamManager teamManagerToAdd){
@@ -316,7 +316,7 @@ public class TeamOwnerController implements Observer{
         }
         /* add to DB the player to the team*/
         teamDb.addCoach(teamName, coach);
-        roleDb.createRole(emailAddress,teamName, RoleType.COACH);
+        roleDb.insertRole(emailAddress,teamName, RoleType.COACH);
     }
 
     private boolean equalsDetailsCoach(Coach coachInDb, Coach coachToAdd){
@@ -359,7 +359,7 @@ public class TeamOwnerController implements Observer{
 //            if (team != null) {
 //                throw new Exception("There is a court associated with this team");
             court = new Court(courtName, courtCity);
-            courtDb.createCourt(court);
+            courtDb.insertCourt(court);
             courtDb.addTeamToCourt(court,team);
         }
         teamDb.addCourt(teamName, court);
@@ -491,7 +491,7 @@ public class TeamOwnerController implements Observer{
             }
         }
         teamOwnerDb.subscriptionTeamOwner(team.getTeamName(),teamOwnerEmail,subscriber);
-        roleDb.createRole(ownerToAddEmail,teamName, RoleType.TEAM_OWNER);
+        roleDb.insertRole(ownerToAddEmail,teamName, RoleType.TEAM_OWNER);
     }
 
     /**
@@ -528,7 +528,7 @@ public class TeamOwnerController implements Observer{
             permissionDb.createPermission(managerToAddEmail,pt);
         }
         teamManagerDb.subscriptionTeamManager(team.getTeamName(),teamOwnerEmail,subscriber,permissionTypes);
-        roleDb.createRole(managerToAddEmail,teamName, RoleType.TEAM_MANAGER);
+        roleDb.insertRole(managerToAddEmail,teamName, RoleType.TEAM_MANAGER);
     }
 
     /**

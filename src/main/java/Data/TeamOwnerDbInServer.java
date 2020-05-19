@@ -43,7 +43,12 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
 
     @Override
     public void updateTeamOwnerTeam(String  team, String teamOwnerEmailAddress) throws Exception {
+        Connection conn = DbConnector.getConnection();
 
+        String query = "UPDATE team_owner SET team = \'" + team + "\' WHERE email_address = \'"+ teamOwnerEmailAddress + "\'" ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
     }
 
     @Override
@@ -72,6 +77,10 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
         String status = rs.getString("status");
         String team = rs.getString("team");
         String owned_by_email = rs.getString("owned_by_email_address");
+        TeamOwner teamOwner = new TeamOwner(userName, password, id, first_name, last_name,team);
+        teamOwner.setStatus(Status.valueOf(status));
+        teamOwner.setOwnedByEmailAddress(owned_by_email);
+
 
         query = "select * from  team_owner where team_owner.owned_by_email_address = \'" + teamOwnerEmailAddress + "\'";
 
@@ -85,9 +94,6 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
         }
 
         conn.close();
-
-        TeamOwner teamOwner = new TeamOwner(userName, password, id, first_name, last_name,team);
-        teamOwner.setStatus(Status.valueOf(status));
         teamOwner.setTeamOwnersByThis(teamOwnersByThis);
         return teamOwner;
     }

@@ -20,7 +20,7 @@ public class RoleDbInMemory implements RoleDb {
 
 
     @Override
-    public void createRole(String emailAddress, String teamName, RoleType roleType){
+    public void insertRole(String emailAddress, String teamName, RoleType roleType){
         Role role = new Role(teamName, roleType);
         if(teamRoles.containsKey(emailAddress)){
             List<Role> rolesList = teamRoles.get(emailAddress);
@@ -35,7 +35,7 @@ public class RoleDbInMemory implements RoleDb {
 
     @Override
     public void createRoleInSystem(String emailAddress, RoleType roleType){
-        createRole(emailAddress,null, roleType);
+        insertRole(emailAddress,null, roleType);
     }
 
     @Override

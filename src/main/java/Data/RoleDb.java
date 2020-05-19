@@ -3,13 +3,14 @@ package Data;
 import Model.Enums.RoleType;
 import Model.Role;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface RoleDb extends Db {
 
-    void createRole(String emailAddress, String teamName, RoleType roleType);
+    void insertRole(String emailAddress, String teamName, RoleType roleType) throws SQLException;
 
-    void createRoleInSystem(String emailAddress, RoleType roleType);
+    void createRoleInSystem(String emailAddress, RoleType roleType) throws SQLException;
 
     List<Role> getRoles(String emailAddress) throws Exception;
     void removeRoleFromTeam(String EmailAddressToRemove, String teamName, RoleType roleType) throws Exception;

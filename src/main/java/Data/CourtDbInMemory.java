@@ -31,7 +31,7 @@ public class CourtDbInMemory implements CourtDb {
     }
 
     @Override
-    public void createCourt(Court court) throws Exception {
+    public void insertCourt(Court court) throws Exception {
         if (courts.containsKey(court.getCourtName())) {
             throw new Exception("Court already exists");
         }
