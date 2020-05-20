@@ -2,14 +2,15 @@ package Controller;
 
 import Controller.RepresentativeAssociationController;
 import Controller.SubscriberController;
-import Data.AlertDb;
-import Data.GameDb;
-import Data.SubscriberDb;
+import Data.*;
 import Model.Alert;
 import Model.Enums.Status;
+import Model.Enums.TeamStatus;
 import Model.Game;
+import Model.Team;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.Subscriber;
+import Model.UsersTypes.TeamOwner;
 import com.sun.mail.smtp.SMTPTransport;
 
 import javax.mail.*;
@@ -22,16 +23,27 @@ import java.util.List;
 public class NotificationController extends Observable implements Observer {
 
     private SubscriberDb subscriberDb;
-    private Map<String, Subscriber> allSubscribersThatNeedToGetAlerts;
     private RepresentativeAssociationController repControll;
     private SubscriberController subscriberController;
+    private SystemAdministratorController saController;
+    private TeamOwnerController teamOwnerController;
     private AlertDb alertDb;
+    //private TeamDb teamDb;
+
+    public NotificationController(RepresentativeAssociationController repControll, SubscriberController subscriberController, SystemAdministratorController saController, TeamOwnerController teamOwnerController) {
+        this.repControll = repControll;
+        this.subscriberController = subscriberController;
+        this.saController = saController;
+        this.teamOwnerController = teamOwnerController;
+        //this.teamDb = TeamDbInMemory.getInstance();
+        alertDb = AlertDbInMemory.getInstance();
+    }
 
     @Override
     public void update(Observable o, Object arg) {
         if (o == repControll){
             Object[] theValues = (Object[]) arg;
-            Alert alert = createAlert(theValues[0].toString(), theValues[1]);
+            Alert alert = createAlert(theValues[0].toString(), theValues[1], theValues[2]);
             Game theGame = (Game) theValues[1];
             Set<String> judges = theGame.getJudgesOfTheGameList();
             for (String j: judges) {
@@ -49,6 +61,26 @@ public class NotificationController extends Observable implements Observer {
                 }
             }
         }
+        if(o == teamOwnerController){
+            Object[] theValues = (Object[]) arg;
+            Alert alert = createAlert(theValues[0].toString(), theValues[1], theValues[2]);
+            Team theTeam = (Team) theValues[1];
+            Map <String, TeamOwner> allTeamOwners = theTeam.getTeamOwners();
+            for (String email: allTeamOwners.keySet()) {
+                TeamOwner teamOwner = allTeamOwners.get(email);
+                if(teamOwner.isWantAlertInMail()){
+                    sendMessageInMail(email, alert);
+                }
+                else {
+                    try {
+                        alertDb.createAlertInDb(email, alert);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
     }
 
 
@@ -59,20 +91,29 @@ public class NotificationController extends Observable implements Observer {
      * @param theObject
      * @return Alert - the alert that created
      */
-    public Alert createAlert(String typeOfMessage, Object theObject){
+    public Alert createAlert(String typeOfMessage, Object theObject, Object theChange){
         Alert alertToSend = null;
         if(typeOfMessage.equals("location")){
             String header = "Dear judge, There was change in the location of a game you assigned to";
             Game game = (Game)theObject;
             String body = "The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
-                    + game.getGuestTeam().getTeamName() + " have new location. The new court is" + game.getCourt().getCourtCity();
+                    + game.getGuestTeam().getTeamName() + " have new location. The new court is" + theChange.toString();
             alertToSend = new Alert(header, body);
         }
         if (typeOfMessage.equals("date")){
             String header = "Dear judge, There was change in the date of a game you assigned to";
             Game game = (Game)theObject;
+            Date gameDate = (Date) theChange;
             String body = "The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
-                    + game.getGuestTeam().getTeamName() + " have new date. The new date is" + game.getGameDate();
+                    + game.getGuestTeam().getTeamName() + " have new date. The new date is" + gameDate.getTime();
+            alertToSend.setMsgHeader(header);
+            alertToSend.setMsgBody(body);
+        }
+        if(typeOfMessage.equals("status")){
+            Team team = (Team)theObject;
+            String header = "Dear Team owner, The status of your team have changed";
+            TeamStatus teamStatus = (TeamStatus)theChange;
+            String body = "The Team " + team.getTeamName() + " new status is " + teamStatus;
             alertToSend.setMsgHeader(header);
             alertToSend.setMsgBody(body);
         }

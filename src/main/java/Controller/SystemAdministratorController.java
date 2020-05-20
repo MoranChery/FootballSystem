@@ -200,6 +200,7 @@ public class SystemAdministratorController extends Observable {
         try {
             subscriberDb.removeSubscriberFromDB(teamOwnerToRemove);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
