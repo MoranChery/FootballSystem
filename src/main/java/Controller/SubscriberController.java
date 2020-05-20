@@ -13,7 +13,6 @@ import java.util.List;
 public class SubscriberController {
     private SubscriberDb subscriberDb;
     private AlertDb alertDb;
-//    private NotificationController notificationController;
 //    private CoachDb coachDb;
 //    private JudgeDb judgeDb;
 //    private PlayerDb playerDb;
@@ -27,7 +26,6 @@ public class SubscriberController {
     public SubscriberController() {
         subscriberDb = SubscriberDbInMemory.getInstance();
         alertDb = AlertDbInMemory.getInstance();
-//        notificationController = new NotificationController();
 //        coachDb = CoachDbInMemory.getInstance();
 //        judgeDb = JudgeDbInMemory.getInstance();
 //        playerDb = PlayerDbInMemory.getInstance();
@@ -151,4 +149,7 @@ public class SubscriberController {
         }
         return userAlerts;
     }
+
+
+
 }

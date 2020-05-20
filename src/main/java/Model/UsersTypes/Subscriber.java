@@ -5,7 +5,7 @@ import Model.Enums.Status;
 import java.util.Objects;
 
 
-public abstract class Subscriber extends User {
+public class Subscriber extends User {
     protected String emailAddress;
     protected String password;
     protected Integer id;
@@ -21,6 +21,7 @@ public abstract class Subscriber extends User {
         setPassword(password);
         setEmailAddress(userName);
         setStatus(status);
+        wantAlertInMail = false;
     }
 
     public Subscriber() {
@@ -34,7 +35,7 @@ public abstract class Subscriber extends User {
         setLastName(lastName);
         setPassword(password);
         setEmailAddress(emailAddress);
-        status = Status.ONLINE;
+        status = Status.OFFLINE;
         wantAlertInMail = false;
     }
 

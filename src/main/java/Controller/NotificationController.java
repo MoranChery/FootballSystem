@@ -11,9 +11,8 @@ import Model.Game;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.Subscriber;
 import com.sun.mail.smtp.SMTPTransport;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
+
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.awt.*;
@@ -84,7 +83,46 @@ public class NotificationController extends Observable implements Observer {
      * This function send an alert to subscribers that need to get this message
      * @param theAlert Alert - the message this function need to send
      */
-    public void sendMessageInMail(String userMail, Alert theAlert){
+    public boolean sendMessageInMail(String userMail, Alert theAlert){
+        // Get a Properties object
+        Properties props = System.getProperties();
+        props.put("mail.smtp.host", "smtp.gmail.com"); //SMTP Host
+        props.put("mail.smtp.port", "465");                 //TLS Port 465
+        props.put("mail.smtp.auth", "true");                //enable authentication
+        props.put("mail.smtp.starttls.enable", "true");     //enable STARTTLS
+        props.put("mail.smtp.ssl.enable", "true");          // enable ssl
+        props.put("mail.smtp.auth", "true");
+        final String username = "group1.footballsystem@gmail.com";
+        final String password = "Admin@1234";
+        try {
+            Session session = Session.getDefaultInstance(props, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
+            // -- Create a new message --
+            Message msg = new MimeMessage(session);
+
+            // -- Set the FROM and TO fields --
+            msg.setFrom(new InternetAddress(username));
+            msg.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(userMail, false));
+            msg.setSubject(theAlert.getMsgHeader());
+            msg.setText(theAlert.getMsgBody());
+            Transport.send(msg);
+
+            System.out.println("The mail sent successfully");
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
+
+
+
+
 //        String SMTP_SERVER = "smtp server ";
 //        String USERNAME = "";
 //        String PASSWORD = "";
