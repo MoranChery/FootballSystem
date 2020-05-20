@@ -44,7 +44,7 @@ public class JudgeServiceTest {
     @Test
     public void wantToEditQualificationLegal() throws Exception {
         Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR);
-        judgeDb.createJudge(newJudge);
+        judgeDb.insertJudge(newJudge);
         String theQualificationJudge = QualificationJudge.NATIONAL.toString();
         judgeService.wantToEditQualification("email", theQualificationJudge);
         Assert.assertEquals(newJudge.getQualificationJudge().toString(),theQualificationJudge);
@@ -62,7 +62,7 @@ public class JudgeServiceTest {
     @Test
     public void addGameToTheJudgeGameLegal() throws Exception {
         Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR);
-        judgeDb.createJudge(newJudge);
+        judgeDb.insertJudge(newJudge);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Team homeTeam = new Team();
         Team awayTeam = new Team();

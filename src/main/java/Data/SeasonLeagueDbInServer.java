@@ -3,12 +3,12 @@ package Data;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.JudgeSeasonLeague;
+import Model.League;
 import Model.Season;
 import Model.SeasonLeague;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class SeasonLeagueDbInServer implements SeasonLeagueDb
 {
@@ -143,7 +143,7 @@ public class SeasonLeagueDbInServer implements SeasonLeagueDb
         }
     }
 
-    public static void main(String[] args) throws NotFoundException, SQLException
+    public static void main(String[] args) throws Exception
     {
         SeasonLeague seasonLeague11 = new SeasonLeague("seasonName1", "leagueName1", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         SeasonLeague seasonLeague12 = new SeasonLeague("seasonName1", "leagueName2", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
@@ -151,6 +151,11 @@ public class SeasonLeagueDbInServer implements SeasonLeagueDb
         SeasonLeague seasonLeague21 = new SeasonLeague("seasonName2", "leagueName1", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         SeasonLeague seasonLeague22 = new SeasonLeague("seasonName2", "leagueName2", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         SeasonLeague seasonLeague23 = new SeasonLeague("seasonName2", "leagueName3", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+
+        SeasonDbInServer seasonDbInServer = new SeasonDbInServer();
+
+        LeagueDbInServer leagueDbInServer = new LeagueDbInServer();
+
         SeasonLeagueDbInServer seasonLeagueDbInServer = new SeasonLeagueDbInServer();
         try
         {
@@ -160,6 +165,8 @@ public class SeasonLeagueDbInServer implements SeasonLeagueDb
 //            seasonLeagueDbInServer.insertSeasonLeague(seasonLeague21);
 //            seasonLeagueDbInServer.insertSeasonLeague(seasonLeague22);
 //            seasonLeagueDbInServer.insertSeasonLeague(seasonLeague23);
+
+//            seasonDbInServer.insertSeason(season1);
 //
 //            //Data.NotFoundException: SeasonLeague not found
 //            System.out.println(seasonLeagueDbInServer.getSeasonLeague(""));
@@ -177,48 +184,20 @@ public class SeasonLeagueDbInServer implements SeasonLeagueDb
             e.printStackTrace();
         }
 
-        check("seasonName1");
-    }
-
-    private static void check(String seasonName) throws SQLException, NotFoundException
-    {
-        Connection conn = DbConnector.getConnection();
-
-        // the mysql select statement
-        String query = "select league_name from season_league where season_name = \'" + seasonName + "\'";
-
-        // create the mysql select resultSet
-        Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
-
-        // checking if ResultSet is empty
-        if (rs.next() == false)
-        {
-            throw new NotFoundException("SeasonLeague not found");
-        }
-
-        System.out.println(rs.getString("league_name"));
-
-        while(rs.next() != false)
-        {
-            System.out.println(rs.getString("league_name"));
-        }
-
-//        System.out.println(rs.getFetchSize());
-
-//        Array aS = rs.getArray("league_name");
-//        for (Object s : aS)
+//        //Season season2 = seasonDbInServer.getSeason("seasonWithoutLeague1");
+//        Season season2 = seasonDbInServer.getSeason("seasonName1");
+//        for (String k : season2.getLeagueName_SeasonLeagueId().keySet())
 //        {
-//            System.out.println(s);
+//            System.out.println(k);
+//            System.out.println(season2.getLeagueName_SeasonLeagueId().get(k));
 //        }
 
-//        String season_name = rs.getString("season_name");
-//        String league_name = rs.getString("league_name");
-//        String season_league_name = rs.getString("season_league_name");
-//        CalculateLeaguePoints calculate_league_points = CalculateLeaguePoints.valueOf(rs.getString("calculate_league_points"));
-//        InlayGames inlay_games = InlayGames.valueOf(rs.getString("inlay_games"));
-
-//        System.out.println("hi");
-        conn.close();
+//        League league2 = leagueDbInServer.getLeague("leagueWithoutSeason1");
+        League league2 = leagueDbInServer.getLeague("leagueName1");
+        for (String k : league2.getSeasonName_SeasonLeagueId().keySet())
+        {
+            System.out.println(k);
+            System.out.println(league2.getSeasonName_SeasonLeagueId().get(k));
+        }
     }
 }

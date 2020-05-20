@@ -151,7 +151,7 @@ public class RepresentativeAssociationController extends Observable implements O
             subscriberDb.insertSubscriber(judge);
             try
             {
-                judgeDb.createJudge(judge);
+                judgeDb.insertJudge(judge);
             }
             catch (Exception e)
             {

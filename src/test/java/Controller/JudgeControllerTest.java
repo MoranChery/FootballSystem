@@ -108,7 +108,7 @@ public class JudgeControllerTest {
     public void wantToEditQualificationSameQ() throws Exception{
         try {
             Judge newJudge = new Judge("email", "1234",1,"first","last", QualificationJudge.JUNIOR);
-            judgeDb.createJudge(newJudge);
+            judgeDb.insertJudge(newJudge);
             String theQualificationJudge = newJudge.getQualificationJudge().toString();
             judgeController.wantToEditQualification("email", theQualificationJudge);
         }
@@ -120,7 +120,7 @@ public class JudgeControllerTest {
     @Test
     public void wantToEditQualificationLegal() throws Exception {
         Judge newJudge = new Judge("email", "1234", 1, "first", "last", QualificationJudge.JUNIOR);
-        judgeDb.createJudge(newJudge);
+        judgeDb.insertJudge(newJudge);
         String theQualificationJudge = QualificationJudge.NATIONAL.toString();
         judgeController.wantToEditQualification("email", theQualificationJudge);
         Assert.assertEquals(newJudge.getQualificationJudge().toString(),theQualificationJudge);

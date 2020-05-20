@@ -3,7 +3,6 @@ package Controller;
 import Data.*;
 import Model.Enums.*;
 import Model.PersonalPage;
-import Model.Team;
 import Model.UsersTypes.*;
 
 import java.util.Date;
@@ -147,7 +146,7 @@ public class GuestController {
         }
         Judge judge = new Judge(emailAddress, password, id, firstName, lastName, qualificationJudge);
         subscriberDb.insertSubscriber(judge);
-        judgeDb.createJudge(judge);
+        judgeDb.insertJudge(judge);
         roleDb.createRoleInSystem(emailAddress, RoleType.JUDGE);
 
     }

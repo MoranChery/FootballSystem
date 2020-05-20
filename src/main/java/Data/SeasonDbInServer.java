@@ -5,6 +5,8 @@ import Model.SeasonLeague;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SeasonDbInServer implements SeasonDb
 {
@@ -62,7 +64,43 @@ public class SeasonDbInServer implements SeasonDb
         conn.close();
 
         Season season = new Season(season_name);
+        season.setLeagueName_SeasonLeagueName(addMap_leagueName_SeasonLeagueName(season_name));
         return season;
+    }
+
+    private Map<String, String> addMap_leagueName_SeasonLeagueName(String seasonName) throws SQLException
+    {
+        Map<String, String> leagueName_SeasonLeagueName = new HashMap<>();
+        String key_league_name;
+        String value_season_league_name;
+
+        Connection conn = DbConnector.getConnection();
+
+        // the mysql select statement
+        String query = "select league_name, season_league_name from season_league where season_name = \'" + seasonName + "\'";
+
+        // create the mysql select resultSet
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+
+        // checking if ResultSet is empty
+        if (rs.next() != false)
+        {
+            key_league_name = rs.getString("league_name");
+            value_season_league_name = rs.getString("season_league_name");
+
+            leagueName_SeasonLeagueName.put(key_league_name, value_season_league_name);
+
+            while (rs.next() != false)
+            {
+                key_league_name = rs.getString("league_name");
+                value_season_league_name = rs.getString("season_league_name");
+
+                leagueName_SeasonLeagueName.put(key_league_name, value_season_league_name);
+            }
+        }
+        conn.close();
+        return leagueName_SeasonLeagueName;
     }
 
     @Override
@@ -114,11 +152,13 @@ public class SeasonDbInServer implements SeasonDb
 
     public static void main(String[] args) throws Exception
     {
-        Season season1 = new Season("season1");
+        Season season1 = new Season("seasonName1");
+        Season seasonWithoutLeague1 = new Season("seasonWithoutLeague1");
         SeasonDbInServer seasonDbInServer = new SeasonDbInServer();
         try
         {
-//            seasonDbInServer.insertSeason(season1);
+            seasonDbInServer.insertSeason(season1);
+            seasonDbInServer.insertSeason(seasonWithoutLeague1);
 //
 //            //Data.NotFoundException: Season not found
 //            System.out.println(seasonDbInServer.getSeason(""));
