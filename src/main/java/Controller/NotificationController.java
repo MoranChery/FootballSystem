@@ -142,6 +142,8 @@ public class NotificationController extends Observable implements Observer {
             String body = "Dear " + teamOwner.getFirstName() + "  " + teamOwner.getLastName() + "\n" +
             "We are sorry to inform you that your subscription have been removed. \n You are now no longer " +
                     teamOwner.getTeam() + " owner.";
+            alertToSend.setMsgHeader(head);
+            alertToSend.setMsgBody(body);
 
         }
         return alertToSend;
