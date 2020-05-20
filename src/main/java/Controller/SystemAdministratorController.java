@@ -61,11 +61,15 @@ public class SystemAdministratorController extends Observable {
         if(teamName.isEmpty()){
             throw new Exception("Not valid name");
         }
+        Team teamToDelete = teamDb.getTeam(teamName);
+        Map <String, TeamOwner> teamOwnerList = teamToDelete.getTeamOwners();
+        Map<String, TeamManager> teamManagerList = teamToDelete.getTeamManagers();
         teamDb.deleteTeam(teamName);
-        Object[] data = new Object[3];
+        Object[] data = new Object[4];
         data[0] = "close";
         data[1] = teamName;
-//        data[2] = teamStatus;
+        data[2] = teamOwnerList;
+        data[3] = teamManagerList;
         setChanged();
         notifyObservers(data);
     }

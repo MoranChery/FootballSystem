@@ -10,6 +10,7 @@ import Model.Game;
 import Model.Team;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.Subscriber;
+import Model.UsersTypes.TeamManager;
 import Model.UsersTypes.TeamOwner;
 import com.sun.mail.smtp.SMTPTransport;
 
@@ -70,14 +71,28 @@ public class NotificationController extends Observable implements Observer {
             if(theValues[0].equals("status")){
                 Team theTeam = (Team) theValues[1];
                 Map <String, TeamOwner> allTeamOwners = theTeam.getTeamOwners();
-                for (String email: allTeamOwners.keySet()) {
-                    TeamOwner teamOwner = allTeamOwners.get(email);
+                Map<String, TeamManager> allTeamManagers = theTeam.getTeamManagers();
+                for (String ownerEmail: allTeamOwners.keySet()) {
+                    TeamOwner teamOwner = allTeamOwners.get(ownerEmail);
                     if(teamOwner.isWantAlertInMail()){
-                        sendMessageInMail(email, alert);
+                        sendMessageInMail(ownerEmail, alert);
                     }
                     else {
                         try {
-                            alertDb.createAlertInDb(email, alert);
+                            alertDb.createAlertInDb(ownerEmail, alert);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                for (String managerEmail: allTeamManagers.keySet()) {
+                    TeamManager teamManager = allTeamManagers.get(managerEmail);
+                    if (teamManager.isWantAlertInMail()){
+                        sendMessageInMail(managerEmail, alert);
+                    }
+                    else {
+                        try {
+                            alertDb.createAlertInDb(managerEmail, alert);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -97,7 +112,10 @@ public class NotificationController extends Observable implements Observer {
                     e.printStackTrace();
                 }
             }
-
+        }
+        if (o == saController){
+            Object[] theValues = (Object[]) arg;
+            Alert alert = createAlert(theValues[0].toString(), theValues[1], theValues[2]);
 
         }
     }
@@ -130,9 +148,9 @@ public class NotificationController extends Observable implements Observer {
         }
         if(typeOfMessage.equals("status")){
             Team team = (Team)theObject;
-            String header = "The status of your team have changed";
+            String header = "The status of your team have been changed";
             TeamStatus teamStatus = (TeamStatus)theChange;
-            String body = "Dear Team owner, \n The Team " + team.getTeamName() + " new status is " + teamStatus;
+            String body = "The Team " + team.getTeamName() + " new status is " + teamStatus;
             alertToSend.setMsgHeader(header);
             alertToSend.setMsgBody(body);
         }
