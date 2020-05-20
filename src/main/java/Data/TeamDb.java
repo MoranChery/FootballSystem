@@ -13,7 +13,9 @@ import Model.UsersTypes.TeamManager;
 import java.util.List;
 
 public interface TeamDb extends Db {
-    void createTeam(String teamName) throws Exception;
+    void insertTeam(String teamName) throws Exception;
+
+    void insertTeam(String teamName, Double budget, TeamStatus active) throws Exception;
 
     void addPlayer(String teamName, Player player) throws Exception;
 

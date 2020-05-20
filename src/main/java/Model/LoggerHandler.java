@@ -14,8 +14,10 @@ public class LoggerHandler {
         loggerErrors = Logger.getLogger(className + "Errors");
         this.loggerErrors = LogManager.getLogManager().getLogger(className + "Errors");
         //todo need to change the path in server
-        loggerEventFileHandler  = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheEventsLog_%g.log",Level.INFO);
-        loggerErrorFileHandler  = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheErrorsLog_%g.log",Level.WARNING);
+//        loggerEventFileHandler  = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheEventsLog_%g.log",Level.INFO);
+//        loggerErrorFileHandler  = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheErrorsLog_%g.log",Level.WARNING);
+        loggerEventFileHandler  = createLogFile("C:\\Users\\avira\\Desktop\\TheEventsLog_%g.log",Level.INFO);
+        loggerErrorFileHandler  = createLogFile("C:\\Users\\avira\\Desktop\\TheErrorsLog_%g.log",Level.WARNING);
         this.loggerEvents.addHandler(loggerEventFileHandler);
         this.loggerErrors.addHandler(loggerErrorFileHandler);
     }

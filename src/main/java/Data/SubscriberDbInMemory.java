@@ -27,7 +27,7 @@ public class SubscriberDbInMemory implements SubscriberDb {
 
 
     @Override
-    public void createSubscriber(Subscriber subscriber) throws Exception {
+    public void insertSubscriber(Subscriber subscriber) throws Exception {
         if(subscriber == null){
             throw new NullPointerException("Can't create this subscriber");
         }

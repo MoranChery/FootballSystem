@@ -39,7 +39,7 @@ public class SubscriberServiceTest {
     @Test
     public void logOutLegal() throws Exception {
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
-        subscriberDb.createSubscriber(newSubscriber);
+        subscriberDb.insertSubscriber(newSubscriber);
         newSubscriber.setStatus(Status.ONLINE);
         subscriberService.logOut(newSubscriber.getEmailAddress());
         Assert.assertEquals(newSubscriber.getStatus(), Status.OFFLINE);
@@ -57,7 +57,7 @@ public class SubscriberServiceTest {
     @Test
     public void wantToEditPasswordLegal() throws Exception {
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
-        subscriberDb.createSubscriber(newSubscriber);
+        subscriberDb.insertSubscriber(newSubscriber);
         subscriberService.wantToEditPassword(newSubscriber.getEmailAddress(), "newPsw");
         Assert.assertEquals("newPsw", newSubscriber.getPassword());
     }
@@ -74,7 +74,7 @@ public class SubscriberServiceTest {
     @Test
     public void wantToEditFirstNameLegal() throws Exception {
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
-        subscriberDb.createSubscriber(newSubscriber);
+        subscriberDb.insertSubscriber(newSubscriber);
         subscriberService.wantToEditFirstName(newSubscriber.getEmailAddress(), "newName");
         Assert.assertEquals("newName",newSubscriber.getFirstName());
     }
@@ -91,7 +91,7 @@ public class SubscriberServiceTest {
     @Test
     public void wantToEditLastNameLegal() throws Exception {
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
-        subscriberDb.createSubscriber(newSubscriber);
+        subscriberDb.insertSubscriber(newSubscriber);
         subscriberService.wantToEditLastName(newSubscriber.getEmailAddress(), "newName");
         Assert.assertEquals("newName",newSubscriber.getLastName());
     }

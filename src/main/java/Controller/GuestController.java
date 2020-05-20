@@ -103,11 +103,11 @@ public class GuestController {
             throw new Exception("try to enter details again!");
         }
         Coach coach = new Coach(emailAddress, password, id, firstName, lastName, coachRole, qualificationCoach);
-        subscriberDb.createSubscriber(coach);
-        coachDb.createCoach(coach);
+        subscriberDb.insertSubscriber(coach);
+        coachDb.insertCoach(coach);
         roleDb.createRoleInSystem(emailAddress, RoleType.COACH);
         pageDb.createPersonalPage(coach.getEmailAddress(), coach);
-        PersonalPage personalPage=(PersonalPage)pageDb.getPage(coach.getEmailAddress());
+        PersonalPage personalPage=(PersonalPage) pageDb.getPage(coach.getEmailAddress());
         coach.setCoachPage(personalPage);
     }
 
@@ -126,7 +126,7 @@ public class GuestController {
             throw new Exception("try to enter details again!");
         }
         Fan fan = new Fan(emailAddress, password, id, firstName, lastName);
-        subscriberDb.createSubscriber(fan);
+        subscriberDb.insertSubscriber(fan);
         fanDb.createFan(fan);
         roleDb.createRoleInSystem(emailAddress, RoleType.FAN);
     }
@@ -148,7 +148,7 @@ public class GuestController {
             throw new Exception("try to enter details again!");
         }
         Judge judge = new Judge(emailAddress, password, id, firstName, lastName, qualificationJudge);
-        subscriberDb.createSubscriber(judge);
+        subscriberDb.insertSubscriber(judge);
         judgeDb.createJudge(judge);
         roleDb.createRoleInSystem(emailAddress, RoleType.JUDGE);
 
@@ -171,8 +171,8 @@ public class GuestController {
             throw new Exception("try to enter details again!");
         }
         Player player = new Player(emailAddress, password, id, firstName, lastName, birthDate, playerRole);
-        subscriberDb.createSubscriber(player);
-        playerDb.createPlayer(player);
+        subscriberDb.insertSubscriber(player);
+        playerDb.insertPlayer(player);
         roleDb.createRoleInSystem(emailAddress, RoleType.PLAYER);
         pageDb.createPersonalPage(player.getEmailAddress() + "", player);
     }
@@ -192,8 +192,8 @@ public class GuestController {
             throw new Exception("try to enter details again!");
         }
         RepresentativeAssociation representativeAssociation = new RepresentativeAssociation(emailAddress, password, id, firstName, lastName);
-        subscriberDb.createSubscriber(representativeAssociation);
-        representativeAssociationDb.createRepresentativeAssociation(representativeAssociation);
+        subscriberDb.insertSubscriber(representativeAssociation);
+        representativeAssociationDb.insertRepresentativeAssociation(representativeAssociation);
         roleDb.createRoleInSystem(emailAddress, RoleType.REPRESENTATIVE_ASSOCIATION);
     }
 
@@ -212,7 +212,7 @@ public class GuestController {
             throw new Exception("try to enter details again!");
         }
         SystemAdministrator systemAdministrator = new SystemAdministrator(emailAddress, password, id, firstName, lastName);
-        subscriberDb.createSubscriber(systemAdministrator);
+        subscriberDb.insertSubscriber(systemAdministrator);
         systemAdministratorDb.createSystemAdministrator(systemAdministrator);
         roleDb.createRoleInSystem(emailAddress, RoleType.SYSTEM_ADMINISTRATOR);
     }
@@ -236,8 +236,8 @@ public class GuestController {
         subscriberDb.getSubscriber(ownedByEmail);
         teamOwnerDb.getTeamOwner(ownedByEmail);
         TeamManager teamManager = new TeamManager(emailAddress, password, id, firstName, lastName, ownedByEmail);
-        subscriberDb.createSubscriber(teamManager);
-        teamManagerDb.createTeamManager(teamManager);
+        subscriberDb.insertSubscriber(teamManager);
+        teamManagerDb.insertTeamManager(teamManager);
         roleDb.createRoleInSystem(emailAddress, RoleType.TEAM_MANAGER);
     }
 
@@ -249,21 +249,20 @@ public class GuestController {
      * @param id
      * @param firstName
      * @param lastName
-     * @param team
      * @throws Exception if the team owner is already exist
      */
-    public void registerTeamOwner(String emailAddress, String password, Integer id, String firstName, String lastName, Team team) throws Exception {
-        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName) || team == null) {
+    public void registerTeamOwner(String emailAddress, String password, Integer id, String firstName, String lastName) throws Exception {
+        if (!checkAllInputDetails(emailAddress, password, id, firstName, lastName)) {
             throw new Exception("try to enter details again!");
         }
-        try {
-            teamDb.getTeam(team.getTeamName());
-        } catch (Exception e) {
-            throw new Exception("try to enter details again!");
-        }
-        TeamOwner teamOwner = new TeamOwner(emailAddress, password, id, firstName, lastName, team);
-        subscriberDb.createSubscriber(teamOwner);
-        teamOwnerDb.createTeamOwner(teamOwner);
+//        try {
+//            teamDb.getTeam(team.getTeamName());
+//        } catch (Exception e) {
+//            throw new Exception("try to enter details again!");
+//        }
+        TeamOwner teamOwner = new TeamOwner(emailAddress, password, id, firstName, lastName);
+        subscriberDb.insertSubscriber(teamOwner);
+        teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.createRoleInSystem(emailAddress, RoleType.TEAM_OWNER);
     }
 

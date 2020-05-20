@@ -21,7 +21,7 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         return ourInstance;
     }
     @Override
-    public void createTeamOwner(TeamOwner teamOwner) throws Exception {
+    public void insertTeamOwner(TeamOwner teamOwner) throws Exception {
         if(teamOwner == null) {
             throw new NullPointerException("bad input");
         }
@@ -33,13 +33,13 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
     }
 
     @Override
-    public void updateTeamOwnerTeam(Team team, String teamOwnerEmailAddress) throws Exception {
+    public void updateTeamOwnerTeam(String team, String teamOwnerEmailAddress) throws Exception {
         TeamOwner teamOwner = teamOwners.get(teamOwnerEmailAddress);
         if(teamOwner.getTeam() != null){
             throw new Exception("This teamOwner has already team");
         }
         teamOwner.setTeam(team);
-        team.getTeamOwners().put(teamOwnerEmailAddress,teamOwner);
+//        team.getTeamOwners().put(teamOwnerEmailAddress,teamOwner);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
     }
 
     @Override
-    public void subscriptionTeamOwner(Team team, String teamOwnerEmail, Subscriber subscriber) throws Exception {
+    public void subscriptionTeamOwner(String team, String teamOwnerEmail, Subscriber subscriber) throws Exception {
         if(team == null || teamOwnerEmail == null || subscriber == null){
             throw new NullPointerException();
         }
@@ -64,10 +64,10 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         TeamOwner teamOwner = new TeamOwner(team,subscriber,teamOwnerEmail);
         String emailAddressToAdd = teamOwner.getEmailAddress();
         TeamOwner teamOwnerMajor = teamOwners.get(teamOwnerEmail);
-        teamOwnerMajor.getTeamOwnersByThis().put(teamOwner.getEmailAddress(),teamOwner);
+        teamOwnerMajor.getTeamOwnersByThis().add(teamOwner.getEmailAddress());
         teamOwners.put(emailAddressToAdd,teamOwner);
-        Map<String, TeamOwner> teamOwners = team.getTeamOwners();
-        teamOwners.put(emailAddressToAdd,teamOwner);
+//        Map<String, TeamOwner> teamOwners = team.getTeamOwners();
+//        teamOwners.put(emailAddressToAdd,teamOwner);
     }
 
     @Override
@@ -82,10 +82,10 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         TeamOwner removeTeamOwner = teamOwners.remove(ownerToRemoveEmail);
         String ownedByEmailAddress = removeTeamOwner.getOwnedByEmailAddress();
         TeamOwner teamOwner = getTeamOwner(ownedByEmailAddress);
-        Map<String, TeamOwner> teamOwnersByThis = teamOwner.getTeamOwnersByThis();
+        List<String> teamOwnersByThis = teamOwner.getTeamOwnersByThis();
         teamOwnersByThis.remove(ownerToRemoveEmail);
-        Team team = removeTeamOwner.getTeam();
-        team.getTeamOwners().remove(ownerToRemoveEmail);
+//        Team team = removeTeamOwner.getTeam();
+//        team.getTeamOwners().remove(ownerToRemoveEmail);
     }
 
     @Override

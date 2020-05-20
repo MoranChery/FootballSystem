@@ -14,6 +14,19 @@ public abstract class Subscriber extends User {
     protected Status status;
     protected boolean wantAlertInMail;
 
+    public Subscriber(String userName, String password, Integer id, String first_name, String last_name, Status status) {
+        setFirstName(first_name);
+        setId(id);
+        setLastName(last_name);
+        setPassword(password);
+        setEmailAddress(userName);
+        setStatus(status);
+    }
+
+    public Subscriber() {
+
+    }
+
 
     public void setRegisteringDetails(String emailAddress, String password, Integer id, String firstName, String lastName){
         setFirstName(firstName);
@@ -104,5 +117,17 @@ public abstract class Subscriber extends User {
     @Override
     public int hashCode() {
         return Objects.hash(emailAddress, password, id, firstName, LastName, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Subscriber{" +
+                "emailAddress='" + emailAddress + '\'' +
+                ", password='" + password + '\'' +
+                ", id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

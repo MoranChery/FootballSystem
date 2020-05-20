@@ -68,7 +68,7 @@ public class SystemAdministratorServiceTest {
     @Test
     public void closeExistTeam(){
         try {
-            TeamDbInMemory.getInstance().createTeam("barca");
+            TeamDbInMemory.getInstance().insertTeam("barca");
             systemAdministratorService.closeTeamForEver("barca");
         } catch (Exception e) {
             //not should enter here
@@ -105,7 +105,7 @@ public class SystemAdministratorServiceTest {
     public void removeExistSubscriber(){
         Fan fan=new Fan("noa@gmail.com", "L1o8oy", 111111111, "Noy", "Harary");
         try {
-            SubscriberDbInMemory.getInstance().createSubscriber(fan);
+            SubscriberDbInMemory.getInstance().insertSubscriber(fan);
             FanDbInMemory.getInstance().createFan(fan);
             RoleDbInMemory.getInstance().createRoleInSystem(fan.getEmailAddress(), RoleType.FAN);
         } catch (Exception e) {
