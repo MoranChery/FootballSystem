@@ -58,13 +58,16 @@ public class SystemAdministratorController extends Observable {
      * @param teamName that the system administrator want to close for ever
      */
     public void closeTeamForEver(String teamName) throws Exception {
-        //todo delete all the connections between the team and what it connect to
-        Team teamToClose = teamDb.getTeam(teamName);
-        teamToClose.setTeamStatus(TeamStatus.CLOSE);
-        //todo: send alert to the team owners and to the team managers
-        System.out.println("send alert to the team owners and to the team managers");
-        //todo: update the log file
-        System.out.println("log file updated");
+        if(teamName.isEmpty()){
+            throw new Exception("Not valid name");
+        }
+        teamDb.deleteTeam(teamName);
+        Object[] data = new Object[3];
+        data[0] = "close";
+        data[1] = teamName;
+//        data[2] = teamStatus;
+        setChanged();
+        notifyObservers(data);
     }
 
     //use case 8.2
