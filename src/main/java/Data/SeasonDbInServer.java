@@ -1,33 +1,33 @@
 package Data;
 
-import Model.League;
+import Model.Season;
 import Model.SeasonLeague;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
 
-public class LeagueDbInServer implements LeagueDb
+public class SeasonDbInServer implements SeasonDb
 {
     @Override
-    public void insertLeague(League league) throws Exception
+    public void insertSeason(Season season) throws Exception
     {
         Connection conn = DbConnector.getConnection();
         try
         {
             // the mysql insert statement
-            String query = " insert into league (league_name)"
+            String query = " insert into season (season_name)"
                     + " values (?)";
 
             // create the mysql insert preparedStatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setString (1, league.getLeagueName());
+            preparedStmt.setString (1, season.getSeasonName());
 
             // execute the preparedStatement
             preparedStmt.execute();
         }
         catch (Exception e)
         {
-            throw new Exception("League already exists in the system");
+            throw new Exception("Season already exists in the system");
         }
         finally
         {
@@ -36,17 +36,17 @@ public class LeagueDbInServer implements LeagueDb
     }
 
     @Override
-    public League getLeague(String leagueName) throws Exception
+    public Season getSeason(String seasonName) throws Exception
     {
-        if (leagueName == null)
+        if (seasonName == null)
         {
-            throw new Exception("League not found");
+            throw new Exception("Season not found");
         }
 
         Connection conn = DbConnector.getConnection();
 
         // the mysql select statement
-        String query = "select * from league where league_name = \'" + leagueName + "\'";
+        String query = "select * from season where season_name = \'" + seasonName + "\'";
 
         // create the mysql select resultSet
         Statement preparedStmt = conn.createStatement();
@@ -55,14 +55,14 @@ public class LeagueDbInServer implements LeagueDb
         // checking if ResultSet is empty
         if (rs.next() == false)
         {
-            throw new NotFoundException("League not found");
+            throw new NotFoundException("Season not found");
         }
-        String league_name = rs.getString("league_name");
+        String season_name = rs.getString("season_name");
 
         conn.close();
 
-        League league = new League(league_name);
-        return league;
+        Season season = new Season(season_name);
+        return season;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class LeagueDbInServer implements LeagueDb
         try
         {
             // the mysql delete statement
-            String query = " delete from league";
+            String query = " delete from season";
 
             // create the mysql delete preparedStatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);
@@ -114,20 +114,20 @@ public class LeagueDbInServer implements LeagueDb
 
     public static void main(String[] args) throws Exception
     {
-        League league1 = new League("league1");
-        LeagueDbInServer leagueDbInServer = new LeagueDbInServer();
+        Season season1 = new Season("season1");
+        SeasonDbInServer seasonDbInServer = new SeasonDbInServer();
         try
         {
-//            leagueDbInServer.insertLeague(league1);
+//            seasonDbInServer.insertSeason(season1);
 //
-//            //Data.NotFoundException: League not found
-//            System.out.println(leagueDbInServer.getLeague(""));
-//            //league1
-//            System.out.println(leagueDbInServer.getLeague("league1").getLeagueName());
-//            //Data.NotFoundException: League not found
-//            System.out.println(leagueDbInServer.getLeague("league2").getLeagueName());
+//            //Data.NotFoundException: Season not found
+//            System.out.println(seasonDbInServer.getSeason(""));
+//            //season1
+//            System.out.println(seasonDbInServer.getSeason("season1").getSeasonName());
+//            //Data.NotFoundException: Season not found
+//            System.out.println(seasonDbInServer.getSeason("season2").getSeasonName());
 //
-//            leagueDbInServer.deleteAll();
+//            seasonDbInServer.deleteAll();
         }
         catch (Exception e)
         {

@@ -26,7 +26,7 @@ public class SeasonLeagueDbInMemory implements SeasonLeagueDb
      * @param seasonLeague-the new SeasonLeague.
      * @throws Exception-if details are incorrect.
      */
-    public void createSeasonLeague(SeasonLeague seasonLeague) throws Exception
+    public void insertSeasonLeague(SeasonLeague seasonLeague) throws Exception
     {
         if(seasonLeagueMap.containsKey(seasonLeague.getSeasonLeagueName()))
         {

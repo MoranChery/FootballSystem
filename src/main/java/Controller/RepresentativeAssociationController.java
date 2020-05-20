@@ -29,8 +29,11 @@ public class RepresentativeAssociationController extends Observable implements O
         this.subscriberDb = SubscriberDbInMemory.getInstance();
         this.roleDb = RoleDbInMemory.getInstance();
         this.leagueDb = LeagueDbInMemory.getInstance();
+//        this.leagueDb = LeagueDbInServer.getInstance();
         this.seasonDb = SeasonDbInMemory.getInstance();
+//        this.seasonDb = SeasonDbInServer.getInstance();
         this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
+//        this.seasonLeagueDb = SeasonLeagueDbInServer.getInstance();
         this.judgeDb = JudgeDbInMemory.getInstance();
         this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
         this.gameDb = GameDbInMemory.getInstance();
@@ -91,7 +94,7 @@ public class RepresentativeAssociationController extends Observable implements O
             throw new NullPointerException("One or more of the Season details incorrect");
         }
         Season season = new Season(seasonName);
-        seasonDb.createSeason(season);
+        seasonDb.insertSeason(season);
     }
 
     /**
@@ -117,7 +120,7 @@ public class RepresentativeAssociationController extends Observable implements O
         SeasonLeague seasonLeague = new SeasonLeague(seasonName, leagueName, calculateLeaguePoints, inlayGames);
         seasonDb.addSeasonLeague(seasonLeague);
         leagueDb.addSeasonLeague(seasonLeague);
-        seasonLeagueDb.createSeasonLeague(seasonLeague);
+        seasonLeagueDb.insertSeasonLeague(seasonLeague);
     }
 
     /**
