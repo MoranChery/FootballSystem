@@ -1,11 +1,13 @@
 package Service;
 
 import Controller.SubscriberController;
+import Model.Alert;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -31,18 +33,24 @@ public class SubscriberService {
 
     @ResponseStatus(HttpStatus.OK)
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "/getAlerts/{userEmail}/")
-    public Map<String, String> getAlerts(@PathVariable String userEmail){
+    @GetMapping(value = "/getAlerts/{userEmail}")
+    public Map<String, Alert> getAlerts(@PathVariable String userEmail){
         try{
-
-            Map<String, String>  messageAndValue = new HashMap<>();
-
-            // todo = key mast be "message"
+            Map<String, Alert>  messageAndValue = new HashMap<>();
+            List<Alert> alertList = subscriberController.getAlerts(userEmail);
+            if(alertList != null && alertList.size()>0){
+                for (int i= 0 ; i<alertList.size() ; i++){
+                    String message =  String.valueOf(i);
+                    messageAndValue.put(message, alertList.get(i));
+                }
+                return messageAndValue;
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
         }
         catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "try Not Found", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return null;
     }
-
 }
