@@ -147,6 +147,7 @@ public class SubscriberController {
         List<Alert> userAlerts = null;
         if(alertDb.haveAlertInDB(subscriberMail)){
             userAlerts = alertDb.getAlertsForUser(subscriberMail);
+            alertDb.removeAllTheAlertTheUserHave(subscriberMail);
         }
         return userAlerts;
     }
