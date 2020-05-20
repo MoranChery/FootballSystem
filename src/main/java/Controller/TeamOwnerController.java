@@ -571,6 +571,12 @@ public class TeamOwnerController extends Observable{
         teamOwnerDb.removeSubscriptionTeamOwner(ownerToRemove);
 //        roleDb.removeRoleFromTeam(ownerToRemove,teamName, RoleType.TEAM_OWNER);
         roleDb.removeRole(ownerToRemove,RoleType.TEAM_OWNER);
+        Object[] data = new Object[3];
+        data[0] = "removed";
+        data[1] = ownerToRemove;
+        data[2] = teamOwnerToRemove;
+        setChanged();
+        notifyObservers(data);
 
     }
 

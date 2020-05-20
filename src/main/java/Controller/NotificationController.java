@@ -30,6 +30,9 @@ public class NotificationController extends Observable implements Observer {
     private AlertDb alertDb;
     //private TeamDb teamDb;
 
+    public NotificationController() {
+    }
+
     public NotificationController(RepresentativeAssociationController repControll, SubscriberController subscriberController, SystemAdministratorController saController, TeamOwnerController teamOwnerController) {
         this.repControll = repControll;
         this.subscriberController = subscriberController;
@@ -64,21 +67,37 @@ public class NotificationController extends Observable implements Observer {
         if(o == teamOwnerController){
             Object[] theValues = (Object[]) arg;
             Alert alert = createAlert(theValues[0].toString(), theValues[1], theValues[2]);
-            Team theTeam = (Team) theValues[1];
-            Map <String, TeamOwner> allTeamOwners = theTeam.getTeamOwners();
-            for (String email: allTeamOwners.keySet()) {
-                TeamOwner teamOwner = allTeamOwners.get(email);
-                if(teamOwner.isWantAlertInMail()){
-                    sendMessageInMail(email, alert);
-                }
-                else {
-                    try {
-                        alertDb.createAlertInDb(email, alert);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            if(theValues[0].equals("status")){
+                Team theTeam = (Team) theValues[1];
+                Map <String, TeamOwner> allTeamOwners = theTeam.getTeamOwners();
+                for (String email: allTeamOwners.keySet()) {
+                    TeamOwner teamOwner = allTeamOwners.get(email);
+                    if(teamOwner.isWantAlertInMail()){
+                        sendMessageInMail(email, alert);
+                    }
+                    else {
+                        try {
+                            alertDb.createAlertInDb(email, alert);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
+            if(theValues[0].equals("removed")){
+                try {
+                    TeamOwner teamOwnerRemoved = (TeamOwner) theValues[2];
+                    if(teamOwnerRemoved.isWantAlertInMail()){
+                        sendMessageInMail(teamOwnerRemoved.getEmailAddress(), alert);
+                    }
+                    else {
+                        alertDb.createAlertInDb(teamOwnerRemoved.getEmailAddress(), alert);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
 
         }
     }
@@ -94,28 +113,36 @@ public class NotificationController extends Observable implements Observer {
     public Alert createAlert(String typeOfMessage, Object theObject, Object theChange){
         Alert alertToSend = null;
         if(typeOfMessage.equals("location")){
-            String header = "Dear judge, There was change in the location of a game you assigned to";
+            String header = "There was change in the location of a game you assigned to";
             Game game = (Game)theObject;
-            String body = "The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
+            String body = "Dear judge, \n The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
                     + game.getGuestTeam().getTeamName() + " have new location. The new court is" + theChange.toString();
             alertToSend = new Alert(header, body);
         }
         if (typeOfMessage.equals("date")){
-            String header = "Dear judge, There was change in the date of a game you assigned to";
+            String header = "There was change in the date of a game you assigned to";
             Game game = (Game)theObject;
             Date gameDate = (Date) theChange;
-            String body = "The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
+            String body = "Dear judge, \n The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
                     + game.getGuestTeam().getTeamName() + " have new date. The new date is" + gameDate.getTime();
             alertToSend.setMsgHeader(header);
             alertToSend.setMsgBody(body);
         }
         if(typeOfMessage.equals("status")){
             Team team = (Team)theObject;
-            String header = "Dear Team owner, The status of your team have changed";
+            String header = "The status of your team have changed";
             TeamStatus teamStatus = (TeamStatus)theChange;
-            String body = "The Team " + team.getTeamName() + " new status is " + teamStatus;
+            String body = "Dear Team owner, \n The Team " + team.getTeamName() + " new status is " + teamStatus;
             alertToSend.setMsgHeader(header);
             alertToSend.setMsgBody(body);
+        }
+        if(typeOfMessage.equals("removed")){
+            TeamOwner teamOwner = (TeamOwner) theChange;
+            String head = "You'r account have changed";
+            String body = "Dear " + teamOwner.getFirstName() + "  " + teamOwner.getLastName() + "\n" +
+            "We are sorry to inform you that your subscription have been removed. \n You are now no longer " +
+                    teamOwner.getTeam() + " owner.";
+
         }
         return alertToSend;
     }
@@ -137,6 +164,7 @@ public class NotificationController extends Observable implements Observer {
         final String password = "Admin@1234";
         try {
             Session session = Session.getDefaultInstance(props, new Authenticator() {
+                @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(username, password);
                 }
