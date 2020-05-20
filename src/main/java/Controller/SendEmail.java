@@ -19,7 +19,7 @@ public class SendEmail {
             System.out.println("sent");
         }
         else {
-            System.out.println("no sent- matzkal");
+            System.out.println("no sent");
         }
     }
 
