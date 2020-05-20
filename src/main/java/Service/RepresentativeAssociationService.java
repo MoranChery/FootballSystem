@@ -5,10 +5,13 @@ import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
 import Model.LoggerHandler;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.logging.Level;
 
+@RestController
 public class RepresentativeAssociationService {
     private RepresentativeAssociationController representativeAssociationController;
     private LoggerHandler loggerHandler;
@@ -178,19 +181,24 @@ public class RepresentativeAssociationService {
      * Will continue to Controller.
      *
      * @param representativeAssociationEmailAddress-username/emailAddress of the online RepresentativeAssociation.
-     * @param seasonLeagueName-name                                       of SeasonLeague.
+     * @param leagueName-name                                       of SeasonLeague.
      * @param calculateLeaguePoints-Policy                                CalculateLeaguePoints.
      * @throws Exception
      */
-    public void changeCalculateLeaguePointsPolicy(String representativeAssociationEmailAddress, String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception {
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "representativeAssociationService/{representativeAssociationEmailAddress}/{leagueName}/{season}/{calculateLeaguePoints}")
+    @ResponseStatus(HttpStatus.OK)
+    public void changeCalculateLeaguePointsPolicy(@PathVariable String representativeAssociationEmailAddress, @PathVariable String leagueName, @PathVariable String calculateLeaguePoints, @PathVariable String season) throws Exception {
         try {
+            CalculateLeaguePoints calculateLeaguePointsToMake= CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0;
+            String seasonLeagueName="";
             if (representativeAssociationEmailAddress == null) {
                 throw new Exception("Only RepresentativeAssociation has permissions to this action!");
             }
-            representativeAssociationController.changeCalculateLeaguePointsPolicy(representativeAssociationEmailAddress, seasonLeagueName, calculateLeaguePoints);
+            representativeAssociationController.changeCalculateLeaguePointsPolicy(representativeAssociationEmailAddress, seasonLeagueName, calculateLeaguePointsToMake);
             loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  was changed to SeasonLeague \"" + seasonLeagueName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  wasn't changed to SeasonLeague \"" + seasonLeagueName + "\" because: " + e.getMessage());
+            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  wasn't changed to SeasonLeague \"" + "seasonLeagueName" + "\" because: " + e.getMessage()); // todo - seasonLeagueName put as String
             throw e;
         }
     }
