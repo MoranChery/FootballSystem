@@ -37,7 +37,7 @@ public class RepresentativeAssociationControllerTest
 
         for (Db db : dbs)
         {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
 

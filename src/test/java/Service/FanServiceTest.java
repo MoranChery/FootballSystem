@@ -30,7 +30,7 @@ public class FanServiceTest {
         dbs.add(PageDbInMemory.getInstance());
         for (Db db : dbs)
         {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
     @Test

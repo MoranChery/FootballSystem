@@ -28,7 +28,7 @@ public class JudgeServiceTest {
         dbs.add(JudgeDbInMemory.getInstance());
         dbs.add(GameDbInMemory.getInstance());
         for (Db db : dbs) {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
     @Test

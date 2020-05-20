@@ -32,7 +32,7 @@ public class JudgeControllerTest {
         dbs.add(GameEventsDbInMemory.getInstance());
         dbs.add(RoleDbInMemory.getInstance());
         for (Db db : dbs) {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
 

@@ -30,7 +30,7 @@ public class FanControllerTest {
         dbs.add(FanDbInMemory.getInstance());
         dbs.add(PageDbInMemory.getInstance());
         for (Db db : dbs) {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
 

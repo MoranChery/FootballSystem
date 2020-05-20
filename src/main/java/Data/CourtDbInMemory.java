@@ -9,10 +9,11 @@ import java.util.Map;
 public class CourtDbInMemory implements CourtDb {
     private Map<String,Court> courts;
 
-    private static CourtDbInMemory ourInstance = new CourtDbInMemory();
     private CourtDbInMemory() {
         courts = new HashMap<>();
     }
+
+    private static CourtDbInMemory ourInstance = new CourtDbInMemory();
 
     public static CourtDbInMemory getInstance() {
         return ourInstance;

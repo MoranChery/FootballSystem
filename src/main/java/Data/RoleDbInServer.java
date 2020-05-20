@@ -5,14 +5,19 @@ import Model.Enums.RoleType;
 import Model.Enums.Status;
 import Model.Role;
 import Model.UsersTypes.Player;
+import Model.UsersTypes.TeamOwner;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RoleDbInServer implements RoleDb {
+
+    private static RoleDbInServer ourInstance = new RoleDbInServer();
+
+    public static RoleDbInServer getInstance() {
+        return ourInstance;
+    }
+
     @Override
     public void insertRole(String emailAddress, String teamName, RoleType roleType) throws SQLException {
         if(emailAddress == null || roleType == null){
@@ -66,7 +71,7 @@ public class RoleDbInServer implements RoleDb {
     public List<Role> getRoles(String emailAddress) throws Exception {
         Connection conn = DbConnector.getConnection();
 
-        String query = "select * from role where role.email_address = /'" + emailAddress + "/'";
+        String query = "select * from role where role.email_address = \'" + emailAddress + "\'";
 
         Statement preparedStmt = conn.createStatement();
         ResultSet rs = preparedStmt.executeQuery(query);
@@ -95,16 +100,48 @@ public class RoleDbInServer implements RoleDb {
 
     @Override
     public void removeRole(String emailAddressToRemove, RoleType roleType) throws Exception {
+        if(emailAddressToRemove == null || roleType == null) {
+            throw new NullPointerException();
+        }
 
+        Connection conn = DbConnector.getConnection();
+        String query = "delete from role where email_address = \'" + emailAddressToRemove + "\' and role_type = \'" + roleType + "\'";
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+
+        if (rs.next() == false) {
+            throw new Exception("emailAddress not found");
+        }
+        conn.close();
     }
 
     @Override
     public Role getRole(String emailAddress) throws Exception {
-        return null;
+        List<Role> roles = getRoles(emailAddress);
+        if(roles.isEmpty()) {
+            Role role = new Role(null, RoleType.FAN);
+            return role;
+        }
+        // sort by date
+        roles.sort(Comparator.comparing(Role::getAssignedDate).reversed());
+        return roles.get(0);
     }
 
     @Override
-    public void deleteAll() {
+    public void updateTeam(String teamName, String email) throws SQLException {
+        Connection conn = DbConnector.getConnection();
 
+        String query = "UPDATE role SET team_name = \'" + teamName + "\'  WHERE role.email_address =  \'"+  email + "\'" ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
+    }
+
+    @Override
+    public void deleteAll() throws SQLException {
+        Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        statement.executeUpdate("delete from role");
+        conn.close();
     }
 }

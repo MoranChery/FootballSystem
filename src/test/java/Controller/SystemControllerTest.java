@@ -26,7 +26,7 @@ public class SystemControllerTest {
         dbs.add(RoleDbInMemory.getInstance());
         dbs.add(SystemAdministratorDbInMemory.getInstance());
         for (Db db : dbs) {
-            db.deleteAll();
+//            db.deleteAll();
         }
         systemController = new SystemController();
     }

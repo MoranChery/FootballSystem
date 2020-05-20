@@ -2,6 +2,7 @@ package Data;
 
 import Model.Enums.RoleType;
 import Model.Role;
+import Model.UsersTypes.TeamOwner;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,4 +21,6 @@ public interface RoleDb extends Db {
     void removeRole(String emailAddressToRemove, RoleType roleType) throws Exception;
 
     Role getRole(String emailAddress) throws Exception;
+
+    void updateTeam(String teamName, String email) throws SQLException;
 }

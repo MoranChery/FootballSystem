@@ -68,7 +68,7 @@ public class TeamOwnerServiceTest {
         dbs.add(PageDbInMemory.getInstance());
         dbs.add(PermissionDbInMemory.getInstance());
         for (Db db : dbs) {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
 

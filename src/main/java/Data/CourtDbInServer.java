@@ -6,13 +6,17 @@ import Model.Enums.Status;
 import Model.Team;
 import Model.UsersTypes.Player;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Date;
 
 public class CourtDbInServer implements CourtDb {
+    private static CourtDbInServer ourInstance = new CourtDbInServer();
+
+    public static CourtDbInServer getInstance() {
+        return ourInstance;
+    }
+
+
     @Override
     public Court getCourt(String courtName) throws Exception {
         if(courtName == null) {
@@ -72,8 +76,19 @@ public class CourtDbInServer implements CourtDb {
     }
 
     @Override
-    public void deleteAll() {
+    public void deleteAll() throws SQLException {
+        Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        /* TRUNCATE is faster than DELETE since
 
+         * it does not generate rollback information and does not
+
+         * fire any delete triggers
+
+         */
+
+        statement.executeUpdate("delete from court");
+        conn.close();
     }
 
     public static void main(String[] args) throws Exception {

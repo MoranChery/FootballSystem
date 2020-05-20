@@ -3,6 +3,7 @@ package Data;
 import Model.Enums.RoleType;
 import Model.Role;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class RoleDbInMemory implements RoleDb {
@@ -106,6 +107,11 @@ public class RoleDbInMemory implements RoleDb {
         // sort by date
         roles.sort(Comparator.comparing(Role::getAssignedDate).reversed());
         return roles.get(0);
+    }
+
+    @Override
+    public void updateTeam(String teamName, String email) throws SQLException {
+
     }
 
 

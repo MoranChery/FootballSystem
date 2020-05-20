@@ -4,6 +4,7 @@ import Model.Team;
 import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamOwner;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public interface TeamOwnerDb extends Db {
 
     void removeSubscriptionTeamOwner(String ownerToRemoveEmail) throws Exception;
 
-    List<String> getAllTeamOwnersOwnedBy(String teamOwnerEmail);
+    List<String> getAllTeamOwnersOwnedBy(String teamOwnerEmail) throws SQLException;
 
     Set<String> getAllTeamOwnersInDB();
 }
