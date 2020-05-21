@@ -39,4 +39,5 @@ public interface TeamDb extends Db {
 
     void changeStatus(String teamName, TeamStatus teamStatus) throws Exception;
 
+    void closeTeamForAlways(String teamName) throws Exception;
 }
