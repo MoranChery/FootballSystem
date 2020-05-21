@@ -26,6 +26,7 @@ public class RepresentativeAssociationController extends Observable implements O
     public RepresentativeAssociationController()
     {
         this.representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
+//        this.representativeAssociationDb = RepresentativeAssociationDbInServer.getInstance();
         this.subscriberDb = SubscriberDbInMemory.getInstance();
         this.roleDb = RoleDbInMemory.getInstance();
         this.leagueDb = LeagueDbInMemory.getInstance();
