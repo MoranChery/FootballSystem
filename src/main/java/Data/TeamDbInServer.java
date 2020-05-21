@@ -123,6 +123,7 @@ public class TeamDbInServer implements TeamDb{
         Double budget = rs.getDouble("budget");
         String team_status = rs.getString("team_status");
         String court = rs.getString("court");
+        String team_close = rs.getString("team_close");
 
 
         query = "select * from team_owner join subscriber on team_owner.email_address = subscriber.email_address where team_owner.team = \'" + teamName + "\'";
@@ -270,6 +271,7 @@ public class TeamDbInServer implements TeamDb{
         team.setTeamName(team_name);
         team.setBudget(budget);
         team.setTeamStatus(TeamStatus.valueOf(team_status));
+        team.setTeamClose(team_close);
         team.setTeamOwners(owners);
         team.setTeamManagers(teamManagers);
         team.setPlayers(players);
@@ -394,6 +396,20 @@ public class TeamDbInServer implements TeamDb{
     }
 
     @Override
+    public void addTeamPage(TeamPage teamPage) throws Exception {
+
+    }
+
+    @Override
+    public void closeTeamForever(String teamName) throws Exception {
+        Connection conn = DbConnector.getConnection();
+
+        String query = "UPDATE team  SET team_close = \'" + "close" + "\' WHERE team.team_name =  \'"+ teamName + "\'";
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
+    }
+
     public void closeTeamForAlways(String teamName) throws Exception {
 //        Connection conn = DbConnector.getConnection();
 //        Statement statement = conn.createStatement();

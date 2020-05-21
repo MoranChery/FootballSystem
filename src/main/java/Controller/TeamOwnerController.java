@@ -691,6 +691,9 @@ public class TeamOwnerController extends Observable{
      * @throws Exception
      */
     private void checkTeamStatusIsActive(Team team) throws Exception {
+        if(("close").equals(team.getTeamClose())){
+            throw  new Exception("This team's CLOSE!");
+        }
         if(TeamStatus.INACTIVE.equals(team.getTeamStatus())){
             throw new Exception("This Team's status - Inactive");
         }

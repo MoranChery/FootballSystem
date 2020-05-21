@@ -281,6 +281,24 @@ public class TeamOwnerControllerTest {
     }
 
     @Test
+    public void testAddPlayerClosedTeam() {
+        try {
+            String teamName = "Exists";
+            teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);
+            TeamOwner teamOwner = new TeamOwner("owner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
+            subscriberDb.insertSubscriber(teamOwner);
+            teamOwnerDb.insertTeamOwner(teamOwner);
+            roleDb.insertRole("owner@gmail.com",teamName,RoleType.TEAM_OWNER);
+            teamDb.closeTeamForever(teamName);
+            teamOwnerController.addPlayer(teamName, "owner@gmail.com","email@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER);
+            Assert.fail("Should throw NotFoundException");
+        } catch (Exception e) {
+            Assert.assertEquals("This team's CLOSE!", e.getMessage());
+        }
+    }
+
+
+    @Test
     public void testAddPlayerTeamInactive() throws Exception {
         String teamName = "Exists";
         teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);
@@ -2894,7 +2912,6 @@ public class TeamOwnerControllerTest {
             Assert.assertEquals("The team already INACTIVE",e.getMessage());
         }
     }
-
 
 
     ////////////////////////////////////////////// updatePlayer ///////////////////////////////////////////

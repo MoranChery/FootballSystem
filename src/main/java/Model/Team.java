@@ -23,6 +23,7 @@ public class Team {
    private Double budget;
    private TeamStatus teamStatus;
    private TeamPage teamPage;
+   private String teamClose;
 
     public Team() {
         teamOwners = new HashMap<>();
@@ -32,6 +33,7 @@ public class Team {
         games = new ArrayList<>();
         teamStatus = TeamStatus.ACTIVE;
         financialActivities = new HashMap<>();
+        teamClose = null;
     }
 
     public String getTeamName() {
@@ -120,5 +122,13 @@ public class Team {
 
     public void setTeamPage(TeamPage teamPage) {
         this.teamPage = teamPage;
+    }
+
+    public String getTeamClose() {
+        return teamClose;
+    }
+
+    public void setTeamClose(String teamClose) {
+        this.teamClose = teamClose;
     }
 }

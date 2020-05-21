@@ -1,25 +1,20 @@
 package Controller;
 
-import Controller.RepresentativeAssociationController;
-import Controller.SubscriberController;
-import Data.*;
+import Data.AlertDb;
+import Data.AlertDbInMemory;
+import Data.SubscriberDb;
 import Model.Alert;
-import Model.Enums.Status;
 import Model.Enums.TeamStatus;
 import Model.Game;
 import Model.Team;
-import Model.UsersTypes.Judge;
 import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamManager;
 import Model.UsersTypes.TeamOwner;
-import com.sun.mail.smtp.SMTPTransport;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 public class NotificationController extends Observable implements Observer {
 

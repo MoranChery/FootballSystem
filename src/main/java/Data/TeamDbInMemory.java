@@ -243,6 +243,16 @@ public class TeamDbInMemory implements TeamDb {
        }
    }
 
+    @Override
+    public void addTeamPage(TeamPage teamPage) throws Exception {
+
+    }
+
+    @Override
+    public void closeTeamForever(String teamName) throws Exception {
+
+    }
+
 //
 //   @Override
 //   public void addTeamPage(TeamPage teamPage) throws Exception {
@@ -254,10 +264,6 @@ public class TeamDbInMemory implements TeamDb {
 //        team.setTeamPage(teamPage);
 //   }
 
-    @Override
-    public void deleteTeam(String teamName) throws Exception {
-
-    }
 
     @Override
     public void deleteAll() {
