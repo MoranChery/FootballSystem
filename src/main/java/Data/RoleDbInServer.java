@@ -89,8 +89,14 @@ public class RoleDbInServer implements RoleDb {
     }
 
     @Override
-    public void removeRoleFromTeam(String EmailAddressToRemove, String teamName, RoleType roleType) throws Exception {
+    public void removeRoleFromTeam(String emailAddressToRemove, String teamName, RoleType roleType) throws Exception {
+        Connection conn = DbConnector.getConnection();
 
+        String query = "UPDATE role SET role.team_name = null WHERE role.email_address =  \'"+ emailAddressToRemove +
+                "\' AND team_name = \'" + teamName + "\' AND role.role_type = \'" + roleType.name() + "\'"  ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
     }
 
     @Override
@@ -107,9 +113,9 @@ public class RoleDbInServer implements RoleDb {
         Connection conn = DbConnector.getConnection();
         String query = "delete from role where email_address = \'" + emailAddressToRemove + "\' and role_type = \'" + roleType + "\'";
         Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
+        int deletedRows = preparedStmt.executeUpdate(query);
 
-        if (rs.next() == false) {
+        if (deletedRows == 0) {
             throw new Exception("emailAddress not found");
         }
         conn.close();
@@ -119,8 +125,7 @@ public class RoleDbInServer implements RoleDb {
     public Role getRole(String emailAddress) throws Exception {
         List<Role> roles = getRoles(emailAddress);
         if(roles.isEmpty()) {
-            Role role = new Role(null, RoleType.FAN);
-            return role;
+            return new Role(null, RoleType.FAN);
         }
         // sort by date
         roles.sort(Comparator.comparing(Role::getAssignedDate).reversed());

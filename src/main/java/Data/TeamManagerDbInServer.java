@@ -124,7 +124,20 @@ public class TeamManagerDbInServer implements TeamManagerDb{
 
     @Override
     public void removeSubscriptionTeamManager(String managerToRemoveEmail) throws Exception {
+        if (managerToRemoveEmail == null) {
+            throw new NullPointerException();
+        }
 
+        Connection conn = DbConnector.getConnection();
+
+        String query = "DELETE FROM team_manager where email_address = \'" + managerToRemoveEmail + "\'";
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        int deletedRows = preparedStmt.executeUpdate();
+        if (deletedRows == 0) {
+            conn.close();
+            throw new Exception("TeamManager not found");
+        }
+        conn.close();
     }
 
     @Override
@@ -146,8 +159,31 @@ public class TeamManagerDbInServer implements TeamManagerDb{
     }
 
     @Override
-    public void updateTeamManagerDetails(String teamManagerEmailAddress, String firstName, String lastName, List<PermissionType> permissionTypes) throws NotFoundException {
+    public void updateTeamManagerDetails(String teamManagerEmailAddress, String firstName, String lastName, List<PermissionType> permissionTypes) throws NotFoundException, SQLException {
+        Connection conn = DbConnector.getConnection();
 
+        String query = "UPDATE subscriber SET first_name = \'" + firstName + "\', last_name = \'" + lastName + "\' where email_address = \'" + teamManagerEmailAddress + "\'";
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        int updatedRows = preparedStmt.executeUpdate();
+        if(updatedRows == 0) {
+            conn.close();
+            throw new NotFoundException("TeamManager not found");
+        }
+
+        query = "DELETE from permission where email_address = \'" + teamManagerEmailAddress + "\'";
+        preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+
+        if(permissionTypes != null && !permissionTypes.isEmpty()) {
+            for(PermissionType permissionType : permissionTypes) {
+                query = "insert into permission (email_address, permission_type) values (?,?)";
+                preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setString (1, teamManagerEmailAddress);
+                preparedStmt.setString (2, permissionType.name());
+                preparedStmt.execute();
+            }
+        }
+        conn.close();
     }
 
     @Override

@@ -257,7 +257,12 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void removeCoach(String teamName, String coachEmailAddress) throws Exception {
+        Connection conn = DbConnector.getConnection();
 
+        String query = "UPDATE coach  SET team = null WHERE coach.email_address =  \'"+ coachEmailAddress + "\' AND team = \'" + teamName + "\'" ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
     }
 
     @Override

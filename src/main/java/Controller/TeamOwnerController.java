@@ -616,11 +616,11 @@ public class TeamOwnerController implements Observer{
         checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
-        if(!team.equals(teamOwner.getTeam())){
+        if(!teamName.equals(teamOwner.getTeam())){
             throw new Exception("TeamOwner's team doesn't match");
         }
         TeamManager teamManagerToRemove = teamManagerDb.getTeamManager(managerToRemoveEmail);
-        if(!team.equals(teamManagerToRemove.getTeam())){
+        if(!teamName.equals(teamManagerToRemove.getTeam())){
             throw new Exception("TeamManagerToRemove associated with other team");
         }
         if(!teamOwnerEmail.equals(teamManagerToRemove.getOwnedByEmail())){

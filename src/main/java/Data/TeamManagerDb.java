@@ -20,5 +20,5 @@ public interface TeamManagerDb extends Db {
 
     List<String> getAllTeamManagersOwnedBy(String ownerToRemove) throws SQLException;
 
-    void updateTeamManagerDetails(String teamManagerEmailAddress, String firstName, String lastName, List<PermissionType> permissionTypes) throws NotFoundException;
+    void updateTeamManagerDetails(String teamManagerEmailAddress, String firstName, String lastName, List<PermissionType> permissionTypes) throws NotFoundException, SQLException;
 }
