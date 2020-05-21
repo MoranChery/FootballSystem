@@ -66,5 +66,11 @@ public class Judge extends Subscriber {
 //    public void setQualification(Qualification qualificationJudge) { this.qualificationJudge = qualificationJudge; }
 
 //    public void setInlaySeasonLeagueId(List<Integer> inlaySeasonLeagueId) { this.inlaySeasonLeagueId = inlaySeasonLeagueId; }
+
+    public void setSeasonLeagueName_JudgeSeasonLeagueName(Map<String, String> seasonLeagueName_JudgeSeasonLeagueName)
+    {
+        this.seasonLeagueName_JudgeSeasonLeagueName = seasonLeagueName_JudgeSeasonLeagueName;
+    }
+
     //endregion
 }

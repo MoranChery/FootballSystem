@@ -10,6 +10,10 @@ import java.util.Map;
 
 public class SeasonDbInServer implements SeasonDb
 {
+    private static SeasonDbInServer ourInstance = new SeasonDbInServer();
+
+    public static SeasonDbInServer getInstance() { return ourInstance; }
+
     @Override
     public void insertSeason(Season season) throws Exception
     {
@@ -64,13 +68,13 @@ public class SeasonDbInServer implements SeasonDb
         conn.close();
 
         Season season = new Season(season_name);
-        season.setLeagueName_SeasonLeagueName(addMap_leagueName_SeasonLeagueName(season_name));
+        season.setLeagueName_SeasonLeagueName(addMap_leagueName_seasonLeagueName(season_name));
         return season;
     }
 
-    private Map<String, String> addMap_leagueName_SeasonLeagueName(String seasonName) throws SQLException
+    private Map<String, String> addMap_leagueName_seasonLeagueName(String seasonName) throws SQLException
     {
-        Map<String, String> leagueName_SeasonLeagueName = new HashMap<>();
+        Map<String, String> leagueName_seasonLeagueName = new HashMap<>();
         String key_league_name;
         String value_season_league_name;
 
@@ -89,18 +93,18 @@ public class SeasonDbInServer implements SeasonDb
             key_league_name = rs.getString("league_name");
             value_season_league_name = rs.getString("season_league_name");
 
-            leagueName_SeasonLeagueName.put(key_league_name, value_season_league_name);
+            leagueName_seasonLeagueName.put(key_league_name, value_season_league_name);
 
             while (rs.next() != false)
             {
                 key_league_name = rs.getString("league_name");
                 value_season_league_name = rs.getString("season_league_name");
 
-                leagueName_SeasonLeagueName.put(key_league_name, value_season_league_name);
+                leagueName_seasonLeagueName.put(key_league_name, value_season_league_name);
             }
         }
         conn.close();
-        return leagueName_SeasonLeagueName;
+        return leagueName_seasonLeagueName;
     }
 
     @Override

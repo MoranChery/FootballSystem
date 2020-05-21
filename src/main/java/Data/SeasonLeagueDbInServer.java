@@ -9,9 +9,15 @@ import Model.SeasonLeague;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SeasonLeagueDbInServer implements SeasonLeagueDb
 {
+    private static SeasonLeagueDbInServer ourInstance = new SeasonLeagueDbInServer();
+
+    public static SeasonLeagueDbInServer getInstance() { return ourInstance; }
+
     @Override
     public void insertSeasonLeague(SeasonLeague seasonLeague) throws Exception
     {
@@ -30,8 +36,29 @@ public class SeasonLeagueDbInServer implements SeasonLeagueDb
             preparedStmt.setString (4, seasonLeague.getCalculateLeaguePoints().toString());
             preparedStmt.setString (5, seasonLeague.getInlayGames().toString());
 
+            try
+            {
+                LeagueDbInServer.getInstance().getLeague(seasonLeague.getLeagueName());
+            }
+            catch (Exception e)
+            {
+                throw new NotFoundException("League not found");
+            }
+
+            try
+            {
+                SeasonDbInServer.getInstance().getSeason(seasonLeague.getSeasonName());
+            }
+            catch (Exception e)
+            {
+                throw new NotFoundException("Season not found");
+            }
             // execute the preparedStatement
             preparedStmt.execute();
+        }
+        catch (NotFoundException e)
+        {
+            throw new Exception(e.getMessage());
         }
         catch (Exception e)
         {
@@ -74,7 +101,43 @@ public class SeasonLeagueDbInServer implements SeasonLeagueDb
         conn.close();
 
         SeasonLeague seasonLeague = new SeasonLeague(season_name, league_name, calculate_league_points, inlay_games);
+        seasonLeague.setJudgeEmailAddress_JudgeSeasonLeagueName(addMap_judgeEmailAddress_judgeSeasonLeagueName(seasonLeagueName));
         return seasonLeague;
+    }
+
+    private Map<String, String> addMap_judgeEmailAddress_judgeSeasonLeagueName(String seasonLeagueName) throws SQLException
+    {
+        Map<String, String> judgeEmailAddress_judgeSeasonLeagueName = new HashMap<>();
+        String key_judge_email_address;
+        String value_judge_season_league_name;
+
+        Connection conn = DbConnector.getConnection();
+
+        // the mysql select statement
+        String query = "select judge_email_address, judge_season_league_name from judge_season_league where season_league_name = \'" + seasonLeagueName + "\'";
+
+        // create the mysql select resultSet
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+
+        // checking if ResultSet is empty
+        if (rs.next() != false)
+        {
+            key_judge_email_address = rs.getString("judge_email_address");
+            value_judge_season_league_name = rs.getString("judge_season_league_name");
+
+            judgeEmailAddress_judgeSeasonLeagueName.put(key_judge_email_address, value_judge_season_league_name);
+
+            while (rs.next() != false)
+            {
+                key_judge_email_address = rs.getString("judge_email_address");
+                value_judge_season_league_name = rs.getString("judge_season_league_name");
+
+                judgeEmailAddress_judgeSeasonLeagueName.put(key_judge_email_address, value_judge_season_league_name);
+            }
+        }
+        conn.close();
+        return judgeEmailAddress_judgeSeasonLeagueName;
     }
 
     @Override
@@ -85,11 +148,17 @@ public class SeasonLeagueDbInServer implements SeasonLeagueDb
     }
 
     @Override
-    public void changeCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception
+    public void updateCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception
     {
+        if(calculateLeaguePoints == null)
+        {
+            throw new NullPointerException("CalculateLeaguePoints not found");
+        }
         Connection conn = DbConnector.getConnection();
         try
         {
+            getSeasonLeague(seasonLeagueName);
+
             // the mysql update statement
             String query = " update season_league "
                 + "set calculate_league_points = \'" + calculateLeaguePoints.toString() + "\' "
@@ -101,10 +170,14 @@ public class SeasonLeagueDbInServer implements SeasonLeagueDb
             // execute the preparedStatement
             preparedStmt.execute();
         }
-        catch (Exception e)
+        catch (NotFoundException e)
         {
-            throw new Exception("SeasonLeague ??? already exists in the system");
+            throw new Exception("SeasonLeague not found");
         }
+//        catch (Exception e)
+//        {
+//            throw new Exception("SeasonLeague not found455546486551");
+//        }
         finally
         {
             conn.close();

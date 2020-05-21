@@ -1,19 +1,23 @@
 package Data;
 
-import Model.Enums.CalculateLeaguePoints;
-import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
 import Model.Enums.Status;
 import Model.Game;
 import Model.JudgeSeasonLeague;
-import Model.SeasonLeague;
 import Model.UsersTypes.Judge;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JudgeDbInServer implements JudgeDb
 {
+    private static JudgeDbInServer ourInstance = new JudgeDbInServer();
+
+    public static JudgeDbInServer getInstance() { return ourInstance; }
+
     @Override
     public void insertJudge(Judge judge) throws Exception
     {
@@ -52,8 +56,10 @@ public class JudgeDbInServer implements JudgeDb
 
         Connection conn = DbConnector.getConnection();
 
+        // the mysql select statement
         String query = "select * from subscriber, judge where subscriber.email_address = judge.email_address and subscriber.email_address = \'" + judgeEmailAddress + "\'";
 
+        // create the mysql select resultSet
         Statement preparedStmt = conn.createStatement();
         ResultSet rs = preparedStmt.executeQuery(query);
 
@@ -75,37 +81,87 @@ public class JudgeDbInServer implements JudgeDb
         Judge judge = new Judge(userName, password, id, first_name, last_name, QualificationJudge.valueOf(judge_qualification));
         judge.setPassword(password);
         judge.setStatus(Status.valueOf(status));
+        judge.setSeasonLeagueName_JudgeSeasonLeagueName(addMap_seasonLeagueName_judgeSeasonLeagueName(judgeEmailAddress));
+
         return judge;
+    }
+
+    private Map<String, String> addMap_seasonLeagueName_judgeSeasonLeagueName(String judgeEmailAddress) throws SQLException
+    {
+        Map<String, String> seasonLeagueName_judgeSeasonLeagueName = new HashMap<>();
+        String key_season_league_name;
+        String value_judge_season_league_name;
+
+        Connection conn = DbConnector.getConnection();
+
+        // the mysql select statement
+        String query = "select season_league_name, judge_season_league_name from judge_season_league where judge_email_address = \'" + judgeEmailAddress + "\'";
+
+        // create the mysql select resultSet
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+
+        // checking if ResultSet is empty
+        if (rs.next() != false)
+        {
+            key_season_league_name = rs.getString("season_league_name");
+            value_judge_season_league_name = rs.getString("judge_season_league_name");
+
+            seasonLeagueName_judgeSeasonLeagueName.put(key_season_league_name, value_judge_season_league_name);
+
+            while (rs.next() != false)
+            {
+                key_season_league_name = rs.getString("season_league_name");
+                value_judge_season_league_name = rs.getString("judge_season_league_name");
+
+                seasonLeagueName_judgeSeasonLeagueName.put(key_season_league_name, value_judge_season_league_name);
+            }
+        }
+        conn.close();
+        return seasonLeagueName_judgeSeasonLeagueName;
     }
 
     @Override
     public void removeJudge(String judgeEmailAddress) throws Exception
     {
-
+        //todo
+        throw new NotImplementedException();
     }
 
     @Override
     public void wantToEditQualification(String judgeMail, String newQualification) throws Exception
     {
+        Connection conn = DbConnector.getConnection();
 
+        // the mysql update statement
+        String query = "update judge set qualification_judge = \'" + newQualification + "\' where judge.email_address =  \'"+ judgeMail + "\'" ;
+
+        // create the mysql update preparedStatement
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
     }
 
     @Override
     public void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception
     {
-
+        //todo
+        throw new NotImplementedException();
     }
 
     @Override
     public void addGameToTheJudge(String judgeMail, Game gameToAdd) throws Exception
     {
-
+        //todo
+        throw new NotImplementedException();
     }
 
     @Override
     public List<String> getJudgeGames(String judgeId)
     {
-        return null;
+        //todo
+        throw new NotImplementedException();
+//        return null;
     }
 
     @Override
@@ -144,11 +200,27 @@ public class JudgeDbInServer implements JudgeDb
     {
         Judge judge1 = new Judge("judge1@gmail.com", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         JudgeDbInServer judgeDbInServer = new JudgeDbInServer();
+        SubscriberDbInServer subscriberDbInServer = new SubscriberDbInServer();
 
         try
         {
-            judgeDbInServer.insertJudge(judge1);
-//
+//            subscriberDbInServer.insertSubscriber(judge1);
+//            judgeDbInServer.insertJudge(judge1);
+
+//            Judge judge2 = judgeDbInServer.getJudge("judge1@gmail.com");
+//            System.out.println(judge2.getEmailAddress());
+//            System.out.println(judge2.getPassword());
+//            System.out.println(judge2.getId());
+//            System.out.println(judge2.getFirstName());
+//            System.out.println(judge2.getLastName());
+//            System.out.println(judge2.getQualificationJudge());
+
+//            judgeDbInServer.wantToEditQualification("judge1@gmail.com", QualificationJudge.COUNTY.toString());
+//            Judge judge3 = judgeDbInServer.getJudge("judge1@gmail.com");
+//            System.out.println(judge3.getEmailAddress());
+//            System.out.println(judge3.getQualificationJudge());
+
+
 //            judgeDbInServer.deleteAll();
         }
         catch (Exception e)

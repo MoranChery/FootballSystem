@@ -6,13 +6,15 @@ import Model.Enums.QualificationCoach;
 import Model.Enums.Status;
 import Model.UsersTypes.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Date;
 
 public class SubscriberDbInServer implements SubscriberDb{
+
+    private static SubscriberDbInServer ourInstance = new SubscriberDbInServer();
+
+    public static SubscriberDbInServer getInstance() { return ourInstance; }
+
     @Override
     public void insertSubscriber(Subscriber subscriber) throws Exception {
         Connection conn = DbConnector.getConnection();
@@ -94,7 +96,33 @@ public class SubscriberDbInServer implements SubscriberDb{
 
     @Override
     public void deleteAll() {
+        Connection conn = DbConnector.getConnection();
+        try
+        {
+            // the mysql delete statement
+            String query = " delete from subscriber";
 
+            // create the mysql delete preparedStatement
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+            // execute the preparedStatement
+            preparedStmt.execute();
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                conn.close();
+            }
+            catch (SQLException throwables)
+            {
+                throwables.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) throws Exception {

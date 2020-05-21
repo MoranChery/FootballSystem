@@ -35,5 +35,5 @@ public interface SeasonLeagueDb extends Db
      * @param seasonLeagueName-name of the SeasonLeague.
      * @param calculateLeaguePoints-new Policy CalculateLeaguePoints.
      */
-    void changeCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception;
+    void updateCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception;
 }

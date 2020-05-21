@@ -35,7 +35,9 @@ public class RepresentativeAssociationController extends Observable implements O
         this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
 //        this.seasonLeagueDb = SeasonLeagueDbInServer.getInstance();
         this.judgeDb = JudgeDbInMemory.getInstance();
+//        this.judgeDb = JudgeDbInServer.getInstance();
         this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
+//        this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInServer.getInstance();
         this.gameDb = GameDbInMemory.getInstance();
     }
 
@@ -215,7 +217,7 @@ public class RepresentativeAssociationController extends Observable implements O
         JudgeSeasonLeague judgeSeasonLeague = new JudgeSeasonLeague(seasonLeagueName, judgeEmailAddress);
         seasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
         judgeDb.createJudgeSeasonLeague(judgeSeasonLeague);
-        judgeSeasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
+        judgeSeasonLeagueDb.insertJudgeSeasonLeague(judgeSeasonLeague);
     }
 
     /**
@@ -237,7 +239,7 @@ public class RepresentativeAssociationController extends Observable implements O
         {
             throw new NullPointerException("SeasonLeague or CalculateLeaguePointsPolicy details incorrect");
         }
-        seasonLeagueDb.changeCalculateLeaguePointsPolicy(seasonLeagueName, calculateLeaguePoints);
+        seasonLeagueDb.updateCalculateLeaguePointsPolicy(seasonLeagueName, calculateLeaguePoints);
     }
 
     /**
