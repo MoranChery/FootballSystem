@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class SeasonDbInServerTest
     private SeasonLeagueDbInServer seasonLeagueDbInServer = SeasonLeagueDbInServer.getInstance();
 
     @Before
-    public void init()
+    public void init() throws SQLException
     {
         final List<Db> dbs = new ArrayList<>();
 
