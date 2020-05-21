@@ -72,29 +72,33 @@ public class NotificationController extends Observable implements Observer {
                 Team theTeam = (Team) theValues[1];
                 Map <String, TeamOwner> allTeamOwners = theTeam.getTeamOwners();
                 Map<String, TeamManager> allTeamManagers = theTeam.getTeamManagers();
-                for (String ownerEmail: allTeamOwners.keySet()) {
-                    TeamOwner teamOwner = allTeamOwners.get(ownerEmail);
-                    if(teamOwner.isWantAlertInMail()){
-                        sendMessageInMail(ownerEmail, alert);
-                    }
-                    else {
-                        try {
-                            alertDb.createAlertInDb(ownerEmail, alert);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                if(!allTeamOwners.isEmpty()){
+                    for (String ownerEmail: allTeamOwners.keySet()) {
+                        TeamOwner teamOwner = allTeamOwners.get(ownerEmail);
+                        if(teamOwner.isWantAlertInMail()){
+                            sendMessageInMail(ownerEmail, alert);
+                        }
+                        else {
+                            try {
+                                alertDb.createAlertInDb(ownerEmail, alert);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
-                for (String managerEmail: allTeamManagers.keySet()) {
-                    TeamManager teamManager = allTeamManagers.get(managerEmail);
-                    if (teamManager.isWantAlertInMail()){
-                        sendMessageInMail(managerEmail, alert);
-                    }
-                    else {
-                        try {
-                            alertDb.createAlertInDb(managerEmail, alert);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                if(!allTeamManagers.isEmpty()){
+                    for (String managerEmail: allTeamManagers.keySet()) {
+                        TeamManager teamManager = allTeamManagers.get(managerEmail);
+                        if (teamManager.isWantAlertInMail()){
+                            sendMessageInMail(managerEmail, alert);
+                        }
+                        else {
+                            try {
+                                alertDb.createAlertInDb(managerEmail, alert);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -116,6 +120,38 @@ public class NotificationController extends Observable implements Observer {
         if (o == saController){
             Object[] theValues = (Object[]) arg;
             Alert alert = createAlert(theValues[0].toString(), theValues[1], theValues[2]);
+            Map<String, TeamOwner> ownersList = (Map<String, TeamOwner>) theValues[2];
+            Map<String, TeamManager> managersList = (Map<String, TeamManager>) theValues[3];
+            if(!ownersList.isEmpty()){
+                for (String ownerMail: ownersList.keySet()) {
+                    Subscriber subscriber = ownersList.get(ownerMail);
+                    if (subscriber.isWantAlertInMail()){
+                        sendMessageInMail(ownerMail, alert);
+                    }
+                    else {
+                        try {
+                            alertDb.createAlertInDb(ownerMail, alert);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            if(!managersList.isEmpty()){
+                for (String managerMail: managersList.keySet()) {
+                    Subscriber subscriber = managersList.get(managerMail);
+                    if(subscriber.isWantAlertInMail()){
+                        sendMessageInMail(managerMail, alert);
+                    }
+                    else {
+                        try {
+                            alertDb.createAlertInDb(managerMail, alert);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
 
         }
     }
@@ -161,6 +197,13 @@ public class NotificationController extends Observable implements Observer {
             "We are sorry to inform you that your subscription have been removed. \n You are now no longer " +
                     teamOwner.getTeam() + " owner.";
             alertToSend.setMsgHeader(head);
+            alertToSend.setMsgBody(body);
+
+        }
+        if(typeOfMessage.equals("close")){
+            String header = "You'r team have been closed";
+            String body = "We are sorry to inform you that your team " + theObject.toString() + " has been closed permanently in this system by the system administrator and you can't reopen it again";
+            alertToSend.setMsgHeader(header);
             alertToSend.setMsgBody(body);
 
         }

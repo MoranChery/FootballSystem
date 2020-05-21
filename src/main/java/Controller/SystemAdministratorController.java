@@ -64,7 +64,6 @@ public class SystemAdministratorController extends Observable {
         Team teamToDelete = teamDb.getTeam(teamName);
         Map <String, TeamOwner> teamOwnerList = teamToDelete.getTeamOwners();
         Map<String, TeamManager> teamManagerList = teamToDelete.getTeamManagers();
-        teamDb.deleteTeam(teamName);
         Object[] data = new Object[4];
         data[0] = "close";
         data[1] = teamName;
@@ -72,6 +71,7 @@ public class SystemAdministratorController extends Observable {
         data[3] = teamManagerList;
         setChanged();
         notifyObservers(data);
+        teamDb.deleteTeam(teamName);
     }
 
     //use case 8.2
