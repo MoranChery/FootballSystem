@@ -629,6 +629,12 @@ public class TeamOwnerController extends Observable{
         checkTeamStatusIsActive(team);
         if(financialActivityType.equals(FinancialActivityType.OUTCOME) ){
             if(team.getBudget() - financialActivityAmount < 0){
+                Object[] data = new Object[3];
+                data[0] = "budget";
+                data[1] = team;
+                data[2] = financialActivityAmount;
+                setChanged();
+                notifyObservers(data);
                 throw new Exception("The financial outcome exceeds from the budget");
             }
         }

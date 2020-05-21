@@ -8,10 +8,7 @@ import Model.Enums.Status;
 import Model.Enums.TeamStatus;
 import Model.Game;
 import Model.Team;
-import Model.UsersTypes.Judge;
-import Model.UsersTypes.Subscriber;
-import Model.UsersTypes.TeamManager;
-import Model.UsersTypes.TeamOwner;
+import Model.UsersTypes.*;
 import com.sun.mail.smtp.SMTPTransport;
 
 import javax.mail.*;
@@ -29,7 +26,7 @@ public class NotificationController extends Observable implements Observer {
     private SystemAdministratorController saController;
     private TeamOwnerController teamOwnerController;
     private AlertDb alertDb;
-    //private TeamDb teamDb;
+    private RepresentativeAssociationDb repDb;
 
     public NotificationController() {
     }
@@ -41,6 +38,7 @@ public class NotificationController extends Observable implements Observer {
         this.teamOwnerController = teamOwnerController;
         //this.teamDb = TeamDbInMemory.getInstance();
         alertDb = AlertDbInMemory.getInstance();
+        repDb = RepresentativeAssociationDbInMemory.getInstance();
     }
 
     @Override
@@ -115,6 +113,21 @@ public class NotificationController extends Observable implements Observer {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+            if(theValues[0].equals("budget")){
+//                List<RepresentativeAssociation> allRep = repDb.getAllRep();
+//                for (RepresentativeAssociation rep: allRep) {
+//                    if(rep.isWantAlertInMail()){
+//                        sendMessageInMail(rep.getEmailAddress(), alert);
+//                    }
+//                    else {
+//                        try {
+//                            alertDb.createAlertInDb(rep.getEmailAddress(), alert);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
             }
         }
         if (o == saController){
