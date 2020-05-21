@@ -1,6 +1,7 @@
 package Controller;
 
 import Data.*;
+import Model.Alert;
 import Model.Enums.*;
 import Model.PageType;
 import Model.PersonalPage;
@@ -8,6 +9,7 @@ import Model.Team;
 import Model.UsersTypes.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class GuestController {

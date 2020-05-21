@@ -8,7 +8,7 @@ import Model.UsersTypes.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class TeamOwnerController implements Observer{
+public class TeamOwnerController extends Observable{
     private TeamDb teamDb;
     private PlayerDb playerDb;
     private TeamManagerDb teamManagerDb;
@@ -596,6 +596,12 @@ public class TeamOwnerController implements Observer{
         teamOwnerDb.removeSubscriptionTeamOwner(ownerToRemove);
 //        roleDb.removeRoleFromTeam(ownerToRemove,teamName, RoleType.TEAM_OWNER);
         roleDb.removeRole(ownerToRemove,RoleType.TEAM_OWNER);
+        Object[] data = new Object[3];
+        data[0] = "removed";
+        data[1] = ownerToRemove;
+        data[2] = teamOwnerToRemove;
+        setChanged();
+        notifyObservers(data);
 
     }
 
@@ -671,6 +677,12 @@ public class TeamOwnerController implements Observer{
         Team team = teamDb.getTeam(teamName);
         checkPermissions(ownerEmail,teamName,PermissionType.CHANGE_STATUS);
         teamDb.changeStatus(teamName,teamStatus);
+        Object[] data = new Object[3];
+        data[0] = "status";
+        data[1] = team;
+        data[2] = teamStatus;
+        setChanged();
+        notifyObservers(data);
     }
 
     /**
@@ -793,10 +805,5 @@ public class TeamOwnerController implements Observer{
         if(!isPermitted){
             throw new Exception("This user hasn't Permissions for this operation");
         }
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-
     }
 }
