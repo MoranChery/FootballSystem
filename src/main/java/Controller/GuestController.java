@@ -24,6 +24,7 @@ public class GuestController {
     private RepresentativeAssociationDb representativeAssociationDb;
     private PageDb pageDb;
     private TeamDb teamDb;
+    private SubscriberController subscriberController;
 
     public GuestController() {
         subscriberDb = SubscriberDbInMemory.getInstance();
@@ -38,6 +39,7 @@ public class GuestController {
         representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
         pageDb = PageDbInMemory.getInstance();
         teamDb = TeamDbInMemory.getInstance();
+        subscriberController = new SubscriberController();
     }
 
     //todo: call use case 2.2 from UI
@@ -84,6 +86,8 @@ public class GuestController {
             throw new Exception("Wrong password");
         }
         subscriberDb.changeStatusToOnline(subscriber);
+        subscriberController.getAlerts(subscriber.getEmailAddress());
+
     }
 
     /**

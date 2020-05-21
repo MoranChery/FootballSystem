@@ -40,5 +40,4 @@ public interface TeamDb extends Db {
     void changeStatus(String teamName, TeamStatus teamStatus) throws Exception;
 
     void addTeamPage(TeamPage teamPage) throws Exception;
-    void deleteTeam(String teamName) throws Exception;
 }

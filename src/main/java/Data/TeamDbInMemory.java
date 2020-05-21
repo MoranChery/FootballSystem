@@ -255,11 +255,6 @@ public class TeamDbInMemory implements TeamDb {
    }
 
     @Override
-    public void deleteTeam(String teamName) throws Exception {
-
-    }
-
-    @Override
     public void deleteAll() {
         teams.clear();
     }
