@@ -46,5 +46,10 @@ public class SeasonLeague
 
     //region Setters
     public void setCalculateLeaguePoints(CalculateLeaguePoints calculateLeaguePoints) { this.calculateLeaguePoints = calculateLeaguePoints; }
+
+    public void setJudgeEmailAddress_JudgeSeasonLeagueName(Map<String, String> judgeEmailAddress_JudgeSeasonLeagueName)
+    {
+        this.judgeEmailAddress_JudgeSeasonLeagueName = judgeEmailAddress_JudgeSeasonLeagueName;
+    }
     //endregion
 }

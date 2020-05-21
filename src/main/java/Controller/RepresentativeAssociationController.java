@@ -11,7 +11,7 @@ import Model.UsersTypes.RepresentativeAssociation;
 
 import java.util.*;
 
-public class RepresentativeAssociationController extends Observable implements Observer
+public class RepresentativeAssociationController extends Observable
 {
     private RepresentativeAssociationDb representativeAssociationDb;
     private SubscriberDb subscriberDb;
@@ -26,13 +26,19 @@ public class RepresentativeAssociationController extends Observable implements O
     public RepresentativeAssociationController()
     {
         this.representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
+//        this.representativeAssociationDb = RepresentativeAssociationDbInServer.getInstance();
         this.subscriberDb = SubscriberDbInMemory.getInstance();
         this.roleDb = RoleDbInMemory.getInstance();
         this.leagueDb = LeagueDbInMemory.getInstance();
+//        this.leagueDb = LeagueDbInServer.getInstance();
         this.seasonDb = SeasonDbInMemory.getInstance();
+//        this.seasonDb = SeasonDbInServer.getInstance();
         this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
+//        this.seasonLeagueDb = SeasonLeagueDbInServer.getInstance();
         this.judgeDb = JudgeDbInMemory.getInstance();
+//        this.judgeDb = JudgeDbInServer.getInstance();
         this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
+//        this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInServer.getInstance();
         this.gameDb = GameDbInMemory.getInstance();
     }
 
@@ -70,7 +76,7 @@ public class RepresentativeAssociationController extends Observable implements O
             throw new NullPointerException("One or more of the League details incorrect");
         }
         League league = new League(leagueName);
-        leagueDb.createLeague(league);
+        leagueDb.insertLeague(league);
     }
 
     /**
@@ -91,7 +97,7 @@ public class RepresentativeAssociationController extends Observable implements O
             throw new NullPointerException("One or more of the Season details incorrect");
         }
         Season season = new Season(seasonName);
-        seasonDb.createSeason(season);
+        seasonDb.insertSeason(season);
     }
 
     /**
@@ -117,7 +123,7 @@ public class RepresentativeAssociationController extends Observable implements O
         SeasonLeague seasonLeague = new SeasonLeague(seasonName, leagueName, calculateLeaguePoints, inlayGames);
         seasonDb.addSeasonLeague(seasonLeague);
         leagueDb.addSeasonLeague(seasonLeague);
-        seasonLeagueDb.createSeasonLeague(seasonLeague);
+        seasonLeagueDb.insertSeasonLeague(seasonLeague);
     }
 
     /**
@@ -148,7 +154,7 @@ public class RepresentativeAssociationController extends Observable implements O
             subscriberDb.insertSubscriber(judge);
             try
             {
-                judgeDb.createJudge(judge);
+                judgeDb.insertJudge(judge);
             }
             catch (Exception e)
             {
@@ -212,7 +218,7 @@ public class RepresentativeAssociationController extends Observable implements O
         JudgeSeasonLeague judgeSeasonLeague = new JudgeSeasonLeague(seasonLeagueName, judgeEmailAddress);
         seasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
         judgeDb.createJudgeSeasonLeague(judgeSeasonLeague);
-        judgeSeasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
+        judgeSeasonLeagueDb.insertJudgeSeasonLeague(judgeSeasonLeague);
     }
 
     /**
@@ -234,7 +240,7 @@ public class RepresentativeAssociationController extends Observable implements O
         {
             throw new NullPointerException("SeasonLeague or CalculateLeaguePointsPolicy details incorrect");
         }
-        seasonLeagueDb.changeCalculateLeaguePointsPolicy(seasonLeagueName, calculateLeaguePoints);
+        seasonLeagueDb.updateCalculateLeaguePointsPolicy(seasonLeagueName, calculateLeaguePoints);
     }
 
     /**
@@ -311,10 +317,5 @@ public class RepresentativeAssociationController extends Observable implements O
         data[2] = newDate;
         setChanged();
         notifyObservers(data);
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-
     }
 }

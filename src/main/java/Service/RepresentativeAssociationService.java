@@ -222,6 +222,7 @@ public class RepresentativeAssociationService {
             throw new NullPointerException("bad input");
         }
         representativeAssociationController.changeGameDate(repMail, newDate, gameID);
+        loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + repMail + " Description: Game Date \"" + newDate + "\"  was changed to the game \"" + gameID + "\"");
     }
 
     public void changeGameLocation(String repMail, String newLocation, String gameID) throws Exception {
@@ -229,6 +230,7 @@ public class RepresentativeAssociationService {
             throw new Exception("The value is empty");
         }
         representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
+        loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + repMail + " Description: Game Location \"" + newLocation + "\"  was changed to the game \"" + gameID + "\"");
     }
 }
 

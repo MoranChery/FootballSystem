@@ -38,17 +38,6 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
     public static TeamOwnerDbInMemory getInstance() {
         return ourInstance;
     }
-    @Override
-    public void insertTeamOwner(TeamOwner teamOwner) throws Exception {
-        if(teamOwner == null) {
-            throw new NullPointerException("bad input");
-        }
-        String teamOwnerEmailAddress = teamOwner.getEmailAddress();
-        if (teamOwners.containsKey(teamOwnerEmailAddress)) {
-            throw new Exception("TeamOwner already exists");
-        }
-        teamOwners.put(teamOwnerEmailAddress, teamOwner);
-    }
 
     @Override
     public void updateTeamOwnerTeam(String team, String teamOwnerEmailAddress) throws Exception {
@@ -67,6 +56,19 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         }
         return teamOwners.get(teamOwnerEmailAddress);
     }
+
+    @Override
+    public void insertTeamOwner(TeamOwner teamOwner) throws Exception {
+        if(teamOwner == null) {
+            throw new NullPointerException("bad input");
+        }
+        String teamOwnerEmailAddress = teamOwner.getEmailAddress();
+        if (teamOwners.containsKey(teamOwnerEmailAddress)) {
+            throw new Exception("TeamOwner already exists");
+        }
+        teamOwners.put(teamOwnerEmailAddress, teamOwner);
+    }
+
 
     @Override
     public void subscriptionTeamOwner(String team, String teamOwnerEmail, Subscriber subscriber) throws Exception {

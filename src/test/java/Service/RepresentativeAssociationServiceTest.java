@@ -36,7 +36,7 @@ public class RepresentativeAssociationServiceTest
 
         for (Db db : dbs)
         {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
 

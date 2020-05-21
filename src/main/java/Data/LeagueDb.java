@@ -10,7 +10,7 @@ public interface LeagueDb extends Db
      * @param league-the new League.
      * @throws Exception-if details are incorrect.
      */
-    void createLeague(League league) throws Exception;
+    void insertLeague(League league) throws Exception;
 
     /**
      * Will receive from the Controller the league's name, return the League.

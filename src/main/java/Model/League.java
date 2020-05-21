@@ -19,4 +19,11 @@ public class League
 
     public Map<String, String> getSeasonName_SeasonLeagueId() { return seasonName_SeasonLeagueName; }
     //endregion
+
+    //region Setters
+    public void setSeasonName_SeasonLeagueName(Map<String, String> seasonName_SeasonLeagueName)
+    {
+        this.seasonName_SeasonLeagueName = seasonName_SeasonLeagueName;
+    }
+    //endregion
 }

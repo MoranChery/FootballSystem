@@ -46,7 +46,7 @@ public class GuestControllerTest {
         dbs.add(pageDb);
         dbs.add(teamDb);
         for (Db db : dbs) {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
 
