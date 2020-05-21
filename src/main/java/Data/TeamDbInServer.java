@@ -395,33 +395,33 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void closeTeamForAlways(String teamName) throws Exception {
-        Connection conn = DbConnector.getConnection();
-        Statement statement = conn.createStatement();
-        Team team = getTeam(teamName);
-        Map<String, Player> players = team.getPlayers();
-        for (String player : players.keySet()) {
-            removePlayer(teamName,player);
-        }
-        Map<String, Coach> coaches = team.getCoaches();
-        for (String coach : coaches.keySet()) {
-            removeCoach(teamName,coach);
-        }
-        Map<String, TeamManager> teamManagers = team.getTeamManagers();
-        for (String teamManager : teamManagers.keySet()) {
-            removeTeamManager(teamName,teamManager);
-        }
-
-        Map<String, TeamOwner> teamOwners = team.getTeamOwners();
-        for (String teamOwner : teamOwners.keySet()) {
-            String query = "UPDATE team_owner SET team = \'" + team + "\' WHERE email_address = \'"+ teamOwner + "\'" ;
-            PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.executeUpdate();
-            conn.close();
-        }
-
-        statement.executeUpdate("delete from team where team_name = \'" + teamName +"\'");
-
-        conn.close();
+//        Connection conn = DbConnector.getConnection();
+//        Statement statement = conn.createStatement();
+//        Team team = getTeam(teamName);
+//        Map<String, Player> players = team.getPlayers();
+//        for (String player : players.keySet()) {
+//            removePlayer(teamName,player);
+//        }
+//        Map<String, Coach> coaches = team.getCoaches();
+//        for (String coach : coaches.keySet()) {
+//            removeCoach(teamName,coach);
+//        }
+//        Map<String, TeamManager> teamManagers = team.getTeamManagers();
+//        for (String teamManager : teamManagers.keySet()) {
+//            removeTeamManager(teamName,teamManager);
+//        }
+//
+//        Map<String, TeamOwner> teamOwners = team.getTeamOwners();
+//        for (String teamOwner : teamOwners.keySet()) {
+//            String query = "UPDATE team_owner SET team = \'" + team + "\' WHERE email_address = \'"+ teamOwner + "\'" ;
+//            PreparedStatement preparedStmt = conn.prepareStatement(query);
+//            preparedStmt.executeUpdate();
+//            conn.close();
+//        }
+//
+//        statement.executeUpdate("delete from team where team_name = \'" + teamName +"\'");
+//
+//        conn.close();
 
     }
 
