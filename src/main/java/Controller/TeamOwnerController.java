@@ -99,10 +99,9 @@ public class TeamOwnerController implements Observer{
             addTeamManager(teamName,teamManager.getEmailAddress(),teamManager.getId(),teamManager.getFirstName(),teamManager.getLastName(),teamManager.getPermissionTypes(),teamManager.getOwnedByEmail());
         }
         addCourt(teamName,teamOwnerEmail,court.getCourtName(),court.getCourtCity());
-        Team team = getTeam(teamName);
-        TeamPage teamPage = new TeamPage(teamName, team);
-        pageDb.createTeamPage(teamName, team);
-        teamDb.addTeamPage(teamPage);
+//        Team team = getTeam(teamName);
+//        TeamPage teamPage = new TeamPage(teamName,PageType.TEAM);
+//        pageDb.insertPage(teamName, PageType.TEAM);
     }
 
 
@@ -479,13 +478,14 @@ public class TeamOwnerController implements Observer{
         Team team = teamDb.getTeam(teamName);
         checkPermissions(ownerEmail,teamName,PermissionType.REMOVE_COURT);
         checkTeamStatusIsActive(team);
+
         Court court = courtDb.getCourt(courtName);
+
         /*check if one of the teams that associated with the court match to the court want to delete*/
-        Team courtTeam = court.getTeam(teamName);
-        if(courtTeam == null || !teamName.equals(courtTeam.getTeamName())) {
+        if(team.getCourt() == null || !courtName.equals(team.getCourt().getCourtName())) {
             throw new Exception("Court is not part of the with associated team");
         }
-        teamDb.removeCourt(teamName, courtName);
+        teamDb.removeCourtFromTeam(teamName, courtName);
     }
 
     /**
@@ -653,8 +653,8 @@ public class TeamOwnerController implements Observer{
         }
         /*for security and unique id*/
         String financialActivityId = UUID.randomUUID().toString();
-        FinancialActivity financialActivity = new FinancialActivity(financialActivityId,financialActivityAmount,description,financialActivityType,team);
-        financialActivityDb.createFinancialActivity(financialActivity);
+        FinancialActivity financialActivity = new FinancialActivity(financialActivityId,financialActivityAmount,description,financialActivityType,teamName);
+        financialActivityDb.insertFinancialActivity(financialActivity);
         teamDb.addFinancialActivity(teamName,financialActivity);
     }
 

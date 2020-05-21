@@ -27,14 +27,15 @@ public class RoleDbInServer implements RoleDb {
         try
         {
             // the mysql insert statement
-            String query = " insert into role (email_address,team_name,role_type)"
-                    + " values (?,?,?)";
+            String query = " insert into role (email_address,team_name,role_type,assigned_date)"
+                    + " values (?,?,?,?)";
 
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString (1, emailAddress);
             preparedStmt.setString (2, teamName);
             preparedStmt.setString (3, roleType.name());
+            preparedStmt.setLong (4, System.currentTimeMillis());
 
             // execute the preparedstatement
             preparedStmt.execute();
@@ -81,8 +82,10 @@ public class RoleDbInServer implements RoleDb {
             String userName = rs.getString("email_address");
             String team_name = rs.getString("team_name");
             String role_type = rs.getString("role_type");
+            Long assigned_date = rs.getLong("assigned_date");
             Role role = new Role(userName,RoleType.valueOf(role_type));
             role.setTeamName(team_name);
+            role.setAssignedDate(assigned_date);
             roles.add(role);
         }
         return roles;

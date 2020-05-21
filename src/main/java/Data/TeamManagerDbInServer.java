@@ -23,6 +23,9 @@ public class TeamManagerDbInServer implements TeamManagerDb{
 
     @Override
     public void insertTeamManager(TeamManager teamManager) throws Exception {
+        if(teamManager == null){
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
         try
         {
@@ -48,10 +51,8 @@ public class TeamManagerDbInServer implements TeamManagerDb{
         if (teamManagerEmailAddress == null) {
             throw new NullPointerException("bad input");
         }
-
         Connection conn = DbConnector.getConnection();
         String query = "select * from subscriber, team_manager where subscriber.email_address = team_manager.email_address  and subscriber.email_address = \'" + teamManagerEmailAddress + "\'";
-
         Statement preparedStmt = conn.createStatement();
         ResultSet rs = preparedStmt.executeQuery(query);
 

@@ -1,10 +1,7 @@
 package Data;
 
-import Model.Court;
+import Model.*;
 import Model.Enums.*;
-import Model.FinancialActivity;
-import Model.Team;
-import Model.TeamPage;
 import Model.UsersTypes.Coach;
 import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
@@ -26,6 +23,9 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void insertTeam(String teamName) throws Exception {
+        if(teamName == null){
+            throw new NullPointerException("bad input");
+        }
         insertTeam(teamName, 0.0, TeamStatus.ACTIVE);
     }
 
@@ -45,6 +45,17 @@ public class TeamDbInServer implements TeamDb{
             preparedStmt.setString (3, active.name());
             // execute the preparedstatement
             preparedStmt.execute();
+
+            query = " insert into page (page_id,page_type)"
+                    + " values (?,?)";
+
+            // create the mysql insert preparedstatement
+            preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setString (1, teamName);
+            preparedStmt.setString (2, PageType.TEAM.name());
+            // execute the preparedstatement
+            preparedStmt.execute();
+
         } catch(SQLIntegrityConstraintViolationException e) {
             throw new Exception("Team already exist in the system");
         }
@@ -66,10 +77,25 @@ public class TeamDbInServer implements TeamDb{
     @Override
     public void addTeamManager(String teamName, TeamManager teamManager, List<PermissionType> permissionTypes, String ownedByEmail) throws Exception {
         Connection conn = DbConnector.getConnection();
-
-        String query = "UPDATE team_manager  SET team = \'" + teamName +  "\'  WHERE team_manager.email_address =  \'"+ teamManager.getEmailAddress() + "\'" ;
+        String query = "UPDATE team_manager SET team = \'" + teamName +  "\', owned_by_email = \'" + ownedByEmail + "\' WHERE team_manager.email_address = \'"+ teamManager.getEmailAddress() + "\'" ;
         PreparedStatement preparedStmt = conn.prepareStatement(query);
         preparedStmt.executeUpdate();
+        Statement statement = conn.createStatement();
+        query = "delete from permission where permission.email_address = \'" + teamManager.getEmailAddress() + "\'";
+        statement.executeUpdate(query);
+
+            for (PermissionType pt : permissionTypes) {
+                // the mysql insert statement
+                query = " insert into permission (email_address,permission_type)"
+                        + " values (?,?)";
+
+                // create the mysql insert preparedstatement
+                preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setString(1, teamManager.getEmailAddress());
+                preparedStmt.setString(2, pt.name());
+                // execute the preparedstatement
+                preparedStmt.execute();
+            }
         conn.close();
     }
 
@@ -215,6 +241,31 @@ public class TeamDbInServer implements TeamDb{
             team.setCourt(courtToAdd);
 
         }
+        query = "select * from financial_activity where financial_activity.team = \'" + teamName + "\'";
+
+        preparedStmt = conn.createStatement();
+        rs = preparedStmt.executeQuery(query);
+        Map<String,FinancialActivity> financialActivityMap = new HashMap<>();
+
+        while(rs.next()){
+            String financial_activity_id = rs.getString("financial_activity_id");
+            double financial_activity_amount = rs.getDouble("financial_activity_amount");
+            String financial_activity_type = rs.getString("financial_activity_type");
+            String description = rs.getString("description");
+            String financial_activity_team = rs.getString("team");
+            FinancialActivity financialActivity = new FinancialActivity(financial_activity_id, financial_activity_amount, description,FinancialActivityType.valueOf(financial_activity_type), financial_activity_team);
+            financialActivityMap.put(financial_activity_id, financialActivity);
+        }
+        query = "select * from page where page.page_id = \'" + teamName + "\'";
+
+        preparedStmt = conn.createStatement();
+        rs = preparedStmt.executeQuery(query);
+        if(rs.next()) {
+            String page_id = rs.getString("page_id");
+            String page_type = rs.getString("page_type");
+            TeamPage teamPage = new TeamPage(page_id, PageType.valueOf(page_type));
+            team.setTeamPage(teamPage);
+        }
         conn.close();
         team.setTeamName(team_name);
         team.setBudget(budget);
@@ -223,6 +274,8 @@ public class TeamDbInServer implements TeamDb{
         team.setTeamManagers(teamManagers);
         team.setPlayers(players);
         team.setCoaches(coaches);
+        team.setFinancialActivities(financialActivityMap);
+
         return team;    }
 
     @Override
@@ -247,11 +300,26 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void removePlayer(String teamName, String playerEmailAddress) throws Exception {
-
+        if(teamName == null || playerEmailAddress == null) {
+            throw new NullPointerException();
+        }
+        Connection conn = DbConnector.getConnection();
+        String query = "UPDATE player SET team = " + null +  "  WHERE player.team =  \'"+ teamName + "\' and player.email_address = '" + playerEmailAddress + "\'" ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        int i = preparedStmt.executeUpdate();
+        conn.close();
     }
 
     @Override
     public void removeTeamManager(String teamName, String teamManagerEmailAddress) throws Exception {
+        if(teamName == null || teamManagerEmailAddress == null) {
+            throw new NullPointerException();
+        }
+        Connection conn = DbConnector.getConnection();
+        String query = "UPDATE team_manager SET team = " + null +  "  WHERE team_manager.team =  \'"+ teamName + "\' and team_manager.email_address = '" + teamManagerEmailAddress + "\'" ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        int i = preparedStmt.executeUpdate();
+        conn.close();
 
     }
 
@@ -266,14 +334,54 @@ public class TeamDbInServer implements TeamDb{
     }
 
     @Override
-    public void removeCourt(String teamName, String courtName) throws Exception {
-
+    public void removeCourtFromTeam(String teamName, String courtName) throws Exception {
+        if(teamName == null || courtName == null) {
+            throw new NullPointerException();
+        }
+        Connection conn = DbConnector.getConnection();
+        String query = "UPDATE team SET court = " + null +  "  WHERE team.team_name =  \'"+ teamName + "\' and team.court = '" + courtName + "\'" ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        int i = preparedStmt.executeUpdate();
+        conn.close();
     }
 
     @Override
     public void addFinancialActivity(String teamName, FinancialActivity financialActivity) throws Exception {
+        if(teamName == null) {
+            throw new Exception("Team not found");
+        }
+        Connection conn = DbConnector.getConnection();
+        String query = " insert into financial_activity (financial_activity_id,financial_activity_amount,description,financial_activity_type,team)"
+                + " values (?,?,?,?,?)";
+
+        // create the mysql insert preparedstatement
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.setString (1, financialActivity.getFinancialActivityId());
+        preparedStmt.setDouble (2, financialActivity.getFinancialActivityAmount());
+        preparedStmt.setString (3, financialActivity.getDescription());
+        preparedStmt.setString (4, financialActivity.getFinancialActivityType().name());
+        preparedStmt.setString (5, teamName);
+
+        // execute the preparedstatement
+        preparedStmt.execute();
+
+        Team team = getTeam(teamName);
+        query = "UPDATE team SET budget = \'" + transferTheAmountPerType(team.getBudget(),financialActivity) + "\' WHERE team_name = \'"+ teamName + "\'" ;
+        preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
+
 
     }
+
+    private double transferTheAmountPerType(Double teamBudget, FinancialActivity financialActivity){
+        if (financialActivity.getFinancialActivityType().equals(FinancialActivityType.OUTCOME)) {
+            return teamBudget - financialActivity.getFinancialActivityAmount();
+        }else{
+            return teamBudget + financialActivity.getFinancialActivityAmount();
+        }
+    }
+
 
     @Override
     public void changeStatus(String teamName, TeamStatus teamStatus) throws Exception {
@@ -283,11 +391,6 @@ public class TeamDbInServer implements TeamDb{
         PreparedStatement preparedStmt = conn.prepareStatement(query);
         preparedStmt.executeUpdate();
         conn.close();
-    }
-
-    @Override
-    public void addTeamPage(TeamPage teamPage) throws Exception {
-
     }
 
     @Override

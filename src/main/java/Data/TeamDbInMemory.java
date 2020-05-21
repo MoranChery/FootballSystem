@@ -134,8 +134,8 @@ public class TeamDbInMemory implements TeamDb {
         //add the court to the team
         team.setCourt(court);
         //add the team to the teams's court
-        HashMap<String, Team> teams = court.getTeams();
-        teams.put(teamName,team);
+        List<String> teams = court.getTeams();
+        teams.add(teamName);
     }
 
     /**
@@ -196,7 +196,7 @@ public class TeamDbInMemory implements TeamDb {
     }
 
     @Override
-    public void removeCourt(String teamName, String courtName) throws Exception {
+    public void removeCourtFromTeam(String teamName, String courtName) throws Exception {
         Team team = teams.get(teamName);
         if(team == null) {
             throw new Exception("Team not found");
@@ -208,7 +208,7 @@ public class TeamDbInMemory implements TeamDb {
         }
         team.setCourt(null);
         //TODO check if needed
-        Map<String, Team> teamOfCourt = court.getTeams();
+        List<String> teamOfCourt = court.getTeams();
         teamOfCourt.remove(teamName);
     }
 
@@ -243,16 +243,16 @@ public class TeamDbInMemory implements TeamDb {
        }
    }
 
-
-   @Override
-   public void addTeamPage(TeamPage teamPage) throws Exception {
-       Team teamName = teamPage.getTeam();
-       if(teamPage == null || !teams.containsKey(teamName)) {
-           throw new Exception("Team not found");
-       }
-       Team team = teams.get(teamName);
-        team.setTeamPage(teamPage);
-   }
+//
+//   @Override
+//   public void addTeamPage(TeamPage teamPage) throws Exception {
+//       Team teamName = teamPage.getTeam();
+//       if(teamPage == null || !teams.containsKey(teamName)) {
+//           throw new Exception("Team not found");
+//       }
+//       Team team = teams.get(teamName);
+//        team.setTeamPage(teamPage);
+//   }
 
     @Override
     public void deleteAll() {

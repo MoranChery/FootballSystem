@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class TeamOwnerControllerTest {
@@ -30,21 +31,23 @@ public class TeamOwnerControllerTest {
     private RoleDb roleDb = RoleDbInServer.getInstance();
     private SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
     private CourtDb courtDb = CourtDbInServer.getInstance();
-    private PermissionDb permissionDb = PermissionDbInServer.getInstance().getInstance();
+    private PermissionDb permissionDb = PermissionDbInServer.getInstance();
+    private PageDb pageDb = PageInServer.getInstance();
+    private FinancialActivityDb financialActivityDb = FinancialActivityDbInServer.getInstance();
 
     @Before
     public void init() throws SQLException {
         final List<Db> dbs = new ArrayList<>();
         dbs.add(CoachDbInServer.getInstance());
         dbs.add(CourtDbInServer.getInstance());
-        dbs.add(FinancialActivityDbInMemory.getInstance());
+        dbs.add(financialActivityDb);
         dbs.add(playerDb);
         dbs.add(subscriberDb);
         dbs.add(teamManagerDb);
         dbs.add(TeamOwnerDbInServer.getInstance());
         dbs.add(RoleDbInServer.getInstance());
-        dbs.add(PageDbInMemory.getInstance());
-        dbs.add(PermissionDbInServer.getInstance());
+        dbs.add(pageDb);
+        dbs.add(permissionDb);
         dbs.add(TeamDbInServer.getInstance());
         for (Db db : dbs) {
             db.deleteAll();
@@ -99,7 +102,7 @@ public class TeamOwnerControllerTest {
         Player player = new Player("email@gmail.com", "1234",2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(player);
         playerDb.insertPlayer(player);
-        Assert.assertEquals(player, playerDb.getPlayer("email@gmail.com"));
+        Assert.assertNotNull( playerDb.getPlayer("email@gmail.com"));
     }
 
     ///////////////////////////////// playerController///////////////////////////////////
@@ -156,7 +159,8 @@ public class TeamOwnerControllerTest {
     }
     @Test
     public void testTeamManagerLegal() throws Exception {
-        TeamManager teamManager = new TeamManager( "email@gmail.com","1111", 1, "firstTeamManager", "lastTeamManager", "ownerEmail");
+        TeamManager teamManager = new TeamManager( "email@gmail.com","1111", 1, "firstTeamManager", "lastTeamManager", null);
+        subscriberDb.insertSubscriber(teamManager);
         teamManagerDb.insertTeamManager(teamManager);
         Assert.assertEquals(teamManager, teamManagerDb.getTeamManager("email@gmail.com"));
     }
@@ -186,13 +190,15 @@ public class TeamOwnerControllerTest {
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
+        teamOwnerDb.insertTeamOwner(teamOwner);
+        roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
+
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
-        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, "1234",2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(managerToAdd);
         playerDb.insertPlayer(managerToAdd);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
-        subscriberDb.insertSubscriber(managerToAdd);
 
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
         Thread.sleep(500);
@@ -211,6 +217,7 @@ public class TeamOwnerControllerTest {
     public void testAddPlayerOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
         teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);
+
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
@@ -218,11 +225,12 @@ public class TeamOwnerControllerTest {
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
         String withPermissionsEmail = "withPermissions@gmail.com";
-        Player managerToAdd = new Player(withPermissionsEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
-
+        Player managerToAdd = new Player(withPermissionsEmail, "1234",2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        subscriberDb.insertSubscriber(managerToAdd);
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
         permissionTypes.add(PermissionType.ADD_PLAYER);
         Thread.sleep(500);
+
         teamOwnerController.subscriptionTeamManager(teamName,ownerEmail, withPermissionsEmail,permissionTypes);
         Assert.assertEquals(RoleType.TEAM_MANAGER, roleDb.getRole(withPermissionsEmail).getRoleType());
         teamOwnerController.addPlayer(teamName, withPermissionsEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER);
@@ -303,8 +311,6 @@ public class TeamOwnerControllerTest {
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-
-
         Date birthDate = new Date();
 
         String playerToAdd = "email@gmail.com";
@@ -320,7 +326,11 @@ public class TeamOwnerControllerTest {
         Assert.assertEquals(playerToAdd, player.getEmailAddress());
         Assert.assertEquals("firstPlayer", player.getFirstName());
         Assert.assertEquals("lastPlayer", player.getLastName());
-        Assert.assertEquals(birthDate, player.getBirthDate());
+        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+        String playerToAddDate = df.format(birthDate);
+        String playerInDbDate = df.format(player.getBirthDate());
+
+        Assert.assertEquals(playerToAddDate, playerInDbDate);
         Assert.assertEquals(PlayerRole.GOALKEEPER, player.getPlayerRole());
         Assert.assertEquals(teamName, player.getTeam());
         Assert.assertNotNull(player.getPassword());
@@ -463,7 +473,10 @@ public class TeamOwnerControllerTest {
         Assert.assertEquals(playerToAdd, player.getEmailAddress());
         Assert.assertEquals("first", player.getFirstName());
         Assert.assertEquals("last", player.getLastName());
-        Assert.assertEquals(birthDate.getTime(), player.getBirthDate().getTime());
+        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+        String playerToAddDate = df.format(birthDate);
+        String playerInDbDate = df.format(player.getBirthDate());
+        Assert.assertEquals(playerToAddDate, playerInDbDate);
         Assert.assertEquals(PlayerRole.GOALKEEPER, player.getPlayerRole());
         Assert.assertEquals(teamName, player.getTeam());
         Assert.assertEquals(2,roleDb.getRoles(playerToAdd).size());
@@ -549,7 +562,11 @@ public class TeamOwnerControllerTest {
         Assert.assertEquals(1, player.getId().intValue());
         Assert.assertEquals("firstPlayer", player.getFirstName());
         Assert.assertEquals("lastPlayer", player.getLastName());
-        Assert.assertEquals(birthDate, player.getBirthDate());
+        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+        String playerToAddDate = df.format(birthDate);
+        String playerInDbDate = df.format(player.getBirthDate());
+
+        Assert.assertEquals(playerToAddDate, playerInDbDate);
         Assert.assertEquals(PlayerRole.GOALKEEPER, player.getPlayerRole());
         Assert.assertEquals(teamName, player.getTeam());
     }
@@ -583,7 +600,7 @@ public class TeamOwnerControllerTest {
 
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
-        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, "1234",2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(managerToAdd);
         playerDb.insertPlayer(managerToAdd);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
@@ -604,13 +621,13 @@ public class TeamOwnerControllerTest {
     @Test
     public void testAddTeamManagerOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);String ownerEmail = "owner@gmail.com";
+        teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);
+
+        String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
-
-
 
         String withPermissionsEmail = "withPermissions@gmail.com";
         Player managerToAdd = new Player(withPermissionsEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
@@ -618,12 +635,14 @@ public class TeamOwnerControllerTest {
         playerDb.insertPlayer(managerToAdd);
         roleDb.insertRole(withPermissionsEmail,teamName, RoleType.PLAYER);
 
-
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
         permissionTypes.add(PermissionType.ADD_TEAM_MANAGER);
         Thread.sleep(500);
+
         teamOwnerController.subscriptionTeamManager(teamName,ownerEmail, withPermissionsEmail,permissionTypes);
+
         Assert.assertEquals(RoleType.TEAM_MANAGER, roleDb.getRole(withPermissionsEmail).getRoleType());
+
         teamOwnerController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer",new ArrayList<>(), withPermissionsEmail);
         Assert.assertEquals(2, teamDb.getTeam(teamName).getTeamManagers().size());
         Assert.assertTrue(teamDb.getTeam(teamName).getTeamManagers().containsKey("email@gmail.com"));
@@ -632,7 +651,8 @@ public class TeamOwnerControllerTest {
     @Test
     public void testAddTeamManagerOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
-        teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);String ownerEmail = "owner@gmail.com";
+        teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);
+        String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
         teamOwnerDb.insertTeamOwner(teamOwner);
@@ -738,23 +758,24 @@ public class TeamOwnerControllerTest {
     @Test
     public void testAddTeamManagerExistsTeamManagerAssociatedWithOtherTeam() throws Exception {
         String teamName = "Exists";
-        teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);String ownerEmail = "owner@gmail.com";
+        teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);
+
+        String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-
-
         teamOwnerController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
 
         String other = "Other";
         teamDb.insertTeam(other);
+
         String otherOwnerEmail = "otherOwner@gmail.com";
         TeamOwner otherTeamOwner = new TeamOwner(otherOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", other);
+        subscriberDb.insertSubscriber(otherTeamOwner);
         teamOwnerDb.insertTeamOwner(otherTeamOwner);
         roleDb.insertRole(otherOwnerEmail,other, RoleType.TEAM_OWNER);
-        subscriberDb.insertSubscriber(otherTeamOwner);
 
         try {
             teamOwnerController.addTeamManager(other, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager",new ArrayList<>(), otherOwnerEmail);
@@ -795,7 +816,7 @@ public class TeamOwnerControllerTest {
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
 
-        TeamManager teamManager = new TeamManager("email@gmail.com", 1, "firstTeamManager", "lastTeamManager", null);
+        TeamManager teamManager = new TeamManager("email@gmail.com", "1234",1, "firstTeamManager", "lastTeamManager", null);
         subscriberDb.insertSubscriber(teamManager);
         teamManagerDb.insertTeamManager(teamManager);
         try {
@@ -816,19 +837,17 @@ public class TeamOwnerControllerTest {
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-
-
         String otherOwnerEmail = "otherOwner@gmail.com";
         TeamOwner otherTeamOwner = new TeamOwner(otherOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(otherTeamOwner);
         teamOwnerDb.insertTeamOwner(otherTeamOwner);
         roleDb.createRoleInSystem(otherOwnerEmail, RoleType.TEAM_OWNER);
 
-        TeamManager teamManager = new TeamManager("email@gmail.com", 1, "firstTeamManager", "lastTeamManager", "email3@gmail.com");
+        TeamManager teamManager = new TeamManager("email@gmail.com", "1234", 1, "firstTeamManager", "lastTeamManager", otherOwnerEmail);
         subscriberDb.insertSubscriber(teamManager);
         teamManagerDb.insertTeamManager(teamManager);
         roleDb.createRoleInSystem("email@gmail.com", RoleType.TEAM_MANAGER);
-        teamManagerDb.getTeamManager("email@gmail.com").setOwnedByEmail(otherOwnerEmail);
+//        teamManagerDb.getTeamManager("email@gmail.com").setOwnedByEmail(otherOwnerEmail);
 //        teamController.addTeamManager(teamName, "email@gmail.com", 1, "firstTeamManager", "lastTeamManager", otherOwnerEmail);
 
         try {
@@ -938,7 +957,7 @@ public class TeamOwnerControllerTest {
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-        TeamManager teamManager1 = new TeamManager("email@gmail.com", 1, "firstTeamManager", "lastTeamManager", null);
+        TeamManager teamManager1 = new TeamManager("email@gmail.com", "1234", 1, "firstTeamManager", "lastTeamManager", null);
         subscriberDb.insertSubscriber(teamManager1);
         teamManagerDb.insertTeamManager(teamManager1);
 
@@ -947,7 +966,7 @@ public class TeamOwnerControllerTest {
         Map<String, TeamManager> teamManagers = team.getTeamManagers();
         Assert.assertEquals(1, teamManagers.size());
         Assert.assertTrue(teamManagers.containsKey("email@gmail.com"));
-        TeamManager teamManager = teamManagers.get("email@gmail.com");
+        TeamManager teamManager = teamManagerDb.getTeamManager("email@gmail.com");
         Assert.assertEquals("email@gmail.com", teamManager.getEmailAddress());
         Assert.assertEquals(1, teamManager.getId().intValue());
         Assert.assertEquals("firstTeamManager", teamManager.getFirstName());
@@ -1007,11 +1026,10 @@ public class TeamOwnerControllerTest {
 
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
-        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, "1234",2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(managerToAdd);
         playerDb.insertPlayer(managerToAdd);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
-        subscriberDb.insertSubscriber(managerToAdd);
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
         Thread.sleep(500);
         teamOwnerController.subscriptionTeamManager(teamName,ownerEmail, withoutPermissionsOwnerEmail,permissionTypes);
@@ -1071,7 +1089,6 @@ public class TeamOwnerControllerTest {
         subscriberDb.insertSubscriber(withoutPermissionsOwner);
         playerDb.insertPlayer(withoutPermissionsOwner);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
-        subscriberDb.insertSubscriber(withoutPermissionsOwner);
 
         try {
             teamOwnerController.addCoach(teamName,withoutPermissionsOwnerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
@@ -1216,7 +1233,7 @@ public class TeamOwnerControllerTest {
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
 
-        Coach currCoach = new Coach("email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        Coach currCoach = new Coach("email@gmail.com", "1234",1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         subscriberDb.insertSubscriber(currCoach);
         coachDb.insertCoach(currCoach);
         try {
@@ -1327,7 +1344,7 @@ public class TeamOwnerControllerTest {
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-        Coach currCoach = new Coach("email@gmail.com", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        Coach currCoach = new Coach("email@gmail.com", "1234",1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         subscriberDb.insertSubscriber(currCoach);
         coachDb.insertCoach(currCoach);
 
@@ -1396,7 +1413,7 @@ public class TeamOwnerControllerTest {
 
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
-        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, "12345", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(managerToAdd);
         playerDb.insertPlayer(managerToAdd);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
@@ -1538,9 +1555,11 @@ public class TeamOwnerControllerTest {
         subscriberDb.insertSubscriber(teamOwner2);
         teamOwnerDb.insertTeamOwner(teamOwner2);
         roleDb.insertRole(ownerEmail2,"Other", RoleType.TEAM_OWNER);
+
         teamOwnerController.addCourt("Other", ownerEmail2,"courtName", "courtCity");
-        Assert.assertTrue(courtDb.getCourt("courtName").getTeams().containsKey(teamName));
-        Assert.assertTrue(courtDb.getCourt("courtName").getTeams().containsKey("Other"));
+
+        Assert.assertEquals(teamDb.getTeam(teamName).getCourt().getCourtName(),"courtName");
+        Assert.assertEquals(teamDb.getTeam("Other").getCourt().getCourtName(),"courtName");
     }
 
     @Test
@@ -1628,11 +1647,10 @@ public class TeamOwnerControllerTest {
 
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
-        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, "12345",2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(managerToAdd);
         playerDb.insertPlayer(managerToAdd);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
-        subscriberDb.insertSubscriber(managerToAdd);
 
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
         Thread.sleep(500);
@@ -1791,7 +1809,7 @@ public class TeamOwnerControllerTest {
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-        Player player = new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        Player player = new Player("email@gmail.com", "1234",1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(player);
         playerDb.insertPlayer(player);
         try {
@@ -1822,7 +1840,8 @@ public class TeamOwnerControllerTest {
         Assert.assertEquals(RoleType.PLAYER, roleDb.getRole("email@gmail.com").getRoleType());
 
         teamOwnerController.removePlayer(teamName, ownerEmail,"email@gmail.com");
-
+        team = teamDb.getTeam(teamName);
+        players = team.getPlayers();
         Assert.assertEquals(0, players.size());//players in team
         Assert.assertFalse(players.containsKey("email@gmail.com"));
         Assert.assertEquals(RoleType.PLAYER, roleDb.getRole("email@gmail.com").getRoleType());
@@ -1861,10 +1880,10 @@ public class TeamOwnerControllerTest {
 
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
-        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, "1234",2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        subscriberDb.insertSubscriber(managerToAdd);
         playerDb.insertPlayer(managerToAdd);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
-        subscriberDb.insertSubscriber(managerToAdd);
 
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
         Thread.sleep(500);
@@ -2030,7 +2049,7 @@ public class TeamOwnerControllerTest {
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
 
-        TeamManager teamManager = new TeamManager("email@gmail.com", 1, "firstPlayer", "lastPlayer", null);
+        TeamManager teamManager = new TeamManager("email@gmail.com", "1234", 1, "firstPlayer", "lastPlayer", null);
         subscriberDb.insertSubscriber(teamManager);
         teamManagerDb.insertTeamManager(teamManager);
         try {
@@ -2059,7 +2078,10 @@ public class TeamOwnerControllerTest {
         Assert.assertEquals(1, teamManagers.size());
         Assert.assertTrue(teamManagers.containsKey("email@gmail.com"));
         Assert.assertEquals(RoleType.TEAM_MANAGER, roleDb.getRole("email@gmail.com").getRoleType());
+
         teamOwnerController.removeTeamManager(teamName, ownerEmail,"email@gmail.com");
+        team = teamDb.getTeam(teamName);
+        teamManagers = team.getTeamManagers();
         Assert.assertEquals(0, teamManagers.size());
         Assert.assertFalse(team.getTeamManagers().containsKey("email@gmail.com"));
         Assert.assertEquals(RoleType.TEAM_MANAGER, roleDb.getRole("email@gmail.com").getRoleType());
@@ -2097,14 +2119,14 @@ public class TeamOwnerControllerTest {
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
 
-        teamOwnerController.addCoach(teamName,ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", CoachRole.GOALKEEPER, QualificationCoach.UEFA_A);
+        teamOwnerController.addCoach(teamName,ownerEmail,"email@gmail.com",1, "firstPlayer", "lastPlayer", CoachRole.GOALKEEPER, QualificationCoach.UEFA_A);
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
-        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(managerToAdd);
         playerDb.insertPlayer(managerToAdd);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
-        subscriberDb.insertSubscriber(managerToAdd);
+
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
         Thread.sleep(500);
         teamOwnerController.subscriptionTeamManager(teamName,ownerEmail, withoutPermissionsOwnerEmail,permissionTypes);
@@ -2301,14 +2323,11 @@ public class TeamOwnerControllerTest {
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-
-
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
-        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, "1234",2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(managerToAdd);
         playerDb.insertPlayer(managerToAdd);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
-        subscriberDb.insertSubscriber(managerToAdd);
 
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
         Thread.sleep(500);
@@ -2333,7 +2352,6 @@ public class TeamOwnerControllerTest {
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-
         teamOwnerController.addCourt(teamName,ownerEmail,"courtName","cityName");
 
         String withPermissionsEmail = "withPermissions@gmail.com";
@@ -2356,20 +2374,20 @@ public class TeamOwnerControllerTest {
     public void testRemoveCourtOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
         teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);
+
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-
-
         String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(withoutPermissionsOwner);
         playerDb.insertPlayer(withoutPermissionsOwner);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
-        subscriberDb.insertSubscriber(withoutPermissionsOwner);
+
+
         try {
             teamOwnerController.removeCourt(teamName, withoutPermissionsOwnerEmail,"courName");
             Assert.fail("Should throw Exception");
@@ -2387,8 +2405,6 @@ public class TeamOwnerControllerTest {
             subscriberDb.insertSubscriber(teamOwner);
             teamOwnerDb.insertTeamOwner(teamOwner);
             roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
-
-
 
             teamOwnerController.removeCourt("notExists", ownerEmail, "courtName");
             Assert.fail("Should throw NotFoundException");
@@ -2459,23 +2475,28 @@ public class TeamOwnerControllerTest {
     public void testRemoveCourtExistsAndAssociatedWithTeam() throws Exception {
         String teamName = "Exists";
         teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);String ownerEmail = "owner@gmail.com";
+
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
+//        courtDb.insertCourt(new Court("courtName", "courtCity"));
 
-        courtDb.insertCourt(new Court("courtName", "courtCity"));
         teamOwnerController.addCourt(teamName, ownerEmail,"courtName", "courtCity");
+
         Team team = teamDb.getTeam(teamName);
+        Assert.assertEquals("courtName", team.getCourt().getCourtName());
         Court court = team.getCourt();
-        Assert.assertEquals(team, court.getTeam(teamName));
-        HashMap<String, Team> teams = court.getTeams();
+        List<String> teams = courtDb.getTeams("courtName");
         Assert.assertEquals(1, teams.size());
-        Assert.assertTrue(teams.containsKey(teamName));
+        Assert.assertTrue(teams.contains(teamName));
+
         teamOwnerController.removeCourt(teamName, ownerEmail,"courtName");
+        team = teamDb.getTeam(teamName);
+        teams = courtDb.getTeams("courtName");
         Assert.assertEquals(0, teams.size());
-        Assert.assertFalse(teams.containsKey(court.getCourtName()));
+        Assert.assertFalse(teams.contains(court.getCourtName()));
         Assert.assertNull(teamDb.getTeam(teamName).getCourt());
     }
 
@@ -2499,8 +2520,9 @@ public class TeamOwnerControllerTest {
     @Test
     public void testAddFinanacialActivityOwnerWithoutManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);
-        teamDb.getTeam(teamName).setBudget(100.0);
+        teamDb.insertTeam(teamName,100.0,TeamStatus.ACTIVE);
+
+
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
@@ -2529,8 +2551,7 @@ public class TeamOwnerControllerTest {
     @Test
     public void testAddFinancialActivityOwnerWithManagerPermissions() throws Exception {
         String teamName = "Exists";
-        teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);
-        teamDb.getTeam(teamName).setBudget(100.0);
+        teamDb.insertTeam(teamName,100.0,TeamStatus.ACTIVE);
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
@@ -2628,6 +2649,7 @@ public class TeamOwnerControllerTest {
         subscriberDb.insertSubscriber(teamOwner);
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
+
         teamOwnerController.addFinancialActivity(teamName, ownerEmail,1000.0, "Description", FinancialActivityType.OUTCOME);
         Team team = teamDb.getTeam(teamName);
         Assert.assertEquals(1.0, team.getBudget(), 0);
@@ -2636,17 +2658,17 @@ public class TeamOwnerControllerTest {
     @Test
     public void testAddFinancialActivityWithOutcomeEqualBudget() throws Exception {
         String teamName = "Exists";
-        teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);String ownerEmail = "owner@gmail.com";
+        teamDb.insertTeam(teamName,1000.0,TeamStatus.ACTIVE);
+        String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-
-        Team team = teamDb.getTeam(teamName);team.setBudget(1000.0);
-
         teamOwnerController.addFinancialActivity(teamName,ownerEmail, 1000.0, "Description", FinancialActivityType.OUTCOME);
+        Team team = teamDb.getTeam(teamName);
         Assert.assertEquals(0.0, team.getBudget(), 0);
+
         Map<String, FinancialActivity> financialActivities = team.getFinancialActivities();
         Assert.assertEquals(1, financialActivities.size());
         Set<String> keySet = financialActivities.keySet();
@@ -2670,6 +2692,7 @@ public class TeamOwnerControllerTest {
         Team team = teamDb.getTeam(teamName);
         Map<String, FinancialActivity> financialActivities = team.getFinancialActivities();
         Assert.assertEquals(1, financialActivities.size());
+
         Set<String> keySet = financialActivities.keySet();
         Assert.assertEquals(1000.0, financialActivities.get(keySet.iterator().next()).getFinancialActivityAmount(), 0);
         Assert.assertEquals(FinancialActivityType.INCOME, financialActivities.get(keySet.iterator().next()).getFinancialActivityType());
@@ -2679,7 +2702,9 @@ public class TeamOwnerControllerTest {
     @Test
     public void testAddFinancialActivityWithIncomeUnderBudget() throws Exception {
         String teamName = "Exists";
-        teamDb.insertTeam(teamName,800.0,TeamStatus.ACTIVE);String ownerEmail = "owner@gmail.com";
+        teamDb.insertTeam(teamName,800.0,TeamStatus.ACTIVE);
+
+        String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
         teamOwnerDb.insertTeamOwner(teamOwner);
@@ -2697,7 +2722,9 @@ public class TeamOwnerControllerTest {
         try {
             String teamName = "Exists";
             teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);
-            teamOwnerDb.insertTeamOwner(new TeamOwner("owner@gmail.com" ,"1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName));
+            TeamOwner teamOwner = new TeamOwner("owner@gmail.com" ,"1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
+            subscriberDb.insertSubscriber(teamOwner);
+            teamOwnerDb.insertTeamOwner(teamOwner);
             roleDb.createRoleInSystem("owner@gmail.com", RoleType.TEAM_OWNER);
             teamOwnerController.changeStatus(null,"owner@gmail.com", TeamStatus.ACTIVE);
             Assert.fail("Should throw NullPointerException");
@@ -2720,7 +2747,7 @@ public class TeamOwnerControllerTest {
 
 
         String withoutPermissionsOwnerEmail = "withPermissions@gmail.com";
-        Player managerToAdd = new Player(withoutPermissionsOwnerEmail, 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        Player managerToAdd = new Player(withoutPermissionsOwnerEmail,"1234",2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(managerToAdd);
         playerDb.insertPlayer(managerToAdd);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
@@ -2768,11 +2795,11 @@ public class TeamOwnerControllerTest {
     public void testChangeStatusOwnerWithoutPermissions() throws Exception {
         String teamName = "Exists";
         teamDb.insertTeam(teamName,0.0,TeamStatus.ACTIVE);String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
+
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(withoutPermissionsOwner);
         playerDb.insertPlayer(withoutPermissionsOwner);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
-        subscriberDb.insertSubscriber(withoutPermissionsOwner);
         try {
             teamOwnerController.changeStatus(teamName,withoutPermissionsOwnerEmail, TeamStatus.INACTIVE);
 
@@ -3728,9 +3755,9 @@ public class TeamOwnerControllerTest {
         roleDb.insertRole(teamOwnerMail,teamName, RoleType.TEAM_OWNER);
 
         TeamOwner differentTeamOwner = new TeamOwner("differentTeamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
+        subscriberDb.insertSubscriber(differentTeamOwner);
         teamOwnerDb.insertTeamOwner(differentTeamOwner);
         roleDb.insertRole("differentTeamOwner@gmail.com",teamName, RoleType.TEAM_OWNER);
-        subscriberDb.insertSubscriber(differentTeamOwner);
 
         teamOwnerController.addPlayer(teamName,"differentTeamOwner@gmail.com",teamManagerToRemove,  4, "firstPlayerName", "lastPlayerName",new Date(), PlayerRole.GOALKEEPER);
         teamOwnerController.subscriptionTeamManager(teamName,"differentTeamOwner@gmail.com", teamManagerToRemove,new ArrayList<>());
@@ -3754,22 +3781,24 @@ public class TeamOwnerControllerTest {
         roleDb.insertRole(teamOwnerMail,teamName, RoleType.TEAM_OWNER);
 
         teamOwnerController.addPlayer(teamName,teamOwnerMail,managerToRemove,  4, "firstPlayerName", "lastPlayerName",new Date(), PlayerRole.GOALKEEPER);
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         teamOwnerController.subscriptionTeamManager(teamName, teamOwnerMail, managerToRemove,new ArrayList<>());
 
         TeamManager teamManager = teamManagerDb.getTeamManager(managerToRemove);
         Assert.assertEquals(teamOwnerMail,teamManager.getOwnedByEmail());
-
-        Assert.assertEquals(RoleType.TEAM_MANAGER, roleDb.getRole(managerToRemove).getRoleType());
-        Assert.assertEquals(2, roleDb.getRoles(managerToRemove).size());
-        Assert.assertEquals(RoleType.TEAM_MANAGER, roleDb.getRoles(managerToRemove).get(0).getRoleType());
-        Assert.assertEquals(RoleType.PLAYER, roleDb.getRoles(managerToRemove).get(1).getRoleType());
-
+        List<Role> roles = roleDb.getRoles(managerToRemove);
+        List<RoleType> roleTypes = new ArrayList<>();
+        for (Role role : roles) {
+            roleTypes.add(role.getRoleType());
+        }
+        Assert.assertTrue(roleTypes.contains(RoleType.TEAM_MANAGER));
+        Assert.assertTrue(roleTypes.contains(RoleType.PLAYER));
         //delete managerToRemove should to remove ownerToAddUnder//
         teamOwnerController.removeSubscriptionTeamManager(teamName, teamOwnerMail, managerToRemove);
+        roles = roleDb.getRoles(managerToRemove);
 
         Assert.assertEquals(RoleType.PLAYER, roleDb.getRole(managerToRemove).getRoleType());
-        Assert.assertEquals(1, roleDb.getRoles(managerToRemove).size());
+        Assert.assertEquals(1, roles.size());
     }
 
 
@@ -3801,13 +3830,11 @@ public class TeamOwnerControllerTest {
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
 
-
-
         String withoutPermissionsOwnerEmail = "withoutPermissions@gmail.com";
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
+        subscriberDb.insertSubscriber(withoutPermissionsOwner);
         playerDb.insertPlayer(withoutPermissionsOwner);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
-        subscriberDb.insertSubscriber(withoutPermissionsOwner);
         try {
             teamOwnerController.subscriptionTeamManager(teamName, withoutPermissionsOwnerEmail, "emailToRemove@gmail.com",new ArrayList<>());
             Assert.fail("Should throw Exception");
@@ -3860,7 +3887,7 @@ public class TeamOwnerControllerTest {
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
-        Player managerToAdd = new Player("teamManagerToAdd@gmail.com", 3, "firstName", "lastName",new Date(), PlayerRole.GOALKEEPER);
+        Player managerToAdd = new Player("teamManagerToAdd@gmail.com", "1234",3, "firstName", "lastName",new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(managerToAdd);
         try {
             teamOwnerController.subscriptionTeamManager(teamName,ownerEmail,"teamManagerToAdd@gmail.com" ,new ArrayList<>());
@@ -3878,6 +3905,7 @@ public class TeamOwnerControllerTest {
         TeamOwner teamOwner = new TeamOwner("teamOwner@gmail.com", "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
         subscriberDb.insertSubscriber(teamOwner);
         teamOwnerDb.insertTeamOwner(teamOwner);
+        roleDb.insertRole("teamOwner@gmail.com",teamName,RoleType.TEAM_OWNER);
         try {
             teamOwnerController.subscriptionTeamManager(teamName, "teamOwner@gmail.com", "TeamManagerToAdd@gmail.com",new ArrayList<>());
             Assert.fail("Should throw Exception");
@@ -3900,9 +3928,9 @@ public class TeamOwnerControllerTest {
 
         String otherOwnerMail = "otherOwner@gmail.com";
         TeamOwner otherTeamOwner = new TeamOwner(otherOwnerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", "Other");
+        subscriberDb.insertSubscriber(otherTeamOwner);
         teamOwnerDb.insertTeamOwner(otherTeamOwner);
         roleDb.insertRole(otherOwnerMail,"Other", RoleType.TEAM_OWNER);
-        subscriberDb.insertSubscriber(otherTeamOwner);
 
         String teamManagerToAdd = "teamManagerToAdd@gmail.com";
         teamOwnerController.addPlayer("Other", otherOwnerMail,teamManagerToAdd, 1, "firstPlayerName", "lastPlayerName", new Date(), PlayerRole.GOALKEEPER);
@@ -3926,8 +3954,8 @@ public class TeamOwnerControllerTest {
         String managerToAdd = "teamManagerToAdd@gmail.com";
 
         TeamOwner teamManager = new TeamOwner(managerToAdd, "1234", 3, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
-        teamOwnerDb.insertTeamOwner(teamManager);
         subscriberDb.insertSubscriber(teamManager);
+        teamOwnerDb.insertTeamOwner(teamManager);
         roleDb.insertRole(managerToAdd, teamName, RoleType.TEAM_OWNER);
 
         try {
@@ -4423,8 +4451,8 @@ public class TeamOwnerControllerTest {
 
         teamOwnerController.addCourt(teamName, ownerEmail, "courtName","cityName");
         teamOwnerController.updateCourtDetails(teamName,"owner@gmail.com", "courtName", "courtCity");
-        Team team = teamDb.getTeam(teamName);Court court = team.getCourt();
-        Assert.assertEquals("courtCity", court.getCourtCity());
+        Team team = teamDb.getTeam(teamName);
+        Assert.assertEquals("courtCity", team.getCourt().getCourtCity());
     }
     @Test
     public void testUpdateCourtOwnerWithoutPermissions() throws Exception {
@@ -4482,8 +4510,9 @@ public class TeamOwnerControllerTest {
 
         String ownerEmail = "owner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", teamName);
-        roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
         subscriberDb.insertSubscriber(teamOwner);
+        teamOwnerDb.insertTeamOwner(teamOwner);
+        roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
         teamOwnerController.addCourt(teamName, ownerEmail, "courtName","cityName");
 
         try {

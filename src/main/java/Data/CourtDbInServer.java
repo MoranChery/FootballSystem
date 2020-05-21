@@ -7,6 +7,7 @@ import Model.Team;
 import Model.UsersTypes.Player;
 
 import java.sql.*;
+import java.util.*;
 import java.util.Date;
 
 public class CourtDbInServer implements CourtDb {
@@ -71,8 +72,32 @@ public class CourtDbInServer implements CourtDb {
     }
 
     @Override
-    public void updateCourtDetails(String courtName, String courtCity) throws NotFoundException {
+    public void updateCourtDetails(String courtName, String courtCity) throws NotFoundException, SQLException {
+        Connection conn = DbConnector.getConnection();
 
+        String query = "UPDATE court SET court_city = \'" + courtCity + "\'  WHERE court.court_name =  \'"+  courtName + "\'" ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
+    }
+
+    @Override
+    public List<String> getTeams(String courtName) throws SQLException {
+        Connection conn = DbConnector.getConnection();
+
+        String query = "select * from  team where team.court = \'" + courtName + "\'";
+
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+        List<String> teamsOfCourt = new ArrayList<> ();
+
+        while(rs.next()){
+            String team = rs.getString("team_name");
+            teamsOfCourt.add(team);
+        }
+        conn.close();
+
+        return teamsOfCourt;
     }
 
     @Override

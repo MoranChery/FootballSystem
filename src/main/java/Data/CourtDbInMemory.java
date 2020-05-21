@@ -3,7 +3,9 @@ package Data;
 import Model.Court;
 import Model.Team;
 
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CourtDbInMemory implements CourtDb {
@@ -45,8 +47,8 @@ public class CourtDbInMemory implements CourtDb {
             throw new Exception("Court not exists");
         }
         Court fromDb = courts.get(court.getCourtName());
-        HashMap<String, Team> teams = court.getTeams();
-        teams.put(team.getTeamName(),team);
+        List<String>  teams = court.getTeams();
+        teams.add(team.getTeamName());
     }
 
     public void updateCourtDetails(String courtName, String courtCity) throws NotFoundException {
@@ -55,6 +57,11 @@ public class CourtDbInMemory implements CourtDb {
         }
         Court court = courts.get(courtName);
         court.setCourtCity(courtCity);
+    }
+
+    @Override
+    public List<String> getTeams(String teamName) throws SQLException {
+        return null;
     }
 
 

@@ -8,9 +8,9 @@ public class FinancialActivity {
    private double  financialActivityAmount;
    private String description;
    private FinancialActivityType financialActivityType;
-   private Team team;
+   private String team;
 
-    public FinancialActivity(String financialActivityId, double financialActivityAmount, String description, FinancialActivityType financialActivityType, Team team) {
+    public FinancialActivity(String financialActivityId, double financialActivityAmount, String description, FinancialActivityType financialActivityType, String team) {
         this.financialActivityId = financialActivityId;
         this.financialActivityAmount = financialActivityAmount;
         this.description = description;
@@ -50,11 +50,11 @@ public class FinancialActivity {
         this.financialActivityType = financialActivityType;
     }
 
-    public Team getTeam() {
+    public String getTeam() {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(String team) {
         this.team = team;
     }
 }

@@ -4,6 +4,7 @@ import Data.*;
 import Model.Enums.AlertWay;
 import Model.Enums.GamesAlert;
 import Model.Page;
+import Model.PageType;
 import Model.Team;
 import Model.TeamPage;
 import Model.UsersTypes.Fan;
@@ -99,8 +100,8 @@ public class FanServiceTest {
 
         Fan newFan = new Fan("email@gmail.com", "fan1234",1,"Lionel","Messi");
         fanService.createFan(newFan);
-        Page testPage = new TeamPage("teamName");
-        pageDb.createTeamPage("teamName", new Team());
+        Page testPage = new TeamPage("teamName" ,PageType.TEAM);
+        pageDb.insertPage("teamName",PageType.TEAM);
         fanService.addPageToFanListOfPages(newFan.getEmailAddress(),testPage.getPageID());
         Set<String> fanPages = newFan.getMyPages();
         Assert.assertEquals(1, fanPages.size());

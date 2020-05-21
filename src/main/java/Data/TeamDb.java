@@ -33,11 +33,10 @@ public interface TeamDb extends Db {
 
     void removeCoach(String teamName, String coachEmailAddress) throws Exception;
 
-    void removeCourt(String teamName, String courtName) throws Exception;
+    void removeCourtFromTeam(String teamName, String courtName) throws Exception;
 
     void addFinancialActivity(String teamName, FinancialActivity financialActivity) throws Exception;
 
     void changeStatus(String teamName, TeamStatus teamStatus) throws Exception;
 
-    void addTeamPage(TeamPage teamPage) throws Exception;
 }

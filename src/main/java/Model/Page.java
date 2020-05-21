@@ -8,11 +8,13 @@ import java.util.Map;
 public abstract class Page {
     Map<String, Fan> fansFollowingThisPage;
     String pageID;
+    PageType pageType;
 
 
-    public Page(String ownerID) throws Exception {
+    public Page(String ownerID,PageType pageType) throws Exception {
         fansFollowingThisPage = new HashMap<>();
         pageID = ownerID;
+        this.pageType = pageType;
     }
 
     public Map<String, Fan> getFansFollowingThisPage() {

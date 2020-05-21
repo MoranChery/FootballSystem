@@ -282,12 +282,12 @@ public class TeamOwnerServiceTest {
         Team team =teamDb.getTeam(teamName);
         Court court = team.getCourt();
         Assert.assertEquals(team, court.getTeam(teamName));
-        HashMap<String, Team> teams = court.getTeams();
+        List<String> teams = court.getTeams();
         Assert.assertEquals(1, teams.size());
-        Assert.assertTrue(teams.containsKey(teamName));
+        Assert.assertTrue(teams.contains(teamName));
         teamOwnerService.removeCourt(teamName, ownerEmail,"courtName");
         Assert.assertEquals(0, teams.size());
-        Assert.assertFalse(teams.containsKey(court.getCourtName()));
+        Assert.assertFalse(teams.contains(court.getCourtName()));
         Assert.assertNull(teamOwnerService.getTeam(teamName).getCourt());
     }
 
@@ -518,7 +518,7 @@ public class TeamOwnerServiceTest {
         Assert.assertEquals(ownerMail,TeamManagerDbInMemory.getInstance().getTeamManager("email2@gmail.com").getOwnedByEmail());
 
         Assert.assertEquals(teamName, teamOwner.getTeam());
-        team = court.getTeam(teamName);
+
         Assert.assertEquals("courtName",team.getCourt().getCourtName());
         Assert.assertEquals("courtCity",team.getCourt().getCourtCity());
 

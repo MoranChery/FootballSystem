@@ -29,7 +29,7 @@ public class PermissionDbInServer implements PermissionDb{
         {
             // the mysql insert statement
             String query = " insert into permission (email_address,permission_type)"
-                    + " values (?,?,?,?)";
+                    + " values (?,?)";
 
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);

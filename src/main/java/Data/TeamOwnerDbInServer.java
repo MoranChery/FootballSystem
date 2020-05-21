@@ -47,7 +47,6 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
     @Override
     public void updateTeamOwnerTeam(String  team, String teamOwnerEmailAddress) throws Exception {
         Connection conn = DbConnector.getConnection();
-
         String query = "UPDATE team_owner SET team = \'" + team + "\' WHERE email_address = \'"+ teamOwnerEmailAddress + "\'" ;
         PreparedStatement preparedStmt = conn.prepareStatement(query);
         preparedStmt.executeUpdate();
