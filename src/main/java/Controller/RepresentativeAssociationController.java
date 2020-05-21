@@ -54,8 +54,26 @@ public class RepresentativeAssociationController extends Observable
         {
             throw new NullPointerException("No RepresentativeAssociation been created");
         }
-        representativeAssociationDb.insertRepresentativeAssociation(representativeAssociation);
-        roleDb.createRoleInSystem(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
+        try
+        {
+            subscriberDb.insertSubscriber(representativeAssociation);
+            try
+            {
+                representativeAssociationDb.insertRepresentativeAssociation(representativeAssociation);
+                roleDb.createRoleInSystem(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("RepresentativeAssociation already exists in the system");
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception("RepresentativeAssociation already exists in the system");
+        }
+
+//        representativeAssociationDb.insertRepresentativeAssociation(representativeAssociation);
+//        roleDb.createRoleInSystem(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
     }
 
     /**
