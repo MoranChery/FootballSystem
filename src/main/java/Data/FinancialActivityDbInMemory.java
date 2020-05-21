@@ -20,7 +20,7 @@ public class FinancialActivityDbInMemory implements FinancialActivityDb {
     }
 
     @Override
-    public void createFinancialActivity(FinancialActivity financialActivity) throws Exception {
+    public void insertFinancialActivity(FinancialActivity financialActivity) throws Exception {
         String financialActivityId = financialActivity.getFinancialActivityId();
         if(financialActivities.containsKey(financialActivityId)) {
             throw new Exception("Financial Activity already exists");

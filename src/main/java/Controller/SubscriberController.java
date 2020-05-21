@@ -1,12 +1,18 @@
 package Controller;
 
+import Data.AlertDb;
+import Data.AlertDbInMemory;
 import Data.SubscriberDb;
 import Data.SubscriberDbInMemory;
+import Model.Alert;
 import Model.Enums.Status;
 import Model.UsersTypes.Subscriber;
 
+import java.util.List;
+
 public class SubscriberController {
     private SubscriberDb subscriberDb;
+    private AlertDb alertDb;
 //    private CoachDb coachDb;
 //    private JudgeDb judgeDb;
 //    private PlayerDb playerDb;
@@ -19,6 +25,7 @@ public class SubscriberController {
 
     public SubscriberController() {
         subscriberDb = SubscriberDbInMemory.getInstance();
+        alertDb = AlertDbInMemory.getInstance();
 //        coachDb = CoachDbInMemory.getInstance();
 //        judgeDb = JudgeDbInMemory.getInstance();
 //        playerDb = PlayerDbInMemory.getInstance();
@@ -130,6 +137,19 @@ public class SubscriberController {
         }
         subscriberDb.wantToEditLastName(subscriberMail, newLastName);
     }
+
+    public List<Alert> getAlerts(String subscriberMail) throws Exception {
+        if(subscriberMail.isEmpty()){
+            throw new Exception("bad input");
+        }
+        List<Alert> userAlerts = null;
+        if(alertDb.haveAlertInDB(subscriberMail)){
+            userAlerts = alertDb.getAlertsForUser(subscriberMail);
+            alertDb.removeAllTheAlertTheUserHave(subscriberMail);
+        }
+        return userAlerts;
+    }
+
 
 
 }

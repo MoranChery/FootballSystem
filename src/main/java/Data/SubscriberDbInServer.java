@@ -10,11 +10,11 @@ import java.sql.*;
 import java.util.Date;
 
 public class SubscriberDbInServer implements SubscriberDb{
-
     private static SubscriberDbInServer ourInstance = new SubscriberDbInServer();
 
-    public static SubscriberDbInServer getInstance() { return ourInstance; }
-
+    public static SubscriberDbInServer getInstance() {
+        return ourInstance;
+    }
     @Override
     public void insertSubscriber(Subscriber subscriber) throws Exception {
         Connection conn = DbConnector.getConnection();
@@ -31,7 +31,8 @@ public class SubscriberDbInServer implements SubscriberDb{
             preparedStmt.setInt (3, subscriber.getId());
             preparedStmt.setString (4, subscriber.getFirstName());
             preparedStmt.setString (5, subscriber.getLastName());
-            preparedStmt.setString (6, subscriber.getStatus().name());
+            Status status = subscriber.getStatus();
+            preparedStmt.setString (6, status != null ? status.name(): Status.OFFLINE.name());
 
             // execute the preparedstatement
             preparedStmt.execute();
@@ -95,34 +96,11 @@ public class SubscriberDbInServer implements SubscriberDb{
     }
 
     @Override
-    public void deleteAll() {
+    public void deleteAll() throws SQLException {
         Connection conn = DbConnector.getConnection();
-        try
-        {
-            // the mysql delete statement
-            String query = " delete from subscriber";
-
-            // create the mysql delete preparedStatement
-            PreparedStatement preparedStmt = conn.prepareStatement(query);
-
-            // execute the preparedStatement
-            preparedStmt.execute();
-        }
-        catch (SQLException throwables)
-        {
-            throwables.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                conn.close();
-            }
-            catch (SQLException throwables)
-            {
-                throwables.printStackTrace();
-            }
-        }
+        Statement statement = conn.createStatement();
+        statement.executeUpdate("delete from subscriber");
+        conn.close();
     }
 
     public static void main(String[] args) throws Exception {
@@ -140,10 +118,10 @@ public class SubscriberDbInServer implements SubscriberDb{
         String ownerEmail = "ownedByOwner@gmail.com";
         TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
 
-        subscriberDbInServer.insertSubscriber(teamOwner);
+//        subscriberDbInServer.insertSubscriber(teamOwner);
 //
 //        TeamManager teamManager = new TeamManager( "email@gmail.com","1111", 1, "firstTeamManager", "lastTeamManager", "owner@gmail.com");
 //        subscriberDbInServer.insertSubscriber(teamManager);
-
+        subscriberDbInServer.deleteAll();
     }
 }

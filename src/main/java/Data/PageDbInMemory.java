@@ -1,9 +1,6 @@
 package Data;
 
-import Model.Page;
-import Model.PersonalPage;
-import Model.Team;
-import Model.TeamPage;
+import Model.*;
 import Model.UsersTypes.Fan;
 import Model.UsersTypes.Subscriber;
 
@@ -50,22 +47,23 @@ public class PageDbInMemory implements PageDb {
         }
         return page;
     }
+//
+//
+//    @Override
+//    public void createPersonalPage(String pageID, Subscriber subscriber) throws Exception {
+//        if(allPages.containsKey(pageID)){
+//            throw new Exception("Page already exist in the system");
+//        }
+//        PersonalPage personalPage = new PersonalPage(pageID,subscriber);
+//        allPages.put(pageID,personalPage);
+//    }
 
     @Override
-    public void createPersonalPage(String pageID, Subscriber subscriber) throws Exception {
+    public void insertPage(String pageID,PageType pageType) throws Exception {
         if(allPages.containsKey(pageID)){
             throw new Exception("Page already exist in the system");
         }
-        PersonalPage personalPage = new PersonalPage(pageID,subscriber);
-        allPages.put(pageID,personalPage);
-    }
-
-    @Override
-    public void createTeamPage(String pageID, Team team) throws Exception {
-        if(allPages.containsKey(pageID)){
-            throw new Exception("Page already exist in the system");
-        }
-        TeamPage personalPage = new TeamPage(pageID ,team);
+        TeamPage personalPage = new TeamPage(pageID,pageType);
         allPages.put(pageID,personalPage);
     }
 
