@@ -1,10 +1,9 @@
 package Controller;
 
 import Data.*;
-import Model.Alert;
 import Model.Enums.*;
 import Model.PersonalPage;
-import Model.Team;
+import Model.Role;
 import Model.UsersTypes.*;
 
 import java.util.Date;
@@ -341,4 +340,10 @@ public class GuestController {
         Pattern pat = Pattern.compile(emailRegex);
         return pat.matcher(email).matches();
     }
+
+
+    public List<Role> getRules(String email) throws Exception {
+        return roleDb.getRoles(email);
+    }
+
 }
