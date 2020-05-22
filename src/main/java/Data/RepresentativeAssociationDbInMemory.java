@@ -2,6 +2,7 @@ package Data;
 
 import Controller.SubscriberController;
 import Model.Alert;
+import Model.Enums.RoleType;
 import Model.UsersTypes.RepresentativeAssociation;
 import Model.UsersTypes.TeamOwner;
 
@@ -33,6 +34,8 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
         alertDbInMemory.createAlertInDb("representativeAssociation@gmail.com" , alert);
         SubscriberController subscriberController = new SubscriberController();
         subscriberController.createSubscriber(representativeAssociation);
+        RoleDbInMemory.getInstance().createRoleInSystem("representativeAssociation@gmail.com", RoleType.REPRESENTATIVE_ASSOCIATION);
+
     }
 
     /**

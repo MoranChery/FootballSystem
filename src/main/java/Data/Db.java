@@ -1,5 +1,7 @@
 package Data;
 
+import java.sql.SQLException;
+
 public interface Db {
-    void deleteAll();
+    void deleteAll() throws SQLException;
 }

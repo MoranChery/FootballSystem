@@ -21,7 +21,7 @@ public class JudgeSeasonLeagueDbInMemory implements JudgeSeasonLeagueDb
      * @param judgeSeasonLeague-the new JudgeSeasonLeague.
      * @throws Exception-if details are incorrect.
      */
-    public void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception
+    public void insertJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception
     {
         if(judgeSeasonLeagueMap.containsKey(judgeSeasonLeague.getJudgeSeasonLeagueName()))
         {

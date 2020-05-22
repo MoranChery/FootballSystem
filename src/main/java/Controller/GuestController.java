@@ -1,10 +1,10 @@
 package Controller;
 
 import Data.*;
-import Model.Alert;
 import Model.Enums.*;
+import Model.PageType;
 import Model.PersonalPage;
-import Model.Team;
+import Model.Role;
 import Model.UsersTypes.*;
 
 import java.util.Date;
@@ -110,7 +110,7 @@ public class GuestController {
         subscriberDb.insertSubscriber(coach);
         coachDb.insertCoach(coach);
         roleDb.createRoleInSystem(emailAddress, RoleType.COACH);
-        pageDb.createPersonalPage(coach.getEmailAddress(), coach);
+        pageDb.insertPage(coach.getEmailAddress(), PageType.COACH);
         PersonalPage personalPage=(PersonalPage) pageDb.getPage(coach.getEmailAddress());
         coach.setCoachPage(personalPage);
     }
@@ -153,7 +153,7 @@ public class GuestController {
         }
         Judge judge = new Judge(emailAddress, password, id, firstName, lastName, qualificationJudge);
         subscriberDb.insertSubscriber(judge);
-        judgeDb.createJudge(judge);
+        judgeDb.insertJudge(judge);
         roleDb.createRoleInSystem(emailAddress, RoleType.JUDGE);
 
     }
@@ -178,7 +178,7 @@ public class GuestController {
         subscriberDb.insertSubscriber(player);
         playerDb.insertPlayer(player);
         roleDb.createRoleInSystem(emailAddress, RoleType.PLAYER);
-        pageDb.createPersonalPage(player.getEmailAddress() + "", player);
+        pageDb.insertPage(player.getEmailAddress() + "", PageType.PLAYER);
     }
 
     /**
@@ -341,4 +341,10 @@ public class GuestController {
         Pattern pat = Pattern.compile(emailRegex);
         return pat.matcher(email).matches();
     }
+
+
+    public List<Role> getRules(String email) throws Exception {
+        return roleDb.getRoles(email);
+    }
+
 }

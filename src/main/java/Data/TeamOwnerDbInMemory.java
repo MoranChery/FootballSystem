@@ -2,6 +2,7 @@ package Data;
 
 import Controller.SubscriberController;
 import Model.Alert;
+import Model.Enums.RoleType;
 import Model.Team;
 import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamOwner;
@@ -21,6 +22,7 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         alertDbInMemory.createAlertInDb("teamOwner@gmail.com" , alert);
         SubscriberController subscriberController = new SubscriberController();
         subscriberController.createSubscriber(teamOwner);
+        RoleDbInMemory.getInstance().createRoleInSystem("teamOwner@gmail.com", RoleType.TEAM_OWNER);
     }
 
     public static TeamOwnerDbInMemory ourInstance;
@@ -35,17 +37,6 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
 
     public static TeamOwnerDbInMemory getInstance() {
         return ourInstance;
-    }
-    @Override
-    public void insertTeamOwner(TeamOwner teamOwner) throws Exception {
-        if(teamOwner == null) {
-            throw new NullPointerException("bad input");
-        }
-        String teamOwnerEmailAddress = teamOwner.getEmailAddress();
-        if (teamOwners.containsKey(teamOwnerEmailAddress)) {
-            throw new Exception("TeamOwner already exists");
-        }
-        teamOwners.put(teamOwnerEmailAddress, teamOwner);
     }
 
     @Override
@@ -65,6 +56,19 @@ public class TeamOwnerDbInMemory implements TeamOwnerDb{
         }
         return teamOwners.get(teamOwnerEmailAddress);
     }
+
+    @Override
+    public void insertTeamOwner(TeamOwner teamOwner) throws Exception {
+        if(teamOwner == null) {
+            throw new NullPointerException("bad input");
+        }
+        String teamOwnerEmailAddress = teamOwner.getEmailAddress();
+        if (teamOwners.containsKey(teamOwnerEmailAddress)) {
+            throw new Exception("TeamOwner already exists");
+        }
+        teamOwners.put(teamOwnerEmailAddress, teamOwner);
+    }
+
 
     @Override
     public void subscriptionTeamOwner(String team, String teamOwnerEmail, Subscriber subscriber) throws Exception {

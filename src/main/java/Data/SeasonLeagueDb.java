@@ -11,7 +11,7 @@ public interface SeasonLeagueDb extends Db
      * @param seasonLeague-the new SeasonLeague.
      * @throws Exception-if details are incorrect.
      */
-    void createSeasonLeague(SeasonLeague seasonLeague) throws Exception;
+    void insertSeasonLeague(SeasonLeague seasonLeague) throws Exception;
 
     /**
      * Will receive from the Controller the seasonLeague's name, return the SeasonLeague.
@@ -35,5 +35,5 @@ public interface SeasonLeagueDb extends Db
      * @param seasonLeagueName-name of the SeasonLeague.
      * @param calculateLeaguePoints-new Policy CalculateLeaguePoints.
      */
-    void changeCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception;
+    void updateCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception;
 }

@@ -38,7 +38,7 @@ public class SystemAdministratorServiceTest {
         dbs.add(RoleDbInMemory.getInstance());
         for (Db db : dbs)
         {
-            db.deleteAll();
+//            db.deleteAll();
         }
         try {
             guestController.registerSystemAdministrator("noy@gmail.com","ae646",123456789,"noy","harary");

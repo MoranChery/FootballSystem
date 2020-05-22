@@ -21,7 +21,7 @@ public class GuestServiceTest {
         dbs.add(FanDbInMemory.getInstance());
         for (Db db : dbs)
         {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
 

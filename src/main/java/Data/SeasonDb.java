@@ -10,7 +10,7 @@ public interface SeasonDb extends Db
      * @param season-the new Season.
      * @throws Exception-if details are incorrect.
      */
-    void createSeason(Season season) throws Exception;
+    void insertSeason(Season season) throws Exception;
 
     /**
      * Will receive from the Controller the season's name, return the Season.

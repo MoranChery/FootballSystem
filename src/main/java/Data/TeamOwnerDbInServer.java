@@ -1,21 +1,24 @@
 package Data;
 
 import Model.Enums.Status;
-import Model.Team;
 import Model.UsersTypes.Subscriber;
-import Model.UsersTypes.TeamManager;
 import Model.UsersTypes.TeamOwner;
-import Service.TeamOwnerService;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class TeamOwnerDbInServer implements TeamOwnerDb {
+
+
+    private static TeamOwnerDbInServer ourInstance = new TeamOwnerDbInServer();
+
+    public static TeamOwnerDbInServer getInstance() {
+        return ourInstance;
+    }
+
     @Override
     public void insertTeamOwner(TeamOwner teamOwner) throws Exception {
         if(teamOwner == null){
@@ -43,7 +46,11 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
 
     @Override
     public void updateTeamOwnerTeam(String  team, String teamOwnerEmailAddress) throws Exception {
-
+        Connection conn = DbConnector.getConnection();
+        String query = "UPDATE team_owner SET team = \'" + team + "\' WHERE email_address = \'"+ teamOwnerEmailAddress + "\'" ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
     }
 
     @Override
@@ -72,6 +79,10 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
         String status = rs.getString("status");
         String team = rs.getString("team");
         String owned_by_email = rs.getString("owned_by_email_address");
+        TeamOwner teamOwner = new TeamOwner(userName, password, id, first_name, last_name,team);
+        teamOwner.setStatus(Status.valueOf(status));
+        teamOwner.setOwnedByEmailAddress(owned_by_email);
+
 
         query = "select * from  team_owner where team_owner.owned_by_email_address = \'" + teamOwnerEmailAddress + "\'";
 
@@ -85,36 +96,85 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
         }
 
         conn.close();
-
-        TeamOwner teamOwner = new TeamOwner(userName, password, id, first_name, last_name,team);
-        teamOwner.setStatus(Status.valueOf(status));
         teamOwner.setTeamOwnersByThis(teamOwnersByThis);
         return teamOwner;
     }
 
     @Override
     public void subscriptionTeamOwner(String team, String teamOwnerId, Subscriber subscriber) throws Exception {
+        if(team == null || teamOwnerId == null || subscriber == null){
+            throw new NullPointerException();
+        }
+        Connection conn = DbConnector.getConnection();
 
+        String query = "select * from subscriber, team_owner where subscriber.email_address = team_owner.email_address and subscriber.email_address = \'" + subscriber.getEmailAddress() + "\'";
+
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+
+        // checking if ResultSet is empty
+        if (rs.next()) {
+            throw new Exception("TeamOwner to add already exists");
+        }
+        query = "select * from subscriber, team_owner where subscriber.email_address = team_owner.email_address and subscriber.email_address = \'" + teamOwnerId + "\'";
+
+        preparedStmt = conn.createStatement();
+         rs = preparedStmt.executeQuery(query);
+
+        if (rs.next() == false) {
+            throw new Exception("Major Team Owner not found");
+        }
+        insertTeamOwner(new TeamOwner(team,subscriber,teamOwnerId));
+        conn.close();
     }
 
     @Override
     public void removeSubscriptionTeamOwner(String ownerToRemoveEmail) throws Exception {
+        Connection conn = DbConnector.getConnection();
+
+        String query = "delete from team_owner where email_address = ? ";
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.setString(1, ownerToRemoveEmail);
+
+        // execute the preparedstatement
+        preparedStmt.execute();
+
+        conn.close();
+
 
     }
 
     @Override
-    public List<String> getAllTeamOwnersOwnedBy(String teamOwnerEmail) {
-        return null;
+    public List<String> getAllTeamOwnersOwnedBy(String teamOwnerEmail) throws SQLException {
+        Connection conn = DbConnector.getConnection();
+
+        String query = "select * from  team_owner where team_owner.owned_by_email_address = \'" + teamOwnerEmail + "\'";
+
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+        List<String>  teamOwnersByThis = new ArrayList<>();
+
+        while(rs.next()){
+            String currOwner = rs.getString("email_address");
+            teamOwnersByThis.add(currOwner);
+        }
+        conn.close();
+        return teamOwnersByThis;
     }
 
     @Override
     public Set<String> getAllTeamOwnersInDB() {
+        Set<String> allTeamOwnerInDn = new HashSet<>();
+
         return null;
     }
 
     @Override
-    public void deleteAll() {
-
+    public void deleteAll() throws SQLException {
+        Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        statement.executeUpdate("delete from team_owner");
+        conn.close();
     }
 
     public static void main(String[] args) throws Exception {
@@ -125,5 +185,7 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
 //        teamOwnerDbInServer.insertTeamOwner(teamOwner);
         TeamOwner teamOwner1 = teamOwnerDbInServer.getTeamOwner(ownerEmail);
         System.out.println(teamOwner1);
+
+        teamOwnerDbInServer.removeSubscriptionTeamOwner(ownerEmail);
     }
 }

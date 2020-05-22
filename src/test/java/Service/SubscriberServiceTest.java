@@ -22,7 +22,7 @@ public class SubscriberServiceTest {
         final List<Db> dbs = new ArrayList<>();
         dbs.add(SubscriberDbInMemory.getInstance());
         for (Db db : dbs) {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
 

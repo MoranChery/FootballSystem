@@ -5,6 +5,7 @@ import Model.Team;
 import Model.UsersTypes.Subscriber;
 import Model.UsersTypes.TeamManager;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface TeamManagerDb extends Db {
@@ -17,7 +18,7 @@ public interface TeamManagerDb extends Db {
 
     void removeSubscriptionTeamManager(String managerToRemoveEmail) throws Exception;
 
-    List<String> getAllTeamManagersOwnedBy(String ownerToRemove);
+    List<String> getAllTeamManagersOwnedBy(String ownerToRemove) throws SQLException;
 
-    void updateTeamManagerDetails(String teamManagerEmailAddress, String firstName, String lastName, List<PermissionType> permissionTypes) throws NotFoundException;
+    void updateTeamManagerDetails(String teamManagerEmailAddress, String firstName, String lastName, List<PermissionType> permissionTypes) throws NotFoundException, SQLException;
 }

@@ -26,7 +26,7 @@ public class LeagueDbInMemory implements LeagueDb
      * @throws Exception-if details are incorrect.
      */
     @Override
-    public void createLeague(League league) throws Exception
+    public void insertLeague(League league) throws Exception
     {
         if(leagueMap.containsKey(league.getLeagueName()))
         {

@@ -23,7 +23,7 @@ public class SubscriberControllerTest {
         dbs.add(SubscriberDbInMemory.getInstance());
         dbs.add(JudgeDbInMemory.getInstance());
         for (Db db : dbs) {
-            db.deleteAll();
+//            db.deleteAll();
         }
     }
     @Test
