@@ -372,7 +372,7 @@ public class SeasonLeagueDbInServerTest
     }
     //endregion
 
-    //region deletAll_Tests
+    //region deleteAll_Tests
     @Test
     public void deleteAll_noSeasonLeague()
     {
@@ -397,7 +397,7 @@ public class SeasonLeagueDbInServerTest
     }
 
     @Test
-    public void deleteAll_listOfSeason()
+    public void deleteAll_listOfSeasonLeague()
     {
         Season season1 = new Season("season1");
         String seasonName1 = season1.getSeasonName();

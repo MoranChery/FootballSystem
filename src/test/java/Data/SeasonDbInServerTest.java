@@ -186,7 +186,7 @@ public class SeasonDbInServerTest
     }
     //endregion
 
-    //region deletAll_Tests
+    //region deleteAll_Tests
     @Test
     public void deleteAll_noSeason()
     {

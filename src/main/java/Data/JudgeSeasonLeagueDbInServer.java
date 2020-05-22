@@ -1,12 +1,10 @@
 package Data;
 
-import Model.Enums.CalculateLeaguePoints;
-import Model.Enums.InlayGames;
 import Model.JudgeSeasonLeague;
-import Model.SeasonLeague;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class JudgeSeasonLeagueDbInServer implements JudgeSeasonLeagueDb
 {
@@ -30,8 +28,30 @@ public class JudgeSeasonLeagueDbInServer implements JudgeSeasonLeagueDb
             preparedStmt.setString (2, judgeSeasonLeague.getSeasonLeagueName());
             preparedStmt.setString (3, judgeSeasonLeague.getJudgeEmailAddress());
 
+            try
+            {
+                JudgeDbInServer.getInstance().getJudge(judgeSeasonLeague.getJudgeEmailAddress());
+            }
+            catch (Exception e)
+            {
+                throw new NotFoundException("Judge not found");
+            }
+
+            try
+            {
+                SeasonLeagueDbInServer.getInstance().getSeasonLeague(judgeSeasonLeague.getSeasonLeagueName());
+            }
+            catch (Exception e)
+            {
+                throw new NotFoundException("SeasonLeague not found");
+            }
+
             // execute the preparedStatement
             preparedStmt.execute();
+        }
+        catch (NotFoundException e)
+        {
+            throw new Exception(e.getMessage());
         }
         catch (Exception e)
         {
@@ -98,5 +118,38 @@ public class JudgeSeasonLeagueDbInServer implements JudgeSeasonLeagueDb
         // create the mysql delete Statement
         statement.executeUpdate(query);
         conn.close();
+    }
+
+    public ArrayList<String> getAllJudgeSeasonLeagueNames() throws Exception
+    {
+        ArrayList<String> judgeSeasonLeagueNames = new ArrayList<>();
+
+        Connection conn = DbConnector.getConnection();
+
+        try
+        {
+            // the mysql select statement
+            String query = "select judge_season_league_name from judge_season_league";
+
+            // create the mysql select resultSet
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
+
+            // checking if ResultSet is empty
+            if (rs.next() != false)
+            {
+                judgeSeasonLeagueNames.add(rs.getString("judge_season_league_name"));
+
+                while (rs.next() != false)
+                {
+                    judgeSeasonLeagueNames.add(rs.getString("judge_season_league_name"));
+                }
+            }
+        }
+        finally
+        {
+            conn.close();
+        }
+        return judgeSeasonLeagueNames;
     }
 }

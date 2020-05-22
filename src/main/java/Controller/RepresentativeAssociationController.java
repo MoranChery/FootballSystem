@@ -25,20 +25,22 @@ public class RepresentativeAssociationController extends Observable
 
     public RepresentativeAssociationController()
     {
-        this.representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
-//        this.representativeAssociationDb = RepresentativeAssociationDbInServer.getInstance();
-        this.subscriberDb = SubscriberDbInMemory.getInstance();
-        this.roleDb = RoleDbInMemory.getInstance();
-        this.leagueDb = LeagueDbInMemory.getInstance();
-//        this.leagueDb = LeagueDbInServer.getInstance();
-        this.seasonDb = SeasonDbInMemory.getInstance();
-//        this.seasonDb = SeasonDbInServer.getInstance();
-        this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
-//        this.seasonLeagueDb = SeasonLeagueDbInServer.getInstance();
-        this.judgeDb = JudgeDbInMemory.getInstance();
-//        this.judgeDb = JudgeDbInServer.getInstance();
-        this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
-//        this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInServer.getInstance();
+//        this.representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
+        this.representativeAssociationDb = RepresentativeAssociationDbInServer.getInstance();
+//        this.subscriberDb = SubscriberDbInMemory.getInstance();
+        this.subscriberDb = SubscriberDbInServer.getInstance();
+//        this.roleDb = RoleDbInMemory.getInstance();
+        this.roleDb = RoleDbInServer.getInstance();
+//        this.leagueDb = LeagueDbInMemory.getInstance();
+        this.leagueDb = LeagueDbInServer.getInstance();
+//        this.seasonDb = SeasonDbInMemory.getInstance();
+        this.seasonDb = SeasonDbInServer.getInstance();
+//        this.seasonLeagueDb = SeasonLeagueDbInMemory.getInstance();
+        this.seasonLeagueDb = SeasonLeagueDbInServer.getInstance();
+//        this.judgeDb = JudgeDbInMemory.getInstance();
+        this.judgeDb = JudgeDbInServer.getInstance();
+//        this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
+        this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInServer.getInstance();
         this.gameDb = GameDbInMemory.getInstance();
     }
 
@@ -139,8 +141,8 @@ public class RepresentativeAssociationController extends Observable
             throw new NullPointerException("One or more of the SeasonLeague details incorrect");
         }
         SeasonLeague seasonLeague = new SeasonLeague(seasonName, leagueName, calculateLeaguePoints, inlayGames);
-        seasonDb.addSeasonLeague(seasonLeague);
-        leagueDb.addSeasonLeague(seasonLeague);
+//        seasonDb.addSeasonLeague(seasonLeague);
+//        leagueDb.addSeasonLeague(seasonLeague);
         seasonLeagueDb.insertSeasonLeague(seasonLeague);
     }
 
@@ -234,8 +236,8 @@ public class RepresentativeAssociationController extends Observable
             throw new NullPointerException("One or more of the JudgeSeasonLeague details incorrect");
         }
         JudgeSeasonLeague judgeSeasonLeague = new JudgeSeasonLeague(seasonLeagueName, judgeEmailAddress);
-        seasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
-        judgeDb.createJudgeSeasonLeague(judgeSeasonLeague);
+//        seasonLeagueDb.createJudgeSeasonLeague(judgeSeasonLeague);
+//        judgeDb.createJudgeSeasonLeague(judgeSeasonLeague);
         judgeSeasonLeagueDb.insertJudgeSeasonLeague(judgeSeasonLeague);
     }
 

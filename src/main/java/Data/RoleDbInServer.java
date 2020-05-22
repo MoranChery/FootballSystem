@@ -59,7 +59,8 @@ public class RoleDbInServer implements RoleDb {
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString (1, emailAddress);
-            preparedStmt.setString (2, roleType.name());
+//            preparedStmt.setString (2, roleType.name());
+            preparedStmt.setString (2, roleType.toString());
 
             // execute the preparedstatement
             preparedStmt.execute();
