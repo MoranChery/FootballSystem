@@ -5,6 +5,7 @@ import Model.Enums.InlayGames;
 import Model.League;
 import Model.Season;
 import Model.SeasonLeague;
+import Model.UsersTypes.RepresentativeAssociation;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -182,6 +183,64 @@ public class LeagueDbInServerTest
         catch (Exception e)
         {
             Assert.assertEquals("League not found", e.getMessage());
+        }
+    }
+    //endregion
+
+    //region deletAll_Tests
+    @Test
+    public void deleteAll_noLeague()
+    {
+        ArrayList<String> leagueName = new ArrayList<>();
+
+        try
+        {
+            leagueName = leagueDbInServer.getAllLeagueNames();
+
+            Assert.assertEquals(0, leagueName.size());
+
+            leagueDbInServer.deleteAll();
+
+            leagueName = leagueDbInServer.getAllLeagueNames();
+
+            Assert.assertEquals(0, leagueName.size());
+        }
+        catch (Exception e)
+        {
+//            Assert.assertEquals("No RepresentativeAssociation been created", e.getMessage());
+        }
+    }
+
+    @Test
+    public void deleteAll_listOfLeague()
+    {
+        League league1 = new League("league1");
+        League league2 = new League("league2");
+
+        ArrayList<String> leagueName = new ArrayList<>();
+
+        try
+        {
+            leagueDbInServer.insertLeague(league1);
+            leagueDbInServer.insertLeague(league2);
+
+            leagueName = leagueDbInServer.getAllLeagueNames();
+
+            Assert.assertEquals(2, leagueName.size());
+            Assert.assertEquals(true, leagueName.contains(league1.getLeagueName()));
+            Assert.assertEquals(true, leagueName.contains(league1.getLeagueName()));
+
+            leagueDbInServer.deleteAll();
+
+            leagueName = leagueDbInServer.getAllLeagueNames();
+
+            Assert.assertEquals(0, leagueName.size());
+            Assert.assertEquals(false, leagueName.contains(league1.getLeagueName()));
+            Assert.assertEquals(false, leagueName.contains(league1.getLeagueName()));
+        }
+        catch (Exception e)
+        {
+//            Assert.assertEquals("No RepresentativeAssociation been created", e.getMessage());
         }
     }
     //endregion

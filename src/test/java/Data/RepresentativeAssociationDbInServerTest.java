@@ -216,4 +216,65 @@ public class RepresentativeAssociationDbInServerTest
         }
     }
     //endregion
+
+    //region deletAll_Tests
+    @Test
+    public void deleteAll_noRepresentativeAssociation()
+    {
+        ArrayList<String> representativeAssociationEmailAddress = new ArrayList<>();
+
+        try
+        {
+            representativeAssociationEmailAddress = representativeAssociationDbInServer.getAllRepresentativeAssociationEmailAddress();
+
+            Assert.assertEquals(0, representativeAssociationEmailAddress.size());
+
+            representativeAssociationDbInServer.deleteAll();
+
+            representativeAssociationEmailAddress = representativeAssociationDbInServer.getAllRepresentativeAssociationEmailAddress();
+
+            Assert.assertEquals(0, representativeAssociationEmailAddress.size());
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("No RepresentativeAssociation been created", e.getMessage());
+        }
+    }
+
+    @Test
+    public void deleteAll_listOfRepresentativeAssociation()
+    {
+        RepresentativeAssociation representativeAssociation1 = new RepresentativeAssociation("representativeAssociation1@gmail.com","password", 12345, "firstName", "lastName");
+        RepresentativeAssociation representativeAssociation2 = new RepresentativeAssociation("representativeAssociation2@gmail.com","password", 12345, "firstName", "lastName");
+
+        ArrayList<String> representativeAssociationEmailAddress = new ArrayList<>();
+
+        try
+        {
+            subscriberDbInServer.insertSubscriber(representativeAssociation1);
+            representativeAssociationDbInServer.insertRepresentativeAssociation(representativeAssociation1);
+
+            subscriberDbInServer.insertSubscriber(representativeAssociation2);
+            representativeAssociationDbInServer.insertRepresentativeAssociation(representativeAssociation2);
+
+            representativeAssociationEmailAddress = representativeAssociationDbInServer.getAllRepresentativeAssociationEmailAddress();
+
+            Assert.assertEquals(2, representativeAssociationEmailAddress.size());
+            Assert.assertEquals(true, representativeAssociationEmailAddress.contains(representativeAssociation1.getEmailAddress()));
+            Assert.assertEquals(true, representativeAssociationEmailAddress.contains(representativeAssociation2.getEmailAddress()));
+
+            representativeAssociationDbInServer.deleteAll();
+
+            representativeAssociationEmailAddress = representativeAssociationDbInServer.getAllRepresentativeAssociationEmailAddress();
+
+            Assert.assertEquals(0, representativeAssociationEmailAddress.size());
+            Assert.assertEquals(false, representativeAssociationEmailAddress.contains(representativeAssociation1.getEmailAddress()));
+            Assert.assertEquals(false, representativeAssociationEmailAddress.contains(representativeAssociation2.getEmailAddress()));
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("No RepresentativeAssociation been created", e.getMessage());
+        }
+    }
+    //endregion
 }
