@@ -91,9 +91,8 @@ public class TeamOwnerServiceTest {
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         Date birthDate = new Date();
-
         String playerToAdd = "email@gmail.com";
-        teamOwnerService.addPlayer(teamName, ownerEmail,playerToAdd, 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        teamOwnerService.addPlayer(teamName, ownerEmail,playerToAdd, 1, "firstPlayer", "lastPlayer", birthDate.toString(), "GOALKEEPER");
 
         Team team =teamDb.getTeam(teamName);
         Map<String, Player> players = team.getPlayers();
@@ -124,7 +123,7 @@ public class TeamOwnerServiceTest {
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         String teamManagerToAdd = "email@gmail.com";
-        teamOwnerService.addTeamManager(teamName, teamManagerToAdd, 1, "firstTeamManager", "lastTeamManager", new ArrayList<>(),ownerEmail);
+        teamOwnerService.addTeamManager(teamName, teamManagerToAdd, 1, "firstTeamManager", "lastTeamManager", "",ownerEmail);
         Team team =teamDb.getTeam(teamName);
         Map<String, TeamManager> teamManagers = team.getTeamManagers();
         Assert.assertEquals(1, teamManagers.size());
@@ -152,7 +151,7 @@ public class TeamOwnerServiceTest {
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         String coachToAdd = "email@gmail.com";
-        teamOwnerService.addCoach(teamName, ownerEmail,coachToAdd, 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        teamOwnerService.addCoach(teamName, ownerEmail,coachToAdd, 1, "firstCoach", "lastCoach", "MAJOR", "UEFA_A");
         Team team =teamDb.getTeam(teamName);
         Map<String, Coach> coaches = team.getCoaches();
         Assert.assertEquals(1, coaches.size());
@@ -198,7 +197,7 @@ public class TeamOwnerServiceTest {
         RoleDbInMemory.getInstance().insertRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
-        teamOwnerService.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        teamOwnerService.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate.toString(), "GOALKEEPER");
         Team team =teamDb.getTeam(teamName);
         RoleDbInMemory teamRoleDbInMemory = RoleDbInMemory.getInstance();
         Map<String, Player> players = team.getPlayers();
@@ -223,7 +222,7 @@ public class TeamOwnerServiceTest {
         RoleDbInMemory.getInstance().insertRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
-        teamOwnerService.addTeamManager(teamName, "email@gmail.com", 1, "firstPlayer", "lastPlayer", new ArrayList<>(),ownerEmail);
+        teamOwnerService.addTeamManager(teamName, "email@gmail.com", 1, "firstPlayer", "lastPlayer", "",ownerEmail);
         Team team =teamDb.getTeam(teamName);
         RoleDbInMemory teamRoleDbInMemory = RoleDbInMemory.getInstance();
         List<Role> roles = teamRoleDbInMemory.getRoles("email@gmail.com");
@@ -249,7 +248,7 @@ public class TeamOwnerServiceTest {
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
         String coachToRemove = "email@gmail.com";
         coachDb.insertCoach(new Coach(coachToRemove, 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A));
-        teamOwnerService.addCoach(teamName,ownerEmail, coachToRemove, 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        teamOwnerService.addCoach(teamName,ownerEmail, coachToRemove, 1, "firstCoach", "lastCoach", "MAJOR", "UEFA_A");
         Team team =teamDb.getTeam(teamName);
         RoleDbInMemory teamRoleDbInMemory = RoleDbInMemory.getInstance();
         List<Role> roles = teamRoleDbInMemory.getRoles(coachToRemove);
@@ -351,7 +350,7 @@ public class TeamOwnerServiceTest {
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         playerDb.insertPlayer(new Player("email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER));
-        teamOwnerService.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
+        teamOwnerService.addPlayer(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", birthDate.toString(), "GOALKEEPER");
         teamOwnerService.updatePlayerDetails(teamName,ownerEmail, "email@gmail.com", "changePlayer", "lastPlayer", birthDate, PlayerRole.GOALKEEPER);
         Team team =teamDb.getTeam(teamName);
         Map<String, Player> players = team.getPlayers();
@@ -396,7 +395,7 @@ public class TeamOwnerServiceTest {
         RoleDbInMemory.getInstance().insertRole(teamOwnerMail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
-        teamOwnerService.addPlayer(teamName,teamOwnerMail,ownerToAdd,  4, "firstPlayerName", "lastPlayerName",new Date(), PlayerRole.GOALKEEPER);
+        teamOwnerService.addPlayer(teamName,teamOwnerMail,ownerToAdd,  4, "firstPlayerName", "lastPlayerName",new Date().toString(), "GOALKEEPER");
         Thread.sleep(100);
         teamOwnerService.subscriptionTeamOwner(teamName, teamOwnerMail, ownerToAdd);
 
@@ -405,7 +404,7 @@ public class TeamOwnerServiceTest {
 
 
         String ownerToAddUnder = "teamOwnerToAddUnder@gmail.com";
-        teamOwnerService.addPlayer(teamName,ownerToAdd,ownerToAddUnder,  5, "firstPlayerName", "lastPlayerName",new Date(), PlayerRole.GOALKEEPER);
+        teamOwnerService.addPlayer(teamName,ownerToAdd,ownerToAddUnder,  5, "firstPlayerName", "lastPlayerName",new Date().toString(), "GOALKEEPER");
         Thread.sleep(100);
         teamOwnerService.subscriptionTeamOwner(teamName, ownerToAdd, ownerToAddUnder);
 
@@ -435,7 +434,7 @@ public class TeamOwnerServiceTest {
         RoleDbInMemory.getInstance().insertRole(teamOwnerMail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
-        teamOwnerService.addPlayer(teamName,teamOwnerMail,managerToRemove,  4, "firstPlayerName", "lastPlayerName",new Date(), PlayerRole.GOALKEEPER);
+        teamOwnerService.addPlayer(teamName,teamOwnerMail,managerToRemove,  4, "firstPlayerName", "lastPlayerName",new Date().toString(), "GOALKEEPER");
         Thread.sleep(1000);
         teamOwnerService.subscriptionTeamManager(teamName, teamOwnerMail, managerToRemove,new ArrayList<>());
 
@@ -464,7 +463,7 @@ public class TeamOwnerServiceTest {
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
         String managerToAdd = "teamManagerToAdd@gmail.com";
-        teamOwnerService.addPlayer(teamName, ownerEmail,managerToAdd, 1, "firstPlayerName", "lastPlayerName", new Date(), PlayerRole.GOALKEEPER);
+        teamOwnerService.addPlayer(teamName, ownerEmail,managerToAdd, 1, "firstPlayerName", "lastPlayerName", new Date().toString(), "GOALKEEPER");
         teamOwnerService.subscriptionTeamManager(teamName, ownerEmail, managerToAdd, new ArrayList<>());
         List<Role> roles = RoleDbInMemory.getInstance().getRoles(managerToAdd);
         Assert.assertEquals(RoleType.PLAYER, roles.get(0).getRoleType());
@@ -535,7 +534,7 @@ public class TeamOwnerServiceTest {
         RoleDbInMemory.getInstance().insertRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
         SubscriberDbInMemory.getInstance().insertSubscriber(teamOwner);
 
-        teamOwnerService.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
+        teamOwnerService.addCoach(teamName, ownerEmail,"email@gmail.com", 1, "firstPlayer", "lastPlayer", "MAJOR", "UEFA_A");
         teamOwnerService.updateCoachDetails(teamName,"owner@gmail.com", "email@gmail.com", "changePlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         Team team =teamDb.getTeam(teamName);
         Map<String, Coach> coaches = team.getCoaches();
@@ -572,7 +571,7 @@ public class TeamOwnerServiceTest {
 
         List<PermissionType> permissionTypes = new ArrayList<>();
         permissionTypes.add(PermissionType.ADD_FINANCIAL);
-        teamOwnerService.addTeamManager(teamName, "email@gmail.com", 1, "firstPlayer", "lastPlayer", new ArrayList<>(),ownerEmail);
+        teamOwnerService.addTeamManager(teamName, "email@gmail.com", 1, "firstPlayer", "lastPlayer", "",ownerEmail);
         teamManagerDb.getTeamManager("email@gmail.com").setPermissionTypes(permissionTypes);
 
 
