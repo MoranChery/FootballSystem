@@ -3,6 +3,7 @@ package Data;
 import Model.Alert;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,9 @@ public class AlertDbInMemory implements AlertDb{
         return ourInstance;
     }
 
+    public AlertDbInMemory() {
+        this.allSavedAlerts = new HashMap<>();
+    }
 
     @Override
     public void createAlertInDb(String email, Alert alert) throws Exception {
@@ -58,12 +62,17 @@ public class AlertDbInMemory implements AlertDb{
 
     @Override
     public boolean haveAlertInDB(String email) throws Exception {
-        if(allSavedAlerts.containsKey(email)){
-            if(allSavedAlerts.values().isEmpty() || allSavedAlerts.values().size() == 0){
-                return false;
+
+            if (allSavedAlerts.containsKey(email)) {
+
+                if (allSavedAlerts.values().isEmpty() || allSavedAlerts.values().size() == 0) {
+
+                    return false;
+                }
+                return true;
             }
-            return true;
-        }
+
+
         return false;
     }
 

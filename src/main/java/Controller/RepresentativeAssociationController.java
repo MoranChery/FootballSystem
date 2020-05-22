@@ -11,7 +11,7 @@ import Model.UsersTypes.RepresentativeAssociation;
 
 import java.util.*;
 
-public class RepresentativeAssociationController extends Observable
+public class RepresentativeAssociationController extends Observable implements Observer
 {
     private RepresentativeAssociationDb representativeAssociationDb;
     private SubscriberDb subscriberDb;
@@ -317,5 +317,10 @@ public class RepresentativeAssociationController extends Observable
         data[2] = newDate;
         setChanged();
         notifyObservers(data);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
     }
 }
