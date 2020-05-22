@@ -92,9 +92,9 @@ public class TeamOwnerService {
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "addPlayer/{teamName}/{ownerEmail}/{emailAddress}/{playerId}/{firstName}/{lastName}/{birthDate}/{playerRole}/")
+    @GetMapping(value = "addTeamManager/{teamName}/{emailAddress}/{teamManagerId}/{firstName}/{lastName}/{permissionTypes}/{ownedByEmail}/")
     @ResponseStatus(HttpStatus.OK)
-    public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName, String lastName, String permissionTypes, String ownedByEmail) throws Exception {
+    public void addTeamManager(@PathVariable String teamName,@PathVariable  String emailAddress,@PathVariable  Integer teamManagerId,@PathVariable  String firstName,@PathVariable  String lastName,@PathVariable  String permissionTypes,@PathVariable  String ownedByEmail) throws Exception {
         try {
             teamOwnerController.addTeamManager(teamName, emailAddress, teamManagerId, firstName, lastName, getPermissionsFromString(permissionTypes), ownedByEmail);
             loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownedByEmail + " Description: TeamManager \"" + emailAddress + "\" added to Team \"" + teamName + "\"");

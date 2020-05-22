@@ -5,6 +5,8 @@ import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
 import Model.LoggerHandler;
+import Service.OutSystems.ProxyAssociationAccountingSystem;
+import Service.OutSystems.ProxyTaxSystem;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,10 +18,14 @@ import java.util.logging.Level;
 public class RepresentativeAssociationService {
     private RepresentativeAssociationController representativeAssociationController;
     private LoggerHandler loggerHandler;
+    private ProxyTaxSystem proxyTaxSystem;
+    private ProxyAssociationAccountingSystem proxyAssociationAccountingSystem;
 
     public RepresentativeAssociationService() {
         this.representativeAssociationController = new RepresentativeAssociationController();
         this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
+        this.proxyTaxSystem=new ProxyTaxSystem();
+        this.proxyAssociationAccountingSystem=new ProxyAssociationAccountingSystem();
     }
 
     /**
@@ -231,6 +237,52 @@ public class RepresentativeAssociationService {
         }
         representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
         loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + repMail + " Description: Game Location \"" + newLocation + "\"  was changed to the game \"" + gameID + "\"");
+    }
+
+    /**
+     * connection to the Tax system with the Proxy
+     * @param serverhost
+     */
+    public void connectToTaxSystem(String serverhost){
+        try {
+            proxyTaxSystem.connectTo(serverhost);
+        } catch (Exception e) {
+            System.out.println("something was wrong with tax system connecting");
+        }
+    }
+
+    /**
+     * connection to the Association Accounting system with the Proxy
+     * @param serverhost
+     */
+    public void connectToAssociationAccountingSystem(String serverhost){
+        try {
+            proxyAssociationAccountingSystem.connectTo(serverhost);
+        } catch (Exception e) {
+            System.out.println("something was wrong with Association Accounting System connecting");
+        }
+    }
+
+    /**
+     *
+     * @param revenueAmount
+     * @return the tax rate from the Tax system proxy
+     */
+    public double getTaxRate(double revenueAmount){
+        return proxyTaxSystem.getTaxRate(revenueAmount);
+    }
+
+    /**
+     *
+     * @param teamName
+     * @param date
+     * @param amount
+     * @return if the payment operation has done successfully
+     */
+    public boolean addPayment(String teamName, String date, double amount){
+        if(teamName==null||date==null)
+            return false;
+        return proxyAssociationAccountingSystem.addPayment(teamName,date,amount);
     }
 }
 
