@@ -5,6 +5,8 @@ import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
 import Model.LoggerHandler;
+import Service.OutSystems.IAssociationAccountingSystem;
+import Service.OutSystems.ITaxSystem;
 import Service.OutSystems.ProxyAssociationAccountingSystem;
 import Service.OutSystems.ProxyTaxSystem;
 import org.springframework.http.HttpStatus;
@@ -18,8 +20,8 @@ import java.util.logging.Level;
 public class RepresentativeAssociationService {
     private RepresentativeAssociationController representativeAssociationController;
     private LoggerHandler loggerHandler;
-    private ProxyTaxSystem proxyTaxSystem;
-    private ProxyAssociationAccountingSystem proxyAssociationAccountingSystem;
+    private ITaxSystem proxyTaxSystem;
+    private IAssociationAccountingSystem proxyAssociationAccountingSystem;
 
     public RepresentativeAssociationService() {
         this.representativeAssociationController = new RepresentativeAssociationController();
