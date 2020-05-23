@@ -86,7 +86,7 @@ public class TeamOwnerServiceTest {
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName,RoleType.TEAM_OWNER);
 
-        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String birthDate = df.format(new Date());
 
 

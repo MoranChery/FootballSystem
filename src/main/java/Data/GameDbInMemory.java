@@ -68,8 +68,8 @@ public class GameDbInMemory implements GameDb {
             throw new Exception("The game is not in the DB");
         }
         Game theGame = allGamesMap.get(gameID);
-        Court court = theGame.getCourt();
-        court.setCourtCity(newLocation);
+        String court = theGame.getCourt();
+//        court.setCourtCity(newLocation);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class SystemController {
         systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
         subscriberDb = SubscriberDbInMemory.getInstance();
         roleDb = RoleDbInMemory.getInstance();
-        loggerHandler = new LoggerHandler(SystemController.class.getName());
+//        loggerHandler = new LoggerHandler(SystemController.class.getName());
         accountingSystem = new AccountingSystem();
         taxLawSystem = new TaxLawSystem();
     }

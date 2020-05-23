@@ -153,7 +153,7 @@ private JudgeController judgeController = new JudgeController();
             SeasonLeague seasonLeague = new SeasonLeague("A","B", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
             Set<String> judges = new HashSet<>();
             Court court = new Court("court", "Netanya");
-            Game game = new Game("1", date,null,new Team(), new Team(), null, judges,null,date);
+            Game game = new Game("1", date,null,"", "", null, judges,null,date);
             judgeController.addGameToTheJudge("judgeMail",game);
         }
         catch (Exception e){
@@ -171,7 +171,7 @@ private JudgeController judgeController = new JudgeController();
             SeasonLeague seasonLeague = new SeasonLeague("A","B", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
             Set<String> judges = new HashSet<>();
             Court court = new Court("court", "Netanya");
-            Game game = new Game("1", date,null,new Team(), new Team(), null, judges,null,date);
+            Game game = new Game("1", date,null,"", "", null, judges,null,date);
             judgeController.createJudge(newJudge);
             judgeController.addGameToTheJudge(newJudge.getEmailAddress(),game);
         }
@@ -190,7 +190,7 @@ Date date = new Date();
             SeasonLeague seasonLeague = new SeasonLeague("A","B", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
             Set<String> judges = new HashSet<>();
             Court court = new Court("court", "Netanya");
-            Game game = new Game("1", date,null,new Team(), new Team(), null, judges,null,date);
+            Game game = new Game("1", date,null,"", "", null, judges,null,date);
             gameDb.insertGame(game);
             List<String> gameMap = newJudge.getTheJudgeGameList();
             gameMap.add("1");
@@ -211,7 +211,7 @@ Date date = new Date();
         SeasonLeague seasonLeague = new SeasonLeague("A", "B", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
         Set<String> judges = new HashSet<>();
         Court court = new Court("court", "Netanya");
-        Game game = new Game("1", new Date(), null, new Team(), new Team(), null, judges,null,new Date());
+        Game game = new Game("1", new Date(), null, "", "", null, judges,null,new Date());
         gameDb.insertGame(game);
         judgeController.addGameToTheJudge(newJudge.getEmailAddress(), game);
         Assert.assertTrue(newJudge.getTheJudgeGameList().contains(game.getGameID()));

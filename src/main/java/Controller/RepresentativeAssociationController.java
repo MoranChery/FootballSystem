@@ -22,6 +22,7 @@ public class RepresentativeAssociationController extends Observable implements O
     private JudgeDb judgeDb;
     private JudgeSeasonLeagueDb judgeSeasonLeagueDb;
     private GameDb gameDb;
+    private CourtDb courtDb;
 
     public RepresentativeAssociationController()
     {
@@ -40,6 +41,7 @@ public class RepresentativeAssociationController extends Observable implements O
         this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
 //        this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInServer.getInstance();
         this.gameDb = GameDbInMemory.getInstance();
+        this.courtDb = CourtDbInMemory.getInstance();
     }
 
     /**
@@ -283,7 +285,8 @@ public class RepresentativeAssociationController extends Observable implements O
         if(game == null){
             throw new NotFoundException("game not in DB");
         }
-        Court theGameCourt = game.getCourt();
+        String court = game.getCourt();
+        Court theGameCourt = courtDb.getCourt(court);
         if(theGameCourt.getCourtCity().equals(newLocation)){
             throw new Exception("same location");
         }

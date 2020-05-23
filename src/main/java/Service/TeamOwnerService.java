@@ -17,18 +17,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.annotation.PreDestroy;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 public class TeamOwnerService {
+    private Logger logger = Logger.getLogger(TeamOwnerService.class.getName());
     private TeamOwnerController teamOwnerController;
-    private LoggerHandler loggerHandler;
 
     public TeamOwnerService() {
         this.teamOwnerController = new TeamOwnerController();
-        this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
+//        this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
+        logger.addHandler(LoggerHandler.loggerErrorFileHandler);
+        logger.addHandler(LoggerHandler.loggerEventFileHandler);
     }
 
     @GetMapping
@@ -42,12 +46,13 @@ public class TeamOwnerService {
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "teams/{teamName}/")
+    @GetMapping(value = "teams/{teamName}")
     @ResponseStatus(HttpStatus.OK)
     public Team getTeam(@PathVariable String teamName) throws Exception {
         try {
             return teamOwnerController.getTeam(teamName);
         } catch (Exception e) {
+            logger.log(Level.WARNING, "Created by:   Description: Team \"" + teamName + "\" wasn't created because: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "try Not Found", e);
         }
     }
@@ -67,9 +72,9 @@ public class TeamOwnerService {
             Court court1 = new Court();
             court1.setCourtName(court);
             teamOwnerController.createNewTeam(teamName, teamOwnerEmail, players, coaches, teamManagers, court1, budget);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" was created");
+            logger.log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" was created");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" wasn't created because: " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" wasn't created because: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -83,23 +88,23 @@ public class TeamOwnerService {
             Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(birthDate);
             PlayerRole playerRole1 = PlayerRole.getPlayerRole(playerRole);
             teamOwnerController.addPlayer(teamName, ownerEmail, emailAddress, playerId, firstName, lastName, date1, playerRole1);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownerEmail + " Description: Player \"" + emailAddress + "\" added to Team:" + teamName);
+            logger.log(Level.INFO, "Created by: " + ownerEmail + " Description: Player \"" + emailAddress + "\" added to Team:" + teamName);
 
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + ownerEmail + " Description: Player \"" + emailAddress + "\" wasn't added to Team: " + teamName + " because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + ownerEmail + " Description: Player \"" + emailAddress + "\" wasn't added to Team: " + teamName + " because " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "addPlayer/{teamName}/{ownerEmail}/{emailAddress}/{playerId}/{firstName}/{lastName}/{birthDate}/{playerRole}/")
+    @GetMapping(value = "addTeamManager/{teamName}/{ownerEmail}/{emailAddress}/{playerId}/{firstName}/{lastName}/{birthDate}/{playerRole}/")
     @ResponseStatus(HttpStatus.OK)
     public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName, String lastName, String permissionTypes, String ownedByEmail) throws Exception {
         try {
             teamOwnerController.addTeamManager(teamName, emailAddress, teamManagerId, firstName, lastName, getPermissionsFromString(permissionTypes), ownedByEmail);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownedByEmail + " Description: TeamManager \"" + emailAddress + "\" added to Team \"" + teamName + "\"");
+            logger.log(Level.INFO, "Created by: " + ownedByEmail + " Description: TeamManager \"" + emailAddress + "\" added to Team \"" + teamName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + ownedByEmail + " Description: TeamManager \"" + emailAddress + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + ownedByEmail + " Description: TeamManager \"" + emailAddress + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -124,9 +129,9 @@ public class TeamOwnerService {
             CoachRole coachRole1 = CoachRole.getCoachRole(coachRole);
             QualificationCoach qualificationCoach1 = QualificationCoach.getQualificationCoach(qualificationCoach);
             teamOwnerController.addCoach(teamName, ownerEmail, emailAddress, coachId, firstName, lastName, coachRole1, qualificationCoach1);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownerEmail + " Description: Coach \"" + emailAddress + "\" added to Team: " + teamName);
+            logger.log(Level.INFO, "Created by: " + ownerEmail + " Description: Coach \"" + emailAddress + "\" added to Team: " + teamName);
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + ownerEmail + " Description: Coach \"" + emailAddress + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + ownerEmail + " Description: Coach \"" + emailAddress + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -134,9 +139,9 @@ public class TeamOwnerService {
     public void addCourt(String teamName, String teamOwnerMail, String courtName, String courtCity) throws Exception {
         try {
             teamOwnerController.addCourt(teamName, teamOwnerMail, courtName, courtCity);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerMail + " Description: Court \"" + courtName + "\" added to Team \"" + teamName + "\"");
+            logger.log(Level.INFO, "Created by: " + teamOwnerMail + " Description: Court \"" + courtName + "\" added to Team \"" + teamName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerMail + " Description: Court \"" + courtName + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + teamOwnerMail + " Description: Court \"" + courtName + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -144,9 +149,9 @@ public class TeamOwnerService {
     public void removePlayer(String teamName, String teamOwnerMail, String playerEmailAddress) throws Exception {
         try {
             teamOwnerController.removePlayer(teamName, teamOwnerMail, playerEmailAddress);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerMail + " Description: Player \"" + playerEmailAddress + "\" removed from Team \"" + teamName + "\"");
+            logger.log(Level.INFO, "Created by: " + teamOwnerMail + " Description: Player \"" + playerEmailAddress + "\" removed from Team \"" + teamName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerMail + " Description: Player \"" + playerEmailAddress + "\" wasn't removed from Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + teamOwnerMail + " Description: Player \"" + playerEmailAddress + "\" wasn't removed from Team \"" + teamName + "\" because " + e.getMessage());
             throw e;
         }
     }
@@ -154,9 +159,9 @@ public class TeamOwnerService {
     public void removeTeamManager(String teamName, String ownerEmail, String teamManagerEmailAddress) throws Exception {
         try {
             teamOwnerController.removeTeamManager(teamName, ownerEmail, teamManagerEmailAddress);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownerEmail + " Description: TeamManager \"" + teamManagerEmailAddress + "\" removed from Team \"" + teamName + "\"");
+            logger.log(Level.INFO, "Created by: " + ownerEmail + " Description: TeamManager \"" + teamManagerEmailAddress + "\" removed from Team \"" + teamName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + ownerEmail + " Description: TeamManager \"" + teamManagerEmailAddress + "\" wasn't removed from Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + ownerEmail + " Description: TeamManager \"" + teamManagerEmailAddress + "\" wasn't removed from Team \"" + teamName + "\" because " + e.getMessage());
             throw e;
         }
     }
@@ -164,9 +169,9 @@ public class TeamOwnerService {
     public void removeCoach(String teamName, String ownerEmail, String coachEmailAddress) throws Exception {
         try {
             teamOwnerController.removeCoach(teamName, ownerEmail, coachEmailAddress);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownerEmail + " Description: Coach \"" + coachEmailAddress + "\" removed from Team \"" + teamName + "\"");
+            logger.log(Level.INFO, "Created by: " + ownerEmail + " Description: Coach \"" + coachEmailAddress + "\" removed from Team \"" + teamName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + ownerEmail + " Description: Coach \"" + coachEmailAddress + "\" wasn't removed from Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + ownerEmail + " Description: Coach \"" + coachEmailAddress + "\" wasn't removed from Team \"" + teamName + "\" because " + e.getMessage());
             throw e;
         }
     }
@@ -174,9 +179,9 @@ public class TeamOwnerService {
     public void removeCourt(String teamName, String ownerEmail, String courtName) throws Exception {
         try {
             teamOwnerController.removeCourt(teamName, ownerEmail, courtName);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownerEmail + " Description: Court \"" + courtName + "\" removed from Team \"" + teamName + "\"");
+            logger.log(Level.INFO, "Created by: " + ownerEmail + " Description: Court \"" + courtName + "\" removed from Team \"" + teamName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + ownerEmail + " Description: Court \"" + courtName + "\" wasn't removed from Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + ownerEmail + " Description: Court \"" + courtName + "\" wasn't removed from Team \"" + teamName + "\" because " + e.getMessage());
             throw e;
         }
     }
@@ -184,9 +189,9 @@ public class TeamOwnerService {
     public void subscriptionTeamOwner(String teamName, String teamOwnerEmail, String ownerToAddEmail) throws Exception {
         try {
             teamOwnerController.subscriptionTeamOwner(teamName, teamOwnerEmail, ownerToAddEmail);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: Owner \"" + ownerToAddEmail + "\" received subscription of teamOwner for Team \"" + teamName + "\"");
+            logger.log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: Owner \"" + ownerToAddEmail + "\" received subscription of teamOwner for Team \"" + teamName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: Owner \"" + ownerToAddEmail + "\" wasn't received subscription of teamOwner for Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: Owner \"" + ownerToAddEmail + "\" wasn't received subscription of teamOwner for Team \"" + teamName + "\" because " + e.getMessage());
             throw e;
         }
     }
@@ -194,9 +199,9 @@ public class TeamOwnerService {
     public void subscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToAddEmail, List<PermissionType> permissionTypes) throws Exception {
         try {
             teamOwnerController.subscriptionTeamManager(teamName, teamOwnerEmail, managerToAddEmail, permissionTypes);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: TeamManager \"" + managerToAddEmail + "\" received subscription of teamManager for Team \"" + teamName + "\"");
+            logger.log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: TeamManager \"" + managerToAddEmail + "\" received subscription of teamManager for Team \"" + teamName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: TeamManager \"" + managerToAddEmail + "\" wasn't received subscription of teamManager for Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: TeamManager \"" + managerToAddEmail + "\" wasn't received subscription of teamManager for Team \"" + teamName + "\" because " + e.getMessage());
             throw e;
         }
     }
@@ -204,9 +209,9 @@ public class TeamOwnerService {
     public void removeSubscriptionTeamOwner(String teamName, String teamOwnerEmail, String ownerToRemove) throws Exception {
         try {
             teamOwnerController.removeSubscriptionTeamOwner(teamName, teamOwnerEmail, ownerToRemove);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: TeamOwner \"" + ownerToRemove + "\" removed subscription of teamOwner from Team \"" + teamName + "\"");
+            logger.log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: TeamOwner \"" + ownerToRemove + "\" removed subscription of teamOwner from Team \"" + teamName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: TeamManager \"" + ownerToRemove + "\" wasn't removed subscription of teamOwner from Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: TeamManager \"" + ownerToRemove + "\" wasn't removed subscription of teamOwner from Team \"" + teamName + "\" because " + e.getMessage());
             throw e;
         }
     }
@@ -214,9 +219,9 @@ public class TeamOwnerService {
     public void removeSubscriptionTeamManager(String teamName, String teamOwnerEmail, String managerToRemoveEmail) throws Exception {
         try {
             teamOwnerController.removeSubscriptionTeamManager(teamName, teamOwnerEmail, managerToRemoveEmail);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: TeamManager \"" + managerToRemoveEmail + "\" removed subscription of teamManager from Team \"" + teamName + "\"");
+            logger.log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: TeamManager \"" + managerToRemoveEmail + "\" removed subscription of teamManager from Team \"" + teamName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: TeamManager \"" + managerToRemoveEmail + "\" wasn't removed subscription of teamManager from Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: TeamManager \"" + managerToRemoveEmail + "\" wasn't removed subscription of teamManager from Team \"" + teamName + "\" because " + e.getMessage());
             throw e;
         }
     }
@@ -224,9 +229,9 @@ public class TeamOwnerService {
     public void addFinancialActivity(String teamName, String teamOwnerMail, Double financialActivityAmount, String Description, FinancialActivityType financialActivityType) throws Exception {
         try {
             teamOwnerController.addFinancialActivity(teamName, teamOwnerMail, financialActivityAmount, Description, financialActivityType);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerMail + " Description: Financial Activity \"" + financialActivityAmount + " " + financialActivityType + "\"");
+            logger.log(Level.INFO, "Created by: " + teamOwnerMail + " Description: Financial Activity \"" + financialActivityAmount + " " + financialActivityType + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerMail + " Description: Financial Activity \"" + financialActivityAmount + " " + financialActivityType + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + teamOwnerMail + " Description: Financial Activity \"" + financialActivityAmount + " " + financialActivityType + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
             throw e;
         }
     }
@@ -234,9 +239,9 @@ public class TeamOwnerService {
     public void changeStatusToInActive(String teamName, String teamOwnerMail) throws Exception {
         try {
             teamOwnerController.changeStatus(teamName, teamOwnerMail, TeamStatus.INACTIVE);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerMail + " Description: Team \"" + teamName + "\" changed status to INACTIVE");
+            logger.log(Level.INFO, "Created by: " + teamOwnerMail + " Description: Team \"" + teamName + "\" changed status to INACTIVE");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerMail + " Description: Team \"" + teamName + "\" can't changed status to INACTIVE because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + teamOwnerMail + " Description: Team \"" + teamName + "\" can't changed status to INACTIVE because " + e.getMessage());
             throw e;
         }
     }
@@ -244,9 +249,9 @@ public class TeamOwnerService {
     public void changeStatusToActive(String teamName, String teamOwnerMail) throws Exception {
         try {
             teamOwnerController.changeStatus(teamName, teamOwnerMail, TeamStatus.ACTIVE);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerMail + " Description: Team \"" + teamName + "\" changed status to ACTIVE");
+            logger.log(Level.INFO, "Created by: " + teamOwnerMail + " Description: Team \"" + teamName + "\" changed status to ACTIVE");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerMail + " Description: Team \"" + teamName + "\" can't changed status to ACTIVE because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + teamOwnerMail + " Description: Team \"" + teamName + "\" can't changed status to ACTIVE because " + e.getMessage());
             throw e;
         }
     }

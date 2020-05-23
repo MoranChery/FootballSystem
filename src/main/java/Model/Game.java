@@ -13,10 +13,10 @@ import java.util.Set;
 public class Game {
     private String gameID;
     private Date gameDate;
-    private SeasonLeague seasonLeague;
-    private Team hostTeam;
-    private Team guestTeam;
-    private Court court;
+    private String seasonLeague;
+    private String hostTeam;
+    private String guestTeam;
+    private String court;
     private Integer hostTeamScore;
     private Integer guestTeamScore;
     private Set<String> judgesOfTheGameList;
@@ -24,7 +24,17 @@ public class Game {
     private String majorJudge;
     private Date endGameTime;
 
-    public Game(String gameID, Date gameDate, SeasonLeague seasonLeague, Team hostTeam, Team guestTeam, Court court, Set<String> judges,String majorJudge,Date endGameTime) {
+    public Game(String gameID, Date gameDate,String seasonLeague, String hostTeam, String guestTeam, String court){
+        this.gameID = gameID;
+        this.gameDate = gameDate;
+        this.seasonLeague = seasonLeague;
+        this.hostTeam = hostTeam;
+        this.guestTeam = guestTeam;
+        this.court = court;
+    }
+
+
+    public Game(String gameID, Date gameDate, String seasonLeague, String hostTeam, String guestTeam, String court, Set<String> judges,String majorJudge,Date endGameTime) {
         this.gameID = gameID;
         this.gameDate = gameDate;
         this.seasonLeague = seasonLeague;
@@ -73,35 +83,35 @@ public class Game {
         this.gameDate = gameDate;
     }
 
-    public SeasonLeague getSeasonLeague() {
+    public String getSeasonLeague() {
         return seasonLeague;
     }
 
-    public void setSeasonLeague(SeasonLeague seasonLeague) {
+    public void setSeasonLeague(String seasonLeague) {
         this.seasonLeague = seasonLeague;
     }
 
-    public Team getHostTeam() {
+    public String getHostTeam() {
         return hostTeam;
     }
 
-    public void setHostTeam(Team hostTeam) {
+    public void setHostTeam(String hostTeam) {
         this.hostTeam = hostTeam;
     }
 
-    public Team getGuestTeam() {
+    public String getGuestTeam() {
         return guestTeam;
     }
 
-    public void setGuestTeam(Team guestTeam) {
+    public void setGuestTeam(String guestTeam) {
         this.guestTeam = guestTeam;
     }
 
-    public Court getCourt() {
+    public String getCourt() {
         return court;
     }
 
-    public void setCourt(Court court) {
+    public void setCourt(String court) {
         this.court = court;
     }
 

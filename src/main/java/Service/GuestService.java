@@ -19,15 +19,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 public class GuestService {
+    private Logger logger = Logger.getLogger(GuestService.class.getName());
     private GuestController guestController;
-    private LoggerHandler loggerHandler;
+//    private LoggerHandler loggerHandler;
 
     public GuestService() {
         this.guestController = new GuestController();
-        this.loggerHandler = new LoggerHandler(GuestService.class.getName());
+//        this.loggerHandler = new LoggerHandler(GuestService.class.getName());
+        logger.addHandler(LoggerHandler.loggerErrorFileHandler);
+        logger.addHandler(LoggerHandler.loggerEventFileHandler);
     }
 
     public void registerSubscriber(String userType) {
@@ -57,10 +61,10 @@ public class GuestService {
             }
             Map<String, String> stringStringMap = new HashMap<>();
             stringStringMap.put("UserType", type);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + emailAddress + " Description: Subscriber \"" + emailAddress + "\" was login");
+            logger.log(Level.INFO, "Created by: " + emailAddress + " Description: Subscriber \"" + emailAddress + "\" was login");
             return stringStringMap;
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + emailAddress + " Description: Subscriber \"" + emailAddress + "\" wasn't login because: " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + emailAddress + " Description: Subscriber \"" + emailAddress + "\" wasn't login because: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Try again");
         }
     }
