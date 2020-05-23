@@ -20,7 +20,7 @@ public class PermissionDbInMemory implements PermissionDb {
     }
 
     @Override
-    public void createPermission(String emailAddress, PermissionType permissionType) throws Exception { ;
+    public void insertPermission(String emailAddress, PermissionType permissionType) throws Exception { ;
         if(permissions.containsKey(emailAddress)){
             List<PermissionType> rolesList = permissions.get(emailAddress);
             rolesList.add(permissionType);

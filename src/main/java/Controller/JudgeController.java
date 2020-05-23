@@ -46,7 +46,7 @@ public class JudgeController {
         if (judge == null){
             throw new NullPointerException("Can't create this judge");
         }
-        judgeDb.createJudge(judge);
+        judgeDb.insertJudge(judge);
     }
     /**
      * This function get string that represent judge id - his email address and returns Judge class instance

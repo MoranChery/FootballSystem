@@ -9,7 +9,7 @@ public interface JudgeSeasonLeagueDb extends Db
      * @param judgeSeasonLeague-the new JudgeSeasonLeague.
      * @throws Exception-if details are incorrect.
      */
-    void createJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception;
+    void insertJudgeSeasonLeague(JudgeSeasonLeague judgeSeasonLeague) throws Exception;
 
     /**
      * Will receive from the Controller the judgeSeasonLeague's name, return the JudgeSeasonLeague.

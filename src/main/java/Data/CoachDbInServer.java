@@ -11,6 +11,12 @@ import java.sql.*;
 import java.util.Date;
 
 public class CoachDbInServer implements CoachDb {
+    private static CoachDbInServer ourInstance = new CoachDbInServer();
+
+    public static CoachDbInServer getInstance() {
+        return ourInstance;
+    }
+
     @Override
     public Coach getCoach(String coachEmailAddress) throws Exception {
         if (coachEmailAddress == null) {
@@ -85,7 +91,19 @@ public class CoachDbInServer implements CoachDb {
     }
 
     @Override
-    public void deleteAll() {
+    public void deleteAll() throws SQLException {
+        Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        /* TRUNCATE is faster than DELETE since
+
+         * it does not generate rollback information and does not
+
+         * fire any delete triggers
+
+         */
+
+        statement.executeUpdate("delete from coach");
+        conn.close();
 
     }
 
@@ -94,10 +112,11 @@ public class CoachDbInServer implements CoachDb {
         Coach coach = new Coach("coach@gmail.com", "1234",1, "first", "last", CoachRole.MAJOR, QualificationCoach.UEFA_A);
 
 //        coachDbInServer.insertCoach(coach);
-        Coach coach1 = coachDbInServer.getCoach("coach@gmail.com");
-        System.out.println(coach1.toString());
-        coachDbInServer.updateCoachDetails("coach@gmail.com", "coach",  "last", CoachRole.GOALKEEPER, QualificationCoach.UEFA_A);
-        coach1 = coachDbInServer.getCoach("coach@gmail.com");
-        System.out.println(coach1.toString());
+//        Coach coach1 = coachDbInServer.getCoach("coach@gmail.com");
+//        System.out.println(coach1.toString());
+//        coachDbInServer.updateCoachDetails("coach@gmail.com", "coach",  "last", CoachRole.GOALKEEPER, QualificationCoach.UEFA_A);
+//        coach1 = coachDbInServer.getCoach("coach@gmail.com");
+//        System.out.println(coach1.toString());
+        coachDbInServer.deleteAll();
     }
 }

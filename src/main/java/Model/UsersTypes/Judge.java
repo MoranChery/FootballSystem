@@ -1,5 +1,7 @@
 package Model.UsersTypes;
 
+import Model.Enums.CoachRole;
+import Model.Enums.QualificationCoach;
 import Model.Enums.QualificationJudge;
 import Model.Game;
 
@@ -17,6 +19,13 @@ public class Judge extends Subscriber {
         setRegisteringDetails(username, password, id, firstName, lastName);
         this.qualificationJudge = qualificationJudge;
 //        this.seasonLeagueId_JudgeSeasonLeagueId = new HashMap<>();
+        this.seasonLeagueName_JudgeSeasonLeagueName = new HashMap<>();
+        theJudgeGameList = new ArrayList<>();
+    }
+
+    public Judge(String emailAddress, Integer coachId, String firstName, String lastName, QualificationJudge qualificationJudge) {
+        setRegisteringDetails(emailAddress,coachId,firstName,lastName);
+        this.qualificationJudge = qualificationJudge;
         this.seasonLeagueName_JudgeSeasonLeagueName = new HashMap<>();
         theJudgeGameList = new ArrayList<>();
     }
@@ -57,5 +66,11 @@ public class Judge extends Subscriber {
 //    public void setQualification(Qualification qualificationJudge) { this.qualificationJudge = qualificationJudge; }
 
 //    public void setInlaySeasonLeagueId(List<Integer> inlaySeasonLeagueId) { this.inlaySeasonLeagueId = inlaySeasonLeagueId; }
+
+    public void setSeasonLeagueName_JudgeSeasonLeagueName(Map<String, String> seasonLeagueName_JudgeSeasonLeagueName)
+    {
+        this.seasonLeagueName_JudgeSeasonLeagueName = seasonLeagueName_JudgeSeasonLeagueName;
+    }
+
     //endregion
 }

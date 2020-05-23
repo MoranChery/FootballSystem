@@ -8,9 +8,9 @@ public class Season
     private String seasonName;
     private Map<String, String> leagueName_SeasonLeagueName;
 
-    public Season(String leagueName)
+    public Season(String seasonName)
     {
-        this.seasonName = leagueName;
+        this.seasonName = seasonName;
         this.leagueName_SeasonLeagueName = new HashMap<>();
     }
 
@@ -18,5 +18,12 @@ public class Season
     public String getSeasonName() { return seasonName; }
 
     public Map<String, String> getLeagueName_SeasonLeagueId() { return leagueName_SeasonLeagueName; }
+    //endregion
+
+    //region Setters
+    public void setLeagueName_SeasonLeagueName(Map<String, String> leagueName_SeasonLeagueName)
+    {
+        this.leagueName_SeasonLeagueName = leagueName_SeasonLeagueName;
+    }
     //endregion
 }

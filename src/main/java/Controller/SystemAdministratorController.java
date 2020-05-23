@@ -71,7 +71,7 @@ public class SystemAdministratorController extends Observable {
         data[3] = teamManagerList;
         setChanged();
         notifyObservers(data);
-        teamDb.deleteTeam(teamName);
+        teamDb.closeTeamForever(teamName);
     }
 
     //use case 8.2

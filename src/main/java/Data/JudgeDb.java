@@ -13,7 +13,7 @@ public interface JudgeDb extends Db
      * @param judge-the new Judge.
      * @throws Exception-if details are incorrect.
      */
-    void createJudge(Judge judge) throws Exception;
+    void insertJudge(Judge judge) throws Exception;
 
     /**
      * Will receive from the Controller the judge's emailAddress, return the Judge.

@@ -9,7 +9,11 @@ import java.sql.*;
 import java.util.Date;
 
 public class PlayerDbInServer implements PlayerDb{
+    private static PlayerDbInServer ourInstance = new PlayerDbInServer();
 
+    public static PlayerDbInServer getInstance() {
+        return ourInstance;
+    }
     @Override
     public void insertPlayer(Player player) throws Exception {
         if(player == null){
@@ -88,8 +92,11 @@ public class PlayerDbInServer implements PlayerDb{
     }
 
     @Override
-    public void deleteAll() {
-
+    public void deleteAll() throws SQLException {
+        Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        statement.executeUpdate("delete from player");
+        conn.close();
     }
 
     public static void main(String[] args) throws Exception {

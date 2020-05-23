@@ -26,7 +26,7 @@ public class SeasonLeagueDbInMemory implements SeasonLeagueDb
      * @param seasonLeague-the new SeasonLeague.
      * @throws Exception-if details are incorrect.
      */
-    public void createSeasonLeague(SeasonLeague seasonLeague) throws Exception
+    public void insertSeasonLeague(SeasonLeague seasonLeague) throws Exception
     {
         if(seasonLeagueMap.containsKey(seasonLeague.getSeasonLeagueName()))
         {
@@ -75,7 +75,7 @@ public class SeasonLeagueDbInMemory implements SeasonLeagueDb
      * @param seasonLeagueName-name of the SeasonLeague.
      * @param calculateLeaguePoints-new Policy CalculateLeaguePoints.
      */
-    public void changeCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception
+    public void updateCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception
     {
         if(!seasonLeagueMap.containsKey(seasonLeagueName))
         {

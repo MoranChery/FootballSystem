@@ -26,7 +26,7 @@ public class SeasonDbInMemory implements SeasonDb
      * @throws Exception-if details are incorrect.
      */
     @Override
-    public void createSeason(Season season) throws Exception
+    public void insertSeason(Season season) throws Exception
     {
         if(seasonMap.containsKey(season.getSeasonName()))
         {

@@ -29,7 +29,7 @@ public class JudgeDbInMemory implements JudgeDb
      * @throws Exception-if details are incorrect.
      */
     @Override
-    public void createJudge(Judge judge) throws Exception
+    public void insertJudge(Judge judge) throws Exception
     {
         if (judge == null){
             throw new NullPointerException("Can't create this judge");

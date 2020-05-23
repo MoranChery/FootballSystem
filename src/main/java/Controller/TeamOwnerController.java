@@ -5,9 +5,10 @@ import Model.*;
 import Model.Enums.*;
 import Model.UsersTypes.*;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class TeamOwnerController extends Observable{
+public class TeamOwnerController implements Observer{
     private TeamDb teamDb;
     private PlayerDb playerDb;
     private TeamManagerDb teamManagerDb;
@@ -28,20 +29,33 @@ public class TeamOwnerController extends Observable{
         return teamOwnerDb;
     }
 
+//    public TeamOwnerController(){
+//        teamDb =  TeamDbInMemory.getInstance();
+//        playerDb = PlayerDbInMemory.getInstance();
+//        teamManagerDb = TeamManagerDbInMemory.getInstance();
+//        coachDb =  CoachDbInMemory.getInstance();
+//        courtDb =  CourtDbInMemory.getInstance();
+//        teamOwnerDb =  TeamOwnerDbInMemory.getInstance();
+//        subscriberDb =  SubscriberDbInMemory.getInstance();
+//        roleDb =  RoleDbInMemory.getInstance();
+//        financialActivityDb =  FinancialActivityDbInMemory.getInstance();
+//        pageDb = PageDbInMemory.getInstance();
+//        permissionDb = PermissionDbInMemory.getInstance();
+//    }
+
     public TeamOwnerController(){
-        teamDb =  TeamDbInMemory.getInstance();
-        playerDb = PlayerDbInMemory.getInstance();
-        teamManagerDb = TeamManagerDbInMemory.getInstance();
-        coachDb =  CoachDbInMemory.getInstance();
-        courtDb =  CourtDbInMemory.getInstance();
-        teamOwnerDb =  TeamOwnerDbInMemory.getInstance();
-        subscriberDb =  SubscriberDbInMemory.getInstance();
-        roleDb =  RoleDbInMemory.getInstance();
+        teamDb =  TeamDbInServer.getInstance();
+        playerDb = PlayerDbInServer.getInstance();
+        teamManagerDb = TeamManagerDbInServer.getInstance();
+        coachDb =  CoachDbInServer.getInstance();
+        courtDb =  CourtDbInServer.getInstance();
+        teamOwnerDb =  TeamOwnerDbInServer.getInstance();
+        subscriberDb =  SubscriberDbInServer.getInstance();
+        roleDb =  RoleDbInServer.getInstance();
         financialActivityDb =  FinancialActivityDbInMemory.getInstance();
         pageDb = PageDbInMemory.getInstance();
-        permissionDb = PermissionDbInMemory.getInstance();
+        permissionDb = PermissionDbInServer.getInstance();
     }
-
     /**
      * get team from db
      * @param teamName
@@ -73,6 +87,7 @@ public class TeamOwnerController extends Observable{
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
         teamDb.insertTeam(teamName,budget,TeamStatus.ACTIVE);
         teamOwnerDb.updateTeamOwnerTeam(teamName,teamOwnerEmail);
+        roleDb.updateTeam(teamName, teamOwnerEmail);
         for (Player player : players) {
 
             addPlayer(teamName,teamOwnerEmail,player.getEmailAddress(),player.getId(),player.getFirstName(),player.getLastName(),player.getBirthDate(),player.getPlayerRole());
@@ -84,10 +99,9 @@ public class TeamOwnerController extends Observable{
             addTeamManager(teamName,teamManager.getEmailAddress(),teamManager.getId(),teamManager.getFirstName(),teamManager.getLastName(),teamManager.getPermissionTypes(),teamManager.getOwnedByEmail());
         }
         addCourt(teamName,teamOwnerEmail,court.getCourtName(),court.getCourtCity());
-        Team team = getTeam(teamName);
-        TeamPage teamPage = new TeamPage(teamName, team);
-        pageDb.createTeamPage(teamName, team);
-        teamDb.addTeamPage(teamPage);
+//        Team team = getTeam(teamName);
+//        TeamPage teamPage = new TeamPage(teamName,PageType.TEAM);
+//        pageDb.insertPage(teamName, PageType.TEAM);
     }
 
 
@@ -155,7 +169,7 @@ public class TeamOwnerController extends Observable{
         }
         /*add to DB the player to the team*/
         teamDb.addPlayer(teamName, player);
-        roleDb.createRole(emailAddress,teamName, RoleType.PLAYER);
+        roleDb.insertRole(emailAddress,teamName, RoleType.PLAYER);
     }
 
     /**
@@ -165,11 +179,15 @@ public class TeamOwnerController extends Observable{
      * @return
      */
     private boolean equalsDetailsPlayer(Player playerInDb, Player playerToAdd){
+        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+        String playerToAddDate = df.format(playerToAdd.getBirthDate());
+        String playerInDbDate = df.format(playerInDb.getBirthDate());
+
         return Objects.equals(playerInDb.getEmailAddress(), playerToAdd.getEmailAddress()) &&
                 playerInDb.getId().equals(playerToAdd.getId()) &&
                 playerInDb.getFirstName().equals(playerToAdd.getFirstName()) &&
                 playerInDb.getLastName().equals(playerToAdd.getLastName()) &&
-                playerInDb.getBirthDate().equals(playerToAdd.getBirthDate()) &&
+                playerInDbDate.equals(playerToAddDate) &&
                 playerInDb.getPlayerRole().equals(playerToAdd.getPlayerRole());
     }
 
@@ -186,6 +204,9 @@ public class TeamOwnerController extends Observable{
     public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName ,String lastName,List<PermissionType> permissions,String ownedByEmail) throws Exception {
         if(teamName == null || emailAddress == null ||teamManagerId == null || firstName == null || lastName == null || ownedByEmail == null) {
             throw new NullPointerException("bad input");
+        }
+        if(permissions == null){
+            permissions = new ArrayList<>();
         }
         Team team = teamDb.getTeam(teamName);
         checkPermissions(ownedByEmail,teamName,PermissionType.ADD_TEAM_MANAGER);
@@ -240,7 +261,10 @@ public class TeamOwnerController extends Observable{
         }
         /*add to DB the teamManager to the team*/
         teamDb.addTeamManager(teamName, teamManager,permissions,ownedByEmail);
-        roleDb.createRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
+        for (PermissionType pt: permissions) {
+            permissionDb.insertPermission(emailAddress,pt);
+        }
+        roleDb.insertRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
     }
 
     private boolean equalsDetailsTeamManager(TeamManager teamManagerInDb, TeamManager teamManagerToAdd){
@@ -316,7 +340,7 @@ public class TeamOwnerController extends Observable{
         }
         /* add to DB the player to the team*/
         teamDb.addCoach(teamName, coach);
-        roleDb.createRole(emailAddress,teamName, RoleType.COACH);
+        roleDb.insertRole(emailAddress,teamName, RoleType.COACH);
     }
 
     private boolean equalsDetailsCoach(Coach coachInDb, Coach coachToAdd){
@@ -359,7 +383,7 @@ public class TeamOwnerController extends Observable{
 //            if (team != null) {
 //                throw new Exception("There is a court associated with this team");
             court = new Court(courtName, courtCity);
-            courtDb.createCourt(court);
+            courtDb.insertCourt(court);
             courtDb.addTeamToCourt(court,team);
         }
         teamDb.addCourt(teamName, court);
@@ -454,13 +478,14 @@ public class TeamOwnerController extends Observable{
         Team team = teamDb.getTeam(teamName);
         checkPermissions(ownerEmail,teamName,PermissionType.REMOVE_COURT);
         checkTeamStatusIsActive(team);
+
         Court court = courtDb.getCourt(courtName);
+
         /*check if one of the teams that associated with the court match to the court want to delete*/
-        Team courtTeam = court.getTeam(teamName);
-        if(courtTeam == null || !teamName.equals(courtTeam.getTeamName())) {
+        if(team.getCourt() == null || !courtName.equals(team.getCourt().getCourtName())) {
             throw new Exception("Court is not part of the with associated team");
         }
-        teamDb.removeCourt(teamName, courtName);
+        teamDb.removeCourtFromTeam(teamName, courtName);
     }
 
     /**
@@ -491,7 +516,7 @@ public class TeamOwnerController extends Observable{
             }
         }
         teamOwnerDb.subscriptionTeamOwner(team.getTeamName(),teamOwnerEmail,subscriber);
-        roleDb.createRole(ownerToAddEmail,teamName, RoleType.TEAM_OWNER);
+        roleDb.insertRole(ownerToAddEmail,teamName, RoleType.TEAM_OWNER);
     }
 
     /**
@@ -525,10 +550,10 @@ public class TeamOwnerController extends Observable{
             }
         }
         for (PermissionType pt: permissionTypes) {
-            permissionDb.createPermission(managerToAddEmail,pt);
+            permissionDb.insertPermission(managerToAddEmail,pt);
         }
         teamManagerDb.subscriptionTeamManager(team.getTeamName(),teamOwnerEmail,subscriber,permissionTypes);
-        roleDb.createRole(managerToAddEmail,teamName, RoleType.TEAM_MANAGER);
+        roleDb.insertRole(managerToAddEmail,teamName, RoleType.TEAM_MANAGER);
     }
 
     /**
@@ -548,11 +573,11 @@ public class TeamOwnerController extends Observable{
         checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmailAddress);
-        if(!team.equals(teamOwner.getTeam())){
+        TeamOwner teamOwnerToRemove = teamOwnerDb.getTeamOwner(ownerToRemove);
+        if(!teamName.equals(teamOwner.getTeam())){
             throw new Exception("TeamOwner's team does't match");
         }
-        TeamOwner teamOwnerToRemove = teamOwnerDb.getTeamOwner(ownerToRemove);
-        if(!team.equals(teamOwnerToRemove.getTeam())){
+        if(!teamName.equals(teamOwnerToRemove.getTeam())){
             throw new Exception("TeamOwnerToRemove associated with other team");
         }
         if(!teamOwnerEmailAddress.equals(teamOwnerToRemove.getOwnedByEmailAddress())){
@@ -571,12 +596,6 @@ public class TeamOwnerController extends Observable{
         teamOwnerDb.removeSubscriptionTeamOwner(ownerToRemove);
 //        roleDb.removeRoleFromTeam(ownerToRemove,teamName, RoleType.TEAM_OWNER);
         roleDb.removeRole(ownerToRemove,RoleType.TEAM_OWNER);
-        Object[] data = new Object[3];
-        data[0] = "removed";
-        data[1] = ownerToRemove;
-        data[2] = teamOwnerToRemove;
-        setChanged();
-        notifyObservers(data);
 
     }
 
@@ -597,11 +616,11 @@ public class TeamOwnerController extends Observable{
         checkTeamStatusIsActive(team);
         /*check if the major team owner in db*/
         TeamOwner teamOwner = teamOwnerDb.getTeamOwner(teamOwnerEmail);
-        if(!team.equals(teamOwner.getTeam())){
+        if(!teamName.equals(teamOwner.getTeam())){
             throw new Exception("TeamOwner's team doesn't match");
         }
         TeamManager teamManagerToRemove = teamManagerDb.getTeamManager(managerToRemoveEmail);
-        if(!team.equals(teamManagerToRemove.getTeam())){
+        if(!teamName.equals(teamManagerToRemove.getTeam())){
             throw new Exception("TeamManagerToRemove associated with other team");
         }
         if(!teamOwnerEmail.equals(teamManagerToRemove.getOwnedByEmail())){
@@ -640,8 +659,8 @@ public class TeamOwnerController extends Observable{
         }
         /*for security and unique id*/
         String financialActivityId = UUID.randomUUID().toString();
-        FinancialActivity financialActivity = new FinancialActivity(financialActivityId,financialActivityAmount,description,financialActivityType,team);
-        financialActivityDb.createFinancialActivity(financialActivity);
+        FinancialActivity financialActivity = new FinancialActivity(financialActivityId,financialActivityAmount,description,financialActivityType,teamName);
+        financialActivityDb.insertFinancialActivity(financialActivity);
         teamDb.addFinancialActivity(teamName,financialActivity);
     }
 
@@ -658,12 +677,6 @@ public class TeamOwnerController extends Observable{
         Team team = teamDb.getTeam(teamName);
         checkPermissions(ownerEmail,teamName,PermissionType.CHANGE_STATUS);
         teamDb.changeStatus(teamName,teamStatus);
-        Object[] data = new Object[3];
-        data[0] = "status";
-        data[1] = team;
-        data[2] = teamStatus;
-        setChanged();
-        notifyObservers(data);
     }
 
     /**
@@ -672,6 +685,9 @@ public class TeamOwnerController extends Observable{
      * @throws Exception
      */
     private void checkTeamStatusIsActive(Team team) throws Exception {
+        if(("close").equals(team.getTeamClose())){
+            throw  new Exception("This team's CLOSE!");
+        }
         if(TeamStatus.INACTIVE.equals(team.getTeamStatus())){
             throw new Exception("This Team's status - Inactive");
         }
@@ -763,14 +779,13 @@ public class TeamOwnerController extends Observable{
     }
 
     private void checkPermissions(String emailAddress,String teamName,PermissionType permissionType) throws Exception {
-        SubscriberDbInMemory subscriberDbInMemory = SubscriberDbInMemory.getInstance();
-        subscriberDbInMemory.getSubscriber(emailAddress);
+        subscriberDb.getSubscriber(emailAddress);
         List<Role> roles = roleDb.getRoles(emailAddress);
         boolean isPermitted = false;
         for (Role role: roles) {
             String roleTeam = role.getTeamName();
             RoleType roleType = role.getRoleType();
-            if(teamName == null && PermissionType.CREATE_NEW_TEAM.equals(permissionType) && RoleType.TEAM_OWNER.equals(roleType)){
+            if(role.getTeamName() == null && PermissionType.CREATE_NEW_TEAM.equals(permissionType) && RoleType.TEAM_OWNER.equals(roleType)){
                 isPermitted = true;
             }
             else if(teamName != null && teamName.equals(roleTeam)){
@@ -787,5 +802,10 @@ public class TeamOwnerController extends Observable{
         if(!isPermitted){
             throw new Exception("This user hasn't Permissions for this operation");
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
     }
 }

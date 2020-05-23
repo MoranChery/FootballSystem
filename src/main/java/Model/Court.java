@@ -1,16 +1,18 @@
 package Model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Court {
     private String courtName;
     private String courtCity;
-    private HashMap<String, Team> teams;
+    private List<String> teams;
 
     public Court(String courtName, String courtCity) {
         this.courtName = courtName;
         this.courtCity = courtCity;
-        this.teams = new HashMap<>();
+        this.teams = new ArrayList<>();
     }
 
     public Court() {
@@ -33,15 +35,20 @@ public class Court {
         this.courtCity = courtCity;
     }
 
-    public HashMap<String, Team> getTeams() {
+        public List<String> getTeams() {
         return teams;
     }
 
-    public void setTeams(HashMap<String, Team> teams) {
+    public void setTeams(List<String> teams) {
         this.teams = teams;
     }
 
-    public Team getTeam(String teamName) {
-        return teams.get(teamName);
-    }
+    public String getTeam(String teamName) {
+        for (String team : teams) {
+            if(team.equals(teamName)){
+                return team;
+            }
+        }
+    return null;
+}
 }
