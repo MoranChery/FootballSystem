@@ -46,7 +46,7 @@ public class SystemControllerTest {
     }
     @Test
     public void connectionToExternalSystems_Legal() throws Exception {
-        systemController.connectionToExternalSystems();
+
     }
 
     @Test
