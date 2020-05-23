@@ -16,7 +16,13 @@ import java.util.*;
 
 public class JudgeControllerTest {
 
-    private JudgeController judgeController = new JudgeController();
+//    private JudgeController judgeController = new JudgeController();
+//    private JudgeDb judgeDb = JudgeDbInMemory.getInstance();
+//    private GameDb gameDb = GameDbInMemory.getInstance();
+//    private GameEventsDb gameEventsDb = GameEventsDbInMemory.getInstance();
+//    private RoleDb roleDb = RoleDbInMemory.getInstance();
+//    private String path = "C:\\Users\\noyha\\IdeaProjects\\footballtest";
+private JudgeController judgeController = new JudgeController();
     private JudgeDb judgeDb = JudgeDbInMemory.getInstance();
     private GameDb gameDb = GameDbInMemory.getInstance();
     private GameEventsDb gameEventsDb = GameEventsDbInMemory.getInstance();
@@ -185,7 +191,7 @@ Date date = new Date();
             Set<String> judges = new HashSet<>();
             Court court = new Court("court", "Netanya");
             Game game = new Game("1", date,null,new Team(), new Team(), null, judges,null,date);
-            gameDb.createGame(game);
+            gameDb.insertGame(game);
             List<String> gameMap = newJudge.getTheJudgeGameList();
             gameMap.add("1");
             newJudge.setTheJudgeGameList(gameMap);
@@ -206,7 +212,7 @@ Date date = new Date();
         Set<String> judges = new HashSet<>();
         Court court = new Court("court", "Netanya");
         Game game = new Game("1", new Date(), null, new Team(), new Team(), null, judges,null,new Date());
-        gameDb.createGame(game);
+        gameDb.insertGame(game);
         judgeController.addGameToTheJudge(newJudge.getEmailAddress(), game);
         Assert.assertTrue(newJudge.getTheJudgeGameList().contains(game.getGameID()));
     }
@@ -267,7 +273,7 @@ Date date = new Date();
     @Test
     public void addEventToGameJudgeNotAssociatedWithGame() throws Exception {
         Game game = new Game("id",new Date(),null,null,null,null,null,null,null);
-        gameDb.createGame(game);
+        gameDb.insertGame(game);
         String judgeMail = "email";
         Judge newJudge = new Judge(judgeMail, "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         judgeController.createJudge(newJudge);
@@ -288,7 +294,7 @@ Date date = new Date();
     @Test
     public void addEventToGameLegal() throws Exception {
         Game game = new Game("id",new Date(),null,null,null,null,null,null,null);
-        gameDb.createGame(game);
+        gameDb.insertGame(game);
         String judgeMail = "email";
         Judge newJudge = new Judge(judgeMail, "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         judgeController.createJudge(newJudge);
@@ -365,7 +371,7 @@ Date date = new Date();
     @Test
     public void  updateGameEventAfterEndJudgeNotAssociatedWithGame() throws Exception {
         Game game = new Game("gameId",new Date(),null,null,null,null,null,null,null);
-        gameDb.createGame(game);
+        gameDb.insertGame(game);
         String judgeMail = "email";
         Judge newJudge = new Judge(judgeMail, "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         judgeController.createJudge(newJudge);
@@ -387,7 +393,7 @@ Date date = new Date();
     @Test
     public void updateGameEventAfterEndNotMajorJudge() throws Exception {
         Game game = new Game("gameId",new Date(),null,null,null,null,null,"notExists",null);
-        gameDb.createGame(game);
+        gameDb.insertGame(game);
         String judgeMail = "email";
         Judge newJudge = new Judge(judgeMail, "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         judgeController.createJudge(newJudge);
@@ -410,7 +416,7 @@ Date date = new Date();
         String judgeMail = "email";
         Date endDate = new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime();
         Game game = new Game("gameId",new Date(),null,null,null,null,null,judgeMail,endDate);
-        gameDb.createGame(game);
+        gameDb.insertGame(game);
         Judge newJudge = new Judge(judgeMail, "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         judgeController.createJudge(newJudge);
         RoleDbInMemory.getInstance().createRoleInSystem(judgeMail, RoleType.JUDGE);
@@ -433,7 +439,7 @@ Date date = new Date();
 //        Date endDate = new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime();
         Date date = new Date();
         Game game = new Game("gameId",date,null,null,null,null,null,judgeMail,date);
-        gameDb.createGame(game);
+        gameDb.insertGame(game);
         Judge newJudge = new Judge(judgeMail, "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         judgeController.createJudge(newJudge);
         RoleDbInMemory.getInstance().createRoleInSystem(judgeMail, RoleType.JUDGE);
@@ -498,7 +504,7 @@ Date date = new Date();
     @Test
     public void  createReportForGameJudgeNotAssociatedWithGame() throws Exception {
         Game game = new Game("id",new Date(),null,null,null,null,null,null,null);
-        gameDb.createGame(game);
+        gameDb.insertGame(game);
         String judgeMail = "email";
         Judge newJudge = new Judge(judgeMail, "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         judgeController.createJudge(newJudge);
@@ -519,7 +525,7 @@ Date date = new Date();
     @Test
     public void  createReportForGameLegal() throws Exception {
         Game game = new Game("id",new Date(),null,null,null,null,null,null,null);
-        gameDb.createGame(game);
+        gameDb.insertGame(game);
         String judgeMail = "email";
         Judge newJudge = new Judge(judgeMail, "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         judgeController.createJudge(newJudge);

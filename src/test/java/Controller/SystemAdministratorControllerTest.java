@@ -219,7 +219,7 @@ public class SystemAdministratorControllerTest {
         Set judges = new LinkedHashSet();
         judges.add(judge);
         Game game = new Game("11", null, seasonLeague, null, null, null, judges,null,null);
-        GameDbInMemory.getInstance().createGame(game);
+        GameDbInMemory.getInstance().insertGame(game);
         judge.addGameToList(game);
         //remove judge
         systemAdministratorController.removeSubscriber("judge@gmail.com", "noy@gmail.com");

@@ -14,8 +14,8 @@ public class LoggerHandler {
         loggerErrors = Logger.getLogger(className + "Errors");
         this.loggerErrors = LogManager.getLogManager().getLogger(className + "Errors");
         //todo need to change the path in server
-        loggerEventFileHandler  = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheEventsLog_%g.log",Level.INFO);
-        loggerErrorFileHandler  = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheErrorsLog_%g.log",Level.WARNING);
+        loggerEventFileHandler  = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheEventsLog_%u.log",Level.INFO);
+        loggerErrorFileHandler  = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheErrorsLog_%u.log",Level.WARNING);
         this.loggerEvents.addHandler(loggerEventFileHandler);
         this.loggerErrors.addHandler(loggerErrorFileHandler);
     }
@@ -25,7 +25,7 @@ public class LoggerHandler {
     }
     public FileHandler createLogFile(String path, Level level){
         try {
-            FileHandler logFileHandler = new FileHandler(path,5000,100,true);
+            FileHandler logFileHandler = new FileHandler(path,true);
             logFileHandler.setFormatter(new SimpleFormatter());
             logFileHandler.setLevel(level);
             return logFileHandler;

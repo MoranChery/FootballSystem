@@ -384,7 +384,7 @@ public class TeamOwnerController implements Observer{
 //                throw new Exception("There is a court associated with this team");
             court = new Court(courtName, courtCity);
             courtDb.insertCourt(court);
-            courtDb.addTeamToCourt(court,team);
+//            courtDb.addTeamToCourt(court,team);
         }
         teamDb.addCourt(teamName, court);
     }

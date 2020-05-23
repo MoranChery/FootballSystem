@@ -70,7 +70,7 @@ public class JudgeServiceTest {
         Set<String> judges = new HashSet<>();
         Court court = new Court("court", "Netanya");
         Game game = new Game("1", new Date(), null, new Team(), new Team(), null, judges,null,null);
-        gameDb.createGame(game);
+        gameDb.insertGame(game);
         judgeService.addGameToTheJudge(newJudge.getEmailAddress(), game);
         Assert.assertTrue(newJudge.getTheJudgeGameList().contains(game.getGameID()));
     }

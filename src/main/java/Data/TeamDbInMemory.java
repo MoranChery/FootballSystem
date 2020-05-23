@@ -243,10 +243,7 @@ public class TeamDbInMemory implements TeamDb {
        }
    }
 
-    @Override
-    public void addTeamPage(TeamPage teamPage) throws Exception {
 
-    }
 
     @Override
     public void closeTeamForever(String teamName) throws Exception {
