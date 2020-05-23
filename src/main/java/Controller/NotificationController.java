@@ -180,16 +180,16 @@ public class NotificationController extends Observable implements Observer {
         if (typeOfMessage.equals("location")) {
             String header = "There was change in the location of a game you assigned to";
             Game game = (Game) theObject;
-            String body = "Dear judge, \n The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
-                    + game.getGuestTeam().getTeamName() + " have new location. The new court is" + theChange.toString();
+            String body = "Dear judge, \n The Game " + game.getGameID() + " between " + game.getHostTeam() + " And"
+                    + game.getGuestTeam() + " have new location. The new court is" + theChange.toString();
             alertToSend = new Alert(header, body);
         }
         if (typeOfMessage.equals("date")) {
             String header = "There was change in the date of a game you assigned to";
             Game game = (Game) theObject;
             Date gameDate = (Date) theChange;
-            String body = "Dear judge, \n The Game " + game.getGameID() + " between " + game.getHostTeam().getTeamName() + " And"
-                    + game.getGuestTeam().getTeamName() + " have new date. The new date is" + gameDate.getTime();
+            String body = "Dear judge, \n The Game " + game.getGameID() + " between " + game.getHostTeam() + " And"
+                    + game.getGuestTeam() + " have new date. The new date is" + gameDate.getTime();
             alertToSend.setMsgHeader(header);
             alertToSend.setMsgBody(body);
         }

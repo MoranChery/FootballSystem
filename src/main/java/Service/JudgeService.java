@@ -40,12 +40,14 @@ public class JudgeService {
     @ResponseStatus(HttpStatus.OK)
     public void addEventToGame(@PathVariable String judgeMail, @PathVariable String gameId, @PathVariable Time eventTime, @PathVariable Integer eventMinute, @PathVariable String gameEventType, @PathVariable String description) throws Exception {
         try {
-            GameEventType eventType=GameEventType.getGameEventType(gameEventType);
+            GameEventType eventType = GameEventType.getGameEventType(gameEventType);
             judgeController.addEventToGame(judgeMail, gameId, eventTime, eventMinute, eventType, description);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + judgeMail + " Description: Event was added to Game \"" + gameId + "\"");
+            logger.log(Level.INFO, "Created by: " + judgeMail + " Description: Event was added to Game \"" + gameId + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + judgeMail + " Description: Event wasn't updated to Game \"" + gameId + "\" because " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + judgeMail + " Description: Event wasn't updated to Game \"" + gameId + "\" because " + e.getMessage());
         }
+    }
+
     public void addEventToGame(String judgeMail, String gameId, Time eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
        try{
         judgeController.addEventToGame(judgeMail, gameId, eventTime, eventMinute, gameEventType, description);

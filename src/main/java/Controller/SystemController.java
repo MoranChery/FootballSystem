@@ -25,9 +25,8 @@ public class SystemController {
         systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
         subscriberDb = SubscriberDbInMemory.getInstance();
         roleDb = RoleDbInMemory.getInstance();
-        loggerHandler = new LoggerHandler(SystemController.class.getName());
-        this.proxyTaxSystem= ProxyTaxSystem.getInstance();
-        this.proxyAssociationAccountingSystem= ProxyAssociationAccountingSystem.getInstance();
+        this.proxyTaxSystem = ProxyTaxSystem.getInstance();
+        this.proxyAssociationAccountingSystem = ProxyAssociationAccountingSystem.getInstance();
     }
 
     /**
