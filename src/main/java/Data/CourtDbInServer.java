@@ -30,14 +30,25 @@ public class CourtDbInServer implements CourtDb {
         Statement preparedStmt = conn.createStatement();
         ResultSet rs = preparedStmt.executeQuery(query);
 
-        // checking if ResultSet is empty
-        if (rs.next() == false) {
+            // checking if ResultSet is empty
+            if (rs.next() == false) {
             throw new NotFoundException("Court not found");
         }
 
         String court_name = rs.getString("court_name");
         String court_city = rs.getString("court_city");
         Court court = new Court(court_name,court_city);
+
+        query = "select * from team where team.court = \'" + court_name + "\'";
+        preparedStmt = conn.createStatement();
+        rs = preparedStmt.executeQuery(query);
+        List<String> teams = new ArrayList<>();
+        while(rs.next()){
+            String currTeam = rs.getString("team_name");
+            teams.add(currTeam);
+        }
+        court.setTeams(teams);
+
         conn.close();
         return court;
     }

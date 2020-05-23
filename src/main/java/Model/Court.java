@@ -39,7 +39,7 @@ public class Court {
         return teams;
     }
 
-    public void setTeams(ArrayList<String> teams) {
+    public void setTeams(List<String> teams) {
         this.teams = teams;
     }
 

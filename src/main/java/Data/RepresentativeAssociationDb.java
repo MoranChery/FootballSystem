@@ -2,6 +2,8 @@ package Data;
 
 import Model.UsersTypes.RepresentativeAssociation;
 
+import java.util.ArrayList;
+
 public interface RepresentativeAssociationDb extends Db
 {
 
@@ -25,5 +27,7 @@ public interface RepresentativeAssociationDb extends Db
      * @param email String the id
      */
     void removeRepresentativeAssociation(String email) throws Exception;
+
+    ArrayList<String> getAllRepresentativeAssociationEmailAddress() throws Exception;
 //    void changeGameLocation(String repMail, String newLocation, String gameID) throws Exception;
 }
