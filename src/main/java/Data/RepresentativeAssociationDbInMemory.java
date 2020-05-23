@@ -4,8 +4,8 @@ import Controller.SubscriberController;
 import Model.Alert;
 import Model.Enums.RoleType;
 import Model.UsersTypes.RepresentativeAssociation;
-import Model.UsersTypes.TeamOwner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,6 +80,12 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
     public void removeRepresentativeAssociation(String email) throws Exception{
         representativeAssociationMap.remove(email);
     }
+
+    @Override
+    public ArrayList<String> getAllRepresentativeAssociationEmailAddress() throws Exception {
+        throw new Exception("not implemented");
+    }
+
     /**
      * For the tests-Clear the RepresentativeAssociation Map from the DB.
      */

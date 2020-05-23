@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 public class TeamOwnerService {
     private Logger logger = Logger.getLogger(TeamOwnerService.class.getName());
     private TeamOwnerController teamOwnerController;
+    private LoggerHandler loggerHandler;
 
     public TeamOwnerService() {
         this.teamOwnerController = new TeamOwnerController();
@@ -72,7 +73,7 @@ public class TeamOwnerService {
             Court court1 = new Court();
             court1.setCourtName(court);
             teamOwnerController.createNewTeam(teamName, teamOwnerEmail, players, coaches, teamManagers, court1, budget);
-            logger.log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" was created");
+            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" was created");
         } catch (Exception e) {
             logger.log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" wasn't created because: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -88,7 +89,7 @@ public class TeamOwnerService {
             Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(birthDate);
             PlayerRole playerRole1 = PlayerRole.getPlayerRole(playerRole);
             teamOwnerController.addPlayer(teamName, ownerEmail, emailAddress, playerId, firstName, lastName, date1, playerRole1);
-            logger.log(Level.INFO, "Created by: " + ownerEmail + " Description: Player \"" + emailAddress + "\" added to Team:" + teamName);
+            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownerEmail + " Description: Player \"" + emailAddress + "\" added to Team:" + teamName);
 
         } catch (Exception e) {
             logger.log(Level.WARNING, "Created by: " + ownerEmail + " Description: Player \"" + emailAddress + "\" wasn't added to Team: " + teamName + " because " + e.getMessage());
@@ -97,12 +98,12 @@ public class TeamOwnerService {
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "addTeamManager/{teamName}/{ownerEmail}/{emailAddress}/{playerId}/{firstName}/{lastName}/{birthDate}/{playerRole}/")
+    @GetMapping(value = "addPlayer/{teamName}/{ownerEmail}/{emailAddress}/{playerId}/{firstName}/{lastName}/{birthDate}/{playerRole}/")
     @ResponseStatus(HttpStatus.OK)
     public void addTeamManager(String teamName, String emailAddress, Integer teamManagerId, String firstName, String lastName, String permissionTypes, String ownedByEmail) throws Exception {
         try {
             teamOwnerController.addTeamManager(teamName, emailAddress, teamManagerId, firstName, lastName, getPermissionsFromString(permissionTypes), ownedByEmail);
-            logger.log(Level.INFO, "Created by: " + ownedByEmail + " Description: TeamManager \"" + emailAddress + "\" added to Team \"" + teamName + "\"");
+            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownedByEmail + " Description: TeamManager \"" + emailAddress + "\" added to Team \"" + teamName + "\"");
         } catch (Exception e) {
             logger.log(Level.WARNING, "Created by: " + ownedByEmail + " Description: TeamManager \"" + emailAddress + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -272,7 +273,7 @@ public class TeamOwnerService {
         teamOwnerController.updateCourtDetails(teamName, ownerEmailAddress, courtName, courtCity);
     }
 
-
+//
 //    public static void main(String[] args) throws Exception {
 //       TeamOwnerService teamOwnerService = new TeamOwnerService();
 //        String teamName = "TeamName";

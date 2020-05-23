@@ -5,6 +5,10 @@ import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
 import Model.LoggerHandler;
+import Service.OutSystems.IAssociationAccountingSystem;
+import Service.OutSystems.ITaxSystem;
+import Service.OutSystems.ProxyAssociationAccountingSystem;
+import Service.OutSystems.ProxyTaxSystem;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,12 +22,17 @@ public class RepresentativeAssociationService {
     private Logger logger = Logger.getLogger(RepresentativeAssociationService.class.getName());
     private RepresentativeAssociationController representativeAssociationController;
 //    private LoggerHandler loggerHandler;
+    private LoggerHandler loggerHandler;
+    private ITaxSystem proxyTaxSystem;
+    private IAssociationAccountingSystem proxyAssociationAccountingSystem;
 
     public RepresentativeAssociationService() {
         this.representativeAssociationController = new RepresentativeAssociationController();
 //        this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
         logger.addHandler(LoggerHandler.loggerErrorFileHandler);
         logger.addHandler(LoggerHandler.loggerEventFileHandler);
+        this.proxyTaxSystem=ProxyTaxSystem.getInstance();
+        this.proxyAssociationAccountingSystem=ProxyAssociationAccountingSystem.getInstance();
     }
 
     /**
@@ -235,6 +244,33 @@ public class RepresentativeAssociationService {
         }
         representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
         logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Location \"" + newLocation + "\"  was changed to the game \"" + gameID + "\"");
+    }
+
+
+    /**
+     *
+     * @param revenueAmount
+     * @return the tax rate from the Tax system proxy
+     */
+    public double getTaxRate(double revenueAmount,String repMail){
+        loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + repMail + " Description: Get Tax Rate");
+        return proxyTaxSystem.getTaxRate(revenueAmount);
+    }
+
+    /**
+     *
+     * @param teamName
+     * @param date
+     * @param amount
+     * @return if the payment operation has done successfully
+     */
+    public boolean addPayment(String teamName, String date, double amount,String repMail){
+        if(teamName==null||date==null) {
+            loggerHandler.getLoggerEvents().log(Level.WARNING,"Created by: " + repMail + " Description: the payment not added!");
+            return false;
+        }
+        loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + repMail + " Description: Add Payment has done successfully");
+        return proxyAssociationAccountingSystem.addPayment(teamName,date,amount);
     }
 }
 

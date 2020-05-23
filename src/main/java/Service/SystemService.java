@@ -8,7 +8,8 @@ public class SystemService{
 
     public SystemService() {
         systemController = SystemController.getInstance();
-        systemController.connectionToExternalSystems();
+        systemController.connectToAssociationAccountingSystem("AssociationAccountingSystemPort");
+        systemController.connectToTaxSystem("TaxSystemPort");
     }
 
     public static void createLog(String path) throws Exception {
