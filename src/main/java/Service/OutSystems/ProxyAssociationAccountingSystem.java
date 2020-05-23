@@ -1,11 +1,16 @@
 package Service.OutSystems;
+import Data.CoachDbInMemory;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ProxyAssociationAccountingSystem implements IAssociationAccountingSystem{
-        private IAssociationAccountingSystem associationAccountingSystem = new RealAssociationAccountingSystem();
+    private static IAssociationAccountingSystem associationAccountingSystem = new RealAssociationAccountingSystem();
 
+    public static IAssociationAccountingSystem getInstance() {
+        return associationAccountingSystem;
+    }
 
     @Override
     public boolean addPayment(String teamName, String date, double amount) {

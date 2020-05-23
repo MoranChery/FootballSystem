@@ -26,8 +26,8 @@ public class RepresentativeAssociationService {
     public RepresentativeAssociationService() {
         this.representativeAssociationController = new RepresentativeAssociationController();
         this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
-        this.proxyTaxSystem=new ProxyTaxSystem();
-        this.proxyAssociationAccountingSystem=new ProxyAssociationAccountingSystem();
+        this.proxyTaxSystem=ProxyTaxSystem.getInstance();
+        this.proxyAssociationAccountingSystem=ProxyAssociationAccountingSystem.getInstance();
     }
 
     /**
@@ -241,36 +241,14 @@ public class RepresentativeAssociationService {
         loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + repMail + " Description: Game Location \"" + newLocation + "\"  was changed to the game \"" + gameID + "\"");
     }
 
-    /**
-     * connection to the Tax system with the Proxy
-     * @param serverhost
-     */
-    public void connectToTaxSystem(String serverhost){
-        try {
-            proxyTaxSystem.connectTo(serverhost);
-        } catch (Exception e) {
-            System.out.println("something was wrong with tax system connecting");
-        }
-    }
-
-    /**
-     * connection to the Association Accounting system with the Proxy
-     * @param serverhost
-     */
-    public void connectToAssociationAccountingSystem(String serverhost){
-        try {
-            proxyAssociationAccountingSystem.connectTo(serverhost);
-        } catch (Exception e) {
-            System.out.println("something was wrong with Association Accounting System connecting");
-        }
-    }
 
     /**
      *
      * @param revenueAmount
      * @return the tax rate from the Tax system proxy
      */
-    public double getTaxRate(double revenueAmount){
+    public double getTaxRate(double revenueAmount,String repMail){
+        loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + repMail + " Description: Get Tax Rate");
         return proxyTaxSystem.getTaxRate(revenueAmount);
     }
 
@@ -281,9 +259,12 @@ public class RepresentativeAssociationService {
      * @param amount
      * @return if the payment operation has done successfully
      */
-    public boolean addPayment(String teamName, String date, double amount){
-        if(teamName==null||date==null)
+    public boolean addPayment(String teamName, String date, double amount,String repMail){
+        if(teamName==null||date==null) {
+            loggerHandler.getLoggerEvents().log(Level.WARNING,"Created by: " + repMail + " Description: the payment not added!");
             return false;
+        }
+        loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + repMail + " Description: Add Payment has done successfully");
         return proxyAssociationAccountingSystem.addPayment(teamName,date,amount);
     }
 }
