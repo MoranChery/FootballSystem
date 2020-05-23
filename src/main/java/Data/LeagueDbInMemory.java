@@ -2,7 +2,9 @@ package Data;
 
 import Model.League;
 import Model.SeasonLeague;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,6 +87,22 @@ public class LeagueDbInMemory implements LeagueDb
             throw new Exception("Season not found");
         }
         return leagueMap.get(leagueName).getSeasonName_SeasonLeagueId().get(seasonName);
+    }
+
+    @Override
+    public ArrayList<String> getAllLeagueNames() throws Exception
+    {
+        //todo
+        throw new NotImplementedException();
+//        return null;
+    }
+
+    @Override
+    public ArrayList<League> getAllLeagueObjects() throws Exception
+    {
+        //todo
+        throw new NotImplementedException();
+//        return null;
     }
 
     /**

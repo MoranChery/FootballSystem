@@ -141,6 +141,7 @@ public class SeasonDbInServer implements SeasonDb
         conn.close();
     }
 
+    @Override
     public ArrayList<String> getAllSeasonNames() throws Exception
     {
         ArrayList<String> seasonNames = new ArrayList<>();
@@ -174,6 +175,7 @@ public class SeasonDbInServer implements SeasonDb
         return seasonNames;
     }
 
+    @Override
     public ArrayList<Season> getAllSeasonObjects() throws Exception
     {
         ArrayList<Season> seasonObjects = new ArrayList<>();

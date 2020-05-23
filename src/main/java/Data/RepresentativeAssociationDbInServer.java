@@ -103,6 +103,7 @@ public class RepresentativeAssociationDbInServer implements RepresentativeAssoci
         conn.close();
     }
 
+    @Override
     public ArrayList<String> getAllRepresentativeAssociationEmailAddress() throws Exception
     {
         ArrayList<String> representativeAssociationEmailAddress = new ArrayList<>();

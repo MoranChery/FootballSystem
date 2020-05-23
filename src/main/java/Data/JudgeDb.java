@@ -5,6 +5,7 @@ import Model.JudgeSeasonLeague;
 import Model.UsersTypes.Judge;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface JudgeDb extends Db
@@ -42,4 +43,6 @@ public interface JudgeDb extends Db
     void addGameToTheJudge(String judgeMail, Game gameToAdd) throws Exception;
 
     List<String> getJudgeGames(String judgeId) throws SQLException;
+
+    ArrayList<String> getAllJudgeEmailAddress() throws Exception;
 }

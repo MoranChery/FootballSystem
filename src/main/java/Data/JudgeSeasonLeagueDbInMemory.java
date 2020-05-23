@@ -1,7 +1,9 @@
 package Data;
 
 import Model.JudgeSeasonLeague;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +55,14 @@ public class JudgeSeasonLeagueDbInMemory implements JudgeSeasonLeagueDb
             throw new Exception("JudgeSeasonLeague not found");
         }
         judgeSeasonLeagueMap.remove(judgeSeasonLeagueName);
+    }
+
+    @Override
+    public ArrayList<String> getAllJudgeSeasonLeagueNames() throws Exception
+    {
+        //todo
+        throw new NotImplementedException();
+//        return null;
     }
 
     /**

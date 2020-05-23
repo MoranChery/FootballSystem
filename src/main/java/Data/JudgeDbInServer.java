@@ -210,6 +210,7 @@ public class JudgeDbInServer implements JudgeDb
         conn.close();
     }
 
+    @Override
     public ArrayList<String> getAllJudgeEmailAddress() throws Exception
     {
         ArrayList<String> judgeEmailAddress = new ArrayList<>();

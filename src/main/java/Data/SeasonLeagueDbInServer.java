@@ -203,6 +203,7 @@ public class SeasonLeagueDbInServer implements SeasonLeagueDb
         conn.close();
     }
 
+    @Override
     public ArrayList<String> getAllSeasonLeagueNames() throws Exception
     {
         ArrayList<String> seasonLeagueNames = new ArrayList<>();
@@ -236,6 +237,7 @@ public class SeasonLeagueDbInServer implements SeasonLeagueDb
         return seasonLeagueNames;
     }
 
+    @Override
     public ArrayList<SeasonLeague> getAllSeasonLeagueObjects() throws Exception
     {
         ArrayList<SeasonLeague> seasonLeagueObjects = new ArrayList<>();

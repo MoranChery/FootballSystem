@@ -1,7 +1,9 @@
 package Data;
 
 import Model.UsersTypes.RepresentativeAssociation;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +60,7 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
     public void removeRepresentativeAssociation(String email) throws Exception{
         representativeAssociationMap.remove(email);
     }
+
     /**
      * For the tests-Clear the RepresentativeAssociation Map from the DB.
      */
@@ -67,5 +70,11 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
         representativeAssociationMap.clear();
     }
 
-
+    @Override
+    public ArrayList<String> getAllRepresentativeAssociationEmailAddress() throws Exception
+    {
+        //todo
+        throw new NotImplementedException();
+//        return null;
+    }
 }

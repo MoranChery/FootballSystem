@@ -141,6 +141,7 @@ public class LeagueDbInServer implements LeagueDb
         conn.close();
     }
 
+    @Override
     public ArrayList<String> getAllLeagueNames() throws Exception
     {
         ArrayList<String> leagueNames = new ArrayList<>();
@@ -174,6 +175,7 @@ public class LeagueDbInServer implements LeagueDb
         return leagueNames;
     }
 
+    @Override
     public ArrayList<League> getAllLeagueObjects() throws Exception
     {
         ArrayList<League> leagueObjects = new ArrayList<>();

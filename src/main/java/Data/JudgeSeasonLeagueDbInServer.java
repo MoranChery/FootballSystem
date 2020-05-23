@@ -120,6 +120,7 @@ public class JudgeSeasonLeagueDbInServer implements JudgeSeasonLeagueDb
         conn.close();
     }
 
+    @Override
     public ArrayList<String> getAllJudgeSeasonLeagueNames() throws Exception
     {
         ArrayList<String> judgeSeasonLeagueNames = new ArrayList<>();
