@@ -52,6 +52,7 @@ public class RepresentativeAssociationControllerTest
     }
 
     //region createRepresentativeAssociation_Tests
+
     @Test
     public void createRepresentativeAssociation_null() throws Exception
     {
@@ -65,6 +66,7 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("No RepresentativeAssociation been created", e.getMessage());
         }
     }
+
 
     @Test
     public void createRepresentativeAssociation_legal() throws Exception
@@ -81,6 +83,7 @@ public class RepresentativeAssociationControllerTest
         RepresentativeAssociation representativeAssociation = RepresentativeAssociationDbInServer.getInstance().getRepresentativeAssociation("username/emailAddress");
         Assert.assertEquals("username/emailAddress", representativeAssociation.getEmailAddress());
     }
+
 
     @Test
     public void createRepresentativeAssociation_exists() throws Exception
@@ -102,10 +105,12 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("RepresentativeAssociation already exists in the system", e.getMessage());
         }
     }
+
     //endregion
 
 
     //region createLeague_Tests
+
     @Test
     public void createLeague_null_all() throws Exception
     {
@@ -120,6 +125,7 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
+
     @Test
     public void createLeague_null_email() throws Exception
     {
@@ -133,6 +139,7 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
+
 
     @Test
     public void createLeague_null_leagueName() throws Exception
@@ -149,6 +156,7 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
+
     @Test
     public void createLeague_noPermissions() throws Exception
     {
@@ -162,6 +170,7 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
+
 
     @Test
     public void createLeague_legal() throws Exception
@@ -179,6 +188,7 @@ public class RepresentativeAssociationControllerTest
         League league = LeagueDbInServer.getInstance().getLeague("leagueName");
         Assert.assertEquals("leagueName", league.getLeagueName());
     }
+
 
     @Test
     public void createLeague_exists() throws Exception
@@ -201,6 +211,7 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("League already exists in the system", e.getMessage());
         }
     }
+
     //endregion
 
 
@@ -209,8 +220,9 @@ public class RepresentativeAssociationControllerTest
 
 
 
-    /*
+
     //region createSeason_Tests
+
     @Test
     public void createSeason_null_all() throws Exception
     {
@@ -225,6 +237,7 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
+
     @Test
     public void createSeason_null_email() throws Exception
     {
@@ -238,6 +251,7 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
+
 
     @Test
     public void createSeason_null_seasonName() throws Exception
@@ -254,6 +268,7 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
+
     @Test
     public void createSeason_noPermissions() throws Exception
     {
@@ -267,6 +282,7 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
+
 
     @Test
     public void createSeason_legal() throws Exception
@@ -284,6 +300,7 @@ public class RepresentativeAssociationControllerTest
         Season season = SeasonDbInServer.getInstance().getSeason("seasonName");
         Assert.assertEquals("seasonName", season.getSeasonName());
     }
+
 
     @Test
     public void createSeason_exists() throws Exception
@@ -306,10 +323,11 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Season already exists in the system", e.getMessage());
         }
     }
-    //endregion
-    */
 
-    /*
+    //endregion
+
+
+
     //region createSeasonLeague_Tests
     @Test
     public void createSeasonLeague_null_all() throws Exception
@@ -502,10 +520,11 @@ public class RepresentativeAssociationControllerTest
         }
     }
     //endregion
-    */
 
-    /*
+
+
     //region createJudge_Tests
+
     @Test
     public void createJudge_null_all() throws Exception
     {
@@ -700,7 +719,7 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
-    /*
+
     @Test
     public void createJudge_exists_inJudgeDb() throws Exception
     {
@@ -708,7 +727,12 @@ public class RepresentativeAssociationControllerTest
         {
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
 //            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username", new Judge("username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
-            JudgeDbInServer.getInstance().getAllJudgesMap().put("username", new Judge("username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
+
+            //todo-check this function
+//            JudgeDbInServer.getInstance().getAllJudgesMap().put("username", new Judge("username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
+
+
+
             representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
@@ -716,11 +740,11 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Judge already exists in the system", e.getMessage());
         }
     }
-    */
+
     //endregion
 
 
-    /*
+
     //region removeJudge_Tests
     @Test
     public void removeJudge_null_all() throws Exception
@@ -820,7 +844,7 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
-    /*
+
     @Test
     public void removeJudge_notExists_inSubscriberDb() throws Exception
     {
@@ -829,7 +853,13 @@ public class RepresentativeAssociationControllerTest
             representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
             representativeAssociationController.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
 //            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username2", new Judge("username2", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
-            JudgeDbInServer.getInstance().getAllJudgesMap().put("username2", new Judge("username2", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
+
+
+            //todo-check this function
+//            JudgeDbInServer.getInstance().getAllJudgesMap().put("username2", new Judge("username2", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
+            
+
+
         }
         catch (Exception e)
         {
@@ -844,12 +874,12 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Judge not found", e.getMessage());
         }
     }
-    */
+
     //endregion
-    /**/
+
 
     //region createJudgeSeasonLeague_Tests
-    /*
+
     @Test
     public void createJudgeSeasonLeague_null_all() throws Exception
     {
@@ -1153,8 +1183,10 @@ public class RepresentativeAssociationControllerTest
         SeasonLeague seasonLeague = SeasonLeagueDbInServer.getInstance().getSeasonLeague("seasonName_leagueName");
         Assert.assertEquals(CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, seasonLeague.getCalculateLeaguePoints());
     }
+
     //endregion
-*/
+
+
 
     @Test
     public void checkPermissionOfRepresentativeAssociation_withPreviousRole() throws Exception
@@ -1167,5 +1199,6 @@ public class RepresentativeAssociationControllerTest
         permission = representativeAssociationController.checkPermissionOfRepresentativeAssociation("username/emailAddress");
         Assert.assertEquals(Boolean.TRUE, permission);
     }
+
 
 }

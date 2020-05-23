@@ -23,7 +23,7 @@ public class GameDbInMemory implements GameDb {
 
 
     @Override
-    public void createGame(Game game) throws Exception {
+    public void insertGame(Game game) throws Exception {
         if(game == null){
             throw new NullPointerException("The game object is null");
         }
