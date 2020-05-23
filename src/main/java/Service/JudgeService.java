@@ -4,6 +4,11 @@ import Controller.JudgeController;
 import Model.Enums.GameEventType;
 import Model.Game;
 import Model.LoggerHandler;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.sql.Time;
 import java.util.logging.Level;
@@ -26,17 +31,20 @@ public class JudgeService {
         judgeController.addGameToTheJudge(judgeMail, gameToAdd);
     }
 
-    public void addEventToGame(String judgeMail, String gameId, Time eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
-       try{
-        judgeController.addEventToGame(judgeMail, gameId, eventTime, eventMinute, gameEventType, description);
-        loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + judgeMail + " Description: Event was added to Game \"" + gameId + "\"");
-    }catch(Exception e)
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "addEventToGame/{judgeMail}/{gameId}/{eventTime}/{eventMinute}/{gameEventType}/{description}/")
+    @ResponseStatus(HttpStatus.OK)
+    public void addEventToGame(@PathVariable String judgeMail, @PathVariable String gameId, @PathVariable Time eventTime, @PathVariable Integer eventMinute, @PathVariable String gameEventType, @PathVariable String description) throws Exception {
+        try {
+            GameEventType eventType=GameEventType.getGameEventType(gameEventType);
+            judgeController.addEventToGame(judgeMail, gameId, eventTime, eventMinute, eventType, description);
+            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + judgeMail + " Description: Event was added to Game \"" + gameId + "\"");
+        } catch (Exception e) {
+            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + judgeMail + " Description: Event wasn't updated to Game \"" + gameId + "\" because " + e.getMessage());
+        }
 
-    {
-        loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + judgeMail + " Description: Event wasn't updated to Game \"" + gameId + "\" because " + e.getMessage());
     }
 
-}
     public void updateGameEventAfterEnd(String judgeMail, String gameId, String eventId, Time eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
         try {
             judgeController.updateGameEventAfterEnd(judgeMail, gameId, eventId, eventTime, eventMinute, gameEventType, description);

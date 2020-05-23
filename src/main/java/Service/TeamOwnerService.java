@@ -55,7 +55,7 @@ public class TeamOwnerService {
     @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping(value = "createNewTeam/{teamName}/{teamOwnerEmail}/{budget}/{court}/")
     @ResponseStatus(HttpStatus.OK)
-    public void createNewTeam(@PathVariable String teamName, @PathVariable String teamOwnerEmail, @PathVariable Double budget, @PathVariable String court) throws Exception {
+    public void createNewTeam(@PathVariable String teamName, @PathVariable String teamOwnerEmail, @PathVariable String budget, @PathVariable String court) throws Exception {
         //final String teamName = createTeamRequest.getTeamName();
         final List<Coach> coaches = new ArrayList<>();
 //            final Double budget = createTeamRequest.getBudget();
@@ -66,7 +66,7 @@ public class TeamOwnerService {
         try {
             Court court1 = new Court();
             court1.setCourtName(court);
-            teamOwnerController.createNewTeam(teamName, teamOwnerEmail, players, coaches, teamManagers, court1, budget);
+            teamOwnerController.createNewTeam(teamName, teamOwnerEmail, players, coaches, teamManagers, court1, Double.parseDouble(budget));
             loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" was created");
         } catch (Exception e) {
             loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" wasn't created because: " + e.getMessage());
@@ -78,11 +78,11 @@ public class TeamOwnerService {
     @GetMapping(value = "addPlayer/{teamName}/{ownerEmail}/{emailAddress}/{playerId}/{firstName}/{lastName}/{birthDate}/{playerRole}/")
     @ResponseStatus(HttpStatus.OK)
     /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
-    public void addPlayer(@PathVariable String teamName, @PathVariable String ownerEmail, @PathVariable String emailAddress, @PathVariable Integer playerId, @PathVariable String firstName, @PathVariable String lastName, @PathVariable String birthDate, @PathVariable String playerRole) throws Exception {
+    public void addPlayer(@PathVariable String teamName, @PathVariable String ownerEmail, @PathVariable String emailAddress, @PathVariable String playerId, @PathVariable String firstName, @PathVariable String lastName, @PathVariable String birthDate, @PathVariable String playerRole) throws Exception {
         try {
             Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(birthDate);
             PlayerRole playerRole1 = PlayerRole.getPlayerRole(playerRole);
-            teamOwnerController.addPlayer(teamName, ownerEmail, emailAddress, playerId, firstName, lastName, date1, playerRole1);
+            teamOwnerController.addPlayer(teamName, ownerEmail, emailAddress, Integer.parseInt(playerId), firstName, lastName, date1, playerRole1);
             loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownerEmail + " Description: Player \"" + emailAddress + "\" added to Team:" + teamName);
 
         } catch (Exception e) {
@@ -94,9 +94,9 @@ public class TeamOwnerService {
     @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping(value = "addTeamManager/{teamName}/{emailAddress}/{teamManagerId}/{firstName}/{lastName}/{permissionTypes}/{ownedByEmail}/")
     @ResponseStatus(HttpStatus.OK)
-    public void addTeamManager(@PathVariable String teamName,@PathVariable  String emailAddress,@PathVariable  Integer teamManagerId,@PathVariable  String firstName,@PathVariable  String lastName,@PathVariable  String permissionTypes,@PathVariable  String ownedByEmail) throws Exception {
+    public void addTeamManager(@PathVariable String teamName,@PathVariable  String emailAddress,@PathVariable  String teamManagerId,@PathVariable  String firstName,@PathVariable  String lastName,@PathVariable  String permissionTypes,@PathVariable  String ownedByEmail) throws Exception {
         try {
-            teamOwnerController.addTeamManager(teamName, emailAddress, teamManagerId, firstName, lastName, getPermissionsFromString(permissionTypes), ownedByEmail);
+            teamOwnerController.addTeamManager(teamName, emailAddress, Integer.parseInt(teamManagerId), firstName, lastName, getPermissionsFromString(permissionTypes), ownedByEmail);
             loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownedByEmail + " Description: TeamManager \"" + emailAddress + "\" added to Team \"" + teamName + "\"");
         } catch (Exception e) {
             loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + ownedByEmail + " Description: TeamManager \"" + emailAddress + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
@@ -119,11 +119,11 @@ public class TeamOwnerService {
     @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping(value = "addCoach/{teamName}/{ownerEmail}/{emailAddress}/{coachId}/{firstName}/{lastName}/{coachRole}/{qualificationCoach}/")
     @ResponseStatus(HttpStatus.OK)
-    public void addCoach(@PathVariable String teamName, @PathVariable String ownerEmail, @PathVariable String emailAddress, @PathVariable Integer coachId, @PathVariable String firstName, @PathVariable String lastName, @PathVariable String coachRole, @PathVariable String qualificationCoach) throws Exception {
+    public void addCoach(@PathVariable String teamName, @PathVariable String ownerEmail, @PathVariable String emailAddress, @PathVariable String coachId, @PathVariable String firstName, @PathVariable String lastName, @PathVariable String coachRole, @PathVariable String qualificationCoach) throws Exception {
         try {
             CoachRole coachRole1 = CoachRole.getCoachRole(coachRole);
             QualificationCoach qualificationCoach1 = QualificationCoach.getQualificationCoach(qualificationCoach);
-            teamOwnerController.addCoach(teamName, ownerEmail, emailAddress, coachId, firstName, lastName, coachRole1, qualificationCoach1);
+            teamOwnerController.addCoach(teamName, ownerEmail, emailAddress, Integer.parseInt(coachId), firstName, lastName, coachRole1, qualificationCoach1);
             loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + ownerEmail + " Description: Coach \"" + emailAddress + "\" added to Team: " + teamName);
         } catch (Exception e) {
             loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + ownerEmail + " Description: Coach \"" + emailAddress + "\" wasn't added to Team \"" + teamName + "\" because " + e.getMessage());
