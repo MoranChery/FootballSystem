@@ -49,7 +49,14 @@ public class GameDbInServer implements GameDb
             preparedStmt.setInt(7, game.getHostTeamScore());
             preparedStmt.setInt(8, game.getGuestTeamScore());
             preparedStmt.setString(9, game.getMajorJudge());
-            preparedStmt.setDate(10, new java.sql.Date(game.getEndGameTime().getTime()));
+            if (game.getEndGameTime() != null)
+            {
+                preparedStmt.setDate(10, new java.sql.Date(game.getEndGameTime().getTime()));
+            }
+            else
+            {
+                preparedStmt.setDate(10, null);
+            }
 
             // execute the preparedStatement
             preparedStmt.execute();
@@ -60,6 +67,7 @@ public class GameDbInServer implements GameDb
         }
         finally
         {
+            GameJudgesListDbInServer.getInstance().insertGameJudgeList(game.getGameID(), game.getJudgesOfTheGameList());
             conn.close();
         }
     }
@@ -119,41 +127,10 @@ public class GameDbInServer implements GameDb
         return game;
     }
 
-    private Set<String> getJudgesOfTheGameList(String gameID) throws SQLException
+    private Set<String> getJudgesOfTheGameList(String gameID) throws Exception
     {
-        //todo-all function-using table game_judges_list
-        Set<String> judgesGameList = new HashSet<>();
-        String judge_email_address;
-
-        Connection conn = DbConnector.getConnection();
-
-        // the mysql select statement
-        String query = "select judges_email_address from game_judges_list where game_judges_list.game_id = \'" + gameID + "\'";
-
-        // create the mysql select resultSet
-        Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
-
-        // checking if ResultSet is empty
-        if (rs.next() != false)
-        {
-            judge_email_address = rs.getString("judges_email_address");
-
-            judgesGameList.add(judge_email_address);
-
-            while (rs.next() != false)
-            {
-                judge_email_address = rs.getString("judges_email_address");
-
-                judgesGameList.add(judge_email_address);
-            }
-        }
-        conn.close();
-
-        return judgesGameList;
+        return GameJudgesListDbInServer.getInstance().getListJudgeEmailAddress_ByGameID(gameID);
     }
-
-
 
     @Override
     public List<Game> getAllGames() throws Exception

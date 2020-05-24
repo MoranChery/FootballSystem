@@ -32,7 +32,7 @@ public class TeamOwnerControllerTest {
     private SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
     private CourtDb courtDb = CourtDbInServer.getInstance();
     private PermissionDb permissionDb = PermissionDbInServer.getInstance();
-    private PageDb pageDb = PageInServer.getInstance();
+    private PageDb pageDb = PageDbInServer.getInstance();
     private FinancialActivityDb financialActivityDb = FinancialActivityDbInServer.getInstance();
 
     @Before

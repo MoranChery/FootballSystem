@@ -6,6 +6,7 @@ import Model.UsersTypes.Judge;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,13 @@ public class Game {
         this.hostTeam = hostTeam;
         this.guestTeam = guestTeam;
         this.court = court;
+
+        this.hostTeamScore = 0;
+        this.guestTeamScore = 0;
+        this.judgesOfTheGameList = null;
+        this.eventLog = null;
+        this.majorJudge = null;
+        this.endGameTime = null;
     }
 
 
