@@ -13,10 +13,25 @@ import java.util.Set;
 public class GameDbInMemory implements GameDb {
 
     private Map<String, Game> allGamesMap;
-    private static GameDbInMemory ourInstance = new GameDbInMemory();
+    private static GameDbInMemory ourInstance;
 
-    public GameDbInMemory() {
+    static {
+        try {
+            ourInstance = new GameDbInMemory();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public GameDbInMemory() throws Exception {
         this.allGamesMap = new HashMap<>();
+
+        Game game1  = new Game("game1",new Date(),"sl1", "team1", "team2","court");
+        Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","court");
+        allGamesMap.put(game1.getGameID(),game1);
+        allGamesMap.put(game2.getGameID(),game2);
+
+
     }
 
     public static GameDbInMemory getInstance() { return ourInstance; }
