@@ -12,8 +12,6 @@ public interface CourtDb extends Db {
 
     void insertCourt(Court court) throws Exception;
 
-    void addTeamToCourt(Court court, Team team) throws Exception;
-
     void updateCourtDetails(String courtName, String courtCity) throws NotFoundException, SQLException;
 
     List<String> getTeams(String courtName) throws SQLException;

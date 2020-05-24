@@ -5,17 +5,34 @@ import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
 import Model.LoggerHandler;
+import Service.OutSystems.IAssociationAccountingSystem;
+import Service.OutSystems.ITaxSystem;
+import Service.OutSystems.ProxyAssociationAccountingSystem;
+import Service.OutSystems.ProxyTaxSystem;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
+@RestController
 public class RepresentativeAssociationService {
+    private Logger logger = Logger.getLogger(RepresentativeAssociationService.class.getName());
     private RepresentativeAssociationController representativeAssociationController;
+//    private LoggerHandler loggerHandler;
     private LoggerHandler loggerHandler;
+    private ITaxSystem proxyTaxSystem;
+    private IAssociationAccountingSystem proxyAssociationAccountingSystem;
 
     public RepresentativeAssociationService() {
         this.representativeAssociationController = new RepresentativeAssociationController();
-        this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
+//        this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
+        logger.addHandler(LoggerHandler.loggerErrorFileHandler);
+        logger.addHandler(LoggerHandler.loggerEventFileHandler);
+        this.proxyTaxSystem=ProxyTaxSystem.getInstance();
+        this.proxyAssociationAccountingSystem=ProxyAssociationAccountingSystem.getInstance();
     }
 
     /**
@@ -35,9 +52,9 @@ public class RepresentativeAssociationService {
                 throw new NullPointerException("One or more of the League details incorrect");
             }
             representativeAssociationController.createLeague(representativeAssociationEmailAddress, leagueName);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: League \"" + leagueName + "\" was created");
+            logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: League \"" + leagueName + "\" was created");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: League \"" + leagueName + "\" wasn't created because: " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: League \"" + leagueName + "\" wasn't created because: " + e.getMessage());
             throw e;
         }
     }
@@ -59,9 +76,9 @@ public class RepresentativeAssociationService {
                 throw new NullPointerException("One or more of the Season details incorrect");
             }
             representativeAssociationController.createSeason(representativeAssociationEmailAddress, seasonName);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: Season \"" + seasonName + "\" was created");
+            logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: Season \"" + seasonName + "\" was created");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: Season \"" + seasonName + "\" wasn't created because: " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: Season \"" + seasonName + "\" wasn't created because: " + e.getMessage());
             throw e;
         }
     }
@@ -86,9 +103,9 @@ public class RepresentativeAssociationService {
                 throw new NullPointerException("One or more of the SeasonLeague details incorrect");
             }
             representativeAssociationController.createSeasonLeague(representativeAssociationEmailAddress, leagueName, seasonName, calculateLeaguePoints, inlayGames);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: SeasonLeague \"" + seasonName + "\" \"" + leagueName + "\" was created");
+            logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: SeasonLeague \"" + seasonName + "\" \"" + leagueName + "\" was created");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: SeasonLeague \"" + seasonName + "\" \"" + leagueName + "\" wasn't created because: " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: SeasonLeague \"" + seasonName + "\" \"" + leagueName + "\" wasn't created because: " + e.getMessage());
             throw e;
         }
     }
@@ -116,9 +133,9 @@ public class RepresentativeAssociationService {
                 throw new NullPointerException("One or more of the Judge details incorrect");
             }
             representativeAssociationController.createJudge(representativeAssociationEmailAddress, username, password, id, firstName, lastName, qualificationJudge);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + username + "\" was created");
+            logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + username + "\" was created");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + username + "\" wasn't created because: " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + username + "\" wasn't created because: " + e.getMessage());
             throw e;
         }
     }
@@ -140,9 +157,9 @@ public class RepresentativeAssociationService {
                 throw new NullPointerException("One or more of the Judge details incorrect");
             }
             representativeAssociationController.removeJudge(representativeAssociationEmailAddress, judgeEmailAddress);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" was removed");
+            logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" was removed");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" wasn't removed because: " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" wasn't removed because: " + e.getMessage());
             throw e;
         }
     }
@@ -165,9 +182,9 @@ public class RepresentativeAssociationService {
                 throw new NullPointerException("One or more of the JudgeSeasonLeague details incorrect");
             }
             representativeAssociationController.createJudgeSeasonLeague(representativeAssociationEmailAddress, seasonLeagueName, judgeEmailAddress);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" was associated with SeasonLeague \"" + seasonLeagueName + "\"");
+            logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" was associated with SeasonLeague \"" + seasonLeagueName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" was associated with SeasonLeague \"" + seasonLeagueName + "\" because: " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" was associated with SeasonLeague \"" + seasonLeagueName + "\" because: " + e.getMessage());
             throw e;
         }
     }
@@ -178,20 +195,26 @@ public class RepresentativeAssociationService {
      * Will continue to Controller.
      *
      * @param representativeAssociationEmailAddress-username/emailAddress of the online RepresentativeAssociation.
-     * @param seasonLeagueName-name                                       of SeasonLeague.
+     * @param leagueName-name                                       of SeasonLeague.
      * @param calculateLeaguePoints-Policy                                CalculateLeaguePoints.
      * @throws Exception
      */
-    public void changeCalculateLeaguePointsPolicy(String representativeAssociationEmailAddress, String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception {
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "representativeAssociationService/{representativeAssociationEmailAddress}/{leagueName}/{season}/{calculateLeaguePoints}")
+    @ResponseStatus(HttpStatus.OK)
+    public void changeCalculateLeaguePointsPolicy(@PathVariable String representativeAssociationEmailAddress, @PathVariable String leagueName, @PathVariable String calculateLeaguePoints, @PathVariable String season) throws Exception {
         try {
+            //todo
+            CalculateLeaguePoints calculateLeaguePointsToMake= CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0;
+            String seasonLeagueName="";
             if (representativeAssociationEmailAddress == null) {
                 throw new Exception("Only RepresentativeAssociation has permissions to this action!");
             }
-            representativeAssociationController.changeCalculateLeaguePointsPolicy(representativeAssociationEmailAddress, seasonLeagueName, calculateLeaguePoints);
-            loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  was changed to SeasonLeague \"" + seasonLeagueName + "\"");
+            representativeAssociationController.changeCalculateLeaguePointsPolicy(representativeAssociationEmailAddress, seasonLeagueName, calculateLeaguePointsToMake);
+            logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  was changed to SeasonLeague \"" + seasonLeagueName + "\"");
         } catch (Exception e) {
-            loggerHandler.getLoggerErrors().log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  wasn't changed to SeasonLeague \"" + seasonLeagueName + "\" because: " + e.getMessage());
-            throw e;
+            logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  wasn't changed to SeasonLeague \"" + "seasonLeagueName" + "\" because: " + e.getMessage()); // todo - seasonLeagueName put as String
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -204,7 +227,6 @@ public class RepresentativeAssociationService {
         return representativeAssociationController;
     }
 
-
     public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
         if(repMail.isEmpty() || gameID.isEmpty()){
             throw new Exception("The value is empty");
@@ -213,17 +235,42 @@ public class RepresentativeAssociationService {
             throw new NullPointerException("bad input");
         }
         representativeAssociationController.changeGameDate(repMail, newDate, gameID);
-        loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + repMail + " Description: Game Date \"" + newDate + "\"  was changed to the game \"" + gameID + "\"");
+        logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Date \"" + newDate + "\"  was changed to the game \"" + gameID + "\"");
     }
-
-
 
     public void changeGameLocation(String repMail, String newLocation, String gameID) throws Exception {
         if(repMail.isEmpty() || gameID.isEmpty() || newLocation.isEmpty()){
             throw new Exception("The value is empty");
         }
         representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
-        loggerHandler.getLoggerEvents().log(Level.INFO, "Created by: " + repMail + " Description: Game Location \"" + newLocation + "\"  was changed to the game \"" + gameID + "\"");
+        logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Location \"" + newLocation + "\"  was changed to the game \"" + gameID + "\"");
+    }
+
+
+    /**
+     *
+     * @param revenueAmount
+     * @return the tax rate from the Tax system proxy
+     */
+    public double getTaxRate(double revenueAmount,String repMail){
+        logger.log(Level.INFO, "Created by: " + repMail + " Description: Get Tax Rate");
+        return proxyTaxSystem.getTaxRate(revenueAmount);
+    }
+
+    /**
+     *
+     * @param teamName
+     * @param date
+     * @param amount
+     * @return if the payment operation has done successfully
+     */
+    public boolean addPayment(String teamName, String date, double amount,String repMail){
+        if(teamName==null||date==null) {
+            logger.log(Level.WARNING,"Created by: " + repMail + " Description: the payment not added!");
+            return false;
+        }
+        logger.log(Level.INFO, "Created by: " + repMail + " Description: Add Payment has done successfully");
+        return proxyAssociationAccountingSystem.addPayment(teamName,date,amount);
     }
 }
 

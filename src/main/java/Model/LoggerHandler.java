@@ -2,54 +2,19 @@ package Model;
 import java.util.logging.*;
 
 public class LoggerHandler {
-    private Logger loggerEvents;
-    private Logger loggerErrors;
-    private FileHandler loggerEventFileHandler;
-    private FileHandler loggerErrorFileHandler;
+    //todo need to change the path in server
+    public static FileHandler loggerEventFileHandler = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheEventsLog_%g.log",Level.INFO);;
+    public static FileHandler loggerErrorFileHandler = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheErrorsLog_%g.log",Level.WARNING);
 
-    public LoggerHandler(String className) {
-         loggerEvents = Logger.getLogger(className + "Events");
-        this.loggerEvents = LogManager.getLogManager().getLogger(className + "Events");
-
-        loggerErrors = Logger.getLogger(className + "Errors");
-        this.loggerErrors = LogManager.getLogManager().getLogger(className + "Errors");
-        //todo need to change the path in server
-//        loggerEventFileHandler  = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheEventsLog_%g.log",Level.INFO);
-//        loggerErrorFileHandler  = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheErrorsLog_%g.log",Level.WARNING);
-        loggerEventFileHandler  = createLogFile("C:\\Users\\avira\\Desktop\\TheEventsLog_%g.log",Level.INFO);
-        loggerErrorFileHandler  = createLogFile("C:\\Users\\avira\\Desktop\\TheErrorsLog_%g.log",Level.WARNING);
-        this.loggerEvents.addHandler(loggerEventFileHandler);
-        this.loggerErrors.addHandler(loggerErrorFileHandler);
-    }
-
-    public void logError(String msg, Exception error) {
-        loggerErrors.log(Level.SEVERE, msg, error);
-    }
-    public FileHandler createLogFile(String path, Level level){
+    public static FileHandler createLogFile(String path, Level level){
         try {
-            FileHandler logFileHandler = new FileHandler(path,5000,100,true);
+            FileHandler logFileHandler = new FileHandler(path,50000000, 100, true);
             logFileHandler.setFormatter(new SimpleFormatter());
-            logFileHandler.setLevel(level);
+            logFileHandler.setFilter(record -> level.equals(record.getLevel()));
             return logFileHandler;
         }catch (Exception e){
             System.out.println("can't create file holder");
         }
         return null;
-    }
-
-    public Logger getLoggerErrors() {
-        return loggerErrors;
-    }
-
-    public void setLoggerErrors(Logger loggerErrors) {
-        this.loggerErrors = loggerErrors;
-    }
-
-    public Logger getLoggerEvents() {
-        return loggerEvents;
-    }
-
-    public void setLoggerEvents(Logger loggerEvents) {
-        this.loggerEvents = loggerEvents;
     }
 }

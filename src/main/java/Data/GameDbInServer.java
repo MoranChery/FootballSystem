@@ -1,5 +1,6 @@
 package Data;
 
+<<<<<<< HEAD
 import Model.Court;
 import Model.Enums.QualificationJudge;
 import Model.Enums.Status;
@@ -7,11 +8,19 @@ import Model.Game;
 import Model.SeasonLeague;
 import Model.Team;
 import Model.UsersTypes.Judge;
+import Model.PageType;
+import Model.Season;
+import Model.UsersTypes.TeamOwner;
 
 import java.sql.*;
+import java.util.*;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class GameDbInServer implements GameDb
 {
@@ -51,15 +60,34 @@ public class GameDbInServer implements GameDb
         }
         finally
         {
+=======
+            String query = " insert into game (game_id,game_date,season_league,host_team,guest_team,court)"
+                    + " values (?,?,?,?,?,?)";
+
+            // create the mysql insert preparedstatement
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setString (1, game.getGameID());
+            SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+            String date = df.format(game.getGameDate());
+            preparedStmt.setString (2,date);
+            preparedStmt.setString (3, game.getSeasonLeague());
+            preparedStmt.setString (4, game.getHostTeam());
+            preparedStmt.setString (5, game.getGuestTeam());
+            preparedStmt.setString (6, game.getCourt());
+
+            // execute the preparedstatement
+            preparedStmt.execute();
+
+        } catch(SQLIntegrityConstraintViolationException e) {
+            throw new Exception("game already exist in the system");
+        }
+        finally {
+>>>>>>> a51fbc83ae3cf46c2994cddac4d495cbbbe54858
             conn.close();
         }
     }
 
-    @Override
-    public void addJudgeToGame(Integer gameID, Judge judgeToAdd) throws Exception
-    {
 
-    }
 
     @Override
     public Game getGame(String gameID) throws Exception
@@ -107,6 +135,52 @@ public class GameDbInServer implements GameDb
 
         return game;
     }
+
+
+
+
+    public List<Game> getAllGames() throws SQLException, NotFoundException, ParseException {
+        Connection conn = DbConnector.getConnection();
+
+        // create the mysql select resultSet
+        String query = "select * from game";
+
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+
+        // checking if ResultSet is empty
+        if (rs.next() == false) {
+            throw new NotFoundException("no games in db");
+        }
+
+        List<Game> games = new ArrayList<>();
+        while(rs.next()){
+            String game_id = rs.getString("game_id");
+            String game_date = rs.getString("game_date");
+            String season_league = rs.getString("season_league");
+            String host_team = rs.getString("host_team");
+            String guest_team = rs.getString("guest_team");
+            String court = rs.getString("court");
+
+            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(game_date);
+
+            Game game = new Game(game_id,date,season_league,host_team,guest_team,court);
+            games.add(game);
+        }
+        return games;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     private Set<String> getJudgesOfTheGameList(String gameID) throws SQLException
     {
@@ -225,4 +299,17 @@ public class GameDbInServer implements GameDb
         statement.executeUpdate(query);
         conn.close();
     }
+
+    public static void main(String[] args) throws Exception {
+        SeasonDbInServer seasonDbInServer = new SeasonDbInServer();
+        GameDbInServer gameDbInServer = new GameDbInServer();
+        Game game1  = new Game("game1",new Date(),"sl1", "team1", "team2","court");
+        Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","court");
+        gameDbInServer.insertGame(game1);
+        gameDbInServer.insertGame(game2);
+
+        List<Game> allGames = gameDbInServer.getAllGames();
+        System.out.println(allGames);
+    }
 }
+

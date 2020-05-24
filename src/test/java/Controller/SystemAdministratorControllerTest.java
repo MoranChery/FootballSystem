@@ -218,7 +218,7 @@ public class SystemAdministratorControllerTest {
         Judge judge = JudgeDbInMemory.getInstance().getJudge("judge@gmail.com");
         Set judges = new LinkedHashSet();
         judges.add(judge);
-        Game game = new Game("11", null, seasonLeague, null, null, null, judges,null,null);
+        Game game = new Game("11", null, "season", null, null, null, judges,null,null);
         GameDbInMemory.getInstance().insertGame(game);
         judge.addGameToList(game);
         //remove judge

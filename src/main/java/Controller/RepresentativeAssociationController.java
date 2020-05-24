@@ -22,6 +22,7 @@ public class RepresentativeAssociationController extends Observable
     private JudgeDb judgeDb;
     private JudgeSeasonLeagueDb judgeSeasonLeagueDb;
     private GameDb gameDb;
+    private CourtDb courtDb;
 
     public RepresentativeAssociationController()
     {
@@ -42,6 +43,7 @@ public class RepresentativeAssociationController extends Observable
 //        this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
         this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInServer.getInstance();
         this.gameDb = GameDbInMemory.getInstance();
+        this.courtDb = CourtDbInMemory.getInstance();
     }
 
     /**
@@ -303,7 +305,8 @@ public class RepresentativeAssociationController extends Observable
         if(game == null){
             throw new NotFoundException("game not in DB");
         }
-        Court theGameCourt = game.getCourt();
+        String court = game.getCourt();
+        Court theGameCourt = courtDb.getCourt(court);
         if(theGameCourt.getCourtCity().equals(newLocation)){
             throw new Exception("same location");
         }

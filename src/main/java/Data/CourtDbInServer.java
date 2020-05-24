@@ -30,14 +30,25 @@ public class CourtDbInServer implements CourtDb {
         Statement preparedStmt = conn.createStatement();
         ResultSet rs = preparedStmt.executeQuery(query);
 
-        // checking if ResultSet is empty
-        if (rs.next() == false) {
+            // checking if ResultSet is empty
+            if (rs.next() == false) {
             throw new NotFoundException("Court not found");
         }
 
         String court_name = rs.getString("court_name");
         String court_city = rs.getString("court_city");
         Court court = new Court(court_name,court_city);
+
+        query = "select * from team where team.court = \'" + court_name + "\'";
+        preparedStmt = conn.createStatement();
+        rs = preparedStmt.executeQuery(query);
+        List<String> teams = new ArrayList<>();
+        while(rs.next()){
+            String currTeam = rs.getString("team_name");
+            teams.add(currTeam);
+        }
+        court.setTeams(teams);
+
         conn.close();
         return court;
     }
@@ -66,10 +77,6 @@ public class CourtDbInServer implements CourtDb {
         }
     }
 
-    @Override
-    public void addTeamToCourt(Court court, Team team) throws Exception {
-
-    }
 
     @Override
     public void updateCourtDetails(String courtName, String courtCity) throws NotFoundException, SQLException {
@@ -116,10 +123,33 @@ public class CourtDbInServer implements CourtDb {
         conn.close();
     }
 
+    public List<String> getAllCourtsNames() throws SQLException {
+        Connection conn = DbConnector.getConnection();
+
+        String query = "select * from  court";
+
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+        List<String> courtsNames = new ArrayList<> ();
+
+        while(rs.next()){
+            String court = rs.getString("court_name");
+            courtsNames.add(court);
+        }
+        conn.close();
+
+        return courtsNames;
+    }
+
     public static void main(String[] args) throws Exception {
         CourtDbInServer courtDbInServer  = new CourtDbInServer();
-        Court court = new Court("courtName", "courtCity");
+        Court court1 = new Court("courtName1", "courtCity");
+        Court court2 = new Court("courtName2", "courtCity");
+        Court court3 = new Court("courtName3", "courtCity");
 
-        courtDbInServer.insertCourt(court);
+        courtDbInServer.insertCourt(court1);
+        courtDbInServer.insertCourt(court2);
+        courtDbInServer.insertCourt(court3);
+        System.out.println(courtDbInServer.getAllCourtsNames());
     }
 }

@@ -6,6 +6,10 @@ import Model.Enums.RoleType;
 import Model.LoggerHandler;
 import Model.TaxLawSystem;
 import Model.UsersTypes.SystemAdministrator;
+import Service.OutSystems.IAssociationAccountingSystem;
+import Service.OutSystems.ITaxSystem;
+import Service.OutSystems.ProxyAssociationAccountingSystem;
+import Service.OutSystems.ProxyTaxSystem;
 
 public class SystemController {
     private static SubscriberDb subscriberDb;
@@ -13,17 +17,16 @@ public class SystemController {
     private static SystemAdministratorDb systemAdministratorDb;
 
     private LoggerHandler loggerHandler;
-    public AccountingSystem accountingSystem;
-    public TaxLawSystem taxLawSystem;
+    private ITaxSystem proxyTaxSystem;
+    private IAssociationAccountingSystem proxyAssociationAccountingSystem;
 
 
     public SystemController() {
         systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
         subscriberDb = SubscriberDbInMemory.getInstance();
         roleDb = RoleDbInMemory.getInstance();
-        loggerHandler = new LoggerHandler(SystemController.class.getName());
-        accountingSystem = new AccountingSystem();
-        taxLawSystem = new TaxLawSystem();
+        this.proxyTaxSystem = ProxyTaxSystem.getInstance();
+        this.proxyAssociationAccountingSystem = ProxyAssociationAccountingSystem.getInstance();
     }
 
     /**
@@ -49,15 +52,39 @@ public class SystemController {
      * should be not static but for the tests - static
      * @throws Exception if the system couldn't connect with the external systems
      */
-    public static void connectionToExternalSystems() /*throws Exception*/ {
-        //TODO
+//    public static void connectionToExternalSystems() /*throws Exception*/ {
+//        //TODO
+//
+////        if (!connectToTheAccountingSystem()) {
+////            throw new Exception("problem in connection with accounting system");
+////        }
+////        if (!connectToTheTaxLawSystem()) {
+////            throw new Exception("problem in connection with tax law system");
+////        }
+//    }
 
-//        if (!connectToTheAccountingSystem()) {
-//            throw new Exception("problem in connection with accounting system");
-//        }
-//        if (!connectToTheTaxLawSystem()) {
-//            throw new Exception("problem in connection with tax law system");
-//        }
+    /**
+     * connection to the Tax system with the Proxy
+     * @param serverhost
+     */
+    public void connectToTaxSystem(String serverhost){
+        try {
+            proxyTaxSystem.connectTo(serverhost);
+        } catch (Exception e) {
+            System.out.println("something was wrong with tax system connecting");
+        }
+    }
+
+    /**
+     * connection to the Association Accounting system with the Proxy
+     * @param serverhost
+     */
+    public void connectToAssociationAccountingSystem(String serverhost){
+        try {
+            proxyAssociationAccountingSystem.connectTo(serverhost);
+        } catch (Exception e) {
+            System.out.println("something was wrong with Association Accounting System connecting");
+        }
     }
 
     /**

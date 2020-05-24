@@ -395,10 +395,6 @@ public class TeamDbInServer implements TeamDb{
         conn.close();
     }
 
-    @Override
-    public void addTeamPage(TeamPage teamPage) throws Exception {
-
-    }
 
     @Override
     public void closeTeamForever(String teamName) throws Exception {

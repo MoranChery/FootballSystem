@@ -1,5 +1,8 @@
 package Data;
 
+import Controller.SubscriberController;
+import Model.Alert;
+import Model.Enums.RoleType;
 import Model.UsersTypes.RepresentativeAssociation;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -12,11 +15,29 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
     /*structure like the DB of RepresentativeAssociations*/
     private Map<String, RepresentativeAssociation> representativeAssociationMap;
 
-    private static RepresentativeAssociationDbInMemory ourInstance = new RepresentativeAssociationDbInMemory();
+    private static RepresentativeAssociationDbInMemory ourInstance;
+
+    static {
+        try {
+            ourInstance = new RepresentativeAssociationDbInMemory();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static RepresentativeAssociationDbInMemory getInstance() { return ourInstance; }
 
-    public RepresentativeAssociationDbInMemory() { representativeAssociationMap = new HashMap<>(); }
+    public RepresentativeAssociationDbInMemory() throws Exception {
+        representativeAssociationMap = new HashMap<>();
+        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation( "representativeAssociation@gmail.com", "representativeAssociation", 111222333,"representativeAssociationName", "representativeAssociationLastName");
+        Alert alert  = new Alert("new ", "new");
+        AlertDbInMemory alertDbInMemory = AlertDbInMemory.getInstance();
+        alertDbInMemory.createAlertInDb("representativeAssociation@gmail.com" , alert);
+        SubscriberController subscriberController = new SubscriberController();
+        subscriberController.createSubscriber(representativeAssociation);
+        RoleDbInMemory.getInstance().createRoleInSystem("representativeAssociation@gmail.com", RoleType.REPRESENTATIVE_ASSOCIATION);
+
+    }
 
     /**
      * Will receive from the Controller the RepresentativeAssociation, add RepresentativeAssociation to Data.
