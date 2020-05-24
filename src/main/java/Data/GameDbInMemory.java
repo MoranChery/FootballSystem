@@ -3,12 +3,10 @@ package Data;
 import Model.Court;
 import Model.Game;
 import Model.UsersTypes.Judge;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.print.attribute.standard.NumberUp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GameDbInMemory implements GameDb {
 
@@ -60,6 +58,13 @@ public class GameDbInMemory implements GameDb {
             throw new NotFoundException("Game not found");
         }
         return theGame;
+    }
+
+    @Override
+    public List<Game> getAllGames() throws Exception
+    {
+        throw new NotImplementedException();
+//        return null;
     }
 
     @Override
