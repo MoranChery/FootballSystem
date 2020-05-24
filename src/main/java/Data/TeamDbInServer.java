@@ -46,15 +46,15 @@ public class TeamDbInServer implements TeamDb{
             // execute the preparedstatement
             preparedStmt.execute();
 
-            query = " insert into page (page_id,page_type)"
-                    + " values (?,?)";
-
-            // create the mysql insert preparedstatement
-            preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setString (1, teamName);
-            preparedStmt.setString (2, PageType.TEAM.name());
-            // execute the preparedstatement
-            preparedStmt.execute();
+//            query = " insert into page (page_id,page_type)"
+//                    + " values (?,?)";
+//
+//            // create the mysql insert preparedstatement
+//            preparedStmt = conn.prepareStatement(query);
+//            preparedStmt.setString (1, teamName);
+//            preparedStmt.setString (2, PageType.TEAM.name());
+//            // execute the preparedstatement
+//            preparedStmt.execute();
 
         } catch(SQLIntegrityConstraintViolationException e) {
             throw new Exception("Team already exist in the system");

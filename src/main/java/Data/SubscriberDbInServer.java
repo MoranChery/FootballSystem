@@ -48,21 +48,24 @@ public class SubscriberDbInServer implements SubscriberDb{
         }
 
         Connection conn = DbConnector.getConnection();
+        try{
+            String query = "select * from subscriber where subscriber.email_address = \'" + username + "\'";
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
 
-        String query = "select * from subscriber where subscriber.email_address = \'" + username + "\'";
-        Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
+            // checking if ResultSet is empty
+            if (rs.next() == false) { throw new NotFoundException("subscriber not found");  }
 
-        // checking if ResultSet is empty
-         if (rs.next() == false) { throw new NotFoundException("subscriber not found");  }
-
-        String userName = rs.getString("email_address");
-        String password = rs.getString("password");
-        Integer id = rs.getInt("id");
-        String first_name = rs.getString("first_name");
-        String last_name = rs.getString("last_name");
-        String status = rs.getString("status");
-        return new Subscriber(userName,password,id,first_name,last_name, Status.valueOf(status));
+            String userName = rs.getString("email_address");
+            String password = rs.getString("password");
+            Integer id = rs.getInt("id");
+            String first_name = rs.getString("first_name");
+            String last_name = rs.getString("last_name");
+            String status = rs.getString("status");
+            return new Subscriber(userName,password,id,first_name,last_name, Status.valueOf(status));
+        } finally {
+            conn.close();
+        }
     }
 
     @Override
@@ -98,9 +101,12 @@ public class SubscriberDbInServer implements SubscriberDb{
     @Override
     public void deleteAll() throws SQLException {
         Connection conn = DbConnector.getConnection();
-        Statement statement = conn.createStatement();
-        statement.executeUpdate("delete from subscriber");
-        conn.close();
+        try{
+            Statement statement = conn.createStatement();
+            statement.executeUpdate("delete from subscriber");
+        } finally {
+            conn.close();
+        }
     }
 
     public static void main(String[] args) throws Exception {
