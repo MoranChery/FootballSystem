@@ -323,8 +323,9 @@ public class RepresentativeAssociationController extends Observable
     }
 
     public List<Game> getAllGames() {
-        Game game1  = new Game("game1",new Date(),"sl1", "team1", "team2","court");
-        Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","court");
+        //todo - remove and add the db we going to use
+        Game game1  = new Game("game1",new Date(),"sl1", "team1", "team2","courtName1");
+        Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","courtName2");
         List<Game> allGames = new ArrayList<>();
         allGames.add(game1);
         allGames.add(game2);
@@ -353,5 +354,14 @@ public class RepresentativeAssociationController extends Observable
         }
         else
             return seasonLeagues;
+    }
+
+    public List<String> getAllLocation() {
+        //todo - delete
+        List <String> locations = new ArrayList<>();
+        for (Game game: getAllGames()) {
+            locations.add(game.getCourt());
+        }
+        return locations;
     }
 }

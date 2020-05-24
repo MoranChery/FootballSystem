@@ -36,7 +36,6 @@ public class AlertDbInMemory implements AlertDb{
             List<Alert> newAlertList = new ArrayList<>();
             newAlertList.add(alert);
             allSavedAlerts.put(email, newAlertList);
-            System.out.println("add alert");
         }
     }
 
