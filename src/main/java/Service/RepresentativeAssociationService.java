@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -235,27 +236,35 @@ public class RepresentativeAssociationService {
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "changeGameDate/{representativeAssociationEmailAddress}/{changeGameDate}/{gameID}")
+    @GetMapping(value = "changeGameDate/{repMail}/{changeGameDate}/{gameID}")
     @ResponseStatus(HttpStatus.OK)
-    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
-        if(repMail.isEmpty() || gameID.isEmpty()){
+    public void changeGameDate(@PathVariable String repMail, @PathVariable String changeGameDate, @PathVariable String gameID) throws Exception {
+        if(repMail.isEmpty() || gameID.isEmpty() || changeGameDate.isEmpty()){
             throw new Exception("The value is empty");
         }
-        if (newDate == null){
-            throw new NullPointerException("bad input");
+        try {
+            Date newDate = new SimpleDateFormat("dd-MM-yyyy").parse(changeGameDate);
+            representativeAssociationController.changeGameDate(repMail, newDate, gameID);
+            logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Date \"" + newDate + "\"  was changed to the game \"" + gameID + "\"");
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        representativeAssociationController.changeGameDate(repMail, newDate, gameID);
-        logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Date \"" + newDate + "\"  was changed to the game \"" + gameID + "\"");
     }
 
-    public void changeGameLocation(String repMail, String newLocation, String gameID) throws Exception {
-        if(repMail.isEmpty() || gameID.isEmpty() || newLocation.isEmpty()){
-            throw new Exception("The value is empty");
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "changeGameLocation/{repMail}/{newLocation}/{gameID}")
+    @ResponseStatus(HttpStatus.OK)
+    public void changeGameLocation(@PathVariable String repMail, @PathVariable String newLocation, @PathVariable String gameID) throws Exception {
+        try {
+            if (repMail.isEmpty() || gameID.isEmpty() || newLocation.isEmpty()) {
+                throw new Exception("The value is empty");
+            }
+            representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
+            logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Location \"" + newLocation + "\"  was changed to the game \"" + gameID + "\"");
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
-        logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Location \"" + newLocation + "\"  was changed to the game \"" + gameID + "\"");
     }
-
 
     /**
      *
@@ -282,6 +291,7 @@ public class RepresentativeAssociationService {
         logger.log(Level.INFO, "Created by: " + repMail + " Description: Add Payment has done successfully");
         return proxyAssociationAccountingSystem.addPayment(teamName,date,amount);
     }
+
     @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping(value = "getSeasonLeague/")
     @ResponseStatus(HttpStatus.OK)
@@ -329,6 +339,24 @@ public class RepresentativeAssociationService {
                 games.put(i,gamesList.get(i));
             }
             return games;
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "getAllLocation/")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<Integer , String> getAllLocation(){
+        try{
+            List<String> locationsList = representativeAssociationController.getAllLocation();
+            Map <Integer, String> locations= new HashMap<>();
+            for(int i = 0; i<locationsList.size() ;i++){
+                locations.put(i,locationsList.get(i));
+            }
+            return locations;
         }
         catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

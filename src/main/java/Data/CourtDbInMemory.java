@@ -2,6 +2,7 @@ package Data;
 
 import Model.Court;
 import Model.Team;
+import Model.UsersTypes.Coach;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -13,6 +14,11 @@ public class CourtDbInMemory implements CourtDb {
 
     private CourtDbInMemory() {
         courts = new HashMap<>();
+        Court coach1 = new Court("courtName1", "city1");
+        Court coach2 = new Court("courtName2", "city2");
+        courts.put(coach1.getCourtName(), coach1);
+        courts.put(coach2.getCourtName(), coach2);
+
     }
 
     private static CourtDbInMemory ourInstance = new CourtDbInMemory();

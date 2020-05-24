@@ -26,8 +26,8 @@ public class GameDbInMemory implements GameDb {
     public GameDbInMemory() throws Exception {
         this.allGamesMap = new HashMap<>();
 
-        Game game1  = new Game("game1",new Date(),"sl1", "team1", "team2","court");
-        Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","court");
+        Game game1  = new Game("game1",new Date(),"sl1", "team1", "team2","courtName1");
+        Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","courtName2");
         allGamesMap.put(game1.getGameID(),game1);
         allGamesMap.put(game2.getGameID(),game2);
 
