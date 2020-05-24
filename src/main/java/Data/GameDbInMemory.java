@@ -63,7 +63,7 @@ public class GameDbInMemory implements GameDb {
     }
 
     @Override
-    public void changeGameLocation(String newLocation, String gameID) throws Exception {
+    public void updateGameLocation(String newLocation, String gameID) throws Exception {
         if(!allGamesMap.containsKey(gameID)){
             throw new Exception("The game is not in the DB");
         }
@@ -73,7 +73,7 @@ public class GameDbInMemory implements GameDb {
     }
 
     @Override
-    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
+    public void updateGameDate(String repMail, Date newDate, String gameID) throws Exception {
         if(!allGamesMap.containsKey(gameID)){
             throw new Exception("The game is not in the DB");
         }

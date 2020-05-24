@@ -108,30 +108,121 @@ public class GameDbInServer implements GameDb
         return game;
     }
 
-    private Set<String> getJudgesOfTheGameList(String gameID)
+    private Set<String> getJudgesOfTheGameList(String gameID) throws SQLException
     {
         //todo-all function-using table game_judges_list
         Set<String> judgesGameList = new HashSet<>();
+        String judge_email_address;
 
+        Connection conn = DbConnector.getConnection();
+
+        // the mysql select statement
+        String query = "select judges_email_address from game_judges_list where game_judges_list.game_id = \'" + gameID + "\'";
+
+        // create the mysql select resultSet
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+
+        // checking if ResultSet is empty
+        if (rs.next() != false)
+        {
+            judge_email_address = rs.getString("judges_email_address");
+
+            judgesGameList.add(judge_email_address);
+
+            while (rs.next() != false)
+            {
+                judge_email_address = rs.getString("judges_email_address");
+
+                judgesGameList.add(judge_email_address);
+            }
+        }
+        conn.close();
 
         return judgesGameList;
     }
 
     @Override
-    public void changeGameLocation(String newLocation, String gameID) throws Exception
+    public void updateGameLocation(String newLocation, String gameID) throws Exception
     {
+        Connection conn = DbConnector.getConnection();
+        try
+        {
+            getGame(gameID);
 
+            // the mysql update statement
+            String query = " update game "
+                    + "set court = \'" + newLocation + "\' "
+                    + "where game_id = \'" + gameID + "\'";
+
+            // create the mysql insert preparedStatement
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+            // execute the preparedStatement
+            preparedStmt.execute();
+        }
+        catch (NotFoundException e)
+        {
+            throw new Exception("Game not found");
+        }
+//        catch (Exception e)
+//        {
+//            throw new Exception("SeasonLeague not found455546486551");
+//        }
+        finally
+        {
+            conn.close();
+        }
     }
 
     @Override
-    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception
+    public void updateGameDate(String repMail, Date newDate, String gameID) throws Exception
     {
+        Connection conn = DbConnector.getConnection();
+        try
+        {
+            getGame(gameID);
 
+            // the mysql update statement
+            String query = " update game "
+                    + "set game_date = \'" + newDate + "\' "
+                    + "where game_id = \'" + gameID + "\'";
+
+            // create the mysql insert preparedStatement
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+            // execute the preparedStatement
+            preparedStmt.execute();
+        }
+        catch (NotFoundException e)
+        {
+            throw new Exception("Game not found");
+        }
+//        catch (Exception e)
+//        {
+//            throw new Exception("SeasonLeague not found455546486551");
+//        }
+        finally
+        {
+            conn.close();
+        }
     }
 
     @Override
     public void deleteAll() throws SQLException
     {
+        Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        /* TRUNCATE is faster than DELETE since
+         * it does not generate rollback information and does not
+         * fire any delete triggers
+         */
 
+        // the mysql delete statement
+        String query = "delete from game";
+
+        // create the mysql delete Statement
+        statement.executeUpdate(query);
+        conn.close();
     }
 }

@@ -307,7 +307,7 @@ public class RepresentativeAssociationController extends Observable
         if(theGameCourt.getCourtCity().equals(newLocation)){
             throw new Exception("same location");
         }
-        gameDb.changeGameLocation(newLocation,gameID);
+        gameDb.updateGameLocation(newLocation,gameID);
         Object[] data = new Object[3];
         data[0] = "location";
         data[1] = game;
@@ -330,7 +330,7 @@ public class RepresentativeAssociationController extends Observable
         if(theOriginalDate.equals(newDate)){
             throw new Exception("same date");
         }
-        gameDb.changeGameDate(repMail, newDate, gameID);
+        gameDb.updateGameDate(repMail, newDate, gameID);
         Object[] data = new Object[3];
         data[0] = "date";
         data[1] = game;
