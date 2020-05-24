@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.apache.logging.log4j.LogManager;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,17 +41,20 @@ public class JudgeService {
     @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping(value = "addEventToGame/{judgeMail}/{gameId}/{eventTime}/{eventMinute}/{gameEventType}/{description}/")
     @ResponseStatus(HttpStatus.OK)
-    public void addEventToGame(@PathVariable String judgeMail, @PathVariable String gameId, @PathVariable Time eventTime, @PathVariable Integer eventMinute, @PathVariable String gameEventType, @PathVariable String description) throws Exception {
+    public void addEventToGame(@PathVariable String judgeMail, @PathVariable String gameId, @PathVariable String eventTime, @PathVariable String eventMinute, @PathVariable String gameEventType, @PathVariable String description) throws Exception {
         try {
             GameEventType eventType = GameEventType.getGameEventType(gameEventType);
-            judgeController.addEventToGame(judgeMail, gameId, eventTime, eventMinute, eventType, description);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            Date time = sdf.parse(eventTime);
+            Integer eventMinute1=Integer.parseInt(eventMinute);
+            judgeController.addEventToGame(judgeMail, gameId, time, eventMinute1, eventType, description);
             logger.log(Level.INFO, "Created by: " + judgeMail + " Description: Event was added to Game \"" + gameId + "\"");
         } catch (Exception e) {
             logger.log(Level.WARNING, "Created by: " + judgeMail + " Description: Event wasn't updated to Game \"" + gameId + "\" because " + e.getMessage());
         }
     }
 
-    public void addEventToGame(String judgeMail, String gameId, Time eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
+    public void addEventToGame(String judgeMail, String gameId, Date eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
        try{
         judgeController.addEventToGame(judgeMail, gameId, eventTime, eventMinute, gameEventType, description);
         logger.log(Level.INFO, "Created by: " + judgeMail + " Description: Event was added to Game \"" + gameId + "\"");
@@ -60,9 +66,14 @@ public class JudgeService {
 
     }
 
-    public void updateGameEventAfterEnd(String judgeMail, String gameId, String eventId, Time eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "updateGameEventAfterEnd/{judgeMail}/{gameId}/{eventId}/{eventTime}/{eventMinute}/{gameEventType}/{description}/")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateGameEventAfterEnd(@PathVariable String judgeMail,@PathVariable String gameId,@PathVariable String eventId,@PathVariable String eventTime,@PathVariable Integer eventMinute,@PathVariable GameEventType gameEventType,@PathVariable String description) throws Exception {
         try {
-            judgeController.updateGameEventAfterEnd(judgeMail, gameId, eventId, eventTime, eventMinute, gameEventType, description);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            Date time = sdf.parse(eventTime);
+            judgeController.updateGameEventAfterEnd(judgeMail, gameId, eventId, time, eventMinute, gameEventType, description);
             logger.log(Level.INFO, "Created by: " + judgeMail + " Description: Event \"" + eventId + "\" was updated to Game \"" + gameId + "\"");
 
         } catch (Exception e) {
@@ -70,7 +81,10 @@ public class JudgeService {
         }
     }
 
-    public void createReportForGame(String path, String judgeMail, String gameId) throws Exception {
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "createReportForGame/{path}/{judgeMail}/{gameId}/")
+    @ResponseStatus(HttpStatus.OK)
+    public void createReportForGame(@PathVariable String path,@PathVariable String judgeMail,@PathVariable String gameId) throws Exception {
         try {
             judgeController.createReportForGame(path, judgeMail, gameId);
             logger.log(Level.INFO, "Created by: " + judgeMail + " Description: report was created to Game \"" + gameId + "\"");
