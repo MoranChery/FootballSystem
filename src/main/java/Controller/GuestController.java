@@ -27,18 +27,30 @@ public class GuestController {
     private SubscriberController subscriberController;
 
     public GuestController() {
-        subscriberDb = SubscriberDbInMemory.getInstance();
-        coachDb = CoachDbInMemory.getInstance();
-        judgeDb = JudgeDbInMemory.getInstance();
-        playerDb = PlayerDbInMemory.getInstance();
-        teamManagerDb = TeamManagerDbInMemory.getInstance();
-        teamOwnerDb = TeamOwnerDbInMemory.getInstance();
+//        subscriberDb = SubscriberDbInMemory.getInstance();
+//        coachDb = CoachDbInMemory.getInstance();
+//        judgeDb = JudgeDbInMemory.getInstance();
+//        playerDb = PlayerDbInMemory.getInstance();
+//        teamManagerDb = TeamManagerDbInMemory.getInstance();
+//        teamOwnerDb = TeamOwnerDbInMemory.getInstance();
+//        fanDb = FanDbInMemory.getInstance();
+//        roleDb = RoleDbInMemory.getInstance();
+//        systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
+//        representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
+//        pageDb = PageDbInMemory.getInstance();
+//        teamDb = TeamDbInMemory.getInstance();
+        subscriberDb = SubscriberDbInServer.getInstance();
+        coachDb = CoachDbInServer.getInstance();
+        judgeDb = JudgeDbInServer.getInstance();
+        playerDb = PlayerDbInServer.getInstance();
+        teamManagerDb = TeamManagerDbInServer.getInstance();
+        teamOwnerDb = TeamOwnerDbInServer.getInstance();
         fanDb = FanDbInMemory.getInstance();
-        roleDb = RoleDbInMemory.getInstance();
+        roleDb = RoleDbInServer.getInstance();
         systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
-        representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
-        pageDb = PageDbInMemory.getInstance();
-        teamDb = TeamDbInMemory.getInstance();
+        representativeAssociationDb = RepresentativeAssociationDbInServer.getInstance();
+        pageDb = PageDbInServer.getInstance();
+        teamDb = TeamDbInServer.getInstance();
         subscriberController = new SubscriberController();
     }
 
@@ -86,8 +98,6 @@ public class GuestController {
             throw new Exception("Wrong password");
         }
         subscriberDb.changeStatusToOnline(subscriber);
-        subscriberController.getAlerts(subscriber.getEmailAddress());
-
     }
 
     /**
@@ -111,8 +121,8 @@ public class GuestController {
         coachDb.insertCoach(coach);
         roleDb.createRoleInSystem(emailAddress, RoleType.COACH);
         pageDb.insertPage(coach.getEmailAddress(), PageType.COACH);
-        PersonalPage personalPage=(PersonalPage) pageDb.getPage(coach.getEmailAddress());
-        coach.setCoachPage(personalPage);
+//        PersonalPage personalPage=(PersonalPage) pageDb.getPage(coach.getEmailAddress());
+//        coach.setCoachPage(personalPage);
     }
 
     /**

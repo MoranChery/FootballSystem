@@ -63,8 +63,10 @@ public class PageDbInServer implements PageDb {
     @Override
     public void deleteAll() throws SQLException {
         Connection conn = DbConnector.getConnection();
+        try{
         Statement statement = conn.createStatement();
         statement.executeUpdate("delete from page");
+    } finally {
         conn.close();
-    }
+    }    }
 }

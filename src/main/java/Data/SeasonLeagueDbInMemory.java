@@ -1,6 +1,7 @@
 package Data;
 
 import Model.Enums.CalculateLeaguePoints;
+import Model.Enums.InlayGames;
 import Model.JudgeSeasonLeague;
 import Model.SeasonLeague;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -18,7 +19,22 @@ public class SeasonLeagueDbInMemory implements SeasonLeagueDb
 
     public static SeasonLeagueDbInMemory getInstance() { return ourInstance; }
 
-    public SeasonLeagueDbInMemory() { seasonLeagueMap = new HashMap<>(); }
+    public SeasonLeagueDbInMemory() { seasonLeagueMap = new HashMap<>();
+        SeasonLeague seasonLeague11 = new SeasonLeague("seasonName1", "leagueName1", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        SeasonLeague seasonLeague12 = new SeasonLeague("seasonName1", "leagueName2", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        SeasonLeague seasonLeague13 = new SeasonLeague("seasonName1", "leagueName3", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        SeasonLeague seasonLeague21 = new SeasonLeague("seasonName2", "leagueName1", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        SeasonLeague seasonLeague22 = new SeasonLeague("seasonName2", "leagueName2", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        SeasonLeague seasonLeague23 = new SeasonLeague("seasonName2", "leagueName3", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+
+        seasonLeagueMap.put(seasonLeague11.getSeasonLeagueName(),seasonLeague11);
+        seasonLeagueMap.put(seasonLeague12.getSeasonLeagueName(),seasonLeague12);
+        seasonLeagueMap.put(seasonLeague13.getSeasonLeagueName(),seasonLeague13);
+        seasonLeagueMap.put(seasonLeague21.getSeasonLeagueName(),seasonLeague21);
+        seasonLeagueMap.put(seasonLeague22.getSeasonLeagueName(),seasonLeague22);
+        seasonLeagueMap.put(seasonLeague23.getSeasonLeagueName(),seasonLeague23);
+    }
+
 
     /**
      * Will receive from the Controller the SeasonLeague, add SeasonLeague to Data.
