@@ -58,9 +58,9 @@ public class TeamOwnerService {
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "createNewTeam/{teamName}/{teamOwnerEmail}/{budget}/{court}/")
+    @GetMapping(value = "createNewTeam/{teamName}/{teamOwnerEmail}/{budget}/{courtName}/{courtCity}/")
     @ResponseStatus(HttpStatus.OK)
-    public void createNewTeam(@PathVariable String teamName, @PathVariable String teamOwnerEmail, @PathVariable String budget, @PathVariable String court) throws Exception {
+    public void createNewTeam(@PathVariable String teamName, @PathVariable String teamOwnerEmail, @PathVariable String budget, @PathVariable String courtName,@PathVariable String courtCity) throws Exception {
         //final String teamName = createTeamRequest.getTeamName();
         final List<Coach> coaches = new ArrayList<>();
 //            final Double budget = createTeamRequest.getBudget();
@@ -70,7 +70,8 @@ public class TeamOwnerService {
 //            final String teamOwnerEmail = createTeamRequest.getTeamOwnerEmail();
         try {
             Court court1 = new Court();
-            court1.setCourtName(court);
+            court1.setCourtName(courtName);
+            court1.setCourtCity(courtCity);
             teamOwnerController.createNewTeam(teamName, teamOwnerEmail, players, coaches, teamManagers, court1, Double.parseDouble(budget));
             logger.log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" was created");
         } catch (Exception e) {
