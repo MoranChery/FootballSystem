@@ -76,11 +76,11 @@ CREATE TABLE football_system_db.game
     `host_team`        VARCHAR(45) NOT NULL,
     `guest_team`       VARCHAR(45) NOT NULL,
     `court`            VARCHAR(45) NOT NULL,
-    `host_team_score`  INT         NOT NULL,
-    `guest_team_score` INT         NOT NULL,
+    `host_team_score`  INT,
+    `guest_team_score` INT,
 -- #     `event_log` VARCHAR(45) NOT NULL,
-    `major_judge`      VARCHAR(45) NOT NULL,
-    `end_game_time`    DATE        NOT NULL,
+    `major_judge`      VARCHAR(45),
+    `end_game_time`    DATE,
     PRIMARY KEY (`game_id`)
 );
 
