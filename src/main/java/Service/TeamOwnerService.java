@@ -85,7 +85,7 @@ public class TeamOwnerService {
     /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
     public void addPlayer(@PathVariable String teamName, @PathVariable String ownerEmail, @PathVariable String emailAddress, @PathVariable String playerId, @PathVariable String firstName, @PathVariable String lastName, @PathVariable String birthDate, @PathVariable String playerRole) throws Exception {
         try {
-            Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(birthDate);
+            Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(birthDate);
             PlayerRole playerRole1 = PlayerRole.getPlayerRole(playerRole);
             teamOwnerController.addPlayer(teamName, ownerEmail, emailAddress, Integer.parseInt(playerId), firstName, lastName, date1, playerRole1);
             logger.log(Level.INFO, "Created by: " + ownerEmail + " Description: Player \"" + emailAddress + "\" added to Team:" + teamName);
