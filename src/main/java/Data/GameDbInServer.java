@@ -121,8 +121,6 @@ public class GameDbInServer implements GameDb
         Game game = new Game(game_id, game_date, season_league, host_team, guest_team, court, judgesOfTheGameList, major_judge, end_game_time);
         game.setHostTeamScore(host_team_score);
         game.setGuestTeamScore(guest_team_score);
-        //todo-check what about the event log
-//        game.setEventLog();
 
         return game;
     }

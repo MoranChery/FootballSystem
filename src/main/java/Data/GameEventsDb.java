@@ -2,16 +2,17 @@ package Data;
 
 import Model.GameEvent;
 
+import java.sql.SQLException;
 import java.util.Map;
 
-public interface GameEventsDb {
+public interface GameEventsDb extends Db{
 
-    void createGameEvent(GameEvent gameEvent);
-    void addEvent(GameEvent gameEvent) throws NotFoundException;
+    void insertGameEvent(GameEvent gameEvent) throws Exception;
+    void addEvent(GameEvent gameEvent) throws Exception;
 
-    GameEvent getEvent(String eventId) throws Exception;
+    GameEvent getGameEvent(String eventId) throws Exception;
 
-    void setUpdatedDetails(GameEvent gameEvent) throws Exception;
+    void updateGameEventDetails(GameEvent gameEvent) throws Exception;
 
-    Map<String, GameEvent> getGameEvents(String gameId);
+    Map<String, GameEvent> getMap_eventId_GameEvent_ByGameId(String gameId) throws Exception;
 }
