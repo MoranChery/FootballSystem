@@ -2,21 +2,17 @@ package Data;
 
 import Model.Page;
 import Model.PageType;
-import Model.Team;
 import Model.UsersTypes.Fan;
-import Model.UsersTypes.Player;
-import Model.UsersTypes.Subscriber;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 
-public class PageInServer implements PageDb {
-    private static PageInServer ourInstance = new PageInServer();
+public class PageDbInServer implements PageDb {
+    private static PageDbInServer ourInstance = new PageDbInServer();
 
-    public static PageInServer getInstance() {
+    public static PageDbInServer getInstance() {
         return ourInstance;
     }
 

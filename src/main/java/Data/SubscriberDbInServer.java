@@ -36,6 +36,9 @@ public class SubscriberDbInServer implements SubscriberDb{
 
             // execute the preparedstatement
             preparedStmt.execute();
+
+        } catch(SQLIntegrityConstraintViolationException e) {
+            throw new Exception("subscriber already exists");
         } finally {
             conn.close();
         }
@@ -95,7 +98,12 @@ public class SubscriberDbInServer implements SubscriberDb{
 
     @Override
     public void changeStatusToOnline(Subscriber subscriber) throws Exception {
+        Connection conn = DbConnector.getConnection();
 
+        String query = "UPDATE football_system_db.subscriber  SET football_system_db.subscriber.status = \'" + Status.ONLINE.name() +  "\'  WHERE email_address =  \'"+ subscriber.getEmailAddress() + "\'" ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
     }
 
     @Override
