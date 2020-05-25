@@ -371,4 +371,73 @@ public class SeasonLeagueDbInServerTest
         }
     }
     //endregion
+
+    //region deleteAll_Tests
+    @Test
+    public void deleteAll_noSeasonLeague()
+    {
+        ArrayList<String> seasonLeagueName = new ArrayList<>();
+
+        try
+        {
+            seasonLeagueName = seasonLeagueDbInServer.getAllSeasonLeagueNames();
+
+            Assert.assertEquals(0, seasonLeagueName.size());
+
+            seasonLeagueDbInServer.deleteAll();
+
+            seasonLeagueName = seasonLeagueDbInServer.getAllSeasonLeagueNames();
+
+            Assert.assertEquals(0, seasonLeagueName.size());
+        }
+        catch (Exception e)
+        {
+//            Assert.assertEquals("No RepresentativeAssociation been created", e.getMessage());
+        }
+    }
+
+    @Test
+    public void deleteAll_listOfSeasonLeague()
+    {
+        Season season1 = new Season("season1");
+        String seasonName1 = season1.getSeasonName();
+        Season season2 = new Season("season2");
+        String seasonName2 = season2.getSeasonName();
+
+        League league1 = new League("league1");
+        String leagueName1 = league1.getLeagueName();
+
+        SeasonLeague seasonLeague11 = new SeasonLeague(seasonName1, leagueName1, CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        SeasonLeague seasonLeague21 = new SeasonLeague(seasonName2, leagueName1, CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+
+        ArrayList<String> seasonLeagueName = new ArrayList<>();
+
+        try
+        {
+            seasonDbInServer.insertSeason(season1);
+            seasonDbInServer.insertSeason(season2);
+            leagueDbInServer.insertLeague(league1);
+            seasonLeagueDbInServer.insertSeasonLeague(seasonLeague11);
+            seasonLeagueDbInServer.insertSeasonLeague(seasonLeague21);
+
+            seasonLeagueName = seasonLeagueDbInServer.getAllSeasonLeagueNames();
+
+            Assert.assertEquals(2, seasonLeagueName.size());
+            Assert.assertEquals(true, seasonLeagueName.contains(seasonLeague11.getSeasonLeagueName()));
+            Assert.assertEquals(true, seasonLeagueName.contains(seasonLeague21.getSeasonLeagueName()));
+
+            seasonLeagueDbInServer.deleteAll();
+
+            seasonLeagueName = seasonLeagueDbInServer.getAllSeasonLeagueNames();
+
+            Assert.assertEquals(0, seasonLeagueName.size());
+            Assert.assertEquals(false, seasonLeagueName.contains(seasonLeague11.getSeasonLeagueName()));
+            Assert.assertEquals(false, seasonLeagueName.contains(seasonLeague21.getSeasonLeagueName()));
+        }
+        catch (Exception e)
+        {
+//            Assert.assertEquals("No RepresentativeAssociation been created", e.getMessage());
+        }
+    }
+    //endregion
 }

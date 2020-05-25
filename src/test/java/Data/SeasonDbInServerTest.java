@@ -185,4 +185,62 @@ public class SeasonDbInServerTest
         }
     }
     //endregion
+
+    //region deleteAll_Tests
+    @Test
+    public void deleteAll_noSeason()
+    {
+        ArrayList<String> seasonName = new ArrayList<>();
+
+        try
+        {
+            seasonName = seasonDbInServer.getAllSeasonNames();
+
+            Assert.assertEquals(0, seasonName.size());
+
+            seasonDbInServer.deleteAll();
+
+            seasonName = seasonDbInServer.getAllSeasonNames();
+
+            Assert.assertEquals(0, seasonName.size());
+        }
+        catch (Exception e)
+        {
+//            Assert.assertEquals("No RepresentativeAssociation been created", e.getMessage());
+        }
+    }
+
+    @Test
+    public void deleteAll_listOfSeason()
+    {
+        Season season1 = new Season("season1");
+        Season season2 = new Season("season2");
+
+        ArrayList<String> seasonName = new ArrayList<>();
+
+        try
+        {
+            seasonDbInServer.insertSeason(season1);
+            seasonDbInServer.insertSeason(season2);
+
+            seasonName = seasonDbInServer.getAllSeasonNames();
+
+            Assert.assertEquals(2, seasonName.size());
+            Assert.assertEquals(true, seasonName.contains(season1.getSeasonName()));
+            Assert.assertEquals(true, seasonName.contains(season2.getSeasonName()));
+
+            seasonDbInServer.deleteAll();
+
+            seasonName = seasonDbInServer.getAllSeasonNames();
+
+            Assert.assertEquals(0, seasonName.size());
+            Assert.assertEquals(false, seasonName.contains(season1.getSeasonName()));
+            Assert.assertEquals(false, seasonName.contains(season2.getSeasonName()));
+        }
+        catch (Exception e)
+        {
+//            Assert.assertEquals("No RepresentativeAssociation been created", e.getMessage());
+        }
+    }
+    //endregion
 }

@@ -4,7 +4,9 @@ import Model.Enums.QualificationJudge;
 import Model.Game;
 import Model.JudgeSeasonLeague;
 import Model.UsersTypes.Judge;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,5 +150,13 @@ public class JudgeDbInMemory implements JudgeDb
     public List<String> getJudgeGames(String judgeId){
         Judge judge = allJudgesMap.get(judgeId);
         return judge.getTheJudgeGameList();
+    }
+
+    @Override
+    public ArrayList<String> getAllJudgeEmailAddress() throws Exception
+    {
+        //todo
+        throw new NotImplementedException();
+//        return null;
     }
 }

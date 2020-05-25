@@ -4,7 +4,9 @@ import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.JudgeSeasonLeague;
 import Model.SeasonLeague;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,6 +100,22 @@ public class SeasonLeagueDbInMemory implements SeasonLeagueDb
             throw new Exception("SeasonLeague not found");
         }
         seasonLeagueMap.get(seasonLeagueName).setCalculateLeaguePoints(calculateLeaguePoints);
+    }
+
+    @Override
+    public ArrayList<String> getAllSeasonLeagueNames() throws Exception
+    {
+        //todo
+        throw new NotImplementedException();
+//        return null;
+    }
+
+    @Override
+    public ArrayList<SeasonLeague> getAllSeasonLeagueObjects() throws Exception
+    {
+        //todo
+        throw new NotImplementedException();
+//        return null;
     }
 
     /**

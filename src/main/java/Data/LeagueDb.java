@@ -3,6 +3,8 @@ package Data;
 import Model.League;
 import Model.SeasonLeague;
 
+import java.util.ArrayList;
+
 public interface LeagueDb extends Db
 {
     /**
@@ -36,4 +38,8 @@ public interface LeagueDb extends Db
      * @throws Exception-if details are incorrect.
      */
     String getSeasonLeagueNameBySeasonAndByLeague(String seasonName, String leagueName) throws Exception;
+
+    ArrayList<String> getAllLeagueNames() throws Exception;
+
+    ArrayList<League> getAllLeagueObjects() throws Exception;
 }

@@ -5,6 +5,7 @@ import Model.SeasonLeague;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -123,35 +124,69 @@ public class SeasonDbInServer implements SeasonDb
     }
 
     @Override
-    public void deleteAll()
+    public void deleteAll() throws SQLException
     {
         Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        /* TRUNCATE is faster than DELETE since
+         * it does not generate rollback information and does not
+         * fire any delete triggers
+         */
+
+        // the mysql delete statement
+        String query = "delete from season";
+
+        // create the mysql delete Statement
+        statement.executeUpdate(query);
+        conn.close();
+    }
+
+    @Override
+    public ArrayList<String> getAllSeasonNames() throws Exception
+    {
+        ArrayList<String> seasonNames = new ArrayList<>();
+
+        Connection conn = DbConnector.getConnection();
+
         try
         {
-            // the mysql delete statement
-            String query = " delete from season";
+            // the mysql select statement
+            String query = "select season_name from season";
 
-            // create the mysql delete preparedStatement
-            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            // create the mysql select resultSet
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
 
-            // execute the preparedStatement
-            preparedStmt.execute();
-        }
-        catch (SQLException throwables)
-        {
-            throwables.printStackTrace();
+            // checking if ResultSet is empty
+            if (rs.next() != false)
+            {
+                seasonNames.add(rs.getString("season_name"));
+
+                while (rs.next() != false)
+                {
+                    seasonNames.add(rs.getString("season_name"));
+                }
+            }
         }
         finally
         {
-            try
-            {
-                conn.close();
-            }
-            catch (SQLException throwables)
-            {
-                throwables.printStackTrace();
-            }
+            conn.close();
         }
+        return seasonNames;
+    }
+
+    @Override
+    public ArrayList<Season> getAllSeasonObjects() throws Exception
+    {
+        ArrayList<Season> seasonObjects = new ArrayList<>();
+
+        ArrayList<String> seasonNames = getAllSeasonNames();
+
+        for (String season_name : seasonNames)
+        {
+            seasonObjects.add(getSeason(season_name));
+        }
+        return seasonObjects;
     }
 
     public static void main(String[] args) throws Exception

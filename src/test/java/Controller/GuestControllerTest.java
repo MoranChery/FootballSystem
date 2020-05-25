@@ -4,31 +4,46 @@ import Data.*;
 import Model.Enums.*;
 import Model.Team;
 import Model.UsersTypes.Fan;
+import Model.UsersTypes.Player;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.validation.constraints.AssertTrue;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class GuestControllerTest {
+public class GuestControllerTest  extends BaseEmbeddedSQL {
     private GuestController guestController = new GuestController();
     //DBs
-    private SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();
-    private CoachDb coachDb = CoachDbInMemory.getInstance();
-    private JudgeDb judgeDb = JudgeDbInMemory.getInstance();
-    private PlayerDb playerDb = PlayerDbInMemory.getInstance();
-    private TeamManagerDb teamManagerDb = TeamManagerDbInMemory.getInstance();
-    private TeamOwnerDb teamOwnerDb = TeamOwnerDbInMemory.getInstance();
-    private FanDb fanDb = FanDbInMemory.getInstance();
-    private RoleDb roleDb = RoleDbInMemory.getInstance();
-    private SystemAdministratorDb systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
-    private RepresentativeAssociationDb representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
-    private PageDb pageDb = PageDbInMemory.getInstance();
-    private TeamDb teamDb = TeamDbInMemory.getInstance();
-    ;
+//    private SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();
+//    private CoachDb coachDb = CoachDbInMemory.getInstance();
+//    private JudgeDb judgeDb = JudgeDbInMemory.getInstance();
+//    private PlayerDb playerDb = PlayerDbInMemory.getInstance();
+//    private TeamManagerDb teamManagerDb = TeamManagerDbInMemory.getInstance();
+//    private TeamOwnerDb teamOwnerDb = TeamOwnerDbInMemory.getInstance();
+//    private FanDb fanDb = FanDbInMemory.getInstance();
+//    private RoleDb roleDb = RoleDbInMemory.getInstance();
+//    private SystemAdministratorDb systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
+//    private RepresentativeAssociationDb representativeAssociationDb = RepresentativeAssociationDbInMemory.getInstance();
+//    private PageDb pageDb = PageDbInMemory.getInstance();
+//    private TeamDb teamDb = TeamDbInMemory.getInstance();
+
+    private SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
+    private CoachDb coachDb = CoachDbInServer.getInstance();
+    private JudgeDb judgeDb = JudgeDbInServer.getInstance();
+    private PlayerDb playerDb = PlayerDbInServer.getInstance();
+    private TeamManagerDb teamManagerDb = TeamManagerDbInServer.getInstance();
+    private TeamOwnerDb teamOwnerDb = TeamOwnerDbInServer.getInstance();
+//    private FanDb fanDb = FanDbInServer.getInstance();
+    private RoleDb roleDb = RoleDbInServer.getInstance();
+//    private SystemAdministratorDb systemAdministratorDb = SystemAdministratorDbInServer.getInstance();
+    private RepresentativeAssociationDb representativeAssociationDb = RepresentativeAssociationDbInServer.getInstance();
+    private PageDb pageDb = PageDbInServer.getInstance();
+    private TeamDb teamDb = TeamDbInServer.getInstance();
+
 
     @Before
     public void init() {
@@ -39,9 +54,9 @@ public class GuestControllerTest {
         dbs.add(playerDb);
         dbs.add(teamManagerDb);
         dbs.add(teamOwnerDb);
-        dbs.add(fanDb);
+//        dbs.add(fanDb);
         dbs.add(roleDb);
-        dbs.add(systemAdministratorDb);
+//        dbs.add(systemAdministratorDb);
         dbs.add(representativeAssociationDb);
         dbs.add(pageDb);
         dbs.add(teamDb);
@@ -59,12 +74,12 @@ public class GuestControllerTest {
 
     @Test
     public void login() throws Exception {
-        Fan fan = new Fan("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "Harary");
-        subscriberDb.insertSubscriber(fan);
+        Player player = new Player("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "Harary",new Date() , PlayerRole.GOALKEEPER);
+        subscriberDb.insertSubscriber(player);
+        playerDb.insertPlayer(player);
         //good login
         guestController.login("noY12@gmail.com", "L1o8oy");
-        Assert.assertEquals(Status.ONLINE,subscriberDb.getSubscriber("noY12@gmail.com").getStatus()
-        );
+        Assert.assertEquals(Status.ONLINE,subscriberDb.getSubscriber("noY12@gmail.com").getStatus());
         //wrong password
         try {
             guestController.login("noY12@gmail.com", "L1o8oy4652");
@@ -98,13 +113,14 @@ public class GuestControllerTest {
     }
 
     @Test
-    public void coachRegistering() {
+    public void coachRegistering() throws SQLException {
         try {
             guestController.registerCoach("coach12@gmail.com", "L1o8oy", 207785070, "Noy", "Harary", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         } catch (Exception e) {
             //not should enter the catch
             Assert.assertEquals(0, 1);
         }
+
         try {
             //register coach with exist email in subscriberDb
             guestController.registerCoach("coach12@gmail.com", "L1o8oy", 207785070, "Noy", "Harary", CoachRole.MAJOR, QualificationCoach.UEFA_A);
@@ -809,7 +825,7 @@ public class GuestControllerTest {
     @Test
     public void teamManagerRegistering() {
         //create for the test
-        Team team=null;
+        Team team =null;
         try {
             teamDb.insertTeam("ofakim");
             team=teamDb.getTeam("ofakim");
@@ -1073,19 +1089,19 @@ public class GuestControllerTest {
         } catch (Exception e) {
             Assert.assertEquals("try to enter details again!", e.getMessage());
         }
-
-        //null team
-        try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy");
-        } catch (Exception e) {
-            Assert.assertEquals("try to enter details again!", e.getMessage());
-        }
-        //unexist team
-        try {
-            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy");
-        } catch (Exception e) {
-            Assert.assertEquals("try to enter details again!", e.getMessage());
-        }
+//
+//        //null team
+//        try {
+//            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy");
+//        } catch (Exception e) {
+//            Assert.assertEquals("try to enter details again!", e.getMessage());
+//        }
+//        //unexist team
+//        try {
+//            guestController.registerTeamOwner("noY12@gmail.com", "L1o8oy", 207785070, "Noy", "noy");
+//        } catch (Exception e) {
+//            Assert.assertEquals("try to enter details again!", e.getMessage());
+//        }
 
 
     }

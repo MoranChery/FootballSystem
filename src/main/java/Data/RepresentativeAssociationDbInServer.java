@@ -75,7 +75,8 @@ public class RepresentativeAssociationDbInServer implements RepresentativeAssoci
         conn.close();
 
         RepresentativeAssociation representativeAssociation = new RepresentativeAssociation(userName, password, id, first_name, last_name);
-        return representativeAssociation;    }
+        return representativeAssociation;
+    }
 
     @Override
     public void removeRepresentativeAssociation(String email) throws Exception
@@ -85,37 +86,24 @@ public class RepresentativeAssociationDbInServer implements RepresentativeAssoci
     }
 
     @Override
-    public void deleteAll()
+    public void deleteAll() throws SQLException
     {
         Connection conn = DbConnector.getConnection();
-        try
-        {
-            // the mysql delete statement
-            String query = " delete from representative_association";
+        Statement statement = conn.createStatement();
+        /* TRUNCATE is faster than DELETE since
+         * it does not generate rollback information and does not
+         * fire any delete triggers
+         */
 
-            // create the mysql delete preparedStatement
-            PreparedStatement preparedStmt = conn.prepareStatement(query);
+        // the mysql delete statement
+        String query = "delete from representative_association";
 
-            // execute the preparedStatement
-            preparedStmt.execute();
-        }
-        catch (SQLException throwables)
-        {
-            throwables.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                conn.close();
-            }
-            catch (SQLException throwables)
-            {
-                throwables.printStackTrace();
-            }
-        }
+        // create the mysql delete Statement
+        statement.executeUpdate(query);
+        conn.close();
     }
 
+    @Override
     public ArrayList<String> getAllRepresentativeAssociationEmailAddress() throws Exception
     {
         ArrayList<String> representativeAssociationEmailAddress = new ArrayList<>();

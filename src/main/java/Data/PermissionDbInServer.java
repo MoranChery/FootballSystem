@@ -48,6 +48,7 @@ public class PermissionDbInServer implements PermissionDb{
 
         String query = "select * from permission where permission.email_address = \'" + emailAddress + "\'";
         Connection conn = DbConnector.getConnection();
+       try{
         Statement preparedStmt = conn.createStatement();
         ResultSet rs = preparedStmt.executeQuery(query);
         List<PermissionType> permissionTypes = new ArrayList<>();
@@ -57,15 +58,19 @@ public class PermissionDbInServer implements PermissionDb{
             PermissionType permissionType = PermissionType.valueOf(permission_type);
             permissionTypes.add(permissionType);
         }
-        conn.close();
         return permissionTypes;
+    } finally {
+        conn.close();
+    }
     }
 
     @Override
     public void deleteAll() throws SQLException {
         Connection conn = DbConnector.getConnection();
+        try{
         Statement statement = conn.createStatement();
         statement.executeUpdate("delete from permission");
+    } finally {
         conn.close();
-    }
+    }    }
 }
