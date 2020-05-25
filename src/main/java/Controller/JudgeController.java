@@ -28,10 +28,14 @@ public class JudgeController {
     private RepresentativeAssociationController repController;
 
     public JudgeController() {
-        judgeDb = JudgeDbInMemory.getInstance();
-        gameDb = GameDbInMemory.getInstance();
-        roleDb = RoleDbInMemory.getInstance();
-        gameEventsDb = GameEventsDbInMemory.getInstance();
+//        judgeDb = JudgeDbInMemory.getInstance();
+//        gameDb = GameDbInMemory.getInstance();
+//        roleDb = RoleDbInMemory.getInstance();
+//        gameEventsDb = GameEventsDbInMemory.getInstance();
+        judgeDb = JudgeDbInServer.getInstance();
+        gameDb = GameDbInServer.getInstance();
+        roleDb = RoleDbInServer.getInstance();
+        gameEventsDb = GameEventsDbInServer.getInstance();
     }
     public void setRepController(RepresentativeAssociationController controller){
         repController = controller;
