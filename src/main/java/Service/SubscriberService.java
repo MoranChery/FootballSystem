@@ -46,11 +46,11 @@ public class SubscriberService {
                 return messageAndValue;
             }
             else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                throw new ResponseStatusException(HttpStatus.OK);
             }
         }
         catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.OK);
         }
     }
 }
