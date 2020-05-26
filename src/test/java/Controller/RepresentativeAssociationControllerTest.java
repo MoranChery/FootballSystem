@@ -1,24 +1,19 @@
 package Controller;
 
 import Data.*;
-import Model.Enums.CalculateLeaguePoints;
-import Model.Enums.InlayGames;
-import Model.Enums.QualificationJudge;
-import Model.Enums.RoleType;
+import Model.Enums.*;
 import Model.*;
-import Model.UsersTypes.Fan;
-import Model.UsersTypes.Judge;
-import Model.UsersTypes.RepresentativeAssociation;
-import Model.UsersTypes.Subscriber;
+import Model.UsersTypes.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class RepresentativeAssociationControllerTest
+public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL
 {
     private RepresentativeAssociationController representativeAssociationController = new RepresentativeAssociationController();
 
@@ -44,6 +39,10 @@ public class RepresentativeAssociationControllerTest
         dbs.add(SeasonLeagueDbInServer.getInstance());
         dbs.add(JudgeDbInServer.getInstance());
         dbs.add(JudgeSeasonLeagueDbInServer.getInstance());
+        dbs.add((TeamDbInServer.getInstance()));
+        dbs.add((CourtDbInServer.getInstance()));
+        dbs.add((GameDbInServer.getInstance()));
+        dbs.add((GameJudgesListDbInServer.getInstance()));
 
         for (Db db : dbs)
         {
@@ -52,7 +51,6 @@ public class RepresentativeAssociationControllerTest
     }
 
     //region createRepresentativeAssociation_Tests
-
     @Test
     public void createRepresentativeAssociation_null() throws Exception
     {
@@ -105,12 +103,9 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("RepresentativeAssociation already exists in the system", e.getMessage());
         }
     }
-
     //endregion
 
-
     //region createLeague_Tests
-
     @Test
     public void createLeague_null_all() throws Exception
     {
@@ -125,7 +120,6 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
-
     @Test
     public void createLeague_null_email() throws Exception
     {
@@ -139,7 +133,6 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
-
 
     @Test
     public void createLeague_null_leagueName() throws Exception
@@ -156,7 +149,6 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
-
     @Test
     public void createLeague_noPermissions() throws Exception
     {
@@ -170,7 +162,6 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
-
 
     @Test
     public void createLeague_legal() throws Exception
@@ -188,7 +179,6 @@ public class RepresentativeAssociationControllerTest
         League league = LeagueDbInServer.getInstance().getLeague("leagueName");
         Assert.assertEquals("leagueName", league.getLeagueName());
     }
-
 
     @Test
     public void createLeague_exists() throws Exception
@@ -211,18 +201,9 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("League already exists in the system", e.getMessage());
         }
     }
-
     //endregion
 
-
-
-
-
-
-
-
     //region createSeason_Tests
-
     @Test
     public void createSeason_null_all() throws Exception
     {
@@ -237,7 +218,6 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
-
     @Test
     public void createSeason_null_email() throws Exception
     {
@@ -251,7 +231,6 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
-
 
     @Test
     public void createSeason_null_seasonName() throws Exception
@@ -268,7 +247,6 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
-
     @Test
     public void createSeason_noPermissions() throws Exception
     {
@@ -282,7 +260,6 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Only RepresentativeAssociation has permissions to this action!", e.getMessage());
         }
     }
-
 
     @Test
     public void createSeason_legal() throws Exception
@@ -300,7 +277,6 @@ public class RepresentativeAssociationControllerTest
         Season season = SeasonDbInServer.getInstance().getSeason("seasonName");
         Assert.assertEquals("seasonName", season.getSeasonName());
     }
-
 
     @Test
     public void createSeason_exists() throws Exception
@@ -323,10 +299,7 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Season already exists in the system", e.getMessage());
         }
     }
-
     //endregion
-
-
 
     //region createSeasonLeague_Tests
     @Test
@@ -521,10 +494,7 @@ public class RepresentativeAssociationControllerTest
     }
     //endregion
 
-
-
     //region createJudge_Tests
-
     @Test
     public void createJudge_null_all() throws Exception
     {
@@ -719,7 +689,6 @@ public class RepresentativeAssociationControllerTest
         }
     }
 
-
     @Test
     public void createJudge_exists_inJudgeDb() throws Exception
     {
@@ -740,11 +709,9 @@ public class RepresentativeAssociationControllerTest
             Assert.assertEquals("Judge already exists in the system", e.getMessage());
         }
     }
-
     //endregion
 
-
-
+/*
     //region removeJudge_Tests
     @Test
     public void removeJudge_null_all() throws Exception
@@ -876,10 +843,9 @@ public class RepresentativeAssociationControllerTest
     }
 
     //endregion
-
+*/
 
     //region createJudgeSeasonLeague_Tests
-
     @Test
     public void createJudgeSeasonLeague_null_all() throws Exception
     {
@@ -1183,22 +1149,217 @@ public class RepresentativeAssociationControllerTest
         SeasonLeague seasonLeague = SeasonLeagueDbInServer.getInstance().getSeasonLeague("seasonName_leagueName");
         Assert.assertEquals(CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, seasonLeague.getCalculateLeaguePoints());
     }
-
     //endregion
-
-
 
     @Test
     public void checkPermissionOfRepresentativeAssociation_withPreviousRole() throws Exception
     {
         Boolean permission;
         Subscriber subscriber = new Fan("username/emailAddress", "password", 12345, "firstName", "lastName");
-//        RoleDbInMemory.getInstance().createRoleInSystem("username/emailAddress", RoleType.FAN);
-        RoleDbInServer.getInstance().createRoleInSystem("username/emailAddress", RoleType.FAN);
-        representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+        SubscriberDbInServer.getInstance().insertSubscriber(subscriber);
+
+        RoleDbInServer.getInstance().insertRole("username/emailAddress", null, RoleType.FAN);
+//        RoleDbInServer.getInstance().createRoleInSystem("username/emailAddress", RoleType.FAN);
+        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
+
+        representativeAssociationController.createRepresentativeAssociation(representativeAssociation);
+
         permission = representativeAssociationController.checkPermissionOfRepresentativeAssociation("username/emailAddress");
         Assert.assertEquals(Boolean.TRUE, permission);
     }
 
+////////////////////////////////////////////////////
+    private void initForChangeGame_location_and_date_Test()
+    {
+        Season season = new Season("seasonName");
+        League league = new League("leagueName");
+        SeasonLeague seasonLeague = new SeasonLeague(season.getSeasonName(), league.getLeagueName(), CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
 
+        Team teamHost = new Team();
+        teamHost.setTeamName("teamHost");
+        Team teamGuest = new Team();
+        teamGuest.setTeamName("teamGuest");
+
+        Court court1 = new Court();
+        court1.setCourtName("court1");
+        court1.setCourtCity("court1city1");
+
+        Court court2 = new Court();
+        court2.setCourtName("court2");
+        court2.setCourtCity("court1city2");
+
+        Date dateStart = new Date(20, 10, 8);
+
+        Game game1 = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName());
+        Game game2 = new Game("game2", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName());
+        try
+        {
+            SeasonDbInServer.getInstance().insertSeason(season);
+            LeagueDbInServer.getInstance().insertLeague(league);
+            SeasonLeagueDbInServer.getInstance().insertSeasonLeague(seasonLeague);
+
+            TeamDbInServer.getInstance().insertTeam(teamHost.getTeamName());
+            TeamDbInServer.getInstance().insertTeam(teamGuest.getTeamName());
+
+            CourtDbInServer.getInstance().insertCourt(court1);
+            CourtDbInServer.getInstance().insertCourt(court2);
+
+            GameDbInServer.getInstance().insertGame(game1);
+            GameDbInServer.getInstance().insertGame(game2);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void changeGameLocation_empty_all()
+    {
+        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
+
+        initForChangeGame_location_and_date_Test();
+
+        String repMail = "";
+        String newLocation = "";
+        String gameID = "";
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(representativeAssociation);
+            representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("The value is empty", e.getMessage());
+        }
+    }
+
+    @Test
+    public void changeGameLocation_empty_repMail()
+    {
+        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
+
+        initForChangeGame_location_and_date_Test();
+
+        String repMail = "";
+        String newLocation = "court2";
+        String gameID = "game2";
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(representativeAssociation);
+            representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("The value is empty", e.getMessage());
+        }
+    }
+
+    @Test
+    public void changeGameLocation_empty_newLocation()
+    {
+        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
+        RepresentativeAssociation representativeAssociation2 = new RepresentativeAssociation("username/emailAddress2", "password", 12345, "firstName", "lastName");
+
+        initForChangeGame_location_and_date_Test();
+
+        String repMail = "username/emailAddress2";
+        String newLocation = "";
+        String gameID = "game2";
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(representativeAssociation);
+            representativeAssociationController.createRepresentativeAssociation(representativeAssociation2);
+            representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("The value is empty", e.getMessage());
+        }
+    }
+
+    @Test
+    public void changeGameLocation_empty_gameID()
+    {
+        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
+
+        initForChangeGame_location_and_date_Test();
+
+        String repMail = "username/emailAddress2";
+        String newLocation = "court2";
+        String gameID = "";
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(representativeAssociation);
+            representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
+        }
+        catch (Exception e)
+        {
+            Assert.assertEquals("The value is empty", e.getMessage());
+        }
+    }
+
+//    @Test
+//    public void changeGameLocation_null_all()
+//    {
+//        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
+//
+//        initForChangeGame_location_and_date_Test();
+//
+//        String repMail = null;
+//        String newLocation = null;
+//        String gameID = null;
+//        try
+//        {
+//            representativeAssociationController.createRepresentativeAssociation(representativeAssociation);
+//            representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
+//        }
+//        catch (Exception e)
+//        {
+//            Assert.assertEquals(null,  e.getMessage());
+//        }
+//    }
+//
+//
+//    @Test
+//    public void changeGameLocation_sameLocation()
+//    {
+//        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
+//
+//        initForChangeGame_location_and_date_Test();
+//
+//        String repMail = "username/emailAddress";
+//        String newLocation = "court1";
+//        String gameID = "game1";
+//        try
+//        {
+//            representativeAssociationController.createRepresentativeAssociation(representativeAssociation);
+//            representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
+//        }
+//        catch (Exception e)
+//        {
+//            Assert.assertEquals(null,  e.getMessage());
+//        }
+//    }
+
+
+
+    @Test
+    public void createSeasonLeague_legal55() throws Exception
+    {
+        try
+        {
+            representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+            representativeAssociationController.createLeague("username/emailAddress", "leagueName");
+            representativeAssociationController.createSeason("username/emailAddress", "seasonName");
+            representativeAssociationController.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+//        SeasonLeague seasonLeague = SeasonLeagueDbInMemory.getInstance().getSeasonLeague("seasonName_leagueName");
+        SeasonLeague seasonLeague = SeasonLeagueDbInServer.getInstance().getSeasonLeague("seasonName_leagueName");
+        Assert.assertEquals("seasonName_leagueName", seasonLeague.getSeasonLeagueName());
+    }
 }

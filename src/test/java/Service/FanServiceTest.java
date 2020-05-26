@@ -1,5 +1,6 @@
 package Service;
 
+import Controller.BaseEmbeddedSQL;
 import Data.*;
 import Model.Enums.AlertWay;
 import Model.Enums.GamesAlert;
@@ -17,7 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FanServiceTest {
+public class FanServiceTest extends BaseEmbeddedSQL
+{
 
     private FanService fanService = new FanService();
     private PageDb pageDb = PageDbInMemory.getInstance();

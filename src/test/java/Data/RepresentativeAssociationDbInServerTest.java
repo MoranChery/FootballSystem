@@ -1,5 +1,6 @@
 package Data;
 
+import Controller.BaseEmbeddedSQL;
 import Model.UsersTypes.RepresentativeAssociation;
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepresentativeAssociationDbInServerTest
+public class RepresentativeAssociationDbInServerTest extends BaseEmbeddedSQL
 {
     private RepresentativeAssociationDbInServer representativeAssociationDbInServer = RepresentativeAssociationDbInServer.getInstance();
 

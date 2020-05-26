@@ -1,5 +1,6 @@
 package Data;
 
+import Controller.BaseEmbeddedSQL;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JudgeDbInServerTest
+public class JudgeDbInServerTest extends BaseEmbeddedSQL
 {
     private JudgeDbInServer judgeDbInServer = JudgeDbInServer.getInstance();
 

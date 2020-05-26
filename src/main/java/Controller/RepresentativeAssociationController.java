@@ -42,8 +42,10 @@ public class RepresentativeAssociationController extends Observable
         this.judgeDb = JudgeDbInServer.getInstance();
 //        this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
         this.judgeSeasonLeagueDb = JudgeSeasonLeagueDbInServer.getInstance();
-        this.gameDb = GameDbInMemory.getInstance();
-        this.courtDb = CourtDbInMemory.getInstance();
+//        this.gameDb = GameDbInMemory.getInstance();
+        this.gameDb = GameDbInServer.getInstance();
+//        this.courtDb = CourtDbInMemory.getInstance();
+        this.courtDb = CourtDbInServer.getInstance();
     }
 
     /**
@@ -64,7 +66,8 @@ public class RepresentativeAssociationController extends Observable
             try
             {
                 representativeAssociationDb.insertRepresentativeAssociation(representativeAssociation);
-                roleDb.createRoleInSystem(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
+//                roleDb.createRoleInSystem(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
+                roleDb.insertRole(representativeAssociation.getEmailAddress(), null, RoleType.REPRESENTATIVE_ASSOCIATION);
             }
             catch (Exception e)
             {
@@ -73,11 +76,17 @@ public class RepresentativeAssociationController extends Observable
         }
         catch (Exception e)
         {
-            throw new Exception("RepresentativeAssociation already exists in the system");
+            try
+            {
+                representativeAssociationDb.insertRepresentativeAssociation(representativeAssociation);
+//                roleDb.createRoleInSystem(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
+                roleDb.insertRole(representativeAssociation.getEmailAddress(), null, RoleType.REPRESENTATIVE_ASSOCIATION);
+            }
+            catch (Exception e1)
+            {
+                throw new Exception("RepresentativeAssociation already exists in the system");
+            }
         }
-
-//        representativeAssociationDb.insertRepresentativeAssociation(representativeAssociation);
-//        roleDb.createRoleInSystem(representativeAssociation.getEmailAddress(), RoleType.REPRESENTATIVE_ASSOCIATION);
     }
 
     /**
@@ -187,7 +196,8 @@ public class RepresentativeAssociationController extends Observable
         {
             throw new Exception("Judge already exists in the system");
         }
-        roleDb.createRoleInSystem(username, RoleType.JUDGE);
+//        roleDb.createRoleInSystem(username, RoleType.JUDGE);
+        roleDb.insertRole(username, null, RoleType.JUDGE);
     }
 
     /**

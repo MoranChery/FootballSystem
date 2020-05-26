@@ -1,5 +1,6 @@
 package Data;
 
+import Controller.BaseEmbeddedSQL;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.League;
@@ -14,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeagueDbInServerTest
+public class LeagueDbInServerTest extends BaseEmbeddedSQL
 {
     private LeagueDbInServer leagueDbInServer = LeagueDbInServer.getInstance();
 

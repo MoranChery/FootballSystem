@@ -1,6 +1,8 @@
 package Data;
 
-public class GameJudgesListDbInServerTest
+import Controller.BaseEmbeddedSQL;
+
+public class GameJudgesListDbInServerTest extends BaseEmbeddedSQL
 {
 
 }

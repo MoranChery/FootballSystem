@@ -38,9 +38,23 @@ public class Game {
         this.judgesOfTheGameList = null;
         this.eventLog = null;
         this.majorJudge = null;
-        this.endGameTime = null;
+//        this.endGameTime = null;
+        int minute = gameDate.getMinutes();
+        int hour = gameDate.getHours();
+        if(minute > 30)
+        {
+            minute = minute + 30;
+            hour = hour + 1;
+        }
+        else
+        {
+            minute = minute - 30;
+            hour = hour + 2;
+        }
+        this.endGameTime = gameDate;
+        this.endGameTime.setHours(hour);
+        this.endGameTime.setMinutes(minute);
     }
-
 
     public Game(String gameID, Date gameDate, String seasonLeague, String hostTeam, String guestTeam, String court, Set<String> judges,String majorJudge,Date endGameTime) {
         this.gameID = gameID;
@@ -54,7 +68,53 @@ public class Game {
         this.judgesOfTheGameList = judges;
         this.eventLog = new GameEventsLog();
         this.majorJudge = majorJudge;
-        this.endGameTime = endGameTime;
+//        this.endGameTime = endGameTime;
+        int minute = gameDate.getMinutes();
+        int hour = gameDate.getHours();
+        if(minute > 30)
+        {
+            minute = minute + 30;
+            hour = hour + 1;
+        }
+        else
+        {
+            minute = minute - 30;
+            hour = hour + 2;
+        }
+        this.endGameTime = gameDate;
+        this.endGameTime.setHours(hour);
+        this.endGameTime.setMinutes(minute);
+    }
+
+    public Game(String gameID, Date gameDate, String seasonLeague, String hostTeam, String guestTeam, String court, Set<String> judges,String majorJudge)
+    {
+        this.gameID = gameID;
+        this.gameDate = gameDate;
+        this.seasonLeague = seasonLeague;
+        this.hostTeam = hostTeam;
+        this.guestTeam = guestTeam;
+        this.court = court;
+        this.hostTeamScore = 0;
+        this.guestTeamScore = 0;
+        this.judgesOfTheGameList = judges;
+        this.eventLog = new GameEventsLog();
+        this.majorJudge = majorJudge;
+
+        int minute = gameDate.getMinutes();
+        int hour = gameDate.getHours();
+        if(minute > 30)
+        {
+            minute = minute + 30;
+            hour = hour + 1;
+        }
+        else
+        {
+            minute = minute - 30;
+            hour = hour + 2;
+        }
+        this.endGameTime = gameDate;
+        this.endGameTime.setHours(hour);
+        this.endGameTime.setMinutes(minute);
     }
 
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");

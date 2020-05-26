@@ -14,7 +14,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
 
-public class JudgeControllerTest {
+public class JudgeControllerTest extends BaseEmbeddedSQL {
 
 //    private JudgeController judgeController = new JudgeController();
 //    private JudgeDb judgeDb = JudgeDbInMemory.getInstance();

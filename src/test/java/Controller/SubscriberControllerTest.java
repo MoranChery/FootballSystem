@@ -11,7 +11,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubscriberControllerTest {
+public class SubscriberControllerTest extends BaseEmbeddedSQL{
 
     private SubscriberController subscriberController = new SubscriberController();
     private SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();

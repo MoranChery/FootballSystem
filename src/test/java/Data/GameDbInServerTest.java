@@ -1,5 +1,6 @@
 package Data;
 
+import Controller.BaseEmbeddedSQL;
 import Model.*;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
@@ -12,7 +13,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.util.*;
 
-public class GameDbInServerTest
+public class GameDbInServerTest extends BaseEmbeddedSQL
 {
     private GameDbInServer gameDbInServer = GameDbInServer.getInstance();
 

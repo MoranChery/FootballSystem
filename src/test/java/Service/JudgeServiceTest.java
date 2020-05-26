@@ -1,5 +1,6 @@
 package Service;
 
+import Controller.BaseEmbeddedSQL;
 import Data.*;
 import Model.Court;
 import Model.Enums.CalculateLeaguePoints;
@@ -16,7 +17,8 @@ import org.junit.Test;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class JudgeServiceTest {
+public class JudgeServiceTest extends BaseEmbeddedSQL
+{
 
     private JudgeService judgeService = new JudgeService();
     private JudgeDb judgeDb = JudgeDbInMemory.getInstance();

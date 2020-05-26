@@ -3,7 +3,7 @@ package Data;
 import java.util.ArrayList;
 import java.util.Set;
 
-public interface GameJudgesListDb
+public interface GameJudgesListDb extends Db
 {
     void insertGameJudgeList(String gameID, Set<String> judgesOfTheGameList) throws Exception;
 

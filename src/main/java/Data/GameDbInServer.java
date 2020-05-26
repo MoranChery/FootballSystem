@@ -60,6 +60,11 @@ public class GameDbInServer implements GameDb
 
             // execute the preparedStatement
             preparedStmt.execute();
+
+            if (game.getJudgesOfTheGameList() != null)
+            {
+                GameJudgesListDbInServer.getInstance().insertGameJudgeList(game.getGameID(), game.getJudgesOfTheGameList());
+            }
         }
         catch (Exception e)
         {
@@ -67,7 +72,6 @@ public class GameDbInServer implements GameDb
         }
         finally
         {
-            GameJudgesListDbInServer.getInstance().insertGameJudgeList(game.getGameID(), game.getJudgesOfTheGameList());
             conn.close();
         }
     }

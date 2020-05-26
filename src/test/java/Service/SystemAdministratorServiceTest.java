@@ -1,5 +1,6 @@
 package Service;
 
+import Controller.BaseEmbeddedSQL;
 import Controller.GuestController;
 import Data.*;
 import Model.Enums.RoleType;
@@ -11,7 +12,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SystemAdministratorServiceTest {
+public class SystemAdministratorServiceTest extends BaseEmbeddedSQL
+{
     private SystemAdministratorService systemAdministratorService=new SystemAdministratorService();
     GuestController guestController=new GuestController();
 

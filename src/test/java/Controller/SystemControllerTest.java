@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class SystemControllerTest {
+public class SystemControllerTest extends BaseEmbeddedSQL{
 
     private SystemController systemController;
     private static SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();
