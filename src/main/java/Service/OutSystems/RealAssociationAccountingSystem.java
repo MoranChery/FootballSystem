@@ -1,6 +1,8 @@
 package Service.OutSystems;
 
 public class RealAssociationAccountingSystem implements IAssociationAccountingSystem {
+    private String serverHost;
+
     @Override
     public boolean addPayment(String teamName, String date, double amount) {
         if(teamName==null|| date==null)
@@ -9,8 +11,14 @@ public class RealAssociationAccountingSystem implements IAssociationAccountingSy
     }
 
     @Override
-    public void connectTo(String serverhost)
+    public void connectTo(String serverHost)
     {
-        System.out.println("Connecting to "+ serverhost);
+        this.serverHost=serverHost;
+        System.out.println("Connecting to "+ serverHost);
+    }
+
+    @Override
+    public boolean isConnected() {
+        return true;
     }
 }
