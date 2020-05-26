@@ -3,20 +3,33 @@ package Data;
 import Model.Court;
 import Model.Game;
 import Model.UsersTypes.Judge;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.print.attribute.standard.NumberUp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GameDbInMemory implements GameDb {
 
     private Map<String, Game> allGamesMap;
-    private static GameDbInMemory ourInstance = new GameDbInMemory();
+    private static GameDbInMemory ourInstance;
 
-    public GameDbInMemory() {
+    static {
+        try {
+            ourInstance = new GameDbInMemory();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public GameDbInMemory() throws Exception {
         this.allGamesMap = new HashMap<>();
+
+        Game game1  = new Game("game1",new Date(),"sl1", "team1", "team2","courtName1");
+        Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","courtName2");
+        allGamesMap.put(game1.getGameID(),game1);
+        allGamesMap.put(game2.getGameID(),game2);
+
+
     }
 
     public static GameDbInMemory getInstance() { return ourInstance; }
@@ -63,7 +76,14 @@ public class GameDbInMemory implements GameDb {
     }
 
     @Override
-    public void changeGameLocation(String newLocation, String gameID) throws Exception {
+    public List<Game> getAllGames() throws Exception
+    {
+        throw new NotImplementedException();
+//        return null;
+    }
+
+    @Override
+    public void updateGameLocation(String newLocation, String gameID) throws Exception {
         if(!allGamesMap.containsKey(gameID)){
             throw new Exception("The game is not in the DB");
         }
@@ -73,7 +93,7 @@ public class GameDbInMemory implements GameDb {
     }
 
     @Override
-    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
+    public void updateGameDate(String repMail, Date newDate, String gameID) throws Exception {
         if(!allGamesMap.containsKey(gameID)){
             throw new Exception("The game is not in the DB");
         }

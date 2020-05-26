@@ -4,6 +4,7 @@ import Controller.SubscriberController;
 import Model.Alert;
 import Model.Enums.RoleType;
 import Model.UsersTypes.RepresentativeAssociation;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,11 +82,6 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
         representativeAssociationMap.remove(email);
     }
 
-    @Override
-    public ArrayList<String> getAllRepresentativeAssociationEmailAddress() throws Exception {
-        throw new Exception("not implemented");
-    }
-
     /**
      * For the tests-Clear the RepresentativeAssociation Map from the DB.
      */
@@ -95,5 +91,11 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
         representativeAssociationMap.clear();
     }
 
-
+    @Override
+    public ArrayList<String> getAllRepresentativeAssociationEmailAddress() throws Exception
+    {
+        //todo
+        throw new NotImplementedException();
+//        return null;
+    }
 }

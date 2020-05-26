@@ -28,6 +28,7 @@ public class AlertDbInMemory implements AlertDb{
             List<Alert> alertList = allSavedAlerts.get(email);
             if(!alertList.contains(alert)){
                 alertList.add(alert);
+
             }
         }
         // first alert for this email

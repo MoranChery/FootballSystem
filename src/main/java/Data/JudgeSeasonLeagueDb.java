@@ -2,6 +2,8 @@ package Data;
 
 import Model.JudgeSeasonLeague;
 
+import java.util.ArrayList;
+
 public interface JudgeSeasonLeagueDb extends Db
 {
     /**
@@ -20,4 +22,6 @@ public interface JudgeSeasonLeagueDb extends Db
     JudgeSeasonLeague getJudgeSeasonLeague(String judgeSeasonLeagueName) throws Exception;
 
     void removeJudgeSeasonLeague(String judgeSeasonLeagueName)throws Exception;
+
+    ArrayList<String> getAllJudgeSeasonLeagueNames() throws Exception;
 }

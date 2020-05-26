@@ -25,7 +25,7 @@ public class GameEventsDbInMemory implements GameEventsDb, Db {
         this.gameEvents = gameEvents;
     }
 
-   public void createGameEvent(GameEvent gameEvent){
+   public void insertGameEvent(GameEvent gameEvent){
         if(gameEvent == null){
             throw new NullPointerException("bad input");
         }
@@ -43,7 +43,7 @@ public class GameEventsDbInMemory implements GameEventsDb, Db {
     }
 
     @Override
-    public GameEvent getEvent(String eventId) throws Exception {
+    public GameEvent getGameEvent(String eventId) throws Exception {
         if (!gameEvents.containsKey(eventId)) {
             throw new Exception("This event doesnt associated with game");
         }
@@ -51,7 +51,7 @@ public class GameEventsDbInMemory implements GameEventsDb, Db {
     }
 
     @Override
-    public void setUpdatedDetails(GameEvent gameEvent) throws Exception {
+    public void updateGameEventDetails(GameEvent gameEvent) throws Exception {
         String eventId = gameEvent.getEventId();
         if (!gameEvents.containsKey(eventId)) {
             throw new Exception("This event doesnt associated with game");
@@ -64,7 +64,7 @@ public class GameEventsDbInMemory implements GameEventsDb, Db {
     }
 
     @Override
-    public Map<String, GameEvent> getGameEvents(String gameId) {
+    public Map<String, GameEvent> getMap_eventId_GameEvent_ByGameId(String gameId) {
         Map<String, GameEvent> gameEventMap = new HashMap<>();
         for (GameEvent gameEvent : gameEvents.values()) {
             if (gameId.equals(gameEvent.getGameId())) {

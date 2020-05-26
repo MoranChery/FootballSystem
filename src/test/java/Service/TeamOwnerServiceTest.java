@@ -25,7 +25,6 @@
     import java.text.SimpleDateFormat;
     import java.util.ArrayList;
     import java.util.Date;
-    import java.util.HashMap;
     import java.util.List;
     import java.util.Map;
     import java.util.Set;
@@ -46,7 +45,7 @@
         private SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
         private CourtDb courtDb = CourtDbInServer.getInstance();
         private PermissionDb permissionDb = PermissionDbInServer.getInstance();
-        private PageDb pageDb = PageInServer.getInstance();
+        private PageDb pageDb = PageDbInServer.getInstance();
         private FinancialActivityDb financialActivityDb = FinancialActivityDbInServer.getInstance();
 
         @Before

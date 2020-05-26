@@ -145,7 +145,7 @@ public class JudgeController {
         }
         GameEvent gameEvent = new GameEvent(gameId,game.getGameDate(),eventTime,eventMinute,gameEventType,description);
         gameEvent.setEventId(eventId);
-        gameEventsDb.setUpdatedDetails(gameEvent);
+        gameEventsDb.updateGameEventDetails(gameEvent);
     }
 
     public void createReportForGame(String path,String judgeMail, String gameId) throws Exception {
@@ -160,7 +160,7 @@ public class JudgeController {
         if (!theJudgeGameList.contains(gameId)) {
             throw new Exception("This game doesnt associated with current judge");
         }
-        Map<String, GameEvent> eventsLog = gameEventsDb.getGameEvents(gameId);
+        Map<String, GameEvent> eventsLog = gameEventsDb.getMap_eventId_GameEvent_ByGameId(gameId);
         BufferedWriter report = new BufferedWriter(new FileWriter(path + gameId));
         report.write(prettyGson.toJson(eventsLog));
         report.flush();

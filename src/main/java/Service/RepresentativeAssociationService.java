@@ -4,7 +4,9 @@ import Controller.RepresentativeAssociationController;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
+import Model.Game;
 import Model.LoggerHandler;
+import Model.SeasonLeague;
 import Service.OutSystems.IAssociationAccountingSystem;
 import Service.OutSystems.ITaxSystem;
 import Service.OutSystems.ProxyAssociationAccountingSystem;
@@ -13,9 +15,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class RepresentativeAssociationService {
@@ -195,27 +203,27 @@ public class RepresentativeAssociationService {
      * Will continue to Controller.
      *
      * @param representativeAssociationEmailAddress-username/emailAddress of the online RepresentativeAssociation.
-     * @param leagueName-name                                       of SeasonLeague.
-     * @param calculateLeaguePoints-Policy                                CalculateLeaguePoints.
+     * @param changeLeagueSeason-name                                       of SeasonLeague.
+     * @param policyChosen-Policy                                CalculateLeaguePoints.
      * @throws Exception
      */
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "representativeAssociationService/{representativeAssociationEmailAddress}/{leagueName}/{season}/{calculateLeaguePoints}")
+    @PostMapping(value = "changeCalculateLeaguePointsPolicy/{representativeAssociationEmailAddress}/{changeLeagueSeason}/{policyChosen}")
     @ResponseStatus(HttpStatus.OK)
-    public void changeCalculateLeaguePointsPolicy(@PathVariable String representativeAssociationEmailAddress, @PathVariable String leagueName, @PathVariable String calculateLeaguePoints, @PathVariable String season) throws Exception {
-        try {
-            //todo
-            CalculateLeaguePoints calculateLeaguePointsToMake= CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0;
-            String seasonLeagueName="";
-            if (representativeAssociationEmailAddress == null) {
-                throw new Exception("Only RepresentativeAssociation has permissions to this action!");
+    public void changeCalculateLeaguePointsPolicy(@PathVariable String representativeAssociationEmailAddress, @PathVariable String changeLeagueSeason, @PathVariable String policyChosen) throws Exception {
+
+            String seasonLeagueName = changeLeagueSeason;
+            try {
+                CalculateLeaguePoints calculateLeaguePointsToMake= CalculateLeaguePoints.valueOf(policyChosen);
+                if (representativeAssociationEmailAddress == null) {
+                    throw new Exception("Only RepresentativeAssociation has permissions to this action!");
+                }
+                representativeAssociationController.changeCalculateLeaguePointsPolicy(representativeAssociationEmailAddress, seasonLeagueName, calculateLeaguePointsToMake);
+                logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + policyChosen + "\"  was changed to SeasonLeague \"" + seasonLeagueName + "\"");
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + policyChosen + "\"  wasn't changed to SeasonLeague \"" + seasonLeagueName + "\" because: " + e.getMessage()); // todo - seasonLeagueName put as String
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
-            representativeAssociationController.changeCalculateLeaguePointsPolicy(representativeAssociationEmailAddress, seasonLeagueName, calculateLeaguePointsToMake);
-            logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  was changed to SeasonLeague \"" + seasonLeagueName + "\"");
-        } catch (Exception e) {
-            logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + calculateLeaguePoints + "\"  wasn't changed to SeasonLeague \"" + "seasonLeagueName" + "\" because: " + e.getMessage()); // todo - seasonLeagueName put as String
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
     }
 
     /**
@@ -227,25 +235,36 @@ public class RepresentativeAssociationService {
         return representativeAssociationController;
     }
 
-    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
-        if(repMail.isEmpty() || gameID.isEmpty()){
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "changeGameDate/{repMail}/{changeGameDate}/{gameID}")
+    @ResponseStatus(HttpStatus.OK)
+    public void changeGameDate(@PathVariable String repMail, @PathVariable String changeGameDate, @PathVariable String gameID) throws Exception {
+        if(repMail.isEmpty() || gameID.isEmpty() || changeGameDate.isEmpty()){
             throw new Exception("The value is empty");
         }
-        if (newDate == null){
-            throw new NullPointerException("bad input");
+        try {
+            Date newDate = new SimpleDateFormat("dd-MM-yyyy").parse(changeGameDate);
+            representativeAssociationController.changeGameDate(repMail, newDate, gameID);
+            logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Date \"" + newDate + "\"  was changed to the game \"" + gameID + "\"");
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        representativeAssociationController.changeGameDate(repMail, newDate, gameID);
-        logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Date \"" + newDate + "\"  was changed to the game \"" + gameID + "\"");
     }
 
-    public void changeGameLocation(String repMail, String newLocation, String gameID) throws Exception {
-        if(repMail.isEmpty() || gameID.isEmpty() || newLocation.isEmpty()){
-            throw new Exception("The value is empty");
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "changeGameLocation/{repMail}/{newLocation}/{gameID}")
+    @ResponseStatus(HttpStatus.OK)
+    public void changeGameLocation(@PathVariable String repMail, @PathVariable String newLocation, @PathVariable String gameID) throws Exception {
+        try {
+            if (repMail.isEmpty() || gameID.isEmpty() || newLocation.isEmpty()) {
+                throw new Exception("The value is empty");
+            }
+            representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
+            logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Location \"" + newLocation + "\"  was changed to the game \"" + gameID + "\"");
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        representativeAssociationController.changeGameLocation(repMail, newLocation, gameID);
-        logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Location \"" + newLocation + "\"  was changed to the game \"" + gameID + "\"");
     }
-
 
     /**
      *
@@ -271,6 +290,77 @@ public class RepresentativeAssociationService {
         }
         logger.log(Level.INFO, "Created by: " + repMail + " Description: Add Payment has done successfully");
         return proxyAssociationAccountingSystem.addPayment(teamName,date,amount);
+    }
+
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "getSeasonLeague/")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<Integer, String> getSeasonLeague(){
+        try{
+            List<SeasonLeague> seasonLeagueList = representativeAssociationController.getAllSeasonLeague();
+            Map <Integer, String> seasonLeagueListNames= new HashMap<>();
+            for(int i = 0; i<seasonLeagueList.size() ;i++){
+                seasonLeagueListNames.put(i,seasonLeagueList.get(i).getSeasonLeagueName());
+            }
+            return seasonLeagueListNames;
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "getAllPolicy/")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<Integer, String> getAllPolicy(){
+        try{
+            Map <Integer, String> policyList= new HashMap<>();
+            List<String> policyNames = Stream.of(CalculateLeaguePoints.values())
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
+            for(int i = 0; i<policyNames.size() ;i++){
+                policyList.put(i,policyNames.get(i));
+            }
+            return policyList;
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "getAllGames/")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<Integer , Game> getAllGames(){
+        try{
+            List<Game> gamesList = representativeAssociationController.getAllGames();
+            Map <Integer, Game> games= new HashMap<>();
+            for(int i = 0; i<gamesList.size() ;i++){
+                games.put(i,gamesList.get(i));
+            }
+            return games;
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "getAllLocation/")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<Integer , String> getAllLocation(){
+        try{
+            List<String> locationsList = representativeAssociationController.getAllLocation();
+            Map <Integer, String> locations= new HashMap<>();
+            for(int i = 0; i<locationsList.size() ;i++){
+                locations.put(i,locationsList.get(i));
+            }
+            return locations;
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 }
 

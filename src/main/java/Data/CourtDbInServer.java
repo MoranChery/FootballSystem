@@ -25,32 +25,34 @@ public class CourtDbInServer implements CourtDb {
         }
 
         Connection conn = DbConnector.getConnection();
-
-        String query = "select * from court where court.court_name = \'" + courtName + "\'";
-        Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
+        try{
+            String query = "select * from court where court.court_name = \'" + courtName + "\'";
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
 
             // checking if ResultSet is empty
             if (rs.next() == false) {
-            throw new NotFoundException("Court not found");
+                throw new NotFoundException("Court not found");
+            }
+
+            String court_name = rs.getString("court_name");
+            String court_city = rs.getString("court_city");
+            Court court = new Court(court_name,court_city);
+
+            query = "select * from team where team.court = \'" + court_name + "\'";
+            preparedStmt = conn.createStatement();
+            rs = preparedStmt.executeQuery(query);
+            List<String> teams = new ArrayList<>();
+            while(rs.next()){
+                String currTeam = rs.getString("team_name");
+                teams.add(currTeam);
+            }
+            court.setTeams(teams);
+
+            return court;
+        } finally {
+            conn.close();
         }
-
-        String court_name = rs.getString("court_name");
-        String court_city = rs.getString("court_city");
-        Court court = new Court(court_name,court_city);
-
-        query = "select * from team where team.court = \'" + court_name + "\'";
-        preparedStmt = conn.createStatement();
-        rs = preparedStmt.executeQuery(query);
-        List<String> teams = new ArrayList<>();
-        while(rs.next()){
-            String currTeam = rs.getString("team_name");
-            teams.add(currTeam);
-        }
-        court.setTeams(teams);
-
-        conn.close();
-        return court;
     }
 
     @Override
@@ -81,64 +83,63 @@ public class CourtDbInServer implements CourtDb {
     @Override
     public void updateCourtDetails(String courtName, String courtCity) throws NotFoundException, SQLException {
         Connection conn = DbConnector.getConnection();
-
-        String query = "UPDATE court SET court_city = \'" + courtCity + "\'  WHERE court.court_name =  \'"+  courtName + "\'" ;
-        PreparedStatement preparedStmt = conn.prepareStatement(query);
-        preparedStmt.executeUpdate();
-        conn.close();
+        try{
+            String query = "UPDATE court SET court_city = \'" + courtCity + "\'  WHERE court.court_name =  \'"+  courtName + "\'" ;
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.executeUpdate();
+        } finally {
+            conn.close();
+        }
     }
 
     @Override
     public List<String> getTeams(String courtName) throws SQLException {
         Connection conn = DbConnector.getConnection();
+        try{
+            String query = "select * from  team where team.court = \'" + courtName + "\'";
 
-        String query = "select * from  team where team.court = \'" + courtName + "\'";
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
+            List<String> teamsOfCourt = new ArrayList<> ();
 
-        Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
-        List<String> teamsOfCourt = new ArrayList<> ();
-
-        while(rs.next()){
-            String team = rs.getString("team_name");
-            teamsOfCourt.add(team);
+            while(rs.next()){
+                String team = rs.getString("team_name");
+                teamsOfCourt.add(team);
+            }
+            return teamsOfCourt;
+        } finally {
+            conn.close();
         }
-        conn.close();
-
-        return teamsOfCourt;
     }
 
     @Override
     public void deleteAll() throws SQLException {
         Connection conn = DbConnector.getConnection();
-        Statement statement = conn.createStatement();
-        /* TRUNCATE is faster than DELETE since
-
-         * it does not generate rollback information and does not
-
-         * fire any delete triggers
-
-         */
-
-        statement.executeUpdate("delete from court");
-        conn.close();
+        try{
+            Statement statement = conn.createStatement();
+            statement.executeUpdate("delete from court");
+        } finally {
+            conn.close();
+        }
     }
 
     public List<String> getAllCourtsNames() throws SQLException {
         Connection conn = DbConnector.getConnection();
+        try{
+            String query = "select * from  court";
 
-        String query = "select * from  court";
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
+            List<String> courtsNames = new ArrayList<> ();
 
-        Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
-        List<String> courtsNames = new ArrayList<> ();
-
-        while(rs.next()){
-            String court = rs.getString("court_name");
-            courtsNames.add(court);
+            while(rs.next()){
+                String court = rs.getString("court_name");
+                courtsNames.add(court);
+            }
+            return courtsNames;
+        } finally {
+            conn.close();
         }
-        conn.close();
-
-        return courtsNames;
     }
 
     public static void main(String[] args) throws Exception {
