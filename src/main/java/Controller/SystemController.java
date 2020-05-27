@@ -10,6 +10,7 @@ import Service.OutSystems.IAssociationAccountingSystem;
 import Service.OutSystems.ITaxSystem;
 import Service.OutSystems.ProxyAssociationAccountingSystem;
 import Service.OutSystems.ProxyTaxSystem;
+import Service.SystemService;
 
 public class SystemController {
     private static SubscriberDb subscriberDb;
@@ -104,9 +105,9 @@ public class SystemController {
      * @return boolean - true if the connection ended successfully
      */
     protected boolean isConnectToTheAccountingSystem() {
-        //todo
-        //return proxyAssociationAccountingSystem.isConnected();
-        return true;
+
+        return proxyAssociationAccountingSystem.isConnected();
+
     }
 
     /**
@@ -116,9 +117,9 @@ public class SystemController {
      * @return boolean - true if the connection ended successfully
      */
     protected boolean isConnectToTheTaxLawSystem() {
-        //todo
-        //return proxyTaxSystem.isConnected();
-        return false;
+
+        return proxyTaxSystem.isConnected();
+
     }
 
 
@@ -141,6 +142,7 @@ public class SystemController {
             roleDb.createRoleInSystem(emailAddress, RoleType.SYSTEM_ADMINISTRATOR);
         }
     }
+
 
 }
 

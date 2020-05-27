@@ -1,5 +1,6 @@
 package Data;
 
+import Controller.BaseEmbeddedSQL;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JudgeDbInServerTest
+public class JudgeDbInServerTest extends BaseEmbeddedSQL
 {
     private JudgeDbInServer judgeDbInServer = JudgeDbInServer.getInstance();
 
@@ -97,7 +98,8 @@ public class JudgeDbInServerTest
         }
         catch (Exception e)
         {
-            Assert.assertEquals("Duplicate entry '" + judge2.getEmailAddress() + "' for key 'subscriber.PRIMARY'", e.getMessage());
+//            Assert.assertEquals("Duplicate entry '" + judge2.getEmailAddress() + "' for key 'subscriber.PRIMARY'", e.getMessage());
+            Assert.assertEquals("subscriber already exists", e.getMessage());
         }
     }
 
@@ -132,7 +134,7 @@ public class JudgeDbInServerTest
             subscriberDbInServer.insertSubscriber(judge1);
             judgeDbInServer.insertJudge(judge1);
 
-            judgeDbInServer.getJudge(judgeEmailAddressNull);
+                judgeDbInServer.getJudge(judgeEmailAddressNull);
         }
         catch (Exception e)
         {

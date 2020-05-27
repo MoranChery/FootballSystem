@@ -1,5 +1,6 @@
 package Service;
 
+import Controller.BaseEmbeddedSQL;
 import Data.*;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
@@ -13,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,22 +23,35 @@ public class RepresentativeAssociationServiceTest
     private RepresentativeAssociationService representativeAssociationService = new RepresentativeAssociationService();
 
     @Before
-    public void init()
+    public void init() throws SQLException
     {
         final List<Db> dbs = new ArrayList<>();
 
-        dbs.add(RepresentativeAssociationDbInMemory.getInstance());
-        dbs.add(RoleDbInMemory.getInstance());
-        dbs.add(SubscriberDbInMemory.getInstance());
-        dbs.add(LeagueDbInMemory.getInstance());
-        dbs.add(SeasonDbInMemory.getInstance());
-        dbs.add(SeasonLeagueDbInMemory.getInstance());
-        dbs.add(JudgeDbInMemory.getInstance());
-        dbs.add(JudgeSeasonLeagueDbInMemory.getInstance());
+//        dbs.add(RepresentativeAssociationDbInMemory.getInstance());
+//        dbs.add(RoleDbInMemory.getInstance());
+//        dbs.add(SubscriberDbInMemory.getInstance());
+//        dbs.add(LeagueDbInMemory.getInstance());
+//        dbs.add(SeasonDbInMemory.getInstance());
+//        dbs.add(SeasonLeagueDbInMemory.getInstance());
+//        dbs.add(JudgeDbInMemory.getInstance());
+//        dbs.add(JudgeSeasonLeagueDbInMemory.getInstance());
+
+        dbs.add(RepresentativeAssociationDbInServer.getInstance());
+        dbs.add(RoleDbInServer.getInstance());
+        dbs.add(SubscriberDbInServer.getInstance());
+        dbs.add(LeagueDbInServer.getInstance());
+        dbs.add(SeasonDbInServer.getInstance());
+        dbs.add(SeasonLeagueDbInServer.getInstance());
+        dbs.add(JudgeDbInServer.getInstance());
+        dbs.add(JudgeSeasonLeagueDbInServer.getInstance());
+        dbs.add((TeamDbInServer.getInstance()));
+        dbs.add((CourtDbInServer.getInstance()));
+        dbs.add((GameDbInServer.getInstance()));
+        dbs.add((GameJudgesListDbInServer.getInstance()));
 
         for (Db db : dbs)
         {
-//            db.deleteAll();
+            db.deleteAll();
         }
     }
 
@@ -110,7 +125,8 @@ public class RepresentativeAssociationServiceTest
         {
             e.printStackTrace();
         }
-        League league = LeagueDbInMemory.getInstance().getLeague("leagueName");
+//        League league = LeagueDbInMemory.getInstance().getLeague("leagueName");
+        League league = LeagueDbInServer.getInstance().getLeague("leagueName");
         Assert.assertEquals("leagueName", league.getLeagueName());
     }
 
@@ -207,7 +223,8 @@ public class RepresentativeAssociationServiceTest
         {
             e.printStackTrace();
         }
-        Season season = SeasonDbInMemory.getInstance().getSeason("seasonName");
+//        Season season = SeasonDbInMemory.getInstance().getSeason("seasonName");
+        Season season = SeasonDbInServer.getInstance().getSeason("seasonName");
         Assert.assertEquals("seasonName", season.getSeasonName());
     }
 
@@ -365,7 +382,8 @@ public class RepresentativeAssociationServiceTest
         {
             e.printStackTrace();
         }
-        SeasonLeague seasonLeague = SeasonLeagueDbInMemory.getInstance().getSeasonLeague("seasonName_leagueName");
+//        SeasonLeague seasonLeague = SeasonLeagueDbInMemory.getInstance().getSeasonLeague("seasonName_leagueName");
+        SeasonLeague seasonLeague = SeasonLeagueDbInServer.getInstance().getSeasonLeague("seasonName_leagueName");
         Assert.assertEquals("seasonName_leagueName", seasonLeague.getSeasonLeagueName());
     }
 
@@ -586,13 +604,16 @@ public class RepresentativeAssociationServiceTest
         {
             e.printStackTrace();
         }
-        Subscriber subscriber = SubscriberDbInMemory.getInstance().getSubscriber("username");
+//        Subscriber subscriber = SubscriberDbInMemory.getInstance().getSubscriber("username");
+        Subscriber subscriber = SubscriberDbInServer.getInstance().getSubscriber("username");
         Assert.assertEquals("username", subscriber.getEmailAddress());
 
-        Judge judge = JudgeDbInMemory.getInstance().getJudge("username");
+//        Judge judge = JudgeDbInMemory.getInstance().getJudge("username");
+        Judge judge = JudgeDbInServer.getInstance().getJudge("username");
         Assert.assertEquals("username", judge.getEmailAddress());
 
-        Role role = RoleDbInMemory.getInstance().getRole("username");
+//        Role role = RoleDbInMemory.getInstance().getRole("username");
+        Role role = RoleDbInServer.getInstance().getRole("username");
         RoleType roleType = role.getRoleType();
         Assert.assertEquals(RoleType.JUDGE, roleType);
     }
@@ -625,7 +646,10 @@ public class RepresentativeAssociationServiceTest
         try
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
-            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username", new Judge("username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
+//            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username", new Judge("username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
+
+//            JudgeDbInServer.getInstance().getAllJudgesMap().put("username", new Judge("username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
+
             representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         }
         catch (Exception e)
@@ -741,7 +765,9 @@ public class RepresentativeAssociationServiceTest
         {
             representativeAssociationService.getRepresentativeAssociationController().createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
             representativeAssociationService.createJudge("username/emailAddress", "username", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
-            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username2", new Judge("username2", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
+//            JudgeDbInMemory.getInstance().getAllJudgesMap().put("username2", new Judge("username2", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
+
+//            JudgeDbInServer.getInstance().getAllJudgesMap().put("username2", new Judge("username2", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL));
         }
         catch (Exception e)
         {
@@ -867,7 +893,8 @@ public class RepresentativeAssociationServiceTest
         {
             e.printStackTrace();
         }
-        JudgeSeasonLeague judgeSeasonLeague = JudgeSeasonLeagueDbInMemory.getInstance().getJudgeSeasonLeague("seasonName_leagueName_username");
+//        JudgeSeasonLeague judgeSeasonLeague = JudgeSeasonLeagueDbInMemory.getInstance().getJudgeSeasonLeague("seasonName_leagueName_username");
+        JudgeSeasonLeague judgeSeasonLeague = JudgeSeasonLeagueDbInServer.getInstance().getJudgeSeasonLeague("seasonName_leagueName_username");
         Assert.assertEquals("seasonName_leagueName_username", judgeSeasonLeague.getJudgeSeasonLeagueName());
     }
 
@@ -944,7 +971,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-          //  representativeAssociationService.changeCalculateLeaguePointsPolicy(null, null, null);
+            representativeAssociationService.changeCalculateLeaguePointsPolicy(null, null, null);
         }
         catch (Exception e)
         {
@@ -961,7 +988,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-      //      representativeAssociationService.changeCalculateLeaguePointsPolicy(null, "seasonName_LeagueName", null);
+            representativeAssociationService.changeCalculateLeaguePointsPolicy(null, "seasonName_LeagueName", null);
         }
         catch (Exception e)
         {
@@ -978,7 +1005,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-          // representativeAssociationService.changeCalculateLeaguePointsPolicy("username/emailAddress", null, CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1);
+           representativeAssociationService.changeCalculateLeaguePointsPolicy("username/emailAddress", null, "WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1");
         }
         catch (Exception e)
         {
@@ -1014,7 +1041,7 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-        //    representativeAssociationService.changeCalculateLeaguePointsPolicy("username/emailAddress2", "seasonName_leagueName", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1);
+            representativeAssociationService.changeCalculateLeaguePointsPolicy("username/emailAddress2", "seasonName_leagueName", "WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1");
         }
         catch (Exception e)
         {
@@ -1031,13 +1058,14 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-          //  representativeAssociationService.changeCalculateLeaguePointsPolicy("username/emailAddress", "seasonName_leagueName", CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1);
+            representativeAssociationService.changeCalculateLeaguePointsPolicy("username/emailAddress", "seasonName_leagueName", "WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1");
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-        SeasonLeague seasonLeague = SeasonLeagueDbInMemory.getInstance().getSeasonLeague("seasonName_leagueName");
+//        SeasonLeague seasonLeague = SeasonLeagueDbInMemory.getInstance().getSeasonLeague("seasonName_leagueName");
+        SeasonLeague seasonLeague = SeasonLeagueDbInServer.getInstance().getSeasonLeague("seasonName_leagueName");
         Assert.assertEquals(CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, seasonLeague.getCalculateLeaguePoints());
     }
 
@@ -1050,13 +1078,14 @@ public class RepresentativeAssociationServiceTest
             representativeAssociationService.createLeague("username/emailAddress", "leagueName");
             representativeAssociationService.createSeason("username/emailAddress", "seasonName");
             representativeAssociationService.createSeasonLeague("username/emailAddress", "leagueName", "seasonName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-         //   representativeAssociationService.changeCalculateLeaguePointsPolicy("username/emailAddress", "seasonName_leagueName", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0);
+            representativeAssociationService.changeCalculateLeaguePointsPolicy("username/emailAddress", "seasonName_leagueName", "WIN_IS_2_TIE_IS_1_LOSE_IS_0");
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-        SeasonLeague seasonLeague = SeasonLeagueDbInMemory.getInstance().getSeasonLeague("seasonName_leagueName");
+//        SeasonLeague seasonLeague = SeasonLeagueDbInMemory.getInstance().getSeasonLeague("seasonName_leagueName");
+        SeasonLeague seasonLeague = SeasonLeagueDbInServer.getInstance().getSeasonLeague("seasonName_leagueName");
         Assert.assertEquals(CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, seasonLeague.getCalculateLeaguePoints());
     }
     //endregion

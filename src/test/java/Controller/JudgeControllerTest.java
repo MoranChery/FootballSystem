@@ -38,6 +38,7 @@ private JudgeController judgeController = new JudgeController();
     private CourtDb courtDb = CourtDbInServer.getInstance();
     private GameJudgesListDb gameJudgesListDb = GameJudgesListDbInServer.getInstance();
     private String path = "C:\\Users\\noyha\\IdeaProjects\\footballtest";
+//    private String path = "C:\\Users\\avira\\Desktop";
     private Gson prettyGson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd HH:mm").create();
 
     @Before
@@ -558,7 +559,7 @@ private JudgeController judgeController = new JudgeController();
         judgeDb.insertJudge(newJudge);
         roleDb.createRoleInSystem(judgeMail, RoleType.JUDGE);
 
-        Date endDate = new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime();
+        Date gameDate = new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime();
         Date date = new Date();
         teamDb.insertTeam("host");
         teamDb.insertTeam("away");
@@ -572,10 +573,15 @@ private JudgeController judgeController = new JudgeController();
         Court court = new Court("court", "Netanya");
         courtDb.insertCourt(court);
 
-        Game game = new Game("gameId",new Date(),"A_B","host","away","court",judges,judgeMail,endDate);
+        Game game = new Game("gameId",gameDate,"A_B","host","away","court",judges,judgeMail,gameDate);
         gameDb.insertGame(game);
 
         Judge judge = judgeDb.getJudge(judgeMail);
+
+
+        GameEvent gameEvent = new GameEvent("gameId",date,date,40, GameEventType.FOUL,"foul");
+        gameEvent.setEventId("eventId");
+        gameEventsDb.addEvent(gameEvent);
 //
 //        List<String> judgeGame = new ArrayList<>();
 //        judgeGame.add("gameId");

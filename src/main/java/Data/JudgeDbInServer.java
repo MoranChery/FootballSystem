@@ -82,7 +82,7 @@ public class JudgeDbInServer implements JudgeDb
         Judge judge = new Judge(userName, password, id, first_name, last_name, QualificationJudge.valueOf(judge_qualification));
         judge.setPassword(password);
         judge.setStatus(Status.valueOf(status));
-//        judge.setSeasonLeagueName_JudgeSeasonLeagueName(addMap_seasonLeagueName_judgeSeasonLeagueName(judgeEmailAddress));
+        judge.setSeasonLeagueName_JudgeSeasonLeagueName(addMap_seasonLeagueName_judgeSeasonLeagueName(judgeEmailAddress));
         judge.setTheJudgeGameList(getJudgeGames(userName));
 
         return judge;

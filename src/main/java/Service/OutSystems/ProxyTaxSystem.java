@@ -1,12 +1,29 @@
 package Service.OutSystems;
 
+import Model.LoggerHandler;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ProxyTaxSystem implements ITaxSystem {
 
-    private static ITaxSystem taxSystem = new RealTaxSystem();
+    private Logger logger = Logger.getLogger("TaxSystem");
+
+    private static ITaxSystem taxProxySystem = new ProxyTaxSystem();
+
+    private ITaxSystem taxSystem;
+
+    public ProxyTaxSystem() {
+        logger.addHandler(LoggerHandler.loggerErrorFileHandler);
+        logger.addHandler(LoggerHandler.loggerEventFileHandler);
+        this.taxSystem = new RealTaxSystem();
+
+    }
 
     public static ITaxSystem getInstance() {
-        return taxSystem;
+        return taxProxySystem;
     }
+
 
     @Override
     public double getTaxRate(double revenueAmount) {
@@ -15,8 +32,13 @@ public class ProxyTaxSystem implements ITaxSystem {
 
     @Override
     public void connectTo(String serverHost) throws Exception {
-        taxSystem.connectTo(serverHost);
-        System.out.println("Tax system is connected!");
+        try {
+            taxSystem.connectTo(serverHost);
+            logger.log(Level.INFO, "Tax system is connected!");
+        }catch (Exception e){
+            logger.log(Level.WARNING, "Tax system is NOT connected!");
+
+        }
     }
 
     @Override
