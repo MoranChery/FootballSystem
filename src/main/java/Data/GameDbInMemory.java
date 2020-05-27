@@ -3,12 +3,10 @@ package Data;
 import Model.Court;
 import Model.Game;
 import Model.UsersTypes.Judge;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.print.attribute.standard.NumberUp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GameDbInMemory implements GameDb {
 
@@ -78,7 +76,14 @@ public class GameDbInMemory implements GameDb {
     }
 
     @Override
-    public void changeGameLocation(String newLocation, String gameID) throws Exception {
+    public List<Game> getAllGames() throws Exception
+    {
+        throw new NotImplementedException();
+//        return null;
+    }
+
+    @Override
+    public void updateGameLocation(String newLocation, String gameID) throws Exception {
         if(!allGamesMap.containsKey(gameID)){
             throw new Exception("The game is not in the DB");
         }
@@ -88,7 +93,7 @@ public class GameDbInMemory implements GameDb {
     }
 
     @Override
-    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
+    public void updateGameDate(String repMail, Date newDate, String gameID) throws Exception {
         if(!allGamesMap.containsKey(gameID)){
             throw new Exception("The game is not in the DB");
         }

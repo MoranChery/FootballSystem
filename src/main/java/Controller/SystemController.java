@@ -128,7 +128,7 @@ public class SystemController {
         catch (NotFoundException notFoundEx) {
             SystemAdministrator systemAdministrator = new SystemAdministrator(emailAddress, "admin123", 111111111, "admin", "admin");
             subscriberDb.insertSubscriber(systemAdministrator);
-            systemAdministratorDb.createSystemAdministrator(systemAdministrator);
+            systemAdministratorDb.insertSystemAdministrator(systemAdministrator);
             roleDb.createRoleInSystem(emailAddress, RoleType.SYSTEM_ADMINISTRATOR);
         }
     }

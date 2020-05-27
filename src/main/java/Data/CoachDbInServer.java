@@ -24,36 +24,42 @@ public class CoachDbInServer implements CoachDb {
         }
 
         Connection conn = DbConnector.getConnection();
+        try {
+            String query = "select * from subscriber, coach where subscriber.email_address = coach.email_address and subscriber.email_address = \'" + coachEmailAddress + "\'";
 
-        String query = "select * from subscriber, coach where subscriber.email_address = coach.email_address and subscriber.email_address = \'" + coachEmailAddress + "\'";
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
 
-        Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
+            // checking if ResultSet is empty
+            if (rs.next() == false) {
+                throw new NotFoundException("Coach not found");
+            }
 
-        // checking if ResultSet is empty
-        if (rs.next() == false) {
-            throw new NotFoundException("Coach not found");
+            String userName = rs.getString("email_address");
+            String password = rs.getString("password");
+            Integer id = rs.getInt("id");
+            String first_name = rs.getString("first_name");
+            String last_name = rs.getString("last_name");
+            String status = rs.getString("status");
+            String team = rs.getString("team");
+            String coach_role = rs.getString("coach_role");
+            String coach_qualification = rs.getString("qualification_coach");
+            Coach coach = new Coach(userName, id, first_name, last_name, CoachRole.valueOf(coach_role), QualificationCoach.valueOf(coach_qualification));
+            coach.setPassword(password);
+            coach.setTeam(team);
+            coach.setStatus(Status.valueOf(status));
+            return coach;
+        } finally {
+            conn.close();
         }
+    }
 
-        String userName = rs.getString("email_address");
-        String password = rs.getString("password");
-        Integer id = rs.getInt("id");
-        String first_name = rs.getString("first_name");
-        String last_name = rs.getString("last_name");
-        String status = rs.getString("status");
-        String team = rs.getString("team");
-        String coach_role = rs.getString("coach_role");
-        String coach_qualification = rs.getString("qualification_coach");
-        conn.close();
-
-        Coach coach = new Coach(userName, id, first_name, last_name, CoachRole.valueOf(coach_role),QualificationCoach.valueOf(coach_qualification));
-        coach.setPassword(password);
-        coach.setTeam(team);
-        coach.setStatus(Status.valueOf(status));
-        return coach;    }
 
     @Override
     public void insertCoach(Coach currCoach) throws Exception {
+        if(currCoach == null){
+            throw new NullPointerException("bad_input");
+        }
         Connection conn = DbConnector.getConnection();
         try
         {
@@ -83,28 +89,25 @@ public class CoachDbInServer implements CoachDb {
     @Override
     public void updateCoachDetails(String coachEmailAddress, String firstName, String lastName, CoachRole coachRole, QualificationCoach qualificationCoach) throws NotFoundException, SQLException {
         Connection conn = DbConnector.getConnection();
-        String query = "UPDATE coach join subscriber SET first_name = \'" + firstName + "\', last_Name = \'" + lastName + "\', coach_role = \'"+ coachRole.name() + "\', qualification_coach = \'" + qualificationCoach.name()  + "\'  WHERE subscriber.email_address =  \'"+ coachEmailAddress + "\' and coach.email_address = \'" + coachEmailAddress + "\'" ;
+        try{
+            String query = "UPDATE coach join subscriber SET first_name = \'" + firstName + "\', last_Name = \'" + lastName + "\', coach_role = \'"+ coachRole.name() + "\', qualification_coach = \'" + qualificationCoach.name()  + "\'  WHERE subscriber.email_address =  \'"+ coachEmailAddress + "\' and coach.email_address = \'" + coachEmailAddress + "\'" ;
 
-        PreparedStatement preparedStmt = conn.prepareStatement(query);
-        preparedStmt.executeUpdate();
-        conn.close();
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.executeUpdate();
+        } finally {
+            conn.close();
+        }
     }
 
     @Override
     public void deleteAll() throws SQLException {
         Connection conn = DbConnector.getConnection();
-        Statement statement = conn.createStatement();
-        /* TRUNCATE is faster than DELETE since
-
-         * it does not generate rollback information and does not
-
-         * fire any delete triggers
-
-         */
-
-        statement.executeUpdate("delete from coach");
-        conn.close();
-
+        try{
+            Statement statement = conn.createStatement();
+            statement.executeUpdate("delete from coach");
+        } finally {
+            conn.close();
+        }
     }
 
     public static void main(String[] args) throws Exception {

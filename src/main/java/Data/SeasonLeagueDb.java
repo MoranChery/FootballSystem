@@ -4,6 +4,8 @@ import Model.Enums.CalculateLeaguePoints;
 import Model.JudgeSeasonLeague;
 import Model.SeasonLeague;
 
+import java.util.ArrayList;
+
 public interface SeasonLeagueDb extends Db
 {
     /**
@@ -36,4 +38,8 @@ public interface SeasonLeagueDb extends Db
      * @param calculateLeaguePoints-new Policy CalculateLeaguePoints.
      */
     void updateCalculateLeaguePointsPolicy(String seasonLeagueName, CalculateLeaguePoints calculateLeaguePoints) throws Exception;
+
+    ArrayList<String> getAllSeasonLeagueNames() throws Exception;
+
+    ArrayList<SeasonLeague> getAllSeasonLeagueObjects() throws Exception;
 }

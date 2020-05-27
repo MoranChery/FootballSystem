@@ -1,74 +1,151 @@
 package Data;
 
+import Model.Court;
+import Model.Enums.QualificationJudge;
 import Model.Enums.Status;
 import Model.Game;
+import Model.SeasonLeague;
+import Model.Team;
+import Model.UsersTypes.Judge;
 import Model.PageType;
 import Model.Season;
-import Model.SeasonLeague;
-import Model.UsersTypes.Judge;
 import Model.UsersTypes.TeamOwner;
+import com.sun.jna.platform.win32.Sspi;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.util.*;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.Date;
 
-public class GameDbInServer implements GameDb {
+public class GameDbInServer implements GameDb
+{
+    private static GameDbInServer ourInstance = new GameDbInServer();
+
+    public static GameDbInServer getInstance() { return ourInstance; }
+
     @Override
-    public void insertGame(Game game) throws Exception {
+    public void insertGame(Game game) throws Exception
+    {
         Connection conn = DbConnector.getConnection();
         try
         {
             // the mysql insert statement
-            String query = " insert into game (game_id,game_date,season_league,host_team,guest_team,court)"
-                    + " values (?,?,?,?,?,?)";
+            String query = " insert into game (game_id, game_date, season_league, host_team, guest_team, court, host_team_score, guest_team_score, major_judge, end_game_time)"
+                    + " values (?,?,?,?,?,?,?,?,?,?)";
 
-            // create the mysql insert preparedstatement
+            // create the mysql insert preparedStatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setString (1, game.getGameID());
-            SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
-            String date = df.format(game.getGameDate());
-            preparedStmt.setString (2,date);
+            preparedStmt.setString(1, game.getGameID());
+            java.sql.Timestamp timestampStart = new java.sql.Timestamp((game.getGameDate().getTime()));
+
+            preparedStmt.setTimestamp(2,timestampStart);
             preparedStmt.setString (3, game.getSeasonLeague());
             preparedStmt.setString (4, game.getHostTeam());
             preparedStmt.setString (5, game.getGuestTeam());
             preparedStmt.setString (6, game.getCourt());
+            preparedStmt.setInt(7, game.getHostTeamScore());
+            preparedStmt.setInt(8, game.getGuestTeamScore());
+            preparedStmt.setString(9, game.getMajorJudge());
+            if (game.getEndGameTime() != null)
+            {
+                java.sql.Timestamp timestampEnd = new java.sql.Timestamp((game.getEndGameTime().getTime()));
+//                preparedStmt.setTimestamp(10, new java.sql.Date(game.getEndGameTime().getTime()));
+                preparedStmt.setTimestamp(10, timestampEnd);
+            }
+            else
+            {
+                preparedStmt.setTimestamp(10, null);
+            }
 
-            // execute the preparedstatement
+            // execute the preparedStatement
             preparedStmt.execute();
-
-        } catch(SQLIntegrityConstraintViolationException e) {
-            throw new Exception("game already exist in the system");
         }
-        finally {
+        catch (Exception e)
+        {
+            throw new Exception("Game already exist in system");
+        }
+        finally
+        {
+            Set<String> judgesOfTheGameList = game.getJudgesOfTheGameList();
+            String majorJudge = game.getMajorJudge();
+            if(majorJudge != null) {
+                judgesOfTheGameList.add(majorJudge);
+            }
+            GameJudgesListDbInServer.getInstance().insertGameJudgeList(game.getGameID(), game.getJudgesOfTheGameList());
             conn.close();
         }
     }
 
     @Override
-    public void addJudgeToGame(Integer gameID, Judge judgeToAdd) throws Exception {
-
+    public void addJudgeToGame(Integer gameID, Judge judgeToAdd) throws Exception
+    {
+        //todo
+        throw new NotImplementedException();
     }
+
 
     @Override
-    public Game getGame(String gameID) throws Exception {
-        return null;
-    }
+    public Game getGame(String gameID) throws Exception
+    {
+        if (gameID == null)
+        {
+            throw new NullPointerException("Game not found");
+        }
 
-    @Override
-    public void changeGameLocation(String newLocation, String gameID) throws Exception {
-
-    }
-
-    @Override
-    public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
-
-    }
-
-    public List<Game> getAllGames() throws SQLException, NotFoundException, ParseException {
         Connection conn = DbConnector.getConnection();
 
+        // the mysql select statement
+        String query = "select * from game where game.game_id = \'" + gameID + "\'";
+
+        // create the mysql select resultSet
+        Statement preparedStmt = conn.createStatement();
+        ResultSet rs = preparedStmt.executeQuery(query);
+
+        // checking if ResultSet is empty
+        if (rs.next() == false)
+        {
+            throw new NotFoundException("Game not found");
+        }
+
+        String game_id = rs.getString("game_id");
+        Date game_date = rs.getTimestamp("game_date");
+        String season_league = rs.getString("season_league");
+        String host_team = rs.getString("host_team");
+        String guest_team = rs.getString("guest_team");
+        String court = rs.getString("court");
+        Integer host_team_score = rs.getInt("host_team_score");
+        Integer guest_team_score = rs.getInt("guest_team_score");
+        String major_judge = rs.getString("major_judge");
+        Date end_game_time = rs.getTimestamp("end_game_time");
+
+        conn.close();
+
+        Set<String> judgesOfTheGameList = getJudgesOfTheGameList(gameID);
+
+        Game game = new Game(game_id, game_date, season_league, host_team, guest_team, court, judgesOfTheGameList, major_judge, end_game_time);
+        game.setHostTeamScore(host_team_score);
+        game.setGuestTeamScore(guest_team_score);
+
+        return game;
+    }
+
+    private Set<String> getJudgesOfTheGameList(String gameID) throws Exception
+    {
+        return GameJudgesListDbInServer.getInstance().getListJudgeEmailAddress_ByGameID(gameID);
+    }
+
+    @Override
+    public List<Game> getAllGames() throws Exception
+    {
+        Connection conn = DbConnector.getConnection();
+
+        // create the mysql select resultSet
         String query = "select * from game";
 
         Statement preparedStmt = conn.createStatement();
@@ -90,16 +167,114 @@ public class GameDbInServer implements GameDb {
 
             Date date = new SimpleDateFormat("dd/MM/yyyy").parse(game_date);
 
-            Game game = new Game(game_id,date,season_league,host_team,guest_team,court);
+//            Game game = new Game(game_id,date,season_league,host_team,guest_team,court);
+            Game game = getGame(game_id);
             games.add(game);
         }
         return games;
     }
 
-    @Override
-    public void deleteAll() throws SQLException {
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Override
+    public void updateGameLocation(String newLocation, String gameID) throws Exception
+    {
+        Connection conn = DbConnector.getConnection();
+        try
+        {
+            getGame(gameID);
+
+            // the mysql update statement
+            String query = " update game "
+                    + "set court = \'" + newLocation + "\' "
+                    + "where game_id = \'" + gameID + "\'";
+
+            // create the mysql insert preparedStatement
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+            // execute the preparedStatement
+            preparedStmt.execute();
+        }
+        catch (NotFoundException e)
+        {
+            throw new Exception("Game not found");
+        }
+//        catch (Exception e)
+//        {
+//            throw new Exception("SeasonLeague not found455546486551");
+//        }
+        finally
+        {
+            conn.close();
+        }
     }
+
+    @Override
+    public void updateGameDate(String repMail, Date newDate, String gameID) throws Exception
+    {
+        Connection conn = DbConnector.getConnection();
+        try
+        {
+            getGame(gameID);
+
+            // the mysql update statement
+            String query = " update game "
+                    + "set game_date = \'" + newDate + "\' "
+                    + "where game_id = \'" + gameID + "\'";
+
+            // create the mysql insert preparedStatement
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+            // execute the preparedStatement
+            preparedStmt.execute();
+        }
+        catch (NotFoundException e)
+        {
+            throw new Exception("Game not found");
+        }
+//        catch (Exception e)
+//        {
+//            throw new Exception("SeasonLeague not found455546486551");
+//        }
+        finally
+        {
+            conn.close();
+        }
+    }
+
+    @Override
+    public void deleteAll() throws SQLException
+    {
+        Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        /* TRUNCATE is faster than DELETE since
+         * it does not generate rollback information and does not
+         * fire any delete triggers
+         */
+
+        // the mysql delete statement
+        String query = "delete from game";
+
+        // create the mysql delete Statement
+        statement.executeUpdate(query);
+        conn.close();
+    }
+
+
+
+
 
     public static void main(String[] args) throws Exception {
         SeasonDbInServer seasonDbInServer = new SeasonDbInServer();
@@ -111,6 +286,6 @@ public class GameDbInServer implements GameDb {
 
         List<Game> allGames = gameDbInServer.getAllGames();
         System.out.println(allGames);
+    }
+}
 
-    }
-    }

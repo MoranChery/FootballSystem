@@ -8,6 +8,7 @@ import Model.UsersTypes.Judge;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +82,8 @@ public class JudgeDbInServer implements JudgeDb
         Judge judge = new Judge(userName, password, id, first_name, last_name, QualificationJudge.valueOf(judge_qualification));
         judge.setPassword(password);
         judge.setStatus(Status.valueOf(status));
-        judge.setSeasonLeagueName_JudgeSeasonLeagueName(addMap_seasonLeagueName_judgeSeasonLeagueName(judgeEmailAddress));
+//        judge.setSeasonLeagueName_JudgeSeasonLeagueName(addMap_seasonLeagueName_judgeSeasonLeagueName(judgeEmailAddress));
+        judge.setTheJudgeGameList(getJudgeGames(userName));
 
         return judge;
     }
@@ -152,48 +154,119 @@ public class JudgeDbInServer implements JudgeDb
     @Override
     public void addGameToTheJudge(String judgeMail, Game gameToAdd) throws Exception
     {
-        //todo
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public List<String> getJudgeGames(String judgeId)
-    {
-        //todo
-        throw new NotImplementedException();
-//        return null;
-    }
-
-    @Override
-    public void deleteAll()
-    {
         Connection conn = DbConnector.getConnection();
         try
         {
-            // the mysql delete statement
-            String query = " delete from judge";
+            // the mysql insert statement
+            String query = " insert into football_system_db.game_judges_list (football_system_db.game_judges_list.game_id, football_system_db.game_judges_list.judges_email_address)"
+                    + " values (?,?)";
 
-            // create the mysql delete preparedStatement
+            // create the mysql insert preparedStatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setString(1, gameToAdd.getGameID());
+            preparedStmt.setString(2, judgeMail);
 
             // execute the preparedStatement
             preparedStmt.execute();
         }
-        catch (SQLException throwables)
+        catch (Exception e)
         {
-            throwables.printStackTrace();
+            throw new Exception("Judge already exists in the system");
         }
         finally
         {
-            try
-            {
-                conn.close();
+            conn.close();
+        }
+    }
+
+    @Override
+    public List<String> getJudgeGames(String judgeMail) throws SQLException
+    {
+        List<String> theJudgeGameList = new ArrayList<>();
+        Connection conn = DbConnector.getConnection();
+        try {
+            // the mysql select statement
+            String query = "select * from game_judges_list where game_judges_list.judges_email_address = \'" + judgeMail + "\'";
+
+            // create the mysql select resultSet
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
+
+            // checking if ResultSet is empt
+
+            while (rs.next() != false) {
+                String game_id = rs.getString("game_id");
+                theJudgeGameList.add(game_id);
             }
-            catch (SQLException throwables)
-            {
-                throwables.printStackTrace();
+            query = "select * from game where major_judge = \'" + judgeMail + "\'";
+
+            // create the mysql select resultSet
+            preparedStmt = conn.createStatement();
+            rs = preparedStmt.executeQuery(query);
+
+            while (rs.next() != false) {
+                String game_id = rs.getString("game_id");
+                if (!theJudgeGameList.contains(game_id)) {
+                    theJudgeGameList.add(game_id);
+                }
             }
         }
+        finally {
+            conn.close();
+        }
+        return theJudgeGameList;
+    }
+
+    @Override
+    public void deleteAll() throws SQLException
+    {
+        Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        /* TRUNCATE is faster than DELETE since
+         * it does not generate rollback information and does not
+         * fire any delete triggers
+         */
+
+        // the mysql delete statement
+        String query = "delete from judge";
+
+        // create the mysql delete Statement
+        statement.executeUpdate(query);
+        conn.close();
+    }
+
+    @Override
+    public ArrayList<String> getAllJudgeEmailAddress() throws Exception
+    {
+        ArrayList<String> judgeEmailAddress = new ArrayList<>();
+
+        Connection conn = DbConnector.getConnection();
+
+        try
+        {
+            // the mysql select statement
+            String query = "select judge_email_address from judge";
+
+            // create the mysql select resultSet
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
+
+            // checking if ResultSet is empty
+            if (rs.next() != false)
+            {
+                judgeEmailAddress.add(rs.getString("judge_email_address"));
+
+                while (rs.next() != false)
+                {
+                    judgeEmailAddress.add(rs.getString("judge_email_address"));
+                }
+            }
+        }
+        finally
+        {
+            conn.close();
+        }
+        return judgeEmailAddress;
     }
 
     public static void main(String[] args)

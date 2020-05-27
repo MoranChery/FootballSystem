@@ -53,13 +53,15 @@ public class RoleDbInServer implements RoleDb {
         try
         {
             // the mysql insert statement
-            String query = " insert into role (email_address,role_type)"
-                    + " values (?,?)";
+            String query = " insert into role (email_address,role_type,assigned_date)"
+                    + " values (?,?,?)";
 
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString (1, emailAddress);
-            preparedStmt.setString (2, roleType.name());
+//            preparedStmt.setString (2, roleType.name());
+            preparedStmt.setString (2, roleType.toString());
+            preparedStmt.setLong (3, System.currentTimeMillis());
 
             // execute the preparedstatement
             preparedStmt.execute();

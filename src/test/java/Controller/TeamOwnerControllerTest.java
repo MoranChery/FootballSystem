@@ -1,11 +1,8 @@
 package Controller;
 
 import Data.*;
-import Model.Court;
+import Model.*;
 import Model.Enums.*;
-import Model.FinancialActivity;
-import Model.Role;
-import Model.Team;
 import Model.UsersTypes.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,7 +12,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class TeamOwnerControllerTest {
+public class TeamOwnerControllerTest extends BaseEmbeddedSQL {
     //    private TeamOwnerController teamOwnerController = new TeamOwnerController();
 //    private TeamDb teamDb = teamDb;
 //    private PlayerDb playerDb = playerDb;
@@ -32,7 +29,7 @@ public class TeamOwnerControllerTest {
     private SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
     private CourtDb courtDb = CourtDbInServer.getInstance();
     private PermissionDb permissionDb = PermissionDbInServer.getInstance();
-    private PageDb pageDb = PageInServer.getInstance();
+    private PageDb pageDb = PageDbInServer.getInstance();
     private FinancialActivityDb financialActivityDb = FinancialActivityDbInServer.getInstance();
 
     @Before
@@ -121,6 +118,7 @@ public class TeamOwnerControllerTest {
         Coach coach = new Coach("email@gmail.com", "123",2, "firstTeamOwnerName", "lastTeamOwnerName", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         subscriberDb.insertSubscriber(coach);
         coachDb.insertCoach(coach);
+        pageDb.insertPage(coach.getEmailAddress(), PageType.COACH);
         Assert.assertNotNull(coachDb.getCoach("email@gmail.com"));
     }
 
@@ -198,6 +196,7 @@ public class TeamOwnerControllerTest {
         Player managerToAdd = new Player(withoutPermissionsOwnerEmail, "1234",2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(managerToAdd);
         playerDb.insertPlayer(managerToAdd);
+        pageDb.insertPage(managerToAdd.getEmailAddress(),PageType.PLAYER);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
 
         ArrayList<PermissionType> permissionTypes = new ArrayList<>();
@@ -2273,6 +2272,7 @@ public class TeamOwnerControllerTest {
         Coach coach = new Coach("email@gmail.com", "1234",1, "firstPlayer", "lastPlayer", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         subscriberDb.insertSubscriber(coach);
         coachDb.insertCoach(coach);
+        pageDb.insertPage(coach.getEmailAddress(), PageType.COACH);
         try {
             teamOwnerController.removeCoach(teamName, ownerEmail,"email@gmail.com");
             Assert.fail("Should throw Exception");
@@ -2296,6 +2296,7 @@ public class TeamOwnerControllerTest {
         Coach coach = new Coach(coachToRemove, "1234", 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         subscriberDb.insertSubscriber(coach);
         coachDb.insertCoach(coach);
+        pageDb.insertPage(coach.getEmailAddress(), PageType.COACH);
         teamOwnerController.addCoach(teamName,ownerEmail, coachToRemove, 1, "firstCoach", "lastCoach", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         Map<String, Coach> coaches = teamDb.getTeam(teamName).getCoaches();
 
@@ -4353,6 +4354,7 @@ public class TeamOwnerControllerTest {
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(withoutPermissionsOwner);
         playerDb.insertPlayer(withoutPermissionsOwner);
+        pageDb.insertPage(withoutPermissionsOwner.getEmailAddress(),PageType.PLAYER);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
 
         try {
@@ -4487,6 +4489,7 @@ public class TeamOwnerControllerTest {
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(withoutPermissionsOwner);
         playerDb.insertPlayer(withoutPermissionsOwner);
+        pageDb.insertPage(withoutPermissionsOwner.getEmailAddress(),PageType.PLAYER);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
 
         try {
@@ -4606,6 +4609,7 @@ public class TeamOwnerControllerTest {
         Player withoutPermissionsOwner = new Player(withoutPermissionsOwnerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName", new Date(), PlayerRole.GOALKEEPER);
         subscriberDb.insertSubscriber(withoutPermissionsOwner);
         playerDb.insertPlayer(withoutPermissionsOwner);
+        pageDb.insertPage(withoutPermissionsOwner.getEmailAddress(),PageType.PLAYER);
         roleDb.insertRole(withoutPermissionsOwnerEmail,teamName, RoleType.PLAYER);
 
         try {
@@ -4626,7 +4630,6 @@ public class TeamOwnerControllerTest {
         subscriberDb.insertSubscriber(teamOwner);
         teamOwnerDb.insertTeamOwner(teamOwner);
         roleDb.insertRole(ownerEmail,teamName, RoleType.TEAM_OWNER);
-
 
 
         teamOwnerController.addTeamManager(teamName,"email@gmail.com", 1, "firstPlayer", "lastPlayer",new ArrayList<>(),ownerEmail);

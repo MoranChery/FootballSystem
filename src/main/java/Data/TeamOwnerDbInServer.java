@@ -46,11 +46,17 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
 
     @Override
     public void updateTeamOwnerTeam(String  team, String teamOwnerEmailAddress) throws Exception {
+        if(team == null || teamOwnerEmailAddress == null){
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
-        String query = "UPDATE team_owner SET team = \'" + team + "\' WHERE email_address = \'"+ teamOwnerEmailAddress + "\'" ;
-        PreparedStatement preparedStmt = conn.prepareStatement(query);
-        preparedStmt.executeUpdate();
-        conn.close();
+        try{
+            String query = "UPDATE team_owner SET team = \'" + team + "\' WHERE email_address = \'"+ teamOwnerEmailAddress + "\'" ;
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.executeUpdate();
+        } finally {
+            conn.close();
+        }
     }
 
     @Override
@@ -60,132 +66,142 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
         }
 
         Connection conn = DbConnector.getConnection();
+        try{
+            String query = "select * from subscriber, team_owner where subscriber.email_address = team_owner.email_address and subscriber.email_address = \'" + teamOwnerEmailAddress + "\'";
 
-        String query = "select * from subscriber, team_owner where subscriber.email_address = team_owner.email_address and subscriber.email_address = \'" + teamOwnerEmailAddress + "\'";
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
 
-        Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
+            // checking if ResultSet is empty
+            if (rs.next() == false) {
+                throw new NotFoundException("TeamOwner not found");
+            }
 
-        // checking if ResultSet is empty
-        if (rs.next() == false) {
-            throw new NotFoundException("TeamOwner not found");
+            String userName = rs.getString("email_address");
+            String password = rs.getString("password");
+            Integer id = rs.getInt("id");
+            String first_name = rs.getString("first_name");
+            String last_name = rs.getString("last_name");
+            String status = rs.getString("status");
+            String team = rs.getString("team");
+            String owned_by_email = rs.getString("owned_by_email_address");
+            TeamOwner teamOwner = new TeamOwner(userName, password, id, first_name, last_name,team);
+            teamOwner.setStatus(Status.valueOf(status));
+            teamOwner.setOwnedByEmailAddress(owned_by_email);
+
+
+            query = "select * from  team_owner where team_owner.owned_by_email_address = \'" + teamOwnerEmailAddress + "\'";
+
+            preparedStmt = conn.createStatement();
+            rs = preparedStmt.executeQuery(query);
+            List<String>  teamOwnersByThis = new ArrayList<>();
+
+            while(rs.next()){
+                String currOwner = rs.getString("owned_by_email_address");
+                teamOwnersByThis.add(currOwner);
+            }
+            teamOwner.setTeamOwnersByThis(teamOwnersByThis);
+            return teamOwner;
+
+        } finally {
+            conn.close();
         }
-
-        String userName = rs.getString("email_address");
-        String password = rs.getString("password");
-        Integer id = rs.getInt("id");
-        String first_name = rs.getString("first_name");
-        String last_name = rs.getString("last_name");
-        String status = rs.getString("status");
-        String team = rs.getString("team");
-        String owned_by_email = rs.getString("owned_by_email_address");
-        TeamOwner teamOwner = new TeamOwner(userName, password, id, first_name, last_name,team);
-        teamOwner.setStatus(Status.valueOf(status));
-        teamOwner.setOwnedByEmailAddress(owned_by_email);
-
-
-        query = "select * from  team_owner where team_owner.owned_by_email_address = \'" + teamOwnerEmailAddress + "\'";
-
-         preparedStmt = conn.createStatement();
-         rs = preparedStmt.executeQuery(query);
-         List<String>  teamOwnersByThis = new ArrayList<>();
-
-        while(rs.next()){
-            String currOwner = rs.getString("owned_by_email_address");
-            teamOwnersByThis.add(currOwner);
-        }
-
-        conn.close();
-        teamOwner.setTeamOwnersByThis(teamOwnersByThis);
-        return teamOwner;
     }
 
     @Override
     public void subscriptionTeamOwner(String team, String teamOwnerId, Subscriber subscriber) throws Exception {
         if(team == null || teamOwnerId == null || subscriber == null){
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Connection conn = DbConnector.getConnection();
+        try{
+            String query = "select * from subscriber, team_owner where subscriber.email_address = team_owner.email_address and subscriber.email_address = \'" + subscriber.getEmailAddress() + "\'";
 
-        String query = "select * from subscriber, team_owner where subscriber.email_address = team_owner.email_address and subscriber.email_address = \'" + subscriber.getEmailAddress() + "\'";
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
 
-        Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
+            // checking if ResultSet is empty
+            if (rs.next()) {
+                throw new Exception("TeamOwner to add already exists");
+            }
+            query = "select * from subscriber, team_owner where subscriber.email_address = team_owner.email_address and subscriber.email_address = \'" + teamOwnerId + "\'";
 
-        // checking if ResultSet is empty
-        if (rs.next()) {
-            throw new Exception("TeamOwner to add already exists");
+            preparedStmt = conn.createStatement();
+            rs = preparedStmt.executeQuery(query);
+
+            if (rs.next() == false) {
+                throw new Exception("Major Team Owner not found");
+            }
+            insertTeamOwner(new TeamOwner(team,subscriber,teamOwnerId));
+        } finally {
+            conn.close();
         }
-        query = "select * from subscriber, team_owner where subscriber.email_address = team_owner.email_address and subscriber.email_address = \'" + teamOwnerId + "\'";
-
-        preparedStmt = conn.createStatement();
-         rs = preparedStmt.executeQuery(query);
-
-        if (rs.next() == false) {
-            throw new Exception("Major Team Owner not found");
-        }
-        insertTeamOwner(new TeamOwner(team,subscriber,teamOwnerId));
-        conn.close();
     }
 
     @Override
     public void removeSubscriptionTeamOwner(String ownerToRemoveEmail) throws Exception {
+        if(ownerToRemoveEmail == null){
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
+        try{
+            String query = "delete from team_owner where email_address = ? ";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setString(1, ownerToRemoveEmail);
 
-        String query = "delete from team_owner where email_address = ? ";
-        PreparedStatement preparedStmt = conn.prepareStatement(query);
-        preparedStmt.setString(1, ownerToRemoveEmail);
+            // execute the preparedstatement
+            preparedStmt.execute();
 
-        // execute the preparedstatement
-        preparedStmt.execute();
-
-        conn.close();
-
+        } finally {
+            conn.close();
+        }
 
     }
 
     @Override
     public List<String> getAllTeamOwnersOwnedBy(String teamOwnerEmail) throws SQLException {
         Connection conn = DbConnector.getConnection();
+        try{
+            String query = "select * from  team_owner where team_owner.owned_by_email_address = \'" + teamOwnerEmail + "\'";
 
-        String query = "select * from  team_owner where team_owner.owned_by_email_address = \'" + teamOwnerEmail + "\'";
+            Statement preparedStmt = conn.createStatement();
+            ResultSet rs = preparedStmt.executeQuery(query);
+            List<String>  teamOwnersByThis = new ArrayList<>();
 
-        Statement preparedStmt = conn.createStatement();
-        ResultSet rs = preparedStmt.executeQuery(query);
-        List<String>  teamOwnersByThis = new ArrayList<>();
-
-        while(rs.next()){
-            String currOwner = rs.getString("email_address");
-            teamOwnersByThis.add(currOwner);
+            while(rs.next()){
+                String currOwner = rs.getString("email_address");
+                teamOwnersByThis.add(currOwner);
+            }
+            return teamOwnersByThis;
+        } finally {
+            conn.close();
         }
-        conn.close();
-        return teamOwnersByThis;
     }
 
     @Override
     public Set<String> getAllTeamOwnersInDB() {
-        Set<String> allTeamOwnerInDn = new HashSet<>();
-
         return null;
     }
 
     @Override
     public void deleteAll() throws SQLException {
         Connection conn = DbConnector.getConnection();
-        Statement statement = conn.createStatement();
-        statement.executeUpdate("delete from team_owner");
-        conn.close();
-    }
+        try{
+            Statement statement = conn.createStatement();
+            statement.executeUpdate("delete from team_owner");
+        } finally {
+            conn.close();
+        }    }
 
-    public static void main(String[] args) throws Exception {
-        String ownerEmail = "owner@gmail.com";
-        TeamOwner teamOwner = new TeamOwner(null, new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName"), "owner@gmail.com");
-//        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-        TeamOwnerDbInServer teamOwnerDbInServer = new TeamOwnerDbInServer();
-//        teamOwnerDbInServer.insertTeamOwner(teamOwner);
-        TeamOwner teamOwner1 = teamOwnerDbInServer.getTeamOwner(ownerEmail);
-        System.out.println(teamOwner1);
-
-        teamOwnerDbInServer.removeSubscriptionTeamOwner(ownerEmail);
-    }
+//    public static void main(String[] args) throws Exception {
+//        String ownerEmail = "owner@gmail.com";
+//        TeamOwner teamOwner = new TeamOwner(null, new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName"), "owner@gmail.com");
+////        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
+//        TeamOwnerDbInServer teamOwnerDbInServer = new TeamOwnerDbInServer();
+////        teamOwnerDbInServer.insertTeamOwner(teamOwner);
+//        TeamOwner teamOwner1 = teamOwnerDbInServer.getTeamOwner(ownerEmail);
+//        System.out.println(teamOwner1);
+//
+//        teamOwnerDbInServer.removeSubscriptionTeamOwner(ownerEmail);
+//    }
 }
