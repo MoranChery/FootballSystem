@@ -20,8 +20,17 @@ public class SystemController {
     private ITaxSystem proxyTaxSystem;
     private IAssociationAccountingSystem proxyAssociationAccountingSystem;
 
+    private static SystemController ourInstance;
+    static  {
+        ourInstance = new SystemController();
+        try {
+            addSystemAdministrator();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    public SystemController() {
+    private SystemController() {
         systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
         subscriberDb = SubscriberDbInMemory.getInstance();
         roleDb = RoleDbInMemory.getInstance();
@@ -34,7 +43,7 @@ public class SystemController {
      * add first SystemAdministrator to the system
      * should be privet but for the tests - public
      */
-    private static SystemController ourInstance;
+
     public static void initialSystem() throws Exception {
         ourInstance = new SystemController();
         addSystemAdministrator();

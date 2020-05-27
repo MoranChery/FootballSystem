@@ -30,7 +30,7 @@ public class SystemServiceTest {
         for (Db db : dbs) {
 //            db.deleteAll();
         }
-        systemController = new SystemController();
+     //   systemController = new SystemController();
     }
     @After
     public void after(){

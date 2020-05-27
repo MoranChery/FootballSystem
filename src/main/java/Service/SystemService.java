@@ -10,8 +10,7 @@ public class SystemService{
 
     private static SystemController systemController;
 
-    public SystemService() throws Exception {
-        SystemController.initialSystem();
+    public SystemService(){
         systemController = SystemController.getInstance();
         systemController.connectToAssociationAccountingSystem("AssociationAccountingSystemPort");
         systemController.connectToTaxSystem("TaxSystemPort");
