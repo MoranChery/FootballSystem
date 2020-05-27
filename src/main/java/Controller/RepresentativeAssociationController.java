@@ -328,6 +328,7 @@ public class RepresentativeAssociationController extends Observable
         setChanged();
         notifyObservers(data);
     }
+
     public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
         if(repMail.isEmpty() || gameID.isEmpty()){
             throw new Exception("The value is empty");
@@ -352,42 +353,16 @@ public class RepresentativeAssociationController extends Observable
         notifyObservers(data);
     }
 
-    public List<Game> getAllGames() {
-        //todo - remove and add the db we going to use
-        Game game1  = new Game("game1",new Date(),"sl1", "team1", "team2","courtName1");
-        Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","courtName2");
-        List<Game> allGames = new ArrayList<>();
-        allGames.add(game1);
-        allGames.add(game2);
-        return allGames;
+    public List<Game> getAllGames() throws Exception {
+        return gameDb.getAllGames();
     }
 
     public List<SeasonLeague> getAllSeasonLeague() throws Exception {
-        //todo - delete
-        List<SeasonLeague> seasonLeagues = new ArrayList<>();
-        SeasonLeague seasonLeague11 = new SeasonLeague("seasonName1", "leagueName1", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-        SeasonLeague seasonLeague12 = new SeasonLeague("seasonName1", "leagueName2", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-        SeasonLeague seasonLeague13 = new SeasonLeague("seasonName1", "leagueName3", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-        SeasonLeague seasonLeague21 = new SeasonLeague("seasonName2", "leagueName1", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-        SeasonLeague seasonLeague22 = new SeasonLeague("seasonName2", "leagueName2", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
-        SeasonLeague seasonLeague23 = new SeasonLeague("seasonName2", "leagueName3", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
 
-        seasonLeagues.add(seasonLeague11);
-        seasonLeagues.add(seasonLeague12);
-        seasonLeagues.add(seasonLeague13);
-        seasonLeagues.add(seasonLeague21);
-        seasonLeagues.add(seasonLeague22);
-        seasonLeagues.add(seasonLeague23);
-
-        if(seasonLeagues==null){
-            throw new  Exception("there isn't any seasonLeagues");
-        }
-        else
-            return seasonLeagues;
+        return seasonLeagueDb.getAllSeasonLeagueObjects();
     }
 
-    public List<String> getAllLocation() {
-        //todo - delete
+    public List<String> getAllLocation() throws Exception {
         List <String> locations = new ArrayList<>();
         for (Game game: getAllGames()) {
             locations.add(game.getCourt());

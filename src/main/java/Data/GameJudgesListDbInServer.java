@@ -113,7 +113,7 @@ public class GameJudgesListDbInServer implements GameJudgesListDb
     }
 
     @Override
-    public void deleteAll() throws SQLException
+    public void deleteAll() throws SQLException, SQLException
     {
         Connection conn = DbConnector.getConnection();
         Statement statement = conn.createStatement();

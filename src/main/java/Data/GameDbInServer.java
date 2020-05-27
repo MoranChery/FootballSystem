@@ -41,7 +41,9 @@ public class GameDbInServer implements GameDb
             // create the mysql insert preparedStatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1, game.getGameID());
-            preparedStmt.setDate(2, new java.sql.Date(game.getGameDate().getTime()));
+            java.sql.Timestamp timestampStart = new java.sql.Timestamp((game.getGameDate().getTime()));
+
+            preparedStmt.setTimestamp(2,timestampStart);
             preparedStmt.setString (3, game.getSeasonLeague());
             preparedStmt.setString (4, game.getHostTeam());
             preparedStmt.setString (5, game.getGuestTeam());
@@ -51,11 +53,13 @@ public class GameDbInServer implements GameDb
             preparedStmt.setString(9, game.getMajorJudge());
             if (game.getEndGameTime() != null)
             {
-                preparedStmt.setDate(10, new java.sql.Date(game.getEndGameTime().getTime()));
+                java.sql.Timestamp timestampEnd = new java.sql.Timestamp((game.getEndGameTime().getTime()));
+//                preparedStmt.setTimestamp(10, new java.sql.Date(game.getEndGameTime().getTime()));
+                preparedStmt.setTimestamp(10, timestampEnd);
             }
             else
             {
-                preparedStmt.setDate(10, null);
+                preparedStmt.setTimestamp(10, null);
             }
 
             // execute the preparedStatement
@@ -63,6 +67,14 @@ public class GameDbInServer implements GameDb
 
             if (game.getJudgesOfTheGameList() != null)
             {
+                Set<String> judgesOfTheGameList = game.getJudgesOfTheGameList();
+                String majorJudge = game.getMajorJudge();
+                if(majorJudge != null)
+                {
+                    judgesOfTheGameList.add(majorJudge);
+                    game.setJudgesOfTheGameList(judgesOfTheGameList);
+                }
+
                 GameJudgesListDbInServer.getInstance().insertGameJudgeList(game.getGameID(), game.getJudgesOfTheGameList());
             }
         }
@@ -72,6 +84,8 @@ public class GameDbInServer implements GameDb
         }
         finally
         {
+
+            GameJudgesListDbInServer.getInstance().insertGameJudgeList(game.getGameID(), game.getJudgesOfTheGameList());
             conn.close();
         }
     }

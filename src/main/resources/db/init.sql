@@ -71,7 +71,8 @@ CREATE TABLE football_system_db.financial_activity
 CREATE TABLE football_system_db.game
 (
     `game_id`          VARCHAR(64) NOT NULL,
-    `game_date`        DATE        NOT NULL,
+    `end_game_time`    TIMESTAMP,
+    `game_date`        TIMESTAMP   default current_timestamp,
     `season_league`    VARCHAR(64) NOT NULL,
     `host_team`        VARCHAR(64) NOT NULL,
     `guest_team`       VARCHAR(64) NOT NULL,
@@ -80,7 +81,6 @@ CREATE TABLE football_system_db.game
     `guest_team_score` INT,
 -- #     `event_log` VARCHAR(64) NOT NULL,
     `major_judge`      VARCHAR(64),
-    `end_game_time`    DATE,
     PRIMARY KEY (`game_id`)
 );
 
@@ -95,8 +95,8 @@ CREATE TABLE football_system_db.game_event
 (
     `game_id`         VARCHAR(64) NOT NULL,
     `event_id`        VARCHAR(64) NOT NULL,
-    `game_date`       DATE        NOT NULL,
-    `event_time`      DATE        NOT NULL,
+    `game_date`       TIMESTAMP   NOT NULL,
+    `event_time`      TIME        NOT NULL,
     `event_minute`    INT         NOT NULL,
     `game_event_type` VARCHAR(64) NOT NULL,
     `description`     VARCHAR(64) NOT NULL,
@@ -490,11 +490,11 @@ ALTER TABLE football_system_db.team_manager
 ;
 
 ALTER TABLE football_system_db.team_owner
-    ADD CONSTRAINT FK_team_owner_team
-        FOREIGN KEY (`team`)
-            REFERENCES football_system_db.team (`team_name`)
-            ON DELETE CASCADE
-            ON UPDATE CASCADE,
+--     ADD CONSTRAINT FK_team_owner_team
+--         FOREIGN KEY (`team`)
+--             REFERENCES football_system_db.team (`team_name`)
+--             ON DELETE CASCADE
+--             ON UPDATE CASCADE,
     ADD CONSTRAINT FK_team_owner_owned_by_email
         FOREIGN KEY (`owned_by_email_address`)
             REFERENCES football_system_db.team_owner (`email_address`)

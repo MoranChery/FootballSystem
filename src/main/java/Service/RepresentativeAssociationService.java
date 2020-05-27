@@ -216,7 +216,7 @@ public class RepresentativeAssociationService {
             try {
                 CalculateLeaguePoints calculateLeaguePointsToMake= CalculateLeaguePoints.valueOf(policyChosen);
                 if (representativeAssociationEmailAddress == null) {
-                    throw new Exception("Only RepresentativeAssociation has permissions to this action!");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Only RepresentativeAssociation has permissions to this action!");
                 }
                 representativeAssociationController.changeCalculateLeaguePointsPolicy(representativeAssociationEmailAddress, seasonLeagueName, calculateLeaguePointsToMake);
                 logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: CalculateLeaguePoints \"" + policyChosen + "\"  was changed to SeasonLeague \"" + seasonLeagueName + "\"");
@@ -243,8 +243,15 @@ public class RepresentativeAssociationService {
             throw new Exception("The value is empty");
         }
         try {
-            Date newDate = new SimpleDateFormat("dd-MM-yyyy").parse(changeGameDate);
+            Date newDate;
+            try {
+                newDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").parse(changeGameDate);
+            }
+            catch (Exception e){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "put valid input date");
+            }
             representativeAssociationController.changeGameDate(repMail, newDate, gameID);
+
             logger.log(Level.INFO, "Created by: " + repMail + " Description: Game Date \"" + newDate + "\"  was changed to the game \"" + gameID + "\"");
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

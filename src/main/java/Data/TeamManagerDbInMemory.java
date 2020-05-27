@@ -53,7 +53,7 @@ public class TeamManagerDbInMemory implements TeamManagerDb {
     @Override
     public void subscriptionTeamManager(String team, String teamOwnerEmail, Subscriber subscriber, List<PermissionType> permissionTypes) throws Exception {
         if(team == null || teamOwnerEmail == null || subscriber == null || permissionTypes == null){
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         if(teamManagers.containsKey(subscriber.getEmailAddress())){
             throw new Exception("Team Manager to add already exists");
