@@ -143,13 +143,7 @@ public class SystemController {
         }
     }
 
-    /**
-     * This method creates the log file
-     * @param path - The path where to save the log file
-     */
-    public static void createLog(String path) throws Exception {
-        //todo
-    }
+
 }
 
    
