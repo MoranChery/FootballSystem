@@ -5,6 +5,7 @@ import Model.*;
 import Model.Enums.*;
 import Model.UsersTypes.Judge;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,7 +38,7 @@ private JudgeController judgeController = new JudgeController();
     private CourtDb courtDb = CourtDbInServer.getInstance();
     private GameJudgesListDb gameJudgesListDb = GameJudgesListDbInServer.getInstance();
     private String path = "C:\\Users\\noyha\\IdeaProjects\\footballtest";
-    private Gson prettyGson = new Gson();
+    private Gson prettyGson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd HH:mm").create();
 
     @Before
     public void init() throws SQLException {
@@ -512,18 +513,34 @@ private JudgeController judgeController = new JudgeController();
 
     @Test
     public void updateGameEventAfterEndNotMajorJudge() throws Exception {
-        Game game = new Game("gameId",new Date(),null,null,null,null,null,"notExists",null);
-        gameDb.insertGame(game);
+
         String judgeMail = "email";
         Judge newJudge = new Judge(judgeMail, "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         subscriberDb.insertSubscriber(newJudge);
         judgeDb.insertJudge(newJudge);
         roleDb.createRoleInSystem(judgeMail, RoleType.JUDGE);
+
+        Date date = new Date();
+        Season season = new Season("s1");
+        seasonDb.insertSeason(season);
+        League league = new League("l1");
+        leagueDb.insertLeague(league);
+        SeasonLeague seasonLeague = new SeasonLeague("s1", "l1", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        seasonLeagueDb.insertSeasonLeague(seasonLeague);
+        Court court = new Court("courtName","courtCity");
+        courtDb.insertCourt(court);
+        teamDb.insertTeam("team1");
+        teamDb.insertTeam("team2");
+        Set<String> judgeGame = new HashSet<>();
+        judgeGame.add(judgeMail);
+        Game game = new Game("gameId",date,"s1_l1","team1","team2","courtName",judgeGame,null,date);
+        gameDb.insertGame(game);
+
         Judge judge = judgeDb.getJudge(judgeMail);
 
-        List<String> judgeGame = new ArrayList<>();
-        judgeGame.add("gameId");
-        judge.setTheJudgeGameList(judgeGame);
+//        List<String> judgeGame = new ArrayList<>();
+//        judgeGame.add("gameId");
+//        judge.setTheJudgeGameList(judgeGame);
         try {
             judgeController.updateGameEventAfterEnd(newJudge.getEmailAddress(), "gameId","eventId", new Date(), 40, GameEventType.GOAL, "foul");
             Assert.fail("Should throw Exception");
@@ -666,8 +683,22 @@ private JudgeController judgeController = new JudgeController();
 
     @Test
     public void  createReportForGameJudgeNotAssociatedWithGame() throws Exception {
-        Game game = new Game("id",new Date(),null,null,null,null,null,null,null);
+
+
+        Season season = new Season("s1");
+        seasonDb.insertSeason(season);
+        League league = new League("l1");
+        leagueDb.insertLeague(league);
+        SeasonLeague seasonLeague = new SeasonLeague("s1", "l1", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        seasonLeagueDb.insertSeasonLeague(seasonLeague);
+        Court court = new Court("courtName","courtCity");
+        courtDb.insertCourt(court);
+        teamDb.insertTeam("team1");
+        teamDb.insertTeam("team2");
+        Set<String> judgeGame = new HashSet<>();
+        Game game = new Game("id",new Date(),"s1_l1","team1","team2","courtName",judgeGame,null,new Date());
         gameDb.insertGame(game);
+
         String judgeMail = "email";
         Judge newJudge = new Judge(judgeMail, "1234", 1, "first", "last", QualificationJudge.JUNIOR);
         subscriberDb.insertSubscriber(newJudge);
@@ -675,9 +706,9 @@ private JudgeController judgeController = new JudgeController();
         roleDb.createRoleInSystem(judgeMail, RoleType.JUDGE);
         Judge judge = judgeDb.getJudge(judgeMail);
 
-        List<String> judgeGame = new ArrayList<>();
-        judgeGame.add("notAssociated");
-        judge.setTheJudgeGameList(judgeGame);
+//        List<String> judgeGame = new ArrayList<>();
+//        judgeGame.add("notAssociated");
+//        judge.setTheJudgeGameList(judgeGame);
         try {
             judgeController.createReportForGame(path,newJudge.getEmailAddress(),"id");
             Assert.fail("Should throw Exception");
@@ -720,7 +751,9 @@ private JudgeController judgeController = new JudgeController();
 
         judgeController.createReportForGame(path,newJudge.getEmailAddress(),"id");
         BufferedReader reader = new BufferedReader(new FileReader(path + "id"));
+
         Map<String, GameEvent> gameEventMap = prettyGson.fromJson(reader, new TypeToken<HashMap<String, GameEvent>>() {}.getType());
+
         GameEvent ge = gameEventMap.get(key);
         Assert.assertEquals(ge.getGameId(),"id");
         Assert.assertEquals(ge.getEventMinute(),40,0);

@@ -1,7 +1,9 @@
 package Model;
 
 import Model.Enums.GameEventType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -82,11 +84,16 @@ public class GameEvent {
 
     @Override
     public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String time = sdf.format(eventTime.getTime());
+        SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = myFormat.format(gameDate);
+
         return "GameEvent{" +
                 "gameId='" + gameId + '\'' +
                 ", eventId='" + eventId + '\'' +
-                ", gameDate=" + gameDate +
-                ", eventTime=" + eventTime +
+                ", gameDate=" +  date +
+                ", eventTime=" + time +
                 ", eventMinute=" + eventMinute +
                 ", gameEventType=" + gameEventType +
                 ", description='" + description + '\'' +

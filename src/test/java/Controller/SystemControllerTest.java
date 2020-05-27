@@ -37,7 +37,7 @@ public class SystemControllerTest {
     @Test
     public void initialSystemExist() throws Exception{
         SystemAdministrator newSystemAdministrator = new SystemAdministrator("admin@gmail.com","psw",11,"first","last");
-        systemAdministratorDb.createSystemAdministrator(newSystemAdministrator);
+        systemAdministratorDb.insertSystemAdministrator(newSystemAdministrator);
         systemController.initialSystem();
     }
     @Test
@@ -53,7 +53,7 @@ public class SystemControllerTest {
     public void addSystemAdministrator_isExist() throws Exception {
         try {
             SystemAdministrator newSystemAdministrator = new SystemAdministrator("admin@gmail.com","psw",11,"first","last");
-            systemAdministratorDb.createSystemAdministrator(newSystemAdministrator);
+            systemAdministratorDb.insertSystemAdministrator(newSystemAdministrator);
             systemController.addSystemAdministrator();
         }
         catch (Exception e){

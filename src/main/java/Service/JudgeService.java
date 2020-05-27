@@ -13,7 +13,9 @@ import org.apache.logging.log4j.LogManager;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,8 +46,12 @@ public class JudgeService {
     public void addEventToGame(@PathVariable String judgeMail, @PathVariable String gameId, @PathVariable String eventTime, @PathVariable String eventMinute, @PathVariable String gameEventType, @PathVariable String description) throws Exception {
         try {
             GameEventType eventType = GameEventType.getGameEventType(gameEventType);
+
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
             Date time = sdf.parse(eventTime);
+
+
+
             Integer eventMinute1=Integer.parseInt(eventMinute);
             judgeController.addEventToGame(judgeMail, gameId, time, eventMinute1, eventType, description);
             logger.log(Level.INFO, "Created by: " + judgeMail + " Description: Event was added to Game \"" + gameId + "\"");
@@ -54,17 +60,17 @@ public class JudgeService {
         }
     }
 
-    public void addEventToGame(String judgeMail, String gameId, Date eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
-       try{
-        judgeController.addEventToGame(judgeMail, gameId, eventTime, eventMinute, gameEventType, description);
-        logger.log(Level.INFO, "Created by: " + judgeMail + " Description: Event was added to Game \"" + gameId + "\"");
-    }catch(Exception e)
-
-    {
-        logger.log(Level.WARNING, "Created by: " + judgeMail + " Description: Event wasn't updated to Game \"" + gameId + "\" because " + e.getMessage());
-    }
-
-    }
+//    public void addEventToGame(String judgeMail, String gameId, Date eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
+//       try{
+//        judgeController.addEventToGame(judgeMail, gameId, eventTime, eventMinute, gameEventType, description);
+//        logger.log(Level.INFO, "Created by: " + judgeMail + " Description: Event was added to Game \"" + gameId + "\"");
+//    }catch(Exception e)
+//
+//    {
+//        logger.log(Level.WARNING, "Created by: " + judgeMail + " Description: Event wasn't updated to Game \"" + gameId + "\" because " + e.getMessage());
+//    }
+//
+//    }
 
     @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping(value = "updateGameEventAfterEnd/{judgeMail}/{gameId}/{eventId}/{eventTime}/{eventMinute}/{gameEventType}/{description}/")

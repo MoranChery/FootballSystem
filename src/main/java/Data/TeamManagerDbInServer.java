@@ -98,7 +98,7 @@ public class TeamManagerDbInServer implements TeamManagerDb{
     @Override
     public void subscriptionTeamManager(String team, String teamOwnerId, Subscriber subscriber, List<PermissionType> permissionTypes) throws Exception {
         if(team == null || teamOwnerId == null || subscriber == null || permissionTypes == null){
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
 
         Connection conn = DbConnector.getConnection();
@@ -130,7 +130,7 @@ public class TeamManagerDbInServer implements TeamManagerDb{
     @Override
     public void removeSubscriptionTeamManager(String managerToRemoveEmail) throws Exception {
         if (managerToRemoveEmail == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
 
         Connection conn = DbConnector.getConnection();

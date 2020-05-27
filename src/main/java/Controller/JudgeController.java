@@ -13,6 +13,11 @@ import com.google.gson.GsonBuilder;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +29,7 @@ public class JudgeController {
     private GameEventsDb gameEventsDb;
     private RoleDb roleDb;
     private Gson gson = new Gson();
-    private Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+    private Gson prettyGson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd HH:mm").create();
     private RepresentativeAssociationController repController;
 
     public JudgeController() {
@@ -117,8 +122,16 @@ public class JudgeController {
             checkPermissionsJudge(judgeMail);
             //check if the judge and game located in db
             Game game = gameDb.getGame(gameId);
+//            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+//            String time = sdf.format(eventTime);
+//            LocalTime timePart = LocalTime.parse(time);
+//            String startingDate = new SimpleDateFormat("yyyy-MM-dd").format(game.getGameDate());
+//            LocalDate datePart = LocalDate.parse(startingDate);
+//            LocalDateTime dt = LocalDateTime.of(datePart, timePart);
+//            Date event = convertToDateViaInstant(dt);
 
-            List<String> theJudgeGameList = judgeDb.getJudgeGames(judgeMail);
+
+        List<String> theJudgeGameList = judgeDb.getJudgeGames(judgeMail);
             if (!theJudgeGameList.contains(gameId)) {
                 throw new Exception("This game doesnt associated with current judge");
             }
@@ -126,7 +139,9 @@ public class JudgeController {
             gameEventsDb.addEvent(gameEvent);
     }
 
-
+   private Date convertToDateViaInstant(LocalDateTime dateToConvert) {
+        return java.util.Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
+    }
     public void updateGameEventAfterEnd(String judgeMail, String gameId, String eventId, Date eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
         if(judgeMail == null || gameId == null || eventTime == null || eventMinute == null ||gameEventType == null || description == null ){
             throw new NullPointerException("bad input");

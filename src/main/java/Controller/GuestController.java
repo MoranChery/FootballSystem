@@ -3,7 +3,6 @@ package Controller;
 import Data.*;
 import Model.Enums.*;
 import Model.PageType;
-import Model.PersonalPage;
 import Model.Role;
 import Model.UsersTypes.*;
 
@@ -227,7 +226,7 @@ public class GuestController {
         }
         SystemAdministrator systemAdministrator = new SystemAdministrator(emailAddress, password, id, firstName, lastName);
         subscriberDb.insertSubscriber(systemAdministrator);
-        systemAdministratorDb.createSystemAdministrator(systemAdministrator);
+        systemAdministratorDb.insertSystemAdministrator(systemAdministrator);
         roleDb.createRoleInSystem(emailAddress, RoleType.SYSTEM_ADMINISTRATOR);
     }
 

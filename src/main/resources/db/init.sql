@@ -1,21 +1,21 @@
 CREATE TABLE football_system_db.subscriber
 (
-    `email_address` VARCHAR(45) NOT NULL,
-    `password`      VARCHAR(45) NOT NULL,
+    `email_address` VARCHAR(64) NOT NULL,
+    `password`      VARCHAR(64) NOT NULL,
     `id`            int         NOT NULL,
-    `first_name`    VARCHAR(45) NOT NULL,
-    `last_name`     VARCHAR(45) NOT NULL,
-    `status`        VARCHAR(45) NOT NULL,
+    `first_name`    VARCHAR(64) NOT NULL,
+    `last_name`     VARCHAR(64) NOT NULL,
+    `status`        VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`)
 );
 
 CREATE TABLE football_system_db.coach
 (
-    `email_address`       VARCHAR(45) NOT NULL,
-    `team`                VARCHAR(45),
-    `coach_role`          VARCHAR(45) NOT NULL,
-    `qualification_coach` VARCHAR(45) NOT NULL,
--- #     `coach_page`          VARCHAR(45) NOT NULL,
+    `email_address`       VARCHAR(64) NOT NULL,
+    `team`                VARCHAR(64),
+    `coach_role`          VARCHAR(64) NOT NULL,
+    `qualification_coach` VARCHAR(64) NOT NULL,
+-- #     `coach_page`          VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`),
     CONSTRAINT FK_coach_email_subscriber
         FOREIGN KEY (`email_address`)
@@ -26,15 +26,15 @@ CREATE TABLE football_system_db.coach
 
 CREATE TABLE football_system_db.court
 (
-    `court_name` VARCHAR(45) NOT NULL,
-    `court_city` VARCHAR(45) NOT NULL,
+    `court_name` VARCHAR(64) NOT NULL,
+    `court_city` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`court_name`)
 );
 
 CREATE TABLE football_system_db.fan
 (
-    `email_address` VARCHAR(45) NOT NULL,
-    `gamesAlert`    VARCHAR(45) NOT NULL,
+    `email_address` VARCHAR(64) NOT NULL,
+    `gamesAlert`    VARCHAR(64) NOT NULL,
     `alertWay`      BOOLEAN     NOT NULL,
     PRIMARY KEY (`email_address`),
     CONSTRAINT FK_fan_email_subscriber
@@ -46,67 +46,67 @@ CREATE TABLE football_system_db.fan
 
 CREATE TABLE football_system_db.fan_page
 (
-    `email_address` VARCHAR(45) NOT NULL,
-    `page_id`       VARCHAR(45) NOT NULL,
+    `email_address` VARCHAR(64) NOT NULL,
+    `page_id`       VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`, `page_id`)
 );
 
 CREATE TABLE football_system_db.fan_search_history
 (
-    `email_address` VARCHAR(45) NOT NULL,
-    `search`        VARCHAR(45) NOT NULL,
+    `email_address` VARCHAR(64) NOT NULL,
+    `search`        VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`, `search`)
 );
 
 CREATE TABLE football_system_db.financial_activity
 (
-    `financial_activity_id`     VARCHAR(45) NOT NULL,
+    `financial_activity_id`     VARCHAR(64) NOT NULL,
     `financial_activity_amount` DOUBLE      NOT NULL,
-    `description`               VARCHAR(45) NOT NULL,
-    `financial_activity_type`   VARCHAR(45) NOT NULL,
-    `team`                      VARCHAR(45) NOT NULL,
+    `description`               VARCHAR(64) NOT NULL,
+    `financial_activity_type`   VARCHAR(64) NOT NULL,
+    `team`                      VARCHAR(64) NOT NULL,
     PRIMARY KEY (`financial_activity_id`)
 );
 
 CREATE TABLE football_system_db.game
 (
-    `game_id`          VARCHAR(45) NOT NULL,
-    `game_date`        DATE        NOT NULL,
-    `season_league`    VARCHAR(45) NOT NULL,
-    `host_team`        VARCHAR(45) NOT NULL,
-    `guest_team`       VARCHAR(45) NOT NULL,
-    `court`            VARCHAR(45) NOT NULL,
+    `game_id`          VARCHAR(64) NOT NULL,
+    `end_game_time`    TIMESTAMP,
+    `game_date`        TIMESTAMP   default current_timestamp,
+    `season_league`    VARCHAR(64) NOT NULL,
+    `host_team`        VARCHAR(64) NOT NULL,
+    `guest_team`       VARCHAR(64) NOT NULL,
+    `court`            VARCHAR(64) NOT NULL,
     `host_team_score`  INT,
     `guest_team_score` INT,
--- #     `event_log` VARCHAR(45) NOT NULL,
-    `major_judge`      VARCHAR(45),
-    `end_game_time`    DATE,
+-- #     `event_log` VARCHAR(64) NOT NULL,
+    `major_judge`      VARCHAR(64),
     PRIMARY KEY (`game_id`)
 );
 
 CREATE TABLE football_system_db.game_judges_list
 (
-    `game_id`              VARCHAR(45) NOT NULL,
-    `judges_email_address` VARCHAR(45) NOT NULL,
+    `game_id`              VARCHAR(64) NOT NULL,
+    `judges_email_address` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`game_id`, `judges_email_address`)
 );
 
 CREATE TABLE football_system_db.game_event
 (
-    `game_id`         VARCHAR(45) NOT NULL,
-    `event_id`        VARCHAR(45) NOT NULL,
-    `game_date`       DATE        NOT NULL,
-    `event_time`      DATE        NOT NULL,
+    `game_id`         VARCHAR(64) NOT NULL,
+    `event_id`        VARCHAR(64) NOT NULL,
+    `game_date`       TIMESTAMP   NOT NULL,
+    `event_time`      TIME        NOT NULL,
     `event_minute`    INT         NOT NULL,
-    `game_event_type` VARCHAR(45) NOT NULL,
-    `description`     VARCHAR(45) NOT NULL,
+    `game_event_type` VARCHAR(64) NOT NULL,
+    `description`     VARCHAR(64) NOT NULL,
     PRIMARY KEY (`game_id`)
 );
 
 CREATE TABLE football_system_db.judge
 (
-    `email_address`       VARCHAR(45) NOT NULL,
-    `qualification_judge` VARCHAR(45) NOT NULL,
+    `email_address`       VARCHAR(64) NOT NULL,
+    `qualification_judge` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`),
     CONSTRAINT FK_judge_email_subscriber
         FOREIGN KEY (`email_address`)
@@ -117,39 +117,39 @@ CREATE TABLE football_system_db.judge
 
 CREATE TABLE football_system_db.judge_season_league
 (
-    `judge_season_league_name` VARCHAR(45) NOT NULL,
-    `season_league_name`      VARCHAR(45) NOT NULL,
-    `judge_email_address`     VARCHAR(45) NOT NULL,
+    `judge_season_league_name` VARCHAR(64) NOT NULL,
+    `season_league_name`      VARCHAR(64) NOT NULL,
+    `judge_email_address`     VARCHAR(64) NOT NULL,
     PRIMARY KEY (judge_season_league_name)
 );
 
 CREATE TABLE football_system_db.league
 (
-    `league_name` VARCHAR(45) NOT NULL,
+    `league_name` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`league_name`)
 );
 
 CREATE TABLE football_system_db.page
 (
-    `page_id` VARCHAR(45) NOT NULL,
-    `page_type` VARCHAR(45) NOT NULL,
+    `page_id` VARCHAR(64) NOT NULL,
+    `page_type` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`page_id`)
 );
 
 CREATE TABLE football_system_db.permission
 (
-    `email_address`   VARCHAR(45) NOT NULL,
-    `permission_type` VARCHAR(45) NOT NULL,
+    `email_address`   VARCHAR(64) NOT NULL,
+    `permission_type` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`, `permission_type`)
 );
 
 CREATE TABLE football_system_db.player
 (
     `email_address` VARCHAR(64) NOT NULL,
-    `team`          VARCHAR(45) DEFAULT NULL,
+    `team`          VARCHAR(64) DEFAULT NULL,
     `birth_date`    DATE        NOT NULL,
-    `player_role`   VARCHAR(45) NOT NULL,
--- #     `player_page`   VARCHAR(45) NOT NULL,
+    `player_role`   VARCHAR(64) NOT NULL,
+-- #     `player_page`   VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`),
     CONSTRAINT FK_player_email_subscriber
         FOREIGN KEY (`email_address`)
@@ -160,7 +160,7 @@ CREATE TABLE football_system_db.player
 
 CREATE TABLE football_system_db.representative_association
 (
-    `email_address` VARCHAR(45) NOT NULL,
+    `email_address` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`),
     CONSTRAINT FK_representative_association_email_subscriber
         FOREIGN KEY (`email_address`)
@@ -171,32 +171,32 @@ CREATE TABLE football_system_db.representative_association
 
 CREATE TABLE football_system_db.role
 (
-    `email_address` VARCHAR(45) NOT NULL,
-    `team_name`     VARCHAR(45) DEFAULT NULL,
-    `role_type`     VARCHAR(45) NOT NULL,
+    `email_address` VARCHAR(64) NOT NULL,
+    `team_name`     VARCHAR(64) DEFAULT NULL,
+    `role_type`     VARCHAR(64) NOT NULL,
     `assigned_date` mediumtext,
     PRIMARY KEY (`email_address`, `role_type`)
 );
 
 CREATE TABLE football_system_db.season
 (
-    `season_name` VARCHAR(45) NOT NULL,
+    `season_name` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`season_name`)
 );
 
 CREATE TABLE football_system_db.season_league
 (
-    `season_league_name` VARCHAR(45) NOT NULL,
-    `season_name` VARCHAR(45) NOT NULL,
-    `league_name` VARCHAR(45) NOT NULL,
-    `calculate_league_points` VARCHAR(45) NOT NULL,
-    `inlay_games` VARCHAR(45) NOT NULL,
+    `season_league_name` VARCHAR(64) NOT NULL,
+    `season_name` VARCHAR(64) NOT NULL,
+    `league_name` VARCHAR(64) NOT NULL,
+    `calculate_league_points` VARCHAR(64) NOT NULL,
+    `inlay_games` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`season_league_name`)
 );
 
 CREATE TABLE football_system_db.system_administrator
 (
-    `email_address` VARCHAR(45) NOT NULL,
+    `email_address` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`),
     CONSTRAINT FK_system_administrator_email_subscriber
         FOREIGN KEY (`email_address`)
@@ -207,19 +207,19 @@ CREATE TABLE football_system_db.system_administrator
 
 CREATE TABLE football_system_db.team
 (
-    `team_name`   VARCHAR(45) NOT NULL,
+    `team_name`   VARCHAR(64) NOT NULL,
     `budget`      DOUBLE      NOT NULL,
-    `team_status` VARCHAR(45) NOT NULL,
-    `court` VARCHAR(45),
-    `team_close` VARCHAR(45),
+    `team_status` VARCHAR(64) NOT NULL,
+    `court` VARCHAR(64),
+    `team_close` VARCHAR(64),
     PRIMARY KEY (`team_name`)
 );
 
 CREATE TABLE football_system_db.team_manager
 (
-    `email_address` VARCHAR(45) NOT NULL,
-    `team` VARCHAR(45),
-    `owned_by_email` VARCHAR(45),
+    `email_address` VARCHAR(64) NOT NULL,
+    `team` VARCHAR(64),
+    `owned_by_email` VARCHAR(64),
     PRIMARY KEY (`email_address`),
     CONSTRAINT FK_team_manager_email_subscriber
         FOREIGN KEY (`email_address`)
@@ -230,9 +230,9 @@ CREATE TABLE football_system_db.team_manager
 
 CREATE TABLE football_system_db.team_owner
 (
-    `email_address` VARCHAR(45) NOT NULL,
-    `team` VARCHAR(45),
-    `owned_by_email_address` VARCHAR(45),
+    `email_address` VARCHAR(64) NOT NULL,
+    `team` VARCHAR(64),
+    `owned_by_email_address` VARCHAR(64),
     PRIMARY KEY (`email_address`),
     CONSTRAINT FK_team_owner_email_subscriber
         FOREIGN KEY (`email_address`)
@@ -243,24 +243,24 @@ CREATE TABLE football_system_db.team_owner
 
 CREATE TABLE football_system_db.alert
 (
-    `msg_header` VARCHAR(45) NOT NULL,
-    `msg_body`   VARCHAR(45) NOT NULL,
+    `msg_header` VARCHAR(64) NOT NULL,
+    `msg_body`   VARCHAR(64) NOT NULL,
     PRIMARY KEY (`msg_header`, `msg_body`)
 );
 
 CREATE TABLE football_system_db.search
 (
     `search_id` INT         NOT NULL,
-    `key_words` VARCHAR(45) NOT NULL,
-    `name`      VARCHAR(45) NOT NULL,
-    `category`  VARCHAR(45) NOT NULL,
+    `key_words` VARCHAR(64) NOT NULL,
+    `name`      VARCHAR(64) NOT NULL,
+    `category`  VARCHAR(64) NOT NULL,
     PRIMARY KEY (`search_id`)
 );
 
 -- # CREATE TABLE football_system_db.personal_page
 -- # (
--- #     `email_address` VARCHAR(45) NOT NULL,
--- #     `page_id`       VARCHAR(45) NOT NULL,
+-- #     `email_address` VARCHAR(64) NOT NULL,
+-- #     `page_id`       VARCHAR(64) NOT NULL,
 -- #     PRIMARY KEY (`email_address`, `page_id`),
 -- #     CONSTRAINT FK_personal_page_email_subscriber
 -- #         FOREIGN KEY (`email_address`)
@@ -276,8 +276,8 @@ CREATE TABLE football_system_db.search
 
 -- # CREATE TABLE football_system_db.team_page
 -- # (
--- #     `team`    VARCHAR(45) NOT NULL,
--- #     `page_id` VARCHAR(45) NOT NULL,
+-- #     `team`    VARCHAR(64) NOT NULL,
+-- #     `page_id` VARCHAR(64) NOT NULL,
 -- #     PRIMARY KEY (`team`, `page_id`),
 -- #     CONSTRAINT FK_team_page_team
 -- #         FOREIGN KEY (`team`)
@@ -293,8 +293,8 @@ CREATE TABLE football_system_db.search
 
 CREATE TABLE football_system_db.complaint
 (
-    `email_address` VARCHAR(45) NOT NULL,
-    `description`   VARCHAR(45) NOT NULL,
+    `email_address` VARCHAR(64) NOT NULL,
+    `description`   VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`, `description`),
     CONSTRAINT FK_complaint_email_subscriber
         FOREIGN KEY (`email_address`)
@@ -305,8 +305,8 @@ CREATE TABLE football_system_db.complaint
 
 CREATE TABLE football_system_db.response
 (
-    `email_address` VARCHAR(45) NOT NULL,
-    `description`   VARCHAR(45) NOT NULL,
+    `email_address` VARCHAR(64) NOT NULL,
+    `description`   VARCHAR(64) NOT NULL,
     PRIMARY KEY (`email_address`, `description`),
     CONSTRAINT FK_response_email_subscriber
         FOREIGN KEY (`email_address`)
@@ -490,11 +490,11 @@ ALTER TABLE football_system_db.team_manager
 ;
 
 ALTER TABLE football_system_db.team_owner
-    ADD CONSTRAINT FK_team_owner_team
-        FOREIGN KEY (`team`)
-            REFERENCES football_system_db.team (`team_name`)
-            ON DELETE CASCADE
-            ON UPDATE CASCADE,
+--     ADD CONSTRAINT FK_team_owner_team
+--         FOREIGN KEY (`team`)
+--             REFERENCES football_system_db.team (`team_name`)
+--             ON DELETE CASCADE
+--             ON UPDATE CASCADE,
     ADD CONSTRAINT FK_team_owner_owned_by_email
         FOREIGN KEY (`owned_by_email_address`)
             REFERENCES football_system_db.team_owner (`email_address`)
