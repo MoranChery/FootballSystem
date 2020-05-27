@@ -307,7 +307,7 @@ public class RepresentativeAssociationController extends Observable
         }
         String court = game.getCourt();
         Court theGameCourt = courtDb.getCourt(court);
-        if(theGameCourt.getCourtCity().equals(newLocation)){
+        if(theGameCourt.getCourtName().equals(newLocation)){
             throw new Exception("same location");
         }
         gameDb.updateGameLocation(newLocation,gameID);

@@ -16,11 +16,14 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RepresentativeAssociationControllerTest
 {
     private RepresentativeAssociationController representativeAssociationController = new RepresentativeAssociationController();
+    private GameDb gameDb = GameDbInServer.getInstance();
+
 
     @Before
     public void init() throws SQLException
@@ -44,6 +47,7 @@ public class RepresentativeAssociationControllerTest
         dbs.add(SeasonLeagueDbInServer.getInstance());
         dbs.add(JudgeDbInServer.getInstance());
         dbs.add(JudgeSeasonLeagueDbInServer.getInstance());
+        dbs.add(GameDbInServer.getInstance());
 
         for (Db db : dbs)
         {
@@ -1199,6 +1203,54 @@ public class RepresentativeAssociationControllerTest
         permission = representativeAssociationController.checkPermissionOfRepresentativeAssociation("username/emailAddress");
         Assert.assertEquals(Boolean.TRUE, permission);
     }
+
+
+
+    @Test
+    public void changeGameLocationEmptyInput() throws Exception{
+        try{
+            representativeAssociationController.changeGameLocation("","loc", "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("The value is empty", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void changeGameLocationNullInput() throws Exception{
+        try{
+            representativeAssociationController.changeGameLocation(null,"loc", "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void changeGameLocationGameNotInDB() throws Exception{
+        try{
+
+            representativeAssociationController.changeGameLocation("rep@gmail.com","loc", "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("game not in DB", e.getMessage());
+        }
+    }
+
+    @Test
+    public void changeGameLocationSameLoc() throws Exception{
+        try{
+            Game gameToChange = new Game("gameID", new Date(), "seasonLeague", "hostTeam",  "guestTeam",  "court");
+            gameDb.insertGame(gameToChange);
+            representativeAssociationController.changeGameLocation("rep@gmail.com","loc", "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("game not in DB", e.getMessage());
+        }
+    }
+
 
 
 }
