@@ -10,6 +10,7 @@ import Service.OutSystems.IAssociationAccountingSystem;
 import Service.OutSystems.ITaxSystem;
 import Service.OutSystems.ProxyAssociationAccountingSystem;
 import Service.OutSystems.ProxyTaxSystem;
+import Service.SystemService;
 
 public class SystemController {
     private static SubscriberDb subscriberDb;
@@ -35,9 +36,13 @@ public class SystemController {
      * should be privet but for the tests - public
      */
     private static SystemController ourInstance;
-    public static void initialSystem() throws Exception {
+    static  {
         ourInstance = new SystemController();
-        addSystemAdministrator();
+        try {
+            addSystemAdministrator();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static SystemController getInstance() {
@@ -136,6 +141,10 @@ public class SystemController {
      */
     public static void createLog(String path) throws Exception {
         //todo
+    }
+
+    public static void main(String[] args) {
+        SystemService systemService = new SystemService();
     }
 }
 

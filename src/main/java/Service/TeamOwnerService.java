@@ -13,6 +13,13 @@ import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 import Model.UsersTypes.TeamOwner;
 import components.CreateTeamRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextStoppedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,13 +34,20 @@ import java.util.logging.Logger;
 public class TeamOwnerService {
     private Logger logger = Logger.getLogger(TeamOwnerService.class.getName());
     private TeamOwnerController teamOwnerController;
-    private LoggerHandler loggerHandler;
+//    private LoggerHandler loggerHandler;
+
 
     public TeamOwnerService() {
         this.teamOwnerController = new TeamOwnerController();
 //        this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
         logger.addHandler(LoggerHandler.loggerErrorFileHandler);
         logger.addHandler(LoggerHandler.loggerEventFileHandler);
+    }
+
+
+    @EventListener
+    public void onDestroy(ContextStoppedEvent event) throws Exception {
+        logger.log(Level.WARNING, "The server is shutting down");
     }
 
     @GetMapping
