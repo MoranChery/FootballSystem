@@ -298,6 +298,7 @@ public class RepresentativeAssociationController extends Observable
         setChanged();
         notifyObservers(data);
     }
+
     public void changeGameDate(String repMail, Date newDate, String gameID) throws Exception {
         if(repMail.isEmpty() || gameID.isEmpty()){
             throw new Exception("The value is empty");
@@ -322,8 +323,12 @@ public class RepresentativeAssociationController extends Observable
         notifyObservers(data);
     }
 
-    public List<Game> getAllGames() {
+    public List<Game> getAllGames() throws Exception {
         //todo - remove and add the db we going to use
+
+//            return gameDb.getAllGames();
+
+
         Game game1  = new Game("game1",new Date(),"sl1", "team1", "team2","courtName1");
         Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","courtName2");
         List<Game> allGames = new ArrayList<>();
@@ -333,6 +338,7 @@ public class RepresentativeAssociationController extends Observable
     }
 
     public List<SeasonLeague> getAllSeasonLeague() throws Exception {
+
         //todo - delete
         List<SeasonLeague> seasonLeagues = new ArrayList<>();
         SeasonLeague seasonLeague11 = new SeasonLeague("seasonName1", "leagueName1", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
@@ -354,10 +360,11 @@ public class RepresentativeAssociationController extends Observable
         }
         else
             return seasonLeagues;
+
+        //return seasonLeagueDb.getAllSeasonLeagueObjects();
     }
 
-    public List<String> getAllLocation() {
-        //todo - delete
+    public List<String> getAllLocation() throws Exception {
         List <String> locations = new ArrayList<>();
         for (Game game: getAllGames()) {
             locations.add(game.getCourt());

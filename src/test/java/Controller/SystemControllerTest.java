@@ -69,16 +69,12 @@ public class SystemControllerTest {
         Assert.assertEquals(RoleType.SYSTEM_ADMINISTRATOR, roleDb.getRole("admin@gmail.com").getRoleType());
     }
     @Test
-    public void createLogTest() throws Exception{
-        systemController.createLog("path");
-    }
-    @Test
     public void connectToTheTaxLawSystemTest() throws Exception{
-        systemController.connectToTheTaxLawSystem();
+        systemController.isConnectToTheTaxLawSystem();
     }
     @Test
     public void connectToTheAccountingSystemTest() throws Exception{
-        systemController.connectToTheAccountingSystem();
+        systemController.isConnectToTheAccountingSystem();
     }
     @Test
     public void getInstanceTest(){

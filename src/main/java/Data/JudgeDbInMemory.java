@@ -18,7 +18,10 @@ public class JudgeDbInMemory implements JudgeDb
 
     public static JudgeDbInMemory getInstance() { return ourInstance; }
 
-    public JudgeDbInMemory() { allJudgesMap = new HashMap<>(); }
+    public JudgeDbInMemory() {
+        allJudgesMap = new HashMap<>();
+
+    }
 
     /**
      * Will receive from the Controller the Judge, add Judge to Data.

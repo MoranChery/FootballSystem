@@ -17,6 +17,9 @@ public class SystemServiceTest {
     private static RoleDb roleDb = RoleDbInMemory.getInstance();
     private static SystemAdministratorDb systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
 
+    public SystemServiceTest() throws Exception {
+    }
+
 
     @Before
     public void init() {
@@ -32,11 +35,6 @@ public class SystemServiceTest {
     @After
     public void after(){
         systemController = null;
-    }
-
-    @Test
-    public void createLogTest() throws Exception{
-        systemService.createLog("path");
     }
 
 

@@ -52,16 +52,17 @@ public class SystemController {
      * should be not static but for the tests - static
      * @throws Exception if the system couldn't connect with the external systems
      */
-//    public static void connectionToExternalSystems() /*throws Exception*/ {
-//        //TODO
-//
-////        if (!connectToTheAccountingSystem()) {
-////            throw new Exception("problem in connection with accounting system");
-////        }
-////        if (!connectToTheTaxLawSystem()) {
-////            throw new Exception("problem in connection with tax law system");
-////        }
-//    }
+    public void isConnectionToExternalSystems() throws Exception {
+        if(!(isConnectToTheAccountingSystem() || isConnectToTheTaxLawSystem())){
+            throw new Exception("problem in connection with accounting system and with accounting system");
+        }
+        if (!isConnectToTheAccountingSystem()) {
+            throw new Exception("problem in connection with accounting system");
+        }
+        if (!isConnectToTheTaxLawSystem()) {
+            throw new Exception("problem in connection with tax law system");
+        }
+    }
 
     /**
      * connection to the Tax system with the Proxy
@@ -93,8 +94,9 @@ public class SystemController {
      * should be privet but for the tests - protected
      * @return boolean - true if the connection ended successfully
      */
-    protected boolean connectToTheAccountingSystem() {
+    protected boolean isConnectToTheAccountingSystem() {
         //todo
+        //return proxyAssociationAccountingSystem.isConnected();
         return true;
     }
 
@@ -104,9 +106,10 @@ public class SystemController {
      * should be privet but for the tests - protected
      * @return boolean - true if the connection ended successfully
      */
-    protected boolean connectToTheTaxLawSystem() {
+    protected boolean isConnectToTheTaxLawSystem() {
         //todo
-        return true;
+        //return proxyTaxSystem.isConnected();
+        return false;
     }
 
 
@@ -130,13 +133,6 @@ public class SystemController {
         }
     }
 
-    /**
-     * This method creates the log file
-     * @param path - The path where to save the log file
-     */
-    public static void createLog(String path) throws Exception {
-        //todo
-    }
 }
 
    
