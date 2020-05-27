@@ -3,43 +3,28 @@ package Controller;
 import Data.*;
 import Model.Enums.*;
 import Model.*;
-import Model.UsersTypes.Coach;
-import Model.UsersTypes.Fan;
-import Model.UsersTypes.Judge;
-import Model.UsersTypes.Player;
+import Model.UsersTypes.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.*;
 
-public class SystemAdministratorControllerTest {
-    SystemAdministratorController systemAdministratorController = new SystemAdministratorController();
-    GuestController guestController = new GuestController();
+public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
+    private SystemAdministratorController systemAdministratorController = new SystemAdministratorController();
+    private GuestController guestController = new GuestController();
+    private TeamDb teamDb = TeamDbInServer.getInstance();
+    private SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
+
 
     @Before
-    public void init() {
+    public void init() throws SQLException {
         final List<Db> dbs = new ArrayList<>();
-        dbs.add(SubscriberDbInMemory.getInstance());
-        dbs.add(FanDbInMemory.getInstance());
-        dbs.add(PageDbInMemory.getInstance());
-        dbs.add(TeamDbInMemory.getInstance());
-        dbs.add(CoachDbInMemory.getInstance());
-        dbs.add(CourtDbInMemory.getInstance());
-        dbs.add(JudgeDbInMemory.getInstance());
-        dbs.add(PlayerDbInMemory.getInstance());
-        dbs.add(TeamManagerDbInMemory.getInstance());
-        dbs.add(TeamOwnerDbInMemory.getInstance());
-        dbs.add(SeasonLeagueDbInMemory.getInstance());
-        dbs.add(JudgeSeasonLeagueDbInMemory.getInstance());
-        dbs.add(RoleDbInMemory.getInstance());
-        dbs.add(SystemAdministratorDbInMemory.getInstance());
-        dbs.add(RepresentativeAssociationDbInMemory.getInstance());
-        dbs.add(TeamDbInMemory.getInstance());
-        dbs.add(RoleDbInMemory.getInstance());
-        dbs.add(GameDbInMemory.getInstance());
+        dbs.add(subscriberDb);
+        dbs.add(teamDb);
         for (Db db : dbs) {
-//            db.deleteAll();
+            db.deleteAll();
         }
         try {
             guestController.registerSystemAdministrator("noy@gmail.com", "ae646", 123456789, "noy", "harary");
@@ -48,34 +33,67 @@ public class SystemAdministratorControllerTest {
         }
     }
 
+
     @Test
-    public void closeExistTeam() {
+    public void closeTeamForEverEmptyString() throws Exception {
         try {
-            TeamDbInMemory.getInstance().insertTeam("barca");
-            systemAdministratorController.closeTeamForEver("barca");
-        } catch (Exception e) {
-            //not should enter here
-            Assert.assertEquals(e.getMessage(), null);
+            systemAdministratorController.closeTeamForEver("");
+        }
+        catch (Exception e){
+
+            Assert.assertEquals("Not valid name", e.getMessage());
         }
     }
 
     @Test
-    public void closeNullTeam() {
+    public void closeTeamForEverTeamNotFound() throws Exception{
         try {
-            systemAdministratorController.closeTeamForEver(null);
-        } catch (Exception e) {
-            Assert.assertEquals("Team not found", e.getMessage());
+            systemAdministratorController.closeTeamForEver("not exist");
+        }
+        catch (Exception e){
+
+            Assert.assertEquals("bad input", e.getMessage());
         }
     }
 
     @Test
-    public void closeNotExistTeam() {
+    public void closeTeamForEverLegal() throws Exception {
+        Team newTeam = new Team();
+        newTeam.setTeamName("team");
+        newTeam.setTeamManagers(null);
+        teamDb.insertTeam("team", 0.0, TeamStatus.ACTIVE);
+        Map<String, TeamOwner> teamOwnerMap = new HashMap<>();
+        Map<String, TeamManager> teamManagerMap = new HashMap<>();
+        String emailAddress = "email@gmail.com";
+        String password = "psw@123";
+        Integer id = 1;
+        String firstName = "first";
+        String lastName = "last";
+        String team = "team";
+        TeamOwner teamOwner = new TeamOwner(emailAddress, password, id, firstName, lastName, team);
+        TeamManager teamManager = new TeamManager("manager@gmail.com", "password", 2, "firstName", "lastName", emailAddress);
+        newTeam.setTeamOwners(teamOwnerMap);
+        newTeam.setTeamManagers(teamManagerMap);
+        systemAdministratorController.closeTeamForEver("team");
+
+        Team teamFromDb = teamDb.getTeam("team");
+        Assert.assertEquals(teamFromDb.getTeamStatus(),TeamStatus.CLOSE );
+    }
+    @Test
+    public void closeTeamForEverListNull() throws Exception{
         try {
-            systemAdministratorController.closeTeamForEver("blaTeam");
-        } catch (Exception e) {
-            Assert.assertEquals("Team not found", e.getMessage());
+
+            Team newTeam = new Team();
+            newTeam.setTeamName("team");
+            teamDb.insertTeam("team", 0.0, TeamStatus.ACTIVE);
+            newTeam.setTeamOwners(null);
+            systemAdministratorController.closeTeamForEver("team");
+        }
+        catch (Exception e){
+            Assert.assertEquals("one or more of the lists is null", e.getMessage());
         }
     }
+
 
     @Test
     public void removeNotExistSubscriber() {

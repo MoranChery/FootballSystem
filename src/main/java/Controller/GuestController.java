@@ -53,7 +53,6 @@ public class GuestController {
         subscriberController = new SubscriberController();
     }
 
-    //todo: call use case 2.2 from UI
     public void registerSubscriber(String userType) {
 //        Subscriber subscriber = null;
 //        switch (userType) {
