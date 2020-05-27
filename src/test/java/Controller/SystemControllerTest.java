@@ -28,7 +28,7 @@ public class SystemControllerTest {
         for (Db db : dbs) {
 //            db.deleteAll();
         }
-        systemController = new SystemController();
+        //systemController = new SystemController();
     }
     @After
     public void after(){
@@ -37,7 +37,7 @@ public class SystemControllerTest {
     @Test
     public void initialSystemExist() throws Exception{
         SystemAdministrator newSystemAdministrator = new SystemAdministrator("admin@gmail.com","psw",11,"first","last");
-        systemAdministratorDb.createSystemAdministrator(newSystemAdministrator);
+        systemAdministratorDb.insertSystemAdministrator(newSystemAdministrator);
         systemController.initialSystem();
     }
     @Test
@@ -53,7 +53,7 @@ public class SystemControllerTest {
     public void addSystemAdministrator_isExist() throws Exception {
         try {
             SystemAdministrator newSystemAdministrator = new SystemAdministrator("admin@gmail.com","psw",11,"first","last");
-            systemAdministratorDb.createSystemAdministrator(newSystemAdministrator);
+            systemAdministratorDb.insertSystemAdministrator(newSystemAdministrator);
             systemController.addSystemAdministrator();
         }
         catch (Exception e){
@@ -69,16 +69,12 @@ public class SystemControllerTest {
         Assert.assertEquals(RoleType.SYSTEM_ADMINISTRATOR, roleDb.getRole("admin@gmail.com").getRoleType());
     }
     @Test
-    public void createLogTest() throws Exception{
-        systemController.createLog("path");
-    }
-    @Test
     public void connectToTheTaxLawSystemTest() throws Exception{
-        systemController.connectToTheTaxLawSystem();
+        systemController.isConnectToTheTaxLawSystem();
     }
     @Test
     public void connectToTheAccountingSystemTest() throws Exception{
-        systemController.connectToTheAccountingSystem();
+        systemController.isConnectToTheAccountingSystem();
     }
     @Test
     public void getInstanceTest(){

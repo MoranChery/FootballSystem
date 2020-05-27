@@ -17,6 +17,9 @@ public class SubscriberDbInServer implements SubscriberDb{
     }
     @Override
     public void insertSubscriber(Subscriber subscriber) throws Exception {
+        if(subscriber == null){
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
         try
         {
@@ -32,7 +35,7 @@ public class SubscriberDbInServer implements SubscriberDb{
             preparedStmt.setString (4, subscriber.getFirstName());
             preparedStmt.setString (5, subscriber.getLastName());
             Status status = subscriber.getStatus();
-            preparedStmt.setString (6, status != null ? status.name(): Status.OFFLINE.name());
+            preparedStmt.setString (6, Status.OFFLINE.name());
 
             // execute the preparedstatement
             preparedStmt.execute();
@@ -138,4 +141,5 @@ public class SubscriberDbInServer implements SubscriberDb{
 //        subscriberDbInServer.insertSubscriber(teamManager);
         subscriberDbInServer.deleteAll();
     }
+
 }

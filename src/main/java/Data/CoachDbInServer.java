@@ -57,6 +57,9 @@ public class CoachDbInServer implements CoachDb {
 
     @Override
     public void insertCoach(Coach currCoach) throws Exception {
+        if(currCoach == null){
+            throw new NullPointerException("bad_input");
+        }
         Connection conn = DbConnector.getConnection();
         try
         {

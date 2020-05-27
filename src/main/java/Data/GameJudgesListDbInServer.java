@@ -1,9 +1,6 @@
 package Data;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,35 +13,30 @@ public class GameJudgesListDbInServer implements GameJudgesListDb
     @Override
     public void insertGameJudgeList(String gameID, Set<String> judgesOfTheGameList) throws Exception
     {
-        Connection conn = DbConnector.getConnection();
-        try
-        {
-            for (String judgeEmail : judgesOfTheGameList)
-            {
+        if(judgesOfTheGameList != null) {
+            Connection conn = DbConnector.getConnection();
+            try {
+                for (String judgeEmail : judgesOfTheGameList) {
 
-                // the mysql insert statement
-                String query = " insert into game_judges_list (game_id, judges_email_address)"
-                        + " values (?,?)";
+                    // the mysql insert statement
+                    String query = " insert into game_judges_list (game_id, judges_email_address)"
+                            + " values (?,?)";
 
-                // create the mysql insert preparedStatement
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                preparedStmt.setString(1, gameID);
-                preparedStmt.setString(2, judgeEmail);
+                    // create the mysql insert preparedStatement
+                    PreparedStatement preparedStmt = conn.prepareStatement(query);
+                    preparedStmt.setString(1, gameID);
+                    preparedStmt.setString(2, judgeEmail);
 
-                // execute the preparedStatement
-                preparedStmt.execute();
+                    // execute the preparedStatement
+                    preparedStmt.execute();
+                }
+            } catch (Exception e) {
+                throw new Exception("GameJudgeList already exist in system");
+            } finally {
+                conn.close();
             }
-        }
-        catch (Exception e)
-        {
-            throw new Exception("GameJudgeList already exist in system");
-        }
-        finally
-        {
-            conn.close();
-        }
 
-
+        }
     }
 
     @Override
@@ -113,5 +105,10 @@ public class GameJudgesListDbInServer implements GameJudgesListDb
         conn.close();
 
         return listGameID;
+    }
+
+    @Override
+    public void deleteAll() throws SQLException {
+
     }
 }

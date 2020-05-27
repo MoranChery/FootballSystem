@@ -46,6 +46,9 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
 
     @Override
     public void updateTeamOwnerTeam(String  team, String teamOwnerEmailAddress) throws Exception {
+        if(team == null || teamOwnerEmailAddress == null){
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
         try{
             String query = "UPDATE team_owner SET team = \'" + team + "\' WHERE email_address = \'"+ teamOwnerEmailAddress + "\'" ;
@@ -53,7 +56,8 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
             preparedStmt.executeUpdate();
         } finally {
             conn.close();
-        }    }
+        }
+    }
 
     @Override
     public TeamOwner getTeamOwner(String teamOwnerEmailAddress) throws Exception {
@@ -107,7 +111,7 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
     @Override
     public void subscriptionTeamOwner(String team, String teamOwnerId, Subscriber subscriber) throws Exception {
         if(team == null || teamOwnerId == null || subscriber == null){
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Connection conn = DbConnector.getConnection();
         try{
@@ -136,6 +140,9 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
 
     @Override
     public void removeSubscriptionTeamOwner(String ownerToRemoveEmail) throws Exception {
+        if(ownerToRemoveEmail == null){
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
         try{
             String query = "delete from team_owner where email_address = ? ";
@@ -173,8 +180,6 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
 
     @Override
     public Set<String> getAllTeamOwnersInDB() {
-        Set<String> allTeamOwnerInDn = new HashSet<>();
-
         return null;
     }
 
@@ -188,15 +193,15 @@ public class TeamOwnerDbInServer implements TeamOwnerDb {
             conn.close();
         }    }
 
-    public static void main(String[] args) throws Exception {
-        String ownerEmail = "owner@gmail.com";
-        TeamOwner teamOwner = new TeamOwner(null, new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName"), "owner@gmail.com");
-//        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
-        TeamOwnerDbInServer teamOwnerDbInServer = new TeamOwnerDbInServer();
-//        teamOwnerDbInServer.insertTeamOwner(teamOwner);
-        TeamOwner teamOwner1 = teamOwnerDbInServer.getTeamOwner(ownerEmail);
-        System.out.println(teamOwner1);
-
-        teamOwnerDbInServer.removeSubscriptionTeamOwner(ownerEmail);
-    }
+//    public static void main(String[] args) throws Exception {
+//        String ownerEmail = "owner@gmail.com";
+//        TeamOwner teamOwner = new TeamOwner(null, new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName"), "owner@gmail.com");
+////        TeamOwner teamOwner = new TeamOwner(ownerEmail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
+//        TeamOwnerDbInServer teamOwnerDbInServer = new TeamOwnerDbInServer();
+////        teamOwnerDbInServer.insertTeamOwner(teamOwner);
+//        TeamOwner teamOwner1 = teamOwnerDbInServer.getTeamOwner(ownerEmail);
+//        System.out.println(teamOwner1);
+//
+//        teamOwnerDbInServer.removeSubscriptionTeamOwner(ownerEmail);
+//    }
 }
