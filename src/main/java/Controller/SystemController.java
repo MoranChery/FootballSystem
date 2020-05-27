@@ -104,9 +104,9 @@ public class SystemController {
      * @return boolean - true if the connection ended successfully
      */
     protected boolean isConnectToTheAccountingSystem() {
-        //todo
-        //return proxyAssociationAccountingSystem.isConnected();
-        return true;
+
+        return proxyAssociationAccountingSystem.isConnected();
+
     }
 
     /**
@@ -116,9 +116,9 @@ public class SystemController {
      * @return boolean - true if the connection ended successfully
      */
     protected boolean isConnectToTheTaxLawSystem() {
-        //todo
-        //return proxyTaxSystem.isConnected();
-        return false;
+
+        return proxyTaxSystem.isConnected();
+
     }
 
 
