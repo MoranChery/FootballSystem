@@ -42,7 +42,16 @@ public class JudgeController {
         roleDb = RoleDbInServer.getInstance();
         gameEventsDb = GameEventsDbInServer.getInstance();
     }
-    public void setRepController(RepresentativeAssociationController controller){
+
+    public Map<String, GameEvent> getGameEventsByGameId(String gameId) throws Exception {
+        try {
+            return gameEventsDb.getMap_eventId_GameEvent_ByGameId(gameId);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void setRepController(RepresentativeAssociationController controller) {
         repController = controller;
     }
 
@@ -51,20 +60,22 @@ public class JudgeController {
      * @param judge Judge the judge you want to add to the DB
      * @throws Exception NullPointerException if input is null
      */
-    public void createJudge(Judge judge) throws Exception{
-        if (judge == null){
+    public void createJudge(Judge judge) throws Exception {
+        if (judge == null) {
             throw new NullPointerException("Can't create this judge");
         }
         judgeDb.insertJudge(judge);
     }
+
     /**
      * This function get string that represent judge id - his email address and returns Judge class instance
+     *
      * @param judgeEmailAddress String - the id of the judge - his email address
      * @return Judge - the instance of the judge in the db
      * @throws Exception NullPointerException if the mail is null - the judge is not found in the db
      */
-    public Judge getJudge(String judgeEmailAddress) throws Exception{
-        if(judgeEmailAddress == null){
+    public Judge getJudge(String judgeEmailAddress) throws Exception {
+        if (judgeEmailAddress == null) {
             throw new NullPointerException("Judge not found");
         }
         return judgeDb.getJudge(judgeEmailAddress);
@@ -72,19 +83,20 @@ public class JudgeController {
 
     /**
      * this function enable the judge to edit qualification
-     * @param judgeMail String the judge id- email address
+     *
+     * @param judgeMail        String the judge id- email address
      * @param newQualification String the new qualification the judge want to change to
      * @throws Exception NullPointerException - if one or more of the inputs is null
-     * NotFoundException - if the judge is not in the db
-     * Exception - if the new qualification is equal to the current qualification
+     *                   NotFoundException - if the judge is not in the db
+     *                   Exception - if the new qualification is equal to the current qualification
      */
     public void wantToEditQualification(String judgeMail, String newQualification) throws Exception {
-        if(judgeMail == null || newQualification == null){
+        if (judgeMail == null || newQualification == null) {
             throw new NullPointerException("Something went wrong in editing judge's qualification");
         }
         Judge judge = judgeDb.getJudge(judgeMail);
         QualificationJudge theJudgeNewQualification = QualificationJudge.valueOf(newQualification);
-        if(judge.getQualificationJudge().equals(theJudgeNewQualification)){
+        if (judge.getQualificationJudge().equals(theJudgeNewQualification)) {
             throw new Exception("This qualification equal the previous");
         }
         judgeDb.wantToEditQualification(judgeMail, newQualification);
@@ -92,14 +104,15 @@ public class JudgeController {
 
     /**
      * this function add game to the table of games for this judge
+     *
      * @param judgeMail String the judge id- email address
      * @param gameToAdd Game the game you want to add to the table
      * @throws Exception NullPointerException - if one or more of the inputs is null
-     * NotFoundException - if the judge is not in the db
-     * Exception - if the judge not exist in the db or if the game exist in the db
+     *                   NotFoundException - if the judge is not in the db
+     *                   Exception - if the judge not exist in the db or if the game exist in the db
      */
     public void addGameToTheJudge(String judgeMail, Game gameToAdd) throws Exception {
-        if(judgeMail == null || judgeMail.isEmpty() || gameToAdd == null){
+        if (judgeMail == null || judgeMail.isEmpty() || gameToAdd == null) {
             throw new NullPointerException("One or more of the inputs wrong");
         }
         Judge judge = judgeDb.getJudge(judgeMail);
@@ -107,15 +120,15 @@ public class JudgeController {
         String gameID = gameToAdd.getGameID();
         Game testGame = gameDb.getGame(gameID);
         /** check if the game exist in the db **/
-        if(theJudgeGameList.contains(gameID)){
+        if (theJudgeGameList.contains(gameID)) {
             throw new Exception("This game already in the system");
         }
-        judgeDb.addGameToTheJudge(judgeMail,gameToAdd);
+        judgeDb.addGameToTheJudge(judgeMail, gameToAdd);
     }
 
 
     public void addEventToGame(String judgeMail, String gameId, Date eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
-        if(judgeMail == null || gameId == null || eventTime == null || eventMinute == null ||gameEventType == null || description == null ){
+        if (judgeMail == null || gameId == null || eventTime == null || eventMinute == null || gameEventType == null || description == null) {
             throw new NullPointerException("bad input");
         }
 
@@ -143,7 +156,7 @@ public class JudgeController {
         return java.util.Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
     }
     public void updateGameEventAfterEnd(String judgeMail, String gameId, String eventId, Date eventTime, Integer eventMinute, GameEventType gameEventType, String description) throws Exception {
-        if(judgeMail == null || gameId == null || eventTime == null || eventMinute == null ||gameEventType == null || description == null ){
+        if (judgeMail == null || gameId == null || eventTime == null || eventMinute == null || gameEventType == null || description == null) {
             throw new NullPointerException("bad input");
         }
         checkPermissionsJudge(judgeMail);
@@ -153,22 +166,22 @@ public class JudgeController {
         if (!theJudgeGameList.contains(gameId)) {
             throw new Exception("This game doesnt associated with current judge");
         }
-        if(!judgeMail.equals(game.getMajorJudge())){
+        if (!judgeMail.equals(game.getMajorJudge())) {
             throw new Exception("This judge is not a major judge in this game");
         }
         long now = System.currentTimeMillis();
         long timeEndGame = game.getEndGameTime().getTime();
         long passedTime = TimeUnit.MILLISECONDS.toHours(now - timeEndGame);
-        if(passedTime > 5){
+        if (passedTime > 5) {
             throw new Exception("5 hours from the end of the game passed");
         }
-        GameEvent gameEvent = new GameEvent(gameId,game.getGameDate(),eventTime,eventMinute,gameEventType,description);
+        GameEvent gameEvent = new GameEvent(gameId, game.getGameDate(), eventTime, eventMinute, gameEventType, description);
         gameEvent.setEventId(eventId);
         gameEventsDb.updateGameEventDetails(gameEvent);
     }
 
-    public void createReportForGame(String path,String judgeMail, String gameId) throws Exception {
-        if(path == null || judgeMail == null || gameId == null){
+    public void createReportForGame(String path, String judgeMail, String gameId) throws Exception {
+        if (path == null || judgeMail == null || gameId == null) {
             throw new NullPointerException("bad input");
         }
         //check if it's judge
@@ -187,23 +200,18 @@ public class JudgeController {
     }
 
 
-
-    private void checkPermissionsJudge(String judgeMail) throws Exception
-    {
-            List<Role> subscriberRoleList = roleDb.getRoles(judgeMail);
-            Judge judge = judgeDb.getJudge(judgeMail);
-            boolean isJudge = false;
-        if(subscriberRoleList.size() > 0)
-            {
-                for (Role role : subscriberRoleList)
-                {
-                    if (role.getRoleType().equals(RoleType.JUDGE))
-                    {
-                        isJudge = true;
-                    }
+    private void checkPermissionsJudge(String judgeMail) throws Exception {
+        List<Role> subscriberRoleList = roleDb.getRoles(judgeMail);
+        Judge judge = judgeDb.getJudge(judgeMail);
+        boolean isJudge = false;
+        if (subscriberRoleList.size() > 0) {
+            for (Role role : subscriberRoleList) {
+                if (role.getRoleType().equals(RoleType.JUDGE)) {
+                    isJudge = true;
                 }
             }
-        if(!isJudge){
+        }
+        if (!isJudge) {
             throw new Exception("This subscriber hasn't judge permissions");
         }
     }
