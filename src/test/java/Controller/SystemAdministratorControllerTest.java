@@ -52,7 +52,7 @@ public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
         }
         catch (Exception e){
 
-            Assert.assertEquals("bad input", e.getMessage());
+            Assert.assertEquals("Team not found", e.getMessage());
         }
     }
 
@@ -77,7 +77,7 @@ public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
         systemAdministratorController.closeTeamForEver("team");
 
         Team teamFromDb = teamDb.getTeam("team");
-        Assert.assertEquals(teamFromDb.getTeamStatus(),TeamStatus.CLOSE );
+        Assert.assertEquals(TeamStatus.CLOSE, teamFromDb.getTeamStatus());
     }
     @Test
     public void closeTeamForEverListNull() throws Exception{
@@ -100,7 +100,7 @@ public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
         try {
             systemAdministratorController.removeSubscriber("loy@gmail.com", "noy@gmail.com");
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "subscriber not found");
+            Assert.assertEquals("subscriber not found", e.getMessage());
         }
     }
 
