@@ -18,7 +18,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class NotificationController extends Observable implements Observer {
+public class NotificationController implements Observer {
 
     private SubscriberDb subscriberDb;
     private RepresentativeAssociationController repControll;

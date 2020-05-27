@@ -1253,15 +1253,14 @@ public class RepresentativeAssociationControllerTest
     }
 
     @Test
-    public void changeGameLocation_empty_all()
-    {
+    public void changeGameLocation_empty_all() {
         RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
 
         initForChangeGame_location_and_date_Test();
-
+    }
 
     @Test
-    public void changeGameLocationEmptyInput() throws Exception{
+    public void changeGameLocationEmptyInput() throws Exception {
         try{
             representativeAssociationController.changeGameLocation("","loc", "gameid");
         }
