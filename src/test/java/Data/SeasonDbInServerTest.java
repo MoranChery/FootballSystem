@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeasonDbInServerTest extends BaseEmbeddedSQL
+public class SeasonDbInServerTest
 {
     private SeasonDbInServer seasonDbInServer = SeasonDbInServer.getInstance();
 
@@ -73,7 +73,7 @@ public class SeasonDbInServerTest extends BaseEmbeddedSQL
     }
 
     @Test
-    public void insertSeason_exists() throws Exception
+        public void insertSeason_exists() throws Exception
     {
         Season season1 = new Season("season1");
         Season season2 = new Season("season1");

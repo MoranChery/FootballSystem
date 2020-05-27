@@ -11,7 +11,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuestServiceTest extends BaseEmbeddedSQL
+public class GuestServiceTest
 {
     private GuestService guestService = new GuestService();
     private GuestController guestController=new GuestController();

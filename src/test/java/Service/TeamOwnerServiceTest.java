@@ -30,7 +30,7 @@
     import java.util.Map;
     import java.util.Set;
 
-    public class TeamOwnerServiceTest extends BaseEmbeddedSQL
+    public class TeamOwnerServiceTest
     {
         private TeamOwnerService teamOwnerService = new TeamOwnerService();
         //    private TeamDb teamDb = teamDb;

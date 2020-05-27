@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FanServiceTest extends BaseEmbeddedSQL
+public class FanServiceTest
 {
 
     private FanService fanService = new FanService();

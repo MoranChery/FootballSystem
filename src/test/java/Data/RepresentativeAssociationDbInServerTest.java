@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepresentativeAssociationDbInServerTest extends BaseEmbeddedSQL
+public class RepresentativeAssociationDbInServerTest
 {
     private RepresentativeAssociationDbInServer representativeAssociationDbInServer = RepresentativeAssociationDbInServer.getInstance();
 

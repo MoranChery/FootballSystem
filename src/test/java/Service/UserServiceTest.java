@@ -3,7 +3,7 @@ package Service;
 import Controller.BaseEmbeddedSQL;
 import org.junit.Test;
 
-public class UserServiceTest extends BaseEmbeddedSQL
+public class UserServiceTest
 {
 
     private UserService userService = new UserService();

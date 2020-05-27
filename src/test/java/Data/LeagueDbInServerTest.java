@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeagueDbInServerTest extends BaseEmbeddedSQL
+public class LeagueDbInServerTest
 {
     private LeagueDbInServer leagueDbInServer = LeagueDbInServer.getInstance();
 

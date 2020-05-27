@@ -19,6 +19,7 @@ public class BaseEmbeddedSQL {
         MysqldConfig config = aMysqldConfig(v5_7_13)
                 .withPort(3306)
                 .withUser("noy", "roiL0210")
+//                .withUser("root", "root")
                 .build();
         mysqld = anEmbeddedMysql(config)
                 .addSchema("football_system_db", classPathScript("db/init.sql"))

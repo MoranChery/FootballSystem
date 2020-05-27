@@ -12,7 +12,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SystemAdministratorServiceTest extends BaseEmbeddedSQL
+public class SystemAdministratorServiceTest
 {
     private SystemAdministratorService systemAdministratorService=new SystemAdministratorService();
     GuestController guestController=new GuestController();

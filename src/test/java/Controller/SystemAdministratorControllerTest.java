@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class SystemAdministratorControllerTest extends BaseEmbeddedSQL {
+public class SystemAdministratorControllerTest {
     SystemAdministratorController systemAdministratorController = new SystemAdministratorController();
     GuestController guestController = new GuestController();
 

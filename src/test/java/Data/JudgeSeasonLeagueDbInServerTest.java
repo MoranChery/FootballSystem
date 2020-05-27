@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JudgeSeasonLeagueDbInServerTest extends BaseEmbeddedSQL
+public class JudgeSeasonLeagueDbInServerTest
 {
     private JudgeSeasonLeagueDbInServer judgeSeasonLeagueDbInServer = JudgeSeasonLeagueDbInServer.getInstance();
 
@@ -284,7 +284,7 @@ public class JudgeSeasonLeagueDbInServerTest extends BaseEmbeddedSQL
     }
 
     @Test
-    public void getSeasonLeague_exists() throws Exception
+    public void getJudgeSeasonLeague_exists() throws Exception
     {
         Judge judge1 = new Judge("judge1@gmail.com", "password", 12345, "firstName", "lastName", QualificationJudge.NATIONAL);
         String judgeEmailAddress1 = judge1.getEmailAddress();

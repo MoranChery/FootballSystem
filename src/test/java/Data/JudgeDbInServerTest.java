@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JudgeDbInServerTest extends BaseEmbeddedSQL
+public class JudgeDbInServerTest
 {
     private JudgeDbInServer judgeDbInServer = JudgeDbInServer.getInstance();
 
@@ -133,7 +133,7 @@ public class JudgeDbInServerTest extends BaseEmbeddedSQL
             subscriberDbInServer.insertSubscriber(judge1);
             judgeDbInServer.insertJudge(judge1);
 
-            judgeDbInServer.getJudge(judgeEmailAddressNull);
+                judgeDbInServer.getJudge(judgeEmailAddressNull);
         }
         catch (Exception e)
         {

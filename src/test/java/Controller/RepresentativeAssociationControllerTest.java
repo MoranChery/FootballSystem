@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL
+public class RepresentativeAssociationControllerTest
 {
     private RepresentativeAssociationController representativeAssociationController = new RepresentativeAssociationController();
 
