@@ -36,7 +36,7 @@ public class InitDbRecords
     private static SeasonDbInServer seasonDbInServer = SeasonDbInServer.getInstance();
     private static SeasonLeagueDbInServer seasonLeagueDbInServer = SeasonLeagueDbInServer.getInstance();
     private static SubscriberDbInServer subscriberDbInServer = SubscriberDbInServer.getInstance();
-//    private static SystemAdministratorDbInServer systemAdministratorDbInServer = SystemAdministratorDbInServer.getInstance();
+    private static SystemAdministratorDbInServer systemAdministratorDbInServer = SystemAdministratorDbInServer.getInstance();
     private static TeamDbInServer teamDbInServer = TeamDbInServer.getInstance();
     private static TeamManagerDbInServer teamManagerDbInServer = TeamManagerDbInServer.getInstance();
     private static TeamOwnerDbInServer teamOwnerDbInServer = TeamOwnerDbInServer.getInstance();
@@ -104,11 +104,24 @@ public class InitDbRecords
         judgesOfTheGameList45_6.add(judge4.getEmailAddress());
         judgesOfTheGameList45_6.add(judge5.getEmailAddress());
 
-        Date dateStart1 = new Date(2020, 10, 7, 18, 30, 00);
-//        Date dateEne1 = new Date(2020, 10, 7, 20, 00, 00);
-        Date dateStart2 = new Date(2020, 10, 8, 10, 15, 30);
+        Date dateStart1 = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
+        dateStart1.setHours(18);
+        dateStart1.setMinutes(30);
+        dateStart1.setSeconds(00);
+
+        Date dateStart2 = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
+        dateStart2.setHours(10);
+        dateStart2.setMinutes(15);
+        dateStart2.setSeconds(00);
+
+        Date dateStart3 = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
+        dateStart3.setHours(10);
+        dateStart3.setMinutes(15);
+        dateStart3.setSeconds(00);
+
+//        Date dateStart2 = new Date(2020, 10, 8, 10, 15, 30);
 //        Date dateEnd2 = new Date(2020, 10, 8, 11, 45, 30);
-        Date dateStart3 = new Date(2020, 11, 8, 10, 15, 30);
+//        Date dateStart3 = new Date(2020, 11, 8, 10, 15, 30);
 //        Date dateEnd3 = new Date(2020, 11, 8, 11, 45, 30);
 
         Game game1 = new Game("game1", dateStart1, seasonLeague11.getSeasonLeagueName(), team1.getTeamName(), team2.getTeamName(), court1.getCourtName(), judgesOfTheGameList12_3, judge3.getEmailAddress());
@@ -117,7 +130,7 @@ public class InitDbRecords
 
         try
         {
-//            systemAdministratorDbInServer.insertSystemAdministratorDbInServer(systemAdministrator1);
+            systemAdministratorDbInServer.insertSystemAdministrator(systemAdministrator1);
 
             seasonDbInServer.insertSeason(season1);
             seasonDbInServer.insertSeason(season2);
@@ -196,7 +209,7 @@ public class InitDbRecords
         dbs.add(SeasonDbInServer.getInstance());
         dbs.add(SeasonLeagueDbInServer.getInstance());
         dbs.add(SubscriberDbInServer.getInstance());
-//        dbs.add(SystemAdministratorDbInServer.getInstance());
+        dbs.add(SystemAdministratorDbInServer.getInstance());
         dbs.add(TeamDbInServer.getInstance());
         dbs.add(TeamManagerDbInServer.getInstance());
         dbs.add(TeamOwnerDbInServer.getInstance());

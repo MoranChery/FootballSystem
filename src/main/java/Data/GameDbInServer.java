@@ -84,8 +84,6 @@ public class GameDbInServer implements GameDb
         }
         finally
         {
-
-            GameJudgesListDbInServer.getInstance().insertGameJudgeList(game.getGameID(), game.getJudgesOfTheGameList());
             conn.close();
         }
     }
@@ -122,7 +120,9 @@ public class GameDbInServer implements GameDb
         }
 
         String game_id = rs.getString("game_id");
-        Date game_date = rs.getDate("game_date");
+
+        Date game_date = rs.getTimestamp("game_date");
+//        Date game_date = rs.getDate("game_date");
         String season_league = rs.getString("season_league");
         String host_team = rs.getString("host_team");
         String guest_team = rs.getString("guest_team");
@@ -130,7 +130,9 @@ public class GameDbInServer implements GameDb
         Integer host_team_score = rs.getInt("host_team_score");
         Integer guest_team_score = rs.getInt("guest_team_score");
         String major_judge = rs.getString("major_judge");
-        Date end_game_time = rs.getDate("end_game_time");
+
+        Date end_game_time = rs.getTimestamp("end_game_time");
+//        Date end_game_time = rs.getDate("end_game_time");
 
         conn.close();
 

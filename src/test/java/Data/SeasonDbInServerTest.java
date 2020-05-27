@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeasonDbInServerTest
+public class SeasonDbInServerTest extends BaseEmbeddedSQL
 {
     private SeasonDbInServer seasonDbInServer = SeasonDbInServer.getInstance();
 

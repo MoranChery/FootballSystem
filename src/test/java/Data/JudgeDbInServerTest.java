@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JudgeDbInServerTest
+public class JudgeDbInServerTest extends BaseEmbeddedSQL
 {
     private JudgeDbInServer judgeDbInServer = JudgeDbInServer.getInstance();
 
@@ -98,7 +98,8 @@ public class JudgeDbInServerTest
         }
         catch (Exception e)
         {
-            Assert.assertEquals("Duplicate entry '" + judge2.getEmailAddress() + "' for key 'subscriber.PRIMARY'", e.getMessage());
+//            Assert.assertEquals("Duplicate entry '" + judge2.getEmailAddress() + "' for key 'subscriber.PRIMARY'", e.getMessage());
+            Assert.assertEquals("subscriber already exists", e.getMessage());
         }
     }
 

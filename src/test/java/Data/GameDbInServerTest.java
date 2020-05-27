@@ -13,7 +13,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.util.*;
 
-public class GameDbInServerTest
+public class GameDbInServerTest extends BaseEmbeddedSQL
 {
     private GameDbInServer gameDbInServer = GameDbInServer.getInstance();
 
@@ -35,6 +35,7 @@ public class GameDbInServerTest
         final List<Db> dbs = new ArrayList<>();
 
         dbs.add(GameDbInServer.getInstance());
+        dbs.add(GameJudgesListDbInServer.getInstance());
         dbs.add(SubscriberDbInServer.getInstance());
         dbs.add(JudgeDbInServer.getInstance());
         dbs.add(JudgeSeasonLeagueDbInServer.getInstance());
@@ -50,7 +51,6 @@ public class GameDbInServerTest
             db.deleteAll();
         }
     }
-
 
     @Test
     public void insertGame_legal_firstConstructor() throws Exception
@@ -68,7 +68,11 @@ public class GameDbInServerTest
         court1.setCourtName("court1");
         court1.setCourtCity("court1city1");
 
-        Date dateStart = new Date(20, 10, 8);
+//        Date dateStart = new Date(2020, 10, 8, 10, 15, 00);
+        Date dateStart = new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime();
+        dateStart.setHours(10);
+        dateStart.setMinutes(15);
+        dateStart.setSeconds(00);
 
         Game game = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName());
 
@@ -84,9 +88,6 @@ public class GameDbInServerTest
             courtDbInServer.insertCourt(court1);
 
             gameDbInServer.insertGame(game);
-
-            Game g = gameDbInServer.getGame("game1");
-            String gid = g.getGameID();
 
             Assert.assertEquals("game1", game.getGameID());
             Assert.assertEquals("game1", gameDbInServer.getGame("game1").getGameID());
@@ -128,9 +129,15 @@ public class GameDbInServerTest
         court1.setCourtName("court1");
         court1.setCourtCity("court1city1");
 
-        Date dateStart = new Date(20, 10, 8);
-        Date dateEnd = new Date(20, 11, 8);
+        Date dateStart = new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime();
+        dateStart.setHours(10);
+        dateStart.setMinutes(15);
+        dateStart.setSeconds(00);
 
+        Date dateEnd = new GregorianCalendar(2014, Calendar.FEBRUARY, 12).getTime();
+        dateEnd.setHours(10);
+        dateEnd.setMinutes(15);
+        dateEnd.setSeconds(00);
         Game game = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName(), judgesOfTheGameList, majorJudge1.getEmailAddress(), dateEnd);
 
         try
@@ -157,7 +164,7 @@ public class GameDbInServerTest
             Assert.assertEquals("game1", gameDbInServer.getGame("game1").getGameID());
 
             Set<String> judgesList = gameDbInServer.getGame("game1").getJudgesOfTheGameList();
-            Assert.assertEquals(2, judgesList.size());
+            Assert.assertEquals(3, judgesList.size());
             Assert.assertEquals(true, judgesList.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
         }
@@ -166,7 +173,6 @@ public class GameDbInServerTest
             Assert.assertEquals("Game already exist in system", e.getMessage());
         }
     }
-
 
     @Test
     public void getGame_legal() throws Exception
@@ -196,8 +202,15 @@ public class GameDbInServerTest
         court1.setCourtName("court1");
         court1.setCourtCity("court1city1");
 
-        Date dateStart = new Date(20, 10, 8);
-        Date dateEnd = new Date(20, 11, 8);
+        Date dateStart = new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime();
+        dateStart.setHours(10);
+        dateStart.setMinutes(15);
+        dateStart.setSeconds(00);
+
+        Date dateEnd = new GregorianCalendar(2014, Calendar.FEBRUARY, 12).getTime();
+        dateEnd.setHours(10);
+        dateEnd.setMinutes(15);
+        dateEnd.setSeconds(00);
 
         Game game = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName(), judgesOfTheGameList, majorJudge1.getEmailAddress(), dateEnd);
 
@@ -225,7 +238,7 @@ public class GameDbInServerTest
             Assert.assertEquals("game1", gameDbInServer.getGame("game1").getGameID());
 
             Set<String> judgesList = gameDbInServer.getGame("game1").getJudgesOfTheGameList();
-            Assert.assertEquals(2, judgesList.size());
+            Assert.assertEquals(3, judgesList.size());
             Assert.assertEquals(true, judgesList.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
         }
@@ -234,7 +247,6 @@ public class GameDbInServerTest
             Assert.assertEquals("Game already exist in system", e.getMessage());
         }
     }
-
 
     @Test
     public void deleteAll_listOfGame() throws Exception
@@ -264,8 +276,15 @@ public class GameDbInServerTest
         court1.setCourtName("court1");
         court1.setCourtCity("court1city1");
 
-        Date dateStart = new Date(20, 10, 8);
-        Date dateEnd = new Date(20, 11, 8);
+        Date dateStart = new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime();
+        dateStart.setHours(10);
+        dateStart.setMinutes(15);
+        dateStart.setSeconds(00);
+
+        Date dateEnd = new GregorianCalendar(2014, Calendar.FEBRUARY, 12).getTime();
+        dateEnd.setHours(10);
+        dateEnd.setMinutes(15);
+        dateEnd.setSeconds(00);
 
         Game game1 = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName(), judgesOfTheGameList, majorJudge1.getEmailAddress(), dateEnd);
         Game game2 = new Game("game2", dateStart, seasonLeague.getSeasonLeagueName(), teamGuest.getTeamName(), teamHost.getTeamName(), court1.getCourtName(), judgesOfTheGameList, majorJudge1.getEmailAddress(), dateEnd);
@@ -295,12 +314,12 @@ public class GameDbInServerTest
             Assert.assertEquals("game1", gameDbInServer.getGame("game1").getGameID());
 
             Set<String> judgesList = gameDbInServer.getGame("game1").getJudgesOfTheGameList();
-            Assert.assertEquals(2, judgesList.size());
+            Assert.assertEquals(3, judgesList.size());
             Assert.assertEquals(true, judgesList.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
 
             Set<String> judgesList1 = gameDbInServer.getGame("game2").getJudgesOfTheGameList();
-            Assert.assertEquals(2, judgesList1.size());
+            Assert.assertEquals(3, judgesList1.size());
             Assert.assertEquals(true, judgesList1.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, judgesList1.contains(judge2.getEmailAddress()));
 

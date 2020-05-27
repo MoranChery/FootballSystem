@@ -13,7 +13,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.util.*;
 
-public class GameJudgesListDbInServerTest
+public class GameJudgesListDbInServerTest extends BaseEmbeddedSQL
 {
     private GameJudgesListDbInServer gameJudgesListDbInServer = GameJudgesListDbInServer.getInstance();
 
@@ -81,8 +81,15 @@ public class GameJudgesListDbInServerTest
         court1.setCourtName("court1");
         court1.setCourtCity("court1city1");
 
-        Date dateStart = new Date(20, 10, 8);
-        Date dateEnd = new Date(20, 11, 8);
+        Date dateStart = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
+        dateStart.setHours(10);
+        dateStart.setMinutes(15);
+        dateStart.setSeconds(00);
+
+        Date dateEnd = new GregorianCalendar(2020, Calendar.FEBRUARY, 12).getTime();
+        dateEnd.setHours(10);
+        dateEnd.setMinutes(15);
+        dateEnd.setSeconds(00);
 
         Game game = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName(), judgesOfTheGameList, majorJudge1.getEmailAddress(), dateEnd);
 
@@ -110,7 +117,7 @@ public class GameJudgesListDbInServerTest
             Assert.assertEquals("game1", gameDbInServer.getGame("game1").getGameID());
 
             Set<String> judgesList = gameDbInServer.getGame("game1").getJudgesOfTheGameList();
-            Assert.assertEquals(2, judgesList.size());
+            Assert.assertEquals(3, judgesList.size());
             Assert.assertEquals(true, judgesList.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
         }
@@ -148,8 +155,15 @@ public class GameJudgesListDbInServerTest
         court1.setCourtName("court1");
         court1.setCourtCity("court1city1");
 
-        Date dateStart = new Date(20, 10, 8);
-        Date dateEnd = new Date(20, 11, 8);
+        Date dateStart = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
+        dateStart.setHours(10);
+        dateStart.setMinutes(15);
+        dateStart.setSeconds(00);
+
+        Date dateEnd = new GregorianCalendar(2020, Calendar.FEBRUARY, 12).getTime();
+        dateEnd.setHours(10);
+        dateEnd.setMinutes(15);
+        dateEnd.setSeconds(00);
 
         Game game = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName(), judgesOfTheGameList, majorJudge1.getEmailAddress(), dateEnd);
 
@@ -177,12 +191,12 @@ public class GameJudgesListDbInServerTest
             Assert.assertEquals("game1", gameDbInServer.getGame("game1").getGameID());
 
             Set<String> judgesList = gameDbInServer.getGame("game1").getJudgesOfTheGameList();
-            Assert.assertEquals(2, judgesList.size());
+            Assert.assertEquals(3, judgesList.size());
             Assert.assertEquals(true, judgesList.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
 
             Set<String> listJudgeEmailAddress_ByGameID = gameJudgesListDbInServer.getListJudgeEmailAddress_ByGameID("game1");
-            Assert.assertEquals(2, listJudgeEmailAddress_ByGameID.size());
+            Assert.assertEquals(3, listJudgeEmailAddress_ByGameID.size());
             Assert.assertEquals(true, listJudgeEmailAddress_ByGameID.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, listJudgeEmailAddress_ByGameID.contains(judge2.getEmailAddress()));
         }
@@ -220,8 +234,15 @@ public class GameJudgesListDbInServerTest
         court1.setCourtName("court1");
         court1.setCourtCity("court1city1");
 
-        Date dateStart = new Date(20, 10, 8);
-        Date dateEnd = new Date(20, 11, 8);
+        Date dateStart = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
+        dateStart.setHours(10);
+        dateStart.setMinutes(15);
+        dateStart.setSeconds(00);
+
+        Date dateEnd = new GregorianCalendar(2020, Calendar.FEBRUARY, 12).getTime();
+        dateEnd.setHours(10);
+        dateEnd.setMinutes(15);
+        dateEnd.setSeconds(00);
 
         Game game = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName(), judgesOfTheGameList, majorJudge1.getEmailAddress(), dateEnd);
 
@@ -249,7 +270,7 @@ public class GameJudgesListDbInServerTest
             Assert.assertEquals("game1", gameDbInServer.getGame("game1").getGameID());
 
             Set<String> judgesList = gameDbInServer.getGame("game1").getJudgesOfTheGameList();
-            Assert.assertEquals(2, judgesList.size());
+            Assert.assertEquals(3, judgesList.size());
             Assert.assertEquals(true, judgesList.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
 
@@ -295,8 +316,15 @@ public class GameJudgesListDbInServerTest
         court1.setCourtName("court1");
         court1.setCourtCity("court1city1");
 
-        Date dateStart = new Date(20, 10, 8);
-        Date dateEnd = new Date(20, 11, 8);
+        Date dateStart = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
+        dateStart.setHours(10);
+        dateStart.setMinutes(15);
+        dateStart.setSeconds(00);
+
+        Date dateEnd = new GregorianCalendar(2020, Calendar.FEBRUARY, 12).getTime();
+        dateEnd.setHours(10);
+        dateEnd.setMinutes(15);
+        dateEnd.setSeconds(00);
 
         Game game = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName(), judgesOfTheGameList, majorJudge1.getEmailAddress(), dateEnd);
 
@@ -324,7 +352,7 @@ public class GameJudgesListDbInServerTest
             Assert.assertEquals("game1", gameDbInServer.getGame("game1").getGameID());
 
             Set<String> judgesList = gameDbInServer.getGame("game1").getJudgesOfTheGameList();
-            Assert.assertEquals(2, judgesList.size());
+            Assert.assertEquals(3, judgesList.size());
             Assert.assertEquals(true, judgesList.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
 

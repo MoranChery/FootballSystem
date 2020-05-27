@@ -43,15 +43,16 @@ public class Game {
         int hour = gameDate.getHours();
         if(minute > 30)
         {
-            minute = minute + 30;
-            hour = hour + 1;
-        }
-        else
-        {
             minute = minute - 30;
             hour = hour + 2;
         }
-        this.endGameTime = gameDate;
+        else
+        {
+            minute = minute + 30;
+            hour = hour + 1;
+        }
+//        this.endGameTime = gameDate;
+        this.endGameTime = new Date(gameDate.getDate());
         this.endGameTime.setHours(hour);
         this.endGameTime.setMinutes(minute);
     }
@@ -68,22 +69,23 @@ public class Game {
         this.judgesOfTheGameList = judges;
         this.eventLog = new GameEventsLog();
         this.majorJudge = majorJudge;
-        this.endGameTime = endGameTime;
-//        int minute = gameDate.getMinutes();
-//        int hour = gameDate.getHours();
-//        if(minute > 30)
-//        {
-//            minute = minute + 30;
-//            hour = hour + 1;
-//        }
-//        else
-//        {
-//            minute = minute - 30;
-//            hour = hour + 2;
-//        }
-//        this.endGameTime = gameDate;
-//        this.endGameTime.setHours(hour);
-//        this.endGameTime.setMinutes(minute);
+//        this.endGameTime = endGameTime;
+        int minute = gameDate.getMinutes();
+        int hour = gameDate.getHours();
+        if(minute > 30)
+        {
+            minute = minute - 30;
+            hour = hour + 2;
+        }
+        else
+        {
+            minute = minute + 30;
+            hour = hour + 1;
+        }
+        //this.endGameTime = gameDate;
+        this.endGameTime = new Date(gameDate.getDate());
+        this.endGameTime.setHours(hour);
+        this.endGameTime.setMinutes(minute);
     }
 
     public Game(String gameID, Date gameDate, String seasonLeague, String hostTeam, String guestTeam, String court, Set<String> judges,String majorJudge)
@@ -104,15 +106,16 @@ public class Game {
         int hour = gameDate.getHours();
         if(minute > 30)
         {
-            minute = minute + 30;
-            hour = hour + 1;
-        }
-        else
-        {
             minute = minute - 30;
             hour = hour + 2;
         }
-        this.endGameTime = gameDate;
+        else
+        {
+            minute = minute + 30;
+            hour = hour + 1;
+        }
+//        this.endGameTime = gameDate;
+        this.endGameTime = new Date(gameDate.getDate());
         this.endGameTime.setHours(hour);
         this.endGameTime.setMinutes(minute);
     }

@@ -38,6 +38,7 @@ private JudgeController judgeController = new JudgeController();
     private CourtDb courtDb = CourtDbInServer.getInstance();
     private GameJudgesListDb gameJudgesListDb = GameJudgesListDbInServer.getInstance();
     private String path = "C:\\Users\\noyha\\IdeaProjects\\footballtest";
+//    private String path = "C:\\Users\\avira\\Desktop";
     private Gson prettyGson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd HH:mm").create();
 
     @Before
