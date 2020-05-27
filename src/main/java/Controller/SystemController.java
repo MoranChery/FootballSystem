@@ -21,8 +21,17 @@ public class SystemController {
     private ITaxSystem proxyTaxSystem;
     private IAssociationAccountingSystem proxyAssociationAccountingSystem;
 
+    private static SystemController ourInstance;
+    static  {
+        ourInstance = new SystemController();
+        try {
+            addSystemAdministrator();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    public SystemController() {
+    private SystemController() {
         systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
         subscriberDb = SubscriberDbInMemory.getInstance();
         roleDb = RoleDbInMemory.getInstance();
@@ -35,14 +44,10 @@ public class SystemController {
      * add first SystemAdministrator to the system
      * should be privet but for the tests - public
      */
-    private static SystemController ourInstance;
-    static  {
+
+    public static void initialSystem() throws Exception {
         ourInstance = new SystemController();
-        try {
-            addSystemAdministrator();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        addSystemAdministrator();
     }
 
     public static SystemController getInstance() {
@@ -57,16 +62,17 @@ public class SystemController {
      * should be not static but for the tests - static
      * @throws Exception if the system couldn't connect with the external systems
      */
-//    public static void connectionToExternalSystems() /*throws Exception*/ {
-//        //TODO
-//
-////        if (!connectToTheAccountingSystem()) {
-////            throw new Exception("problem in connection with accounting system");
-////        }
-////        if (!connectToTheTaxLawSystem()) {
-////            throw new Exception("problem in connection with tax law system");
-////        }
-//    }
+    public void isConnectionToExternalSystems() throws Exception {
+        if(!(isConnectToTheAccountingSystem() || isConnectToTheTaxLawSystem())){
+            throw new Exception("problem in connection with accounting system and with accounting system");
+        }
+        if (!isConnectToTheAccountingSystem()) {
+            throw new Exception("problem in connection with accounting system");
+        }
+        if (!isConnectToTheTaxLawSystem()) {
+            throw new Exception("problem in connection with tax law system");
+        }
+    }
 
     /**
      * connection to the Tax system with the Proxy
@@ -98,9 +104,10 @@ public class SystemController {
      * should be privet but for the tests - protected
      * @return boolean - true if the connection ended successfully
      */
-    protected boolean connectToTheAccountingSystem() {
-        //todo
-        return true;
+    protected boolean isConnectToTheAccountingSystem() {
+
+        return proxyAssociationAccountingSystem.isConnected();
+
     }
 
     /**
@@ -109,9 +116,10 @@ public class SystemController {
      * should be privet but for the tests - protected
      * @return boolean - true if the connection ended successfully
      */
-    protected boolean connectToTheTaxLawSystem() {
-        //todo
-        return true;
+    protected boolean isConnectToTheTaxLawSystem() {
+
+        return proxyTaxSystem.isConnected();
+
     }
 
 
@@ -141,10 +149,6 @@ public class SystemController {
      */
     public static void createLog(String path) throws Exception {
         //todo
-    }
-
-    public static void main(String[] args) {
-        SystemService systemService = new SystemService();
     }
 }
 

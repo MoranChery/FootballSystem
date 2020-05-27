@@ -1,8 +1,10 @@
 package Service;
 
+import Controller.BaseEmbeddedSQL;
 import org.junit.Test;
 
-public class UserServiceTest {
+public class UserServiceTest
+{
 
     private UserService userService = new UserService();
 

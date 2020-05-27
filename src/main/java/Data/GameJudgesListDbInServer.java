@@ -13,30 +13,35 @@ public class GameJudgesListDbInServer implements GameJudgesListDb
     @Override
     public void insertGameJudgeList(String gameID, Set<String> judgesOfTheGameList) throws Exception
     {
-        if(judgesOfTheGameList != null) {
-            Connection conn = DbConnector.getConnection();
-            try {
-                for (String judgeEmail : judgesOfTheGameList) {
+        Connection conn = DbConnector.getConnection();
+        try
+        {
+            for (String judgeEmail : judgesOfTheGameList)
+            {
 
-                    // the mysql insert statement
-                    String query = " insert into game_judges_list (game_id, judges_email_address)"
-                            + " values (?,?)";
+                // the mysql insert statement
+                String query = " insert into game_judges_list (game_id, judges_email_address)"
+                        + " values (?,?)";
 
-                    // create the mysql insert preparedStatement
-                    PreparedStatement preparedStmt = conn.prepareStatement(query);
-                    preparedStmt.setString(1, gameID);
-                    preparedStmt.setString(2, judgeEmail);
+                // create the mysql insert preparedStatement
+                PreparedStatement preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setString(1, gameID);
+                preparedStmt.setString(2, judgeEmail);
 
-                    // execute the preparedStatement
-                    preparedStmt.execute();
-                }
-            } catch (Exception e) {
-                throw new Exception("GameJudgeList already exist in system");
-            } finally {
-                conn.close();
+                // execute the preparedStatement
+                preparedStmt.execute();
             }
-
         }
+        catch (Exception e)
+        {
+            throw new Exception("GameJudgeList already exist in system");
+        }
+        finally
+        {
+            conn.close();
+        }
+
+
     }
 
     @Override
@@ -108,7 +113,20 @@ public class GameJudgesListDbInServer implements GameJudgesListDb
     }
 
     @Override
-    public void deleteAll() throws SQLException {
+    public void deleteAll() throws SQLException, SQLException
+    {
+        Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        /* TRUNCATE is faster than DELETE since
+         * it does not generate rollback information and does not
+         * fire any delete triggers
+         */
 
+        // the mysql delete statement
+        String query = "delete from game_judges_list";
+
+        // create the mysql delete Statement
+        statement.executeUpdate(query);
+        conn.close();
     }
 }

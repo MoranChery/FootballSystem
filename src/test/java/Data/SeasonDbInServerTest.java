@@ -1,5 +1,6 @@
 package Data;
 
+import Controller.BaseEmbeddedSQL;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.League;
@@ -13,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeasonDbInServerTest
+public class SeasonDbInServerTest extends BaseEmbeddedSQL
 {
     private SeasonDbInServer seasonDbInServer = SeasonDbInServer.getInstance();
 
@@ -72,7 +73,7 @@ public class SeasonDbInServerTest
     }
 
     @Test
-    public void insertSeason_exists() throws Exception
+        public void insertSeason_exists() throws Exception
     {
         Season season1 = new Season("season1");
         Season season2 = new Season("season1");

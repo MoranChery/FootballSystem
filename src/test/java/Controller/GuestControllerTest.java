@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class GuestControllerTest  extends BaseEmbeddedSQL {
+public class GuestControllerTest  {
     private GuestController guestController = new GuestController();
     //DBs
 //    private SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();

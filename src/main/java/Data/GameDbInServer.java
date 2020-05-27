@@ -10,7 +10,6 @@ import Model.UsersTypes.Judge;
 import Model.PageType;
 import Model.Season;
 import Model.UsersTypes.TeamOwner;
-import com.sun.jna.platform.win32.Sspi;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
@@ -65,6 +64,19 @@ public class GameDbInServer implements GameDb
 
             // execute the preparedStatement
             preparedStmt.execute();
+
+            if (game.getJudgesOfTheGameList() != null)
+            {
+                Set<String> judgesOfTheGameList = game.getJudgesOfTheGameList();
+                String majorJudge = game.getMajorJudge();
+                if(majorJudge != null)
+                {
+                    judgesOfTheGameList.add(majorJudge);
+                    game.setJudgesOfTheGameList(judgesOfTheGameList);
+                }
+
+                GameJudgesListDbInServer.getInstance().insertGameJudgeList(game.getGameID(), game.getJudgesOfTheGameList());
+            }
         }
         catch (Exception e)
         {
@@ -72,12 +84,6 @@ public class GameDbInServer implements GameDb
         }
         finally
         {
-            Set<String> judgesOfTheGameList = game.getJudgesOfTheGameList();
-            String majorJudge = game.getMajorJudge();
-            if(majorJudge != null) {
-                judgesOfTheGameList.add(majorJudge);
-            }
-            GameJudgesListDbInServer.getInstance().insertGameJudgeList(game.getGameID(), game.getJudgesOfTheGameList());
             conn.close();
         }
     }
@@ -114,7 +120,9 @@ public class GameDbInServer implements GameDb
         }
 
         String game_id = rs.getString("game_id");
+
         Date game_date = rs.getTimestamp("game_date");
+//        Date game_date = rs.getDate("game_date");
         String season_league = rs.getString("season_league");
         String host_team = rs.getString("host_team");
         String guest_team = rs.getString("guest_team");
@@ -122,7 +130,9 @@ public class GameDbInServer implements GameDb
         Integer host_team_score = rs.getInt("host_team_score");
         Integer guest_team_score = rs.getInt("guest_team_score");
         String major_judge = rs.getString("major_judge");
+
         Date end_game_time = rs.getTimestamp("end_game_time");
+//        Date end_game_time = rs.getDate("end_game_time");
 
         conn.close();
 
