@@ -1,22 +1,16 @@
 package Controller;
 
-import Controller.RepresentativeAssociationController;
-import Controller.SubscriberController;
 import Data.*;
 import Model.Alert;
-import Model.Enums.Status;
 import Model.Enums.TeamStatus;
 import Model.Game;
 import Model.Team;
 import Model.UsersTypes.*;
-import com.sun.mail.smtp.SMTPTransport;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 public class NotificationController implements Observer {
 
@@ -54,7 +48,7 @@ public class NotificationController implements Observer {
                     if (subscriber.isWantAlertInMail()) {
                         sendMessageInMail(j, alert);
                     } else {
-                        alertDb.createAlertInDb(j, alert);
+                        alertDb.insertAlertInDb(j, alert);
                     }
 
                 } catch (Exception e) {
@@ -83,7 +77,7 @@ public class NotificationController implements Observer {
                             sendMessageInMail(ownerEmail, alert);
                         } else {
                             try {
-                                alertDb.createAlertInDb(ownerEmail, alert);
+                                alertDb.insertAlertInDb(ownerEmail, alert);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -97,7 +91,7 @@ public class NotificationController implements Observer {
                             sendMessageInMail(managerEmail, alert);
                         } else {
                             try {
-                                alertDb.createAlertInDb(managerEmail, alert);
+                                alertDb.insertAlertInDb(managerEmail, alert);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -113,7 +107,7 @@ public class NotificationController implements Observer {
                     if (teamOwnerRemoved.isWantAlertInMail()) {
                         sendMessageInMail(teamOwnerRemoved.getEmailAddress(), alert);
                     } else {
-                        alertDb.createAlertInDb(teamOwnerRemoved.getEmailAddress(), alert);
+                        alertDb.insertAlertInDb(teamOwnerRemoved.getEmailAddress(), alert);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -130,7 +124,7 @@ public class NotificationController implements Observer {
                         if (rep.isWantAlertInMail()) {
                             sendMessageInMail(rep.getEmailAddress(), alert);
                         } else {
-                            alertDb.createAlertInDb(rep.getEmailAddress(), alert);
+                            alertDb.insertAlertInDb(rep.getEmailAddress(), alert);
 
                         }
                     }
@@ -154,7 +148,7 @@ public class NotificationController implements Observer {
                         sendMessageInMail(ownerMail, alert);
                     } else {
                         try {
-                            alertDb.createAlertInDb(ownerMail, alert);
+                            alertDb.insertAlertInDb(ownerMail, alert);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -169,7 +163,7 @@ public class NotificationController implements Observer {
                         sendMessageInMail(managerMail, alert);
                     } else {
                         try {
-                            alertDb.createAlertInDb(managerMail, alert);
+                            alertDb.insertAlertInDb(managerMail, alert);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

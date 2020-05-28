@@ -32,7 +32,7 @@ public class RepresentativeAssociationDbInMemory implements RepresentativeAssoci
         RepresentativeAssociation representativeAssociation = new RepresentativeAssociation( "representativeAssociation@gmail.com", "representativeAssociation", 111222333,"representativeAssociationName", "representativeAssociationLastName");
         Alert alert  = new Alert("new ", "new");
         AlertDbInMemory alertDbInMemory = AlertDbInMemory.getInstance();
-        alertDbInMemory.createAlertInDb("representativeAssociation@gmail.com" , alert);
+        alertDbInMemory.insertAlertInDb("representativeAssociation@gmail.com" , alert);
         SubscriberController subscriberController = new SubscriberController();
         subscriberController.createSubscriber(representativeAssociation);
         RoleDbInMemory.getInstance().createRoleInSystem("representativeAssociation@gmail.com", RoleType.REPRESENTATIVE_ASSOCIATION);
