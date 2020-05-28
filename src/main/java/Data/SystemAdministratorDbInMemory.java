@@ -29,7 +29,7 @@ public class SystemAdministratorDbInMemory implements SystemAdministratorDb {
      * @throws Exception
      */
     @Override
-    public void createSystemAdministrator(SystemAdministrator systemAdministrator) throws Exception {
+    public void insertSystemAdministrator(SystemAdministrator systemAdministrator) throws Exception {
         if (systemAdministrators.containsKey(systemAdministrator.getEmailAddress())) {
             throw new Exception("SystemAdministrator already exists");
         }

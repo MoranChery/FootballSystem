@@ -162,7 +162,6 @@ public class TeamOwnerController extends Observable{
                 currPlayer.setPassword(UUID.randomUUID().toString());
                 subscriberDb.insertSubscriber(currPlayer);
                 /*Player doesnt exist in the db - add to players's db*/
-                // TODO: 14/04/2020 add message to the new subscriber
             }
             playerDb.insertPlayer(currPlayer);
             player = currPlayer;
@@ -254,7 +253,6 @@ public class TeamOwnerController extends Observable{
                 currTeamManager.setPassword(UUID.randomUUID().toString());
                 subscriberDb.insertSubscriber(currTeamManager);
                 /*teamManager doesnt exist in the db - add to teamManagers's db*/
-                // TODO: 14/04/2020 add message to the new subscriber
             }
             teamManagerDb.insertTeamManager(currTeamManager);
             teamManager = currTeamManager;
@@ -333,7 +331,6 @@ public class TeamOwnerController extends Observable{
                 /*create subscriber in db*/
                 subscriberDb.insertSubscriber(currCoach);
                 /*Coach doesnt exist in the db - add to coachs's db*/
-                // TODO: 14/04/2020 add message to the new subscriber
             }
             coachDb.insertCoach(currCoach);
             coach = currCoach;

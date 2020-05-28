@@ -1,5 +1,6 @@
 package Service;
 
+import Controller.BaseEmbeddedSQL;
 import Controller.GuestController;
 import Data.Db;
 import Data.FanDbInMemory;
@@ -10,7 +11,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuestServiceTest {
+public class GuestServiceTest
+{
     private GuestService guestService = new GuestService();
     private GuestController guestController=new GuestController();
 

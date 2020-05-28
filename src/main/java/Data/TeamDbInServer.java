@@ -31,6 +31,10 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void insertTeam(String teamName, Double budget, TeamStatus active) throws Exception {
+       if(teamName == null || budget == null || active == null){
+           throw new Exception("bad input");
+       }
+
         Connection conn = DbConnector.getConnection();
         try
         {
@@ -66,6 +70,9 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void addPlayer(String teamName, Player player) throws Exception {
+        if(player == null){
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
 
         String query = "UPDATE player  SET team = \'" + teamName +  "\'  WHERE player.email_address =  \'"+ player.getEmailAddress() + "\'" ;
@@ -76,6 +83,9 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void addTeamManager(String teamName, TeamManager teamManager, List<PermissionType> permissionTypes, String ownedByEmail) throws Exception {
+        if (teamName == null || teamManager == null || permissionTypes == null || ownedByEmail == null) {
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
         String query = "UPDATE team_manager SET team = \'" + teamName +  "\', owned_by_email = \'" + ownedByEmail + "\' WHERE team_manager.email_address = \'"+ teamManager.getEmailAddress() + "\'" ;
         PreparedStatement preparedStmt = conn.prepareStatement(query);
@@ -282,6 +292,10 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void addCourt(String teamName, Court court) throws Exception {
+        if (teamName == null || court == null) {
+            throw new NullPointerException("bad input");
+        }
+
         Connection conn = DbConnector.getConnection();
 
         String query = "UPDATE team  SET court = \'" + court.getCourtName() +  "\'  WHERE team.team_name =  \'"+ teamName + "\'" ;
@@ -292,6 +306,9 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void addCoach(String teamName, Coach coach) throws Exception {
+        if (teamName == null || coach == null) {
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
 
         String query = "UPDATE coach  SET team = \'" + teamName +  "\'  WHERE coach.email_address =  \'"+ coach.getEmailAddress() + "\'" ;
@@ -303,7 +320,7 @@ public class TeamDbInServer implements TeamDb{
     @Override
     public void removePlayer(String teamName, String playerEmailAddress) throws Exception {
         if(teamName == null || playerEmailAddress == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Connection conn = DbConnector.getConnection();
         String query = "UPDATE player SET team = " + null +  "  WHERE player.team =  \'"+ teamName + "\' and player.email_address = '" + playerEmailAddress + "\'" ;
@@ -315,7 +332,7 @@ public class TeamDbInServer implements TeamDb{
     @Override
     public void removeTeamManager(String teamName, String teamManagerEmailAddress) throws Exception {
         if(teamName == null || teamManagerEmailAddress == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Connection conn = DbConnector.getConnection();
         String query = "UPDATE team_manager SET team = " + null +  ", owned_by_email = null WHERE team_manager.team =  \'"+ teamName + "\' and team_manager.email_address = '" + teamManagerEmailAddress + "\'" ;
@@ -327,6 +344,9 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void removeCoach(String teamName, String coachEmailAddress) throws Exception {
+        if(teamName == null || coachEmailAddress == null) {
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
 
         String query = "UPDATE coach  SET team = null WHERE coach.email_address =  \'"+ coachEmailAddress + "\' AND team = \'" + teamName + "\'" ;
@@ -338,7 +358,7 @@ public class TeamDbInServer implements TeamDb{
     @Override
     public void removeCourtFromTeam(String teamName, String courtName) throws Exception {
         if(teamName == null || courtName == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("bad input");
         }
         Connection conn = DbConnector.getConnection();
         String query = "UPDATE team SET court = " + null +  "  WHERE team.team_name =  \'"+ teamName + "\' and team.court = '" + courtName + "\'" ;
@@ -349,8 +369,8 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void addFinancialActivity(String teamName, FinancialActivity financialActivity) throws Exception {
-        if(teamName == null) {
-            throw new Exception("Team not found");
+        if(teamName == null || financialActivity == null) {
+            throw new NullPointerException("bad input");
         }
         Connection conn = DbConnector.getConnection();
         String query = " insert into financial_activity (financial_activity_id,financial_activity_amount,description,financial_activity_type,team)"
@@ -387,6 +407,9 @@ public class TeamDbInServer implements TeamDb{
 
     @Override
     public void changeStatus(String teamName, TeamStatus teamStatus) throws Exception {
+        if(teamStatus == null){
+            throw new NullPointerException("bad input");
+        }
         Connection conn = DbConnector.getConnection();
 
         String query = "UPDATE team  SET team_status = \'" + teamStatus.name() + "\' WHERE team.team_name =  \'"+ teamName + "\'";
@@ -404,6 +427,7 @@ public class TeamDbInServer implements TeamDb{
         PreparedStatement preparedStmt = conn.prepareStatement(query);
         preparedStmt.executeUpdate();
         conn.close();
+        changeStatus(teamName,TeamStatus.INACTIVE);
     }
 
     public void closeTeamForAlways(String teamName) throws Exception {

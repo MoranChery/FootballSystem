@@ -13,6 +13,13 @@ import Model.UsersTypes.Player;
 import Model.UsersTypes.TeamManager;
 import Model.UsersTypes.TeamOwner;
 import components.CreateTeamRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextStoppedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,13 +34,20 @@ import java.util.logging.Logger;
 public class TeamOwnerService {
     private Logger logger = Logger.getLogger(TeamOwnerService.class.getName());
     private TeamOwnerController teamOwnerController;
-    private LoggerHandler loggerHandler;
+//    private LoggerHandler loggerHandler;
+
 
     public TeamOwnerService() {
         this.teamOwnerController = new TeamOwnerController();
 //        this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
         logger.addHandler(LoggerHandler.loggerErrorFileHandler);
         logger.addHandler(LoggerHandler.loggerEventFileHandler);
+    }
+
+
+    @EventListener
+    public void onDestroy(ContextStoppedEvent event) throws Exception {
+        logger.log(Level.WARNING, "The server is shutting down");
     }
 
     @GetMapping
@@ -58,9 +72,9 @@ public class TeamOwnerService {
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "createNewTeam/{teamName}/{teamOwnerEmail}/{budget}/{court}/")
+    @GetMapping(value = "createNewTeam/{teamName}/{teamOwnerEmail}/{budget}/{courtName}/{courtCity}/")
     @ResponseStatus(HttpStatus.OK)
-    public void createNewTeam(@PathVariable String teamName, @PathVariable String teamOwnerEmail, @PathVariable String budget, @PathVariable String court) throws Exception {
+    public void createNewTeam(@PathVariable String teamName, @PathVariable String teamOwnerEmail, @PathVariable String budget, @PathVariable String courtName,@PathVariable String courtCity) throws Exception {
         //final String teamName = createTeamRequest.getTeamName();
         final List<Coach> coaches = new ArrayList<>();
 //            final Double budget = createTeamRequest.getBudget();
@@ -70,7 +84,8 @@ public class TeamOwnerService {
 //            final String teamOwnerEmail = createTeamRequest.getTeamOwnerEmail();
         try {
             Court court1 = new Court();
-            court1.setCourtName(court);
+            court1.setCourtName(courtName);
+            court1.setCourtCity(courtCity);
             teamOwnerController.createNewTeam(teamName, teamOwnerEmail, players, coaches, teamManagers, court1, Double.parseDouble(budget));
             logger.log(Level.INFO, "Created by: " + teamOwnerEmail + " Description: Team \"" + teamName + "\" was created");
         } catch (Exception e) {
@@ -85,7 +100,7 @@ public class TeamOwnerService {
     /*will receive from the UI the team's name and the player Id want to add and will continue to controller*/
     public void addPlayer(@PathVariable String teamName, @PathVariable String ownerEmail, @PathVariable String emailAddress, @PathVariable String playerId, @PathVariable String firstName, @PathVariable String lastName, @PathVariable String birthDate, @PathVariable String playerRole) throws Exception {
         try {
-            Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(birthDate);
+            Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(birthDate);
             PlayerRole playerRole1 = PlayerRole.getPlayerRole(playerRole);
             teamOwnerController.addPlayer(teamName, ownerEmail, emailAddress, Integer.parseInt(playerId), firstName, lastName, date1, playerRole1);
             logger.log(Level.INFO, "Created by: " + ownerEmail + " Description: Player \"" + emailAddress + "\" added to Team:" + teamName);

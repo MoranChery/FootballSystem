@@ -34,22 +34,22 @@ public class SystemAdministratorController extends Observable {
     private GameDb gameDb;
 
     public SystemAdministratorController() {
-        teamDb = TeamDbInMemory.getInstance();
-        subscriberDb = SubscriberDbInMemory.getInstance();
-        coachDb = CoachDbInMemory.getInstance();
-        courtDb = CourtDbInMemory.getInstance();
-        judgeDb = JudgeDbInMemory.getInstance();
-        playerDb = PlayerDbInMemory.getInstance();
-        teamManagerDb = TeamManagerDbInMemory.getInstance();
-        teamOwnerDb = TeamOwnerDbInMemory.getInstance();
-        pageDb = PageDbInMemory.getInstance();
+        teamDb = TeamDbInServer.getInstance();
+        subscriberDb = SubscriberDbInServer.getInstance();
+        coachDb = CoachDbInServer.getInstance();
+        courtDb = CourtDbInServer.getInstance();
+        judgeDb = JudgeDbInServer.getInstance();
+        playerDb = PlayerDbInServer.getInstance();
+        teamManagerDb = TeamManagerDbInServer.getInstance();
+        teamOwnerDb = TeamOwnerDbInServer.getInstance();
+        pageDb = PageDbInServer.getInstance();
         fanDb = FanDbInMemory.getInstance();
-        seasonalLeagueDB = SeasonLeagueDbInMemory.getInstance();
-        judgeSeasonLeagueDb = JudgeSeasonLeagueDbInMemory.getInstance();
-        roleDb= RoleDbInMemory.getInstance();
-        systemAdministratorDb=SystemAdministratorDbInMemory.getInstance();
-        representativeAssociationDb= RepresentativeAssociationDbInMemory.getInstance();
-        permissionDb = PermissionDbInMemory.getInstance();
+        seasonalLeagueDB = SeasonLeagueDbInServer.getInstance();
+        judgeSeasonLeagueDb = JudgeSeasonLeagueDbInServer.getInstance();
+        roleDb = RoleDbInServer.getInstance();
+        systemAdministratorDb = SystemAdministratorDbInServer.getInstance();
+        representativeAssociationDb = RepresentativeAssociationDbInServer.getInstance();
+        permissionDb = PermissionDbInServer.getInstance();
     }
 
     //use case 8.1
@@ -64,6 +64,10 @@ public class SystemAdministratorController extends Observable {
         Team teamToDelete = teamDb.getTeam(teamName);
         Map <String, TeamOwner> teamOwnerList = teamToDelete.getTeamOwners();
         Map<String, TeamManager> teamManagerList = teamToDelete.getTeamManagers();
+        if(teamManagerList == null || teamOwnerList == null){
+            throw new NullPointerException("one or more of the lists is null");
+        }
+        teamDb.closeTeamForever(teamName);
         Object[] data = new Object[4];
         data[0] = "close";
         data[1] = teamName;
@@ -71,7 +75,7 @@ public class SystemAdministratorController extends Observable {
         data[3] = teamManagerList;
         setChanged();
         notifyObservers(data);
-        teamDb.closeTeamForever(teamName);
+
     }
 
     //use case 8.2

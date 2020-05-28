@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FanControllerTest {
+public class FanControllerTest  {
 
     private FanController fanController = new FanController();
     private FanDb fanDb = FanDbInMemory.getInstance();

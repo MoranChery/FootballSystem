@@ -1,9 +1,6 @@
 package Data;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -113,5 +110,23 @@ public class GameJudgesListDbInServer implements GameJudgesListDb
         conn.close();
 
         return listGameID;
+    }
+
+    @Override
+    public void deleteAll() throws SQLException, SQLException
+    {
+        Connection conn = DbConnector.getConnection();
+        Statement statement = conn.createStatement();
+        /* TRUNCATE is faster than DELETE since
+         * it does not generate rollback information and does not
+         * fire any delete triggers
+         */
+
+        // the mysql delete statement
+        String query = "delete from game_judges_list";
+
+        // create the mysql delete Statement
+        statement.executeUpdate(query);
+        conn.close();
     }
 }

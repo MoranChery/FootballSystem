@@ -18,7 +18,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class NotificationController extends Observable implements Observer {
+public class NotificationController implements Observer {
 
     private SubscriberDb subscriberDb;
     private RepresentativeAssociationController repControll;
@@ -51,7 +51,7 @@ public class NotificationController extends Observable implements Observer {
             for (String j : judges) {
                 try {
                     Subscriber subscriber = subscriberDb.getSubscriber(j);
-                    if (subscriber.isWantAlertInMail() == true) {
+                    if (subscriber.isWantAlertInMail()) {
                         sendMessageInMail(j, alert);
                     } else {
                         alertDb.createAlertInDb(j, alert);
@@ -61,6 +61,13 @@ public class NotificationController extends Observable implements Observer {
                     e.printStackTrace();
                 }
             }
+//            setChanged();
+//            if(theValues[0].equals("location")){
+//                notifyObservers("location");
+//            }
+//            else {
+//                notifyObservers("date");
+//            }
         }
         if (o == teamOwnerController) {
             Object[] theValues = (Object[]) arg;
@@ -98,6 +105,8 @@ public class NotificationController extends Observable implements Observer {
                     }
                 }
             }
+//            setChanged();
+//            notifyObservers("status");
             if (theValues[0].equals("removed")) {
                 try {
                     TeamOwner teamOwnerRemoved = (TeamOwner) theValues[2];
@@ -110,6 +119,8 @@ public class NotificationController extends Observable implements Observer {
                     e.printStackTrace();
                 }
             }
+//            setChanged();
+//            notifyObservers("removed");
             if (theValues[0].equals("budget")) {
                 ArrayList<String> allRep = null;
                 try {
@@ -128,6 +139,8 @@ public class NotificationController extends Observable implements Observer {
                 }
 
             }
+//            setChanged();
+//            notifyObservers("budget");
         }
         if (o == saController) {
             Object[] theValues = (Object[]) arg;
@@ -142,6 +155,7 @@ public class NotificationController extends Observable implements Observer {
                     } else {
                         try {
                             alertDb.createAlertInDb(ownerMail, alert);
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -162,7 +176,8 @@ public class NotificationController extends Observable implements Observer {
                     }
                 }
             }
-
+//            setChanged();
+//            notifyObservers("close");
         }
     }
 
@@ -269,6 +284,7 @@ public class NotificationController extends Observable implements Observer {
 //        List<Alert> userAlerts = null;
 //        if(alertDb.haveAlertInDB(userMail)){
 //            userAlerts = alertDb.getAlertsForUser(userMail);
+//            alertDb.removeAllTheAlertTheUserHave(subscriberMail);
 //        }
 //        return userAlerts;
 //    }

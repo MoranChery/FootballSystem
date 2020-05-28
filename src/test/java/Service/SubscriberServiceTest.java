@@ -1,5 +1,6 @@
 package Service;
 
+import Controller.BaseEmbeddedSQL;
 import Data.Db;
 import Data.SubscriberDb;
 import Data.SubscriberDbInMemory;
@@ -13,7 +14,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubscriberServiceTest {
+public class SubscriberServiceTest
+{
     private SubscriberService subscriberService = new SubscriberService();
     private SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();
 

@@ -25,8 +25,8 @@ public class FinancialActivityDbInServer implements FinancialActivityDb {
         try
         {
             // the mysql insert statement
-            String query = " insert into financial_activity (financial_activity_id,financial_activity_amount,description,financial_activity_type)"
-                    + " values (?,?,?,?)";
+            String query = " insert into financial_activity (financial_activity_id,financial_activity_amount,description,financial_activity_type,team)"
+                    + " values (?,?,?,?,?)";
 
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = conn.prepareStatement(query);
@@ -34,6 +34,7 @@ public class FinancialActivityDbInServer implements FinancialActivityDb {
             preparedStmt.setDouble (2, financialActivity.getFinancialActivityAmount());
             preparedStmt.setString (3, financialActivity.getDescription());
             preparedStmt.setString (4, financialActivity.getFinancialActivityType().name());
+            preparedStmt.setString (5, financialActivity.getTeam());
 
             // execute the preparedstatement
             preparedStmt.execute();

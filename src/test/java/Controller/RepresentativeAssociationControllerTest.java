@@ -1,26 +1,23 @@
 package Controller;
 
 import Data.*;
-import Model.Enums.CalculateLeaguePoints;
-import Model.Enums.InlayGames;
-import Model.Enums.QualificationJudge;
-import Model.Enums.RoleType;
+import Model.Enums.*;
 import Model.*;
-import Model.UsersTypes.Fan;
-import Model.UsersTypes.Judge;
-import Model.UsersTypes.RepresentativeAssociation;
-import Model.UsersTypes.Subscriber;
+import Model.UsersTypes.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RepresentativeAssociationControllerTest
 {
     private RepresentativeAssociationController representativeAssociationController = new RepresentativeAssociationController();
+    private GameDb gameDb = GameDbInServer.getInstance();
+
 
     @Before
     public void init() throws SQLException
@@ -44,6 +41,11 @@ public class RepresentativeAssociationControllerTest
         dbs.add(SeasonLeagueDbInServer.getInstance());
         dbs.add(JudgeDbInServer.getInstance());
         dbs.add(JudgeSeasonLeagueDbInServer.getInstance());
+        dbs.add(GameDbInServer.getInstance());
+        dbs.add((TeamDbInServer.getInstance()));
+        dbs.add((CourtDbInServer.getInstance()));
+        dbs.add((GameDbInServer.getInstance()));
+        dbs.add((GameJudgesListDbInServer.getInstance()));
 
         for (Db db : dbs)
         {
@@ -1193,12 +1195,115 @@ public class RepresentativeAssociationControllerTest
     {
         Boolean permission;
         Subscriber subscriber = new Fan("username/emailAddress", "password", 12345, "firstName", "lastName");
-//        RoleDbInMemory.getInstance().createRoleInSystem("username/emailAddress", RoleType.FAN);
-        RoleDbInServer.getInstance().createRoleInSystem("username/emailAddress", RoleType.FAN);
-        representativeAssociationController.createRepresentativeAssociation(new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName"));
+        SubscriberDbInServer.getInstance().insertSubscriber(subscriber);
+
+        RoleDbInServer.getInstance().insertRole("username/emailAddress", null, RoleType.FAN);
+//        RoleDbInServer.getInstance().createRoleInSystem("username/emailAddress", RoleType.FAN);
+        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
+
+        representativeAssociationController.createRepresentativeAssociation(representativeAssociation);
+
         permission = representativeAssociationController.checkPermissionOfRepresentativeAssociation("username/emailAddress");
         Assert.assertEquals(Boolean.TRUE, permission);
     }
+
+////////////////////////////////////////////////////
+    private void initForChangeGame_location_and_date_Test()
+    {
+        Season season = new Season("seasonName");
+        League league = new League("leagueName");
+        SeasonLeague seasonLeague = new SeasonLeague(season.getSeasonName(), league.getLeagueName(), CalculateLeaguePoints.WIN_IS_1_TIE_IS_0_LOSE_IS_MINUS1, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+
+        Team teamHost = new Team();
+        teamHost.setTeamName("teamHost");
+        Team teamGuest = new Team();
+        teamGuest.setTeamName("teamGuest");
+
+        Court court1 = new Court();
+        court1.setCourtName("court1");
+        court1.setCourtCity("court1city1");
+
+        Court court2 = new Court();
+        court2.setCourtName("court2");
+        court2.setCourtCity("court1city2");
+
+        Date dateStart = new Date(20, 10, 8);
+
+        Game game1 = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName());
+        Game game2 = new Game("game2", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName());
+        try
+        {
+            SeasonDbInServer.getInstance().insertSeason(season);
+            LeagueDbInServer.getInstance().insertLeague(league);
+            SeasonLeagueDbInServer.getInstance().insertSeasonLeague(seasonLeague);
+
+            TeamDbInServer.getInstance().insertTeam(teamHost.getTeamName());
+            TeamDbInServer.getInstance().insertTeam(teamGuest.getTeamName());
+
+            CourtDbInServer.getInstance().insertCourt(court1);
+            CourtDbInServer.getInstance().insertCourt(court2);
+
+            GameDbInServer.getInstance().insertGame(game1);
+            GameDbInServer.getInstance().insertGame(game2);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void changeGameLocation_empty_all() {
+        RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
+
+        initForChangeGame_location_and_date_Test();
+    }
+
+    @Test
+    public void changeGameLocationEmptyInput() throws Exception {
+        try{
+            representativeAssociationController.changeGameLocation("","loc", "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("The value is empty", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void changeGameLocationNullInput() throws Exception{
+        try{
+            representativeAssociationController.changeGameLocation(null,"loc", "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void changeGameLocationGameNotInDB() throws Exception{
+        try{
+
+            representativeAssociationController.changeGameLocation("rep@gmail.com","loc", "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("game not in DB", e.getMessage());
+        }
+    }
+
+    @Test
+    public void changeGameLocationSameLoc() throws Exception{
+        try{
+            Game gameToChange = new Game("gameID", new Date(), "seasonLeague", "hostTeam",  "guestTeam",  "court");
+            gameDb.insertGame(gameToChange);
+            representativeAssociationController.changeGameLocation("rep@gmail.com","loc", "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("game not in DB", e.getMessage());
+        }
+    }
+
 
 
 }
