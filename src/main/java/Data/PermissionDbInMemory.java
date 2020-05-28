@@ -2,10 +2,7 @@ package Data;
 
 import Model.Enums.PermissionType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PermissionDbInMemory implements PermissionDb {
     Map<String, List<PermissionType>> permissions;
@@ -31,9 +28,15 @@ public class PermissionDbInMemory implements PermissionDb {
         }
     }
 
+
     @Override
     public List<PermissionType> getPermissions(String emailAddress) throws Exception {
        return permissions.getOrDefault(emailAddress,new ArrayList<>());
+    }
+
+    @Override
+    public void insertSetPermission(String emailAddress, List<PermissionType> permissions) {
+
     }
 
     @Override

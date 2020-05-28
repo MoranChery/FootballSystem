@@ -1,9 +1,12 @@
 package Data;
 
+import Controller.SubscriberController;
+import Controller.SystemAdministratorController;
 import Model.*;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
 import Model.Enums.QualificationJudge;
+import Model.Enums.RoleType;
 import Model.UsersTypes.Judge;
 import Model.UsersTypes.RepresentativeAssociation;
 import Model.UsersTypes.SystemAdministrator;
@@ -130,7 +133,12 @@ public class InitDbRecords
 
         try
         {
+//            SubscriberController subscriberController = new SubscriberController();
+//            subscriberController.createSubscriber(systemAdministrator1);
+            subscriberDbInServer.insertSubscriber(systemAdministrator1);
             systemAdministratorDbInServer.insertSystemAdministrator(systemAdministrator1);
+            roleDbInServer.insertRole(systemAdministrator1.getEmailAddress(), null, RoleType.SYSTEM_ADMINISTRATOR);
+
 
             seasonDbInServer.insertSeason(season1);
             seasonDbInServer.insertSeason(season2);
@@ -145,11 +153,17 @@ public class InitDbRecords
             subscriberDbInServer.insertSubscriber(representativeAssociation2);
             representativeAssociationDbInServer.insertRepresentativeAssociation(representativeAssociation1);
             representativeAssociationDbInServer.insertRepresentativeAssociation(representativeAssociation2);
+            roleDbInServer.insertRole(representativeAssociation1.getEmailAddress(), null, RoleType.REPRESENTATIVE_ASSOCIATION);
+            roleDbInServer.insertRole(representativeAssociation2.getEmailAddress(), null, RoleType.REPRESENTATIVE_ASSOCIATION);
+
 
             subscriberDbInServer.insertSubscriber(teamOwner1);
             subscriberDbInServer.insertSubscriber(teamOwner2);
             teamOwnerDbInServer.insertTeamOwner(teamOwner1);
             teamOwnerDbInServer.insertTeamOwner(teamOwner2);
+            roleDbInServer.insertRole(teamOwner1.getEmailAddress(), null, RoleType.TEAM_OWNER);
+            roleDbInServer.insertRole(teamOwner2.getEmailAddress(), null, RoleType.TEAM_OWNER);
+
 
             teamDbInServer.insertTeam(team1.getTeamName());
             teamDbInServer.insertTeam(team2.getTeamName());
@@ -173,6 +187,13 @@ public class InitDbRecords
             judgeDbInServer.insertJudge(judge4);
             judgeDbInServer.insertJudge(judge5);
             judgeDbInServer.insertJudge(judge6);
+            roleDbInServer.insertRole(judge1.getEmailAddress(), null, RoleType.JUDGE);
+            roleDbInServer.insertRole(judge2.getEmailAddress(), null, RoleType.JUDGE);
+            roleDbInServer.insertRole(judge3.getEmailAddress(), null, RoleType.JUDGE);
+            roleDbInServer.insertRole(judge4.getEmailAddress(), null, RoleType.JUDGE);
+            roleDbInServer.insertRole(judge5.getEmailAddress(), null, RoleType.JUDGE);
+            roleDbInServer.insertRole(judge6.getEmailAddress(), null, RoleType.JUDGE);
+
 
             gameDbInServer.insertGame(game1);
             gameDbInServer.insertGame(game2);

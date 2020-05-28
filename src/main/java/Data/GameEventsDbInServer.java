@@ -135,8 +135,14 @@ public class GameEventsDbInServer implements GameEventsDb
 //        Date event_time = new java.sql.Date(gameEvent.getEventTime().getTime());
 
 //            preparedStmt.setDate(4, new java.sql.Date(gameEvent.getEventTime().getTime()));
+
         Integer event_minute = gameEvent.getEventMinute();
-        Time time = new Time(gameEvent.getEventTime().getTime());
+
+        /*start-origin before change to java.sql.Timestamp timestampStart*/
+//        Time time = new Time(gameEvent.getEventTime().getTime());
+        /*end-origin before change to java.sql.Timestamp timestampStart*/
+
+        java.sql.Timestamp time = new java.sql.Timestamp((gameEvent.getEventTime().getTime()));
 
         Connection conn = DbConnector.getConnection();
         try

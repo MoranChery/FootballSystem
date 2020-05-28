@@ -4,11 +4,12 @@ package Model;
 import Model.UsersTypes.Judge;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class Game {
@@ -36,7 +37,7 @@ public class Game {
         this.hostTeamScore = 0;
         this.guestTeamScore = 0;
         this.judgesOfTheGameList = null;
-        this.eventLog = null;
+        this.eventLog = new GameEventsLog();
         this.majorJudge = null;
 //        this.endGameTime = null;
         int minute = gameDate.getMinutes();
@@ -51,10 +52,19 @@ public class Game {
             minute = minute + 30;
             hour = hour + 1;
         }
-//        this.endGameTime = gameDate;
-        this.endGameTime = new Date(gameDate.getDate());
+
+        endGameTime = new Date();
+
         this.endGameTime.setHours(hour);
         this.endGameTime.setMinutes(minute);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String time = sdf.format(endGameTime);
+        LocalTime timePart = LocalTime.parse(time);
+        String startingDate = new SimpleDateFormat("yyyy-MM-dd").format(gameDate);
+        LocalDate datePart = LocalDate.parse(startingDate);
+        LocalDateTime dt = LocalDateTime.of(datePart, timePart);
+        this.endGameTime = convertToDateViaInstant(dt);
     }
 
     public Game(String gameID, Date gameDate, String seasonLeague, String hostTeam, String guestTeam, String court, Set<String> judges,String majorJudge,Date endGameTime) {
@@ -69,23 +79,32 @@ public class Game {
         this.judgesOfTheGameList = judges;
         this.eventLog = new GameEventsLog();
         this.majorJudge = majorJudge;
-//        this.endGameTime = endGameTime;
-        int minute = gameDate.getMinutes();
-        int hour = gameDate.getHours();
-        if(minute > 30)
-        {
-            minute = minute - 30;
-            hour = hour + 2;
-        }
-        else
-        {
-            minute = minute + 30;
-            hour = hour + 1;
-        }
-        //this.endGameTime = gameDate;
-        this.endGameTime = new Date(gameDate.getDate());
-        this.endGameTime.setHours(hour);
-        this.endGameTime.setMinutes(minute);
+        this.endGameTime = endGameTime;
+//        int minute = gameDate.getMinutes();
+//        int hour = gameDate.getHours();
+//        if(minute > 30)
+//        {
+//            minute = minute - 30;
+//            hour = hour + 2;
+//        }
+//        else
+//        {
+//            minute = minute + 30;
+//            hour = hour + 1;
+//        }
+//
+//        endGameTime = new Date();
+//
+//        this.endGameTime.setHours(hour);
+//        this.endGameTime.setMinutes(minute);
+//
+//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+//        String time = sdf.format(endGameTime);
+//        LocalTime timePart = LocalTime.parse(time);
+//        String startingDate = new SimpleDateFormat("yyyy-MM-dd").format(gameDate);
+//        LocalDate datePart = LocalDate.parse(startingDate);
+//        LocalDateTime dt = LocalDateTime.of(datePart, timePart);
+//        this.endGameTime = convertToDateViaInstant(dt);
     }
 
     public Game(String gameID, Date gameDate, String seasonLeague, String hostTeam, String guestTeam, String court, Set<String> judges,String majorJudge)
@@ -114,10 +133,24 @@ public class Game {
             minute = minute + 30;
             hour = hour + 1;
         }
-//        this.endGameTime = gameDate;
-        this.endGameTime = new Date(gameDate.getDate());
+
+        endGameTime = new Date();
+
         this.endGameTime.setHours(hour);
         this.endGameTime.setMinutes(minute);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String time = sdf.format(endGameTime);
+        LocalTime timePart = LocalTime.parse(time);
+        String startingDate = new SimpleDateFormat("yyyy-MM-dd").format(gameDate);
+        LocalDate datePart = LocalDate.parse(startingDate);
+        LocalDateTime dt = LocalDateTime.of(datePart, timePart);
+        this.endGameTime = convertToDateViaInstant(dt);
+    }
+
+    private Date convertToDateViaInstant(LocalDateTime dateToConvert)
+    {
+        return java.util.Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");

@@ -10,4 +10,5 @@ public interface PermissionDb extends Db{
 
     List<PermissionType> getPermissions(String emailAddress) throws Exception;
 
+    void insertSetPermission(String emailAddress, List<PermissionType> permissions) throws Exception;
 }

@@ -64,7 +64,7 @@ public class SystemController {
      */
     public void isConnectionToExternalSystems() throws Exception {
         if(!(isConnectToTheAccountingSystem() || isConnectToTheTaxLawSystem())){
-            throw new Exception("problem in connection with accounting system and with accounting system");
+            throw new Exception("problem in connection with accounting system and with  tax law  system");
         }
         if (!isConnectToTheAccountingSystem()) {
             throw new Exception("problem in connection with accounting system");

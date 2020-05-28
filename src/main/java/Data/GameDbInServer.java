@@ -153,6 +153,10 @@ public class GameDbInServer implements GameDb
     @Override
     public List<Game> getAllGames() throws Exception
     {
+        List<Game> games = new ArrayList<>();
+        String game_id;
+        Game game;
+
         Connection conn = DbConnector.getConnection();
 
         // create the mysql select resultSet
@@ -162,25 +166,39 @@ public class GameDbInServer implements GameDb
         ResultSet rs = preparedStmt.executeQuery(query);
 
         // checking if ResultSet is empty
-        if (rs.next() == false) {
-            throw new NotFoundException("no games in db");
-        }
+//        if (rs.next() == false) {
+//            throw new NotFoundException("no games in db");
+//        }
 
-        List<Game> games = new ArrayList<>();
-        while(rs.next()){
-            String game_id = rs.getString("game_id");
-            String game_date = rs.getString("game_date");
-            String season_league = rs.getString("season_league");
-            String host_team = rs.getString("host_team");
-            String guest_team = rs.getString("guest_team");
-            String court = rs.getString("court");
 
-            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(game_date);
-
-//            Game game = new Game(game_id,date,season_league,host_team,guest_team,court);
-            Game game = getGame(game_id);
+        if (rs.next() != false)
+        {
+            game_id = rs.getString("game_id");
+            game = getGame(game_id);
             games.add(game);
+
+            while (rs.next() != false)
+            {
+                game_id = rs.getString("game_id");
+                game = getGame(game_id);
+                games.add(game);            }
         }
+
+//        List<Game> games = new ArrayList<>();
+//        while(rs.next()){
+//            String game_id = rs.getString("game_id");
+//            String game_date = rs.getString("game_date");
+//            String season_league = rs.getString("season_league");
+//            String host_team = rs.getString("host_team");
+//            String guest_team = rs.getString("guest_team");
+//            String court = rs.getString("court");
+//
+////            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(game_date);
+//            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(game_date);
+//
+////            Game game = new Game(game_id,date,season_league,host_team,guest_team,court);
+//            Game game = getGame(game_id);
+//            games.add(game);
         return games;
     }
 
@@ -239,9 +257,11 @@ public class GameDbInServer implements GameDb
         {
             getGame(gameID);
 
+            java.sql.Timestamp timestampStart = new java.sql.Timestamp((newDate.getTime()));
+
             // the mysql update statement
             String query = " update game "
-                    + "set game_date = \'" + newDate + "\' "
+                    + "set game_date = \'" + timestampStart + "\' "
                     + "where game_id = \'" + gameID + "\'";
 
             // create the mysql insert preparedStatement
