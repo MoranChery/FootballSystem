@@ -1,9 +1,6 @@
 package Controller;
 
-import Data.AlertDb;
-import Data.AlertDbInMemory;
-import Data.SubscriberDb;
-import Data.SubscriberDbInMemory;
+import Data.*;
 import Model.Alert;
 import Model.Enums.Status;
 import Model.UsersTypes.Subscriber;
@@ -25,8 +22,12 @@ public class SubscriberController {
 //    private RepresentativeAssociationDb representativeAssociationDb;
 
     public SubscriberController() {
-        subscriberDb = SubscriberDbInMemory.getInstance();
-        alertDb = AlertDbInMemory.getInstance();
+//        subscriberDb = SubscriberDbInMemory.getInstance();
+//        alertDb = AlertDbInMemory.getInstance();
+
+        subscriberDb = SubscriberDbInServer.getInstance();
+        alertDb = AlertDbInServer.getInstance();
+
 //        notificationController = new NotificationController();
 //        coachDb = CoachDbInMemory.getInstance();
 //        judgeDb = JudgeDbInMemory.getInstance();

@@ -17,6 +17,7 @@ public class SubscriberControllerTest {
     private SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();
     private JudgeDb judgeDb = JudgeDbInMemory.getInstance();
 
+
     @Before
     public void init() {
         final List<Db> dbs = new ArrayList<>();

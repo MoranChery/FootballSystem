@@ -31,7 +31,8 @@ public class NotificationController implements Observer {
         this.saController = saController;
         this.teamOwnerController = teamOwnerController;
         //this.teamDb = TeamDbInMemory.getInstance();
-        alertDb = AlertDbInMemory.getInstance();
+//        alertDb = AlertDbInMemory.getInstance();
+        alertDb = AlertDbInServer.getInstance();
         repDb = RepresentativeAssociationDbInServer.getInstance();
     }
 

@@ -1,5 +1,6 @@
 package Data;
 
+import Controller.BaseEmbeddedSQL;
 import Model.Alert;
 import Model.Enums.QualificationJudge;
 import Model.UsersTypes.Judge;
@@ -12,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlertDbInServerTest
+public class AlertDbInServerTest extends BaseEmbeddedSQL
 {
     private AlertDbInServer alertDbInServer = AlertDbInServer.getInstance();
 
