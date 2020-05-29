@@ -1315,7 +1315,45 @@ public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL
     @Test
     public void changeGameDateEmptyInput() throws Exception{
 
+        try{
+            representativeAssociationController.changeGameDate("",new Date(), "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("The value is empty", e.getMessage());
+        }
     }
+    @Test
+    public void changeGameDateNullInput() throws Exception{
+
+        try{
+            representativeAssociationController.changeGameDate("rep@gmail.com",null , "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void changeGameDateSameDate() throws Exception{
+        try{
+            Date theDate = new Date(2020, 5, 29);
+            Game gameToChange = new Game("gameID", theDate, "seasonLeague", "hostTeam", "guestTeam", "court");
+            gameDb.insertGame(gameToChange);
+            representativeAssociationController.changeGameDate("rep@gmail.com",theDate , "gameid");
+        }
+        catch (Exception e){
+            Assert.assertEquals("same date", e.getMessage());
+        }
+    }
+    @Test
+    public void changeGameDateLegal() throws Exception {
+        Date theDate = new Date(2020, 5, 29);
+        Game gameToChange = new Game("gameID", theDate, "seasonLeague", "hostTeam", "guestTeam", "court");
+        gameDb.insertGame(gameToChange);
+        Date changeDate = new Date(2020, 6, 5);
+        representativeAssociationController.changeGameDate("rep@gmail.com",changeDate , "gameID");
+        Assert.assertEquals(changeDate, gameToChange.getGameDate());
+    }
+
 
 
 }

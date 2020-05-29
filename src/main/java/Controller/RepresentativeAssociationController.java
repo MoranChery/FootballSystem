@@ -337,9 +337,6 @@ public class RepresentativeAssociationController extends Observable
             throw new NullPointerException("bad input");
         }
         Game game = gameDb.getGame(gameID);
-        if(game == null){
-            throw new NotFoundException("game not in DB");
-        }
         Date theOriginalDate = game.getGameDate();
         if(theOriginalDate.equals(newDate)){
             throw new Exception("same date");
