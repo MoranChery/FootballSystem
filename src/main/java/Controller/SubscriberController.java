@@ -168,6 +168,6 @@ public class SubscriberController {
         if(userMail.isEmpty() || userMail == null){
             throw new Exception("bad input");
         }
-        //subscriberDb.setSubscriberWantAlert(userMail);
+        subscriberDb.setSubscriberWantAlert(userMail);
     }
 }
