@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class SubscriberService {
+public class SubscriberService{
     private SubscriberController subscriberController;
 
     public SubscriberService() {

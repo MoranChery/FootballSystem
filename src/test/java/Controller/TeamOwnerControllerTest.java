@@ -12,7 +12,8 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class TeamOwnerControllerTest {
+//public class TeamOwnerControllerTest extends BaseEmbeddedSQL {
+public class TeamOwnerControllerTest extends BaseEmbeddedSQL  {
     //    private TeamOwnerController teamOwnerController = new TeamOwnerController();
 //    private TeamDb teamDb = teamDb;
 //    private PlayerDb playerDb = playerDb;

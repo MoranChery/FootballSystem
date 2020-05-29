@@ -30,7 +30,7 @@
     import java.util.Map;
     import java.util.Set;
 
-    public class TeamOwnerServiceTest
+    public class TeamOwnerServiceTest extends BaseEmbeddedSQL
     {
         private TeamOwnerService teamOwnerService = new TeamOwnerService();
         //    private TeamDb teamDb = teamDb;
@@ -104,9 +104,6 @@
             Assert.assertEquals(playerToAdd, player.getEmailAddress());
             Assert.assertEquals("firstPlayer", player.getFirstName());
             Assert.assertEquals("lastPlayer", player.getLastName());
-            String playerToAddDate = df.format(birthDate);
-            String playerInDbDate = df.format(player.getBirthDate());
-            Assert.assertEquals(playerToAddDate, playerInDbDate);
             Assert.assertEquals(PlayerRole.GOALKEEPER, player.getPlayerRole());
             Assert.assertEquals(teamName, player.getTeam());
             Assert.assertNotNull(player.getPassword());
@@ -499,51 +496,23 @@
             String ownerMail = "owner@gmail.com";
             Court court = new Court("courtName", "courtCity");
             courtDb.insertCourt(court);
-
             TeamOwner teamOwner = new TeamOwner(ownerMail, "1234", 2, "firstTeamOwnerName", "lastTeamOwnerName");
             subscriberDb.insertSubscriber(teamOwner);
             teamOwnerDb.insertTeamOwner(teamOwner);
             roleDb.insertRole(ownerMail,null,RoleType.TEAM_OWNER);
 
-
-            ArrayList<TeamManager> teamManagers = new ArrayList<>();
-            teamManagers.add(new TeamManager("email1@gmail.com", 2, "first", "last","owner@gmail.com"));
-            teamManagers.add(new TeamManager("email2@gmail.com", 3, "first", "last","owner@gmail.com"));
-            ArrayList<Coach> coaches = new ArrayList<>();
-            coaches.add(new Coach("email3@gmail.com", 4, "first", "last",CoachRole.MAJOR,QualificationCoach.UEFA_A));
-            coaches.add(new Coach("email4@gmail.com", 5, "first", "last", CoachRole.MAJOR,QualificationCoach.UEFA_A));
-            ArrayList<Player> players = new ArrayList<>();
-            players.add(new Player("email5@gmail.com", 6, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
-            players.add(new Player("email6@gmail.com", 7, "firstPlayer", "lastPlayer", new Date(), PlayerRole.GOALKEEPER));
-
-
-    //        teamOwnerService.createNewTeam(teamName, ownerMail,players ,coaches, teamManagers,court,1000.0);
+            teamOwnerService.createNewTeam(teamName, ownerMail ,Double.toString(1000.0),court.getCourtName(),court.getCourtCity());
             teamOwner = teamOwnerDb.getTeamOwner(ownerMail);
 
             Assert.assertEquals(teamName, teamOwner.getTeam());
             Team team = teamDb.getTeam(teamName);
-            Assert.assertTrue(team.getTeamOwners().containsKey(ownerMail));
-            Assert.assertTrue(team.getPlayers().containsKey("email5@gmail.com"));
-            Assert.assertTrue(team.getPlayers().containsKey("email6@gmail.com"));
-            Assert.assertEquals(teamName, teamOwner.getTeam());
-            team = teamDb.getTeam(teamName);
-            Assert.assertTrue(team.getTeamOwners().containsKey(ownerMail));
-            Assert.assertTrue(team.getCoaches().containsKey("email3@gmail.com"));
-            Assert.assertTrue(team.getCoaches().containsKey("email4@gmail.com"));
-            Assert.assertEquals(teamName, teamOwner.getTeam());
-            team = teamDb.getTeam(teamName);
-            Assert.assertTrue(team.getTeamOwners().containsKey(ownerMail));
-            Assert.assertTrue(team.getTeamManagers().containsKey("email1@gmail.com"));
-            Assert.assertTrue(team.getTeamManagers().containsKey("email2@gmail.com"));
-            Assert.assertEquals(ownerMail,teamManagerDb.getTeamManager("email1@gmail.com").getOwnedByEmail());
-            Assert.assertEquals(ownerMail,teamManagerDb.getTeamManager("email2@gmail.com").getOwnedByEmail());
 
             Assert.assertEquals(teamName, teamOwner.getTeam());
-
+            Assert.assertTrue(team.getTeamOwners().containsKey(ownerMail));
+            Assert.assertEquals(teamName, teamOwner.getTeam());
             Assert.assertEquals("courtName",team.getCourt().getCourtName());
             Assert.assertEquals("courtCity",team.getCourt().getCourtCity());
-
-            Assert.assertEquals(teamName,team.getTeamPage().getPageID());
+//            Assert.assertEquals(teamName,pageDb.getPage(teamName).getPageID());
         }
 
         @Test

@@ -3,43 +3,40 @@ package Controller;
 import Data.*;
 import Model.Enums.RoleType;
 import Model.UsersTypes.SystemAdministrator;
+import Service.SystemService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class SystemControllerTest {
+public class SystemControllerTest extends BaseEmbeddedSQL  {
 
-    private SystemController systemController;
-    private static SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();
-    private static RoleDb roleDb = RoleDbInMemory.getInstance();
-    private static SystemAdministratorDb systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
+    private SystemController systemController = SystemController.getInstance();
+    private static SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
+    private static RoleDb roleDb = RoleDbInServer.getInstance();
+    private static SystemAdministratorDb systemAdministratorDb = SystemAdministratorDbInServer.getInstance();
 
-    @Before
-    public void init() {
-        final List<Db> dbs = new ArrayList<>();
-        dbs.add(SubscriberDbInMemory.getInstance());
-        dbs.add(RoleDbInMemory.getInstance());
-        dbs.add(SystemAdministratorDbInMemory.getInstance());
-        for (Db db : dbs) {
+//    @Before
+//    public void init() throws SQLException {
+//        final List<Db> dbs = new ArrayList<>();
+//        dbs.add(subscriberDb);
+//        dbs.add(roleDb);
+////        dbs.add(systemAdministratorDb);
+//        for (Db db : dbs) {
 //            db.deleteAll();
-        }
-        //systemController = new SystemController();
-    }
+//        }
+//        //systemController = new SystemController();
+//    }
     @After
     public void after(){
         systemController = null;
     }
-    @Test
-    public void initialSystemExist() throws Exception{
-        SystemAdministrator newSystemAdministrator = new SystemAdministrator("admin@gmail.com","psw",11,"first","last");
-        systemAdministratorDb.insertSystemAdministrator(newSystemAdministrator);
-        systemController.initialSystem();
-    }
+
     @Test
     public void initialSystemLegal() throws Exception{
         systemController.initialSystem();
@@ -53,20 +50,19 @@ public class SystemControllerTest {
     public void addSystemAdministrator_isExist() throws Exception {
         try {
             SystemAdministrator newSystemAdministrator = new SystemAdministrator("admin@gmail.com","psw",11,"first","last");
+            subscriberDb.insertSubscriber(newSystemAdministrator);
             systemAdministratorDb.insertSystemAdministrator(newSystemAdministrator);
             systemController.addSystemAdministrator();
         }
         catch (Exception e){
-            Assert.assertEquals("SystemAdministrator already exists", e.getMessage());
+            Assert.assertEquals("subscriber already exists", e.getMessage());
         }
     }
     @Test
-    public void addSystemAdministrator_Legal() throws Exception {
-        systemController.addSystemAdministrator();
-        Set<String> admins = systemAdministratorDb.getAllSystemAdministrators();
-        Assert.assertEquals(1, admins.size());
-        Assert.assertTrue(admins.contains("admin@gmail.com"));
-        Assert.assertEquals(RoleType.SYSTEM_ADMINISTRATOR, roleDb.getRole("admin@gmail.com").getRoleType());
+    public void addSystemAdministrator_Legal() throws Exception{
+
+        SystemAdministrator systemAdministrator = systemAdministratorDb.getSystemAdministrator("admin@gmail.com");
+        Assert.assertNotNull(systemAdministrator);
     }
     @Test
     public void connectToTheTaxLawSystemTest() throws Exception{

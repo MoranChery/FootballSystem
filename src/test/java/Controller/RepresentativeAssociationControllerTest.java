@@ -9,46 +9,44 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL
 {
     private RepresentativeAssociationController representativeAssociationController = new RepresentativeAssociationController();
     private GameDb gameDb = GameDbInServer.getInstance();
-
+    private TeamDb teamDb = TeamDbInServer.getInstance();
+    private PlayerDb playerDb = PlayerDbInServer.getInstance();
+    private TeamManagerDb teamManagerDb = TeamManagerDbInServer.getInstance();
+    private SeasonDb seasonDb =  SeasonDbInServer.getInstance();
+    private LeagueDb leagueDb =  LeagueDbInServer.getInstance();
+    private SeasonLeagueDb seasonLeagueDb =  SeasonLeagueDbInServer.getInstance();
+    private SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
+    private CourtDb courtDb = CourtDbInServer.getInstance();
+    private PermissionDb permissionDb = PermissionDbInServer.getInstance();
+    private PageDb pageDb = PageDbInServer.getInstance();
+    private FinancialActivityDb financialActivityDb = FinancialActivityDbInServer.getInstance();
+    private RepresentativeAssociationDb representativeAssociationDb = RepresentativeAssociationDbInServer.getInstance();
 
     @Before
-    public void init() throws SQLException
-    {
+    public void init() throws SQLException {
         final List<Db> dbs = new ArrayList<>();
-
-//        dbs.add(RepresentativeAssociationDbInMemory.getInstance());
-//        dbs.add(RoleDbInMemory.getInstance());
-//        dbs.add(SubscriberDbInMemory.getInstance());
-//        dbs.add(LeagueDbInMemory.getInstance());
-//        dbs.add(SeasonDbInMemory.getInstance());
-//        dbs.add(SeasonLeagueDbInMemory.getInstance());
-//        dbs.add(JudgeDbInMemory.getInstance());
-//        dbs.add(JudgeSeasonLeagueDbInMemory.getInstance());
-
-        dbs.add(RepresentativeAssociationDbInServer.getInstance());
-        dbs.add(RoleDbInServer.getInstance());
-        dbs.add(SubscriberDbInServer.getInstance());
-        dbs.add(LeagueDbInServer.getInstance());
-        dbs.add(SeasonDbInServer.getInstance());
-        dbs.add(SeasonLeagueDbInServer.getInstance());
-        dbs.add(JudgeDbInServer.getInstance());
-        dbs.add(JudgeSeasonLeagueDbInServer.getInstance());
-        dbs.add(GameDbInServer.getInstance());
-        dbs.add((TeamDbInServer.getInstance()));
-        dbs.add((CourtDbInServer.getInstance()));
+        dbs.add(CoachDbInServer.getInstance());
+        dbs.add(CourtDbInServer.getInstance());
+        dbs.add(financialActivityDb);
+        dbs.add(playerDb);
+        dbs.add(subscriberDb);
+        dbs.add(teamManagerDb);
+        dbs.add(teamDb);
+        dbs.add(courtDb);
+        dbs.add(pageDb);
+        dbs.add(permissionDb);
         dbs.add(gameDb);
-        dbs.add((GameJudgesListDbInServer.getInstance()));
-
-        for (Db db : dbs)
-        {
+        dbs.add(representativeAssociationDb);
+        dbs.add(seasonDb);
+        dbs.add(leagueDb);
+        dbs.add(seasonLeagueDb);
+        for (Db db : dbs) {
             db.deleteAll();
         }
     }
@@ -1255,8 +1253,12 @@ public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL
     @Test
     public void changeGameLocation_empty_all() {
         RepresentativeAssociation representativeAssociation = new RepresentativeAssociation("username/emailAddress", "password", 12345, "firstName", "lastName");
-
-        initForChangeGame_location_and_date_Test();
+try {
+    initForChangeGame_location_and_date_Test();
+}
+catch (Exception e){
+    System.out.println(e.getMessage());
+}
     }
 
     @Test
@@ -1288,18 +1290,30 @@ public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL
             representativeAssociationController.changeGameLocation("rep@gmail.com","loc", "gameid");
         }
         catch (Exception e){
-            Assert.assertEquals("game not in DB", e.getMessage());
+            Assert.assertEquals("Game not found", e.getMessage());
         }
     }
 
     @Test
     public void changeGameLocationSameLoc() throws Exception{
         try{
-            Game gameToChange = new Game("gameID1", new Date(), "seasonLeague", "hostTeam",  "guestTeam",  "court");
+            Season season = new Season("season");
+            seasonDb.insertSeason(season);
+            League league = new League("League");
+            leagueDb.insertLeague(league);
+            SeasonLeague seasonLeague = new SeasonLeague("season", "League", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+            seasonLeagueDb.insertSeasonLeague(seasonLeague);
+            Court court = new Court("court","courtCity");
+            courtDb.insertCourt(court);
+            teamDb.insertTeam("hostTeam");
+            teamDb.insertTeam("guestTeam");
+
+            Game gameToChange = new Game("gameId", new Date(), "season_League", "hostTeam",  "guestTeam",  "court");
             gameDb.insertGame(gameToChange);
-            representativeAssociationController.changeGameLocation("rep@gmail.com","court", "gameID1");
+            representativeAssociationController.changeGameLocation("rep@gmail.com","court", "gameId");
         }
         catch (Exception e){
+
             Assert.assertEquals("same location", e.getMessage());
         }
     }
@@ -1311,6 +1325,9 @@ public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL
         representativeAssociationController.changeGameLocation("rep@gmail.com", "loc", "gameID1");
 
         Assert.assertEquals("loc", gameToChange.getCourt());
+    }
+    @Test
+    public void changeGameDateEmptyInput() throws Exception {
     }
 
 

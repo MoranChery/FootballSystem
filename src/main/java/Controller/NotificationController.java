@@ -14,27 +14,34 @@ import java.util.*;
 
 public class NotificationController implements Observer {
 
+    private static NotificationController ourInstance = new NotificationController();
+    public static NotificationController getInstance() {
+        return ourInstance;
+    }
+
     private SubscriberDb subscriberDb;
     private RepresentativeAssociationController repControll;
-    private SubscriberController subscriberController;
     private SystemAdministratorController saController;
     private TeamOwnerController teamOwnerController;
     private AlertDb alertDb;
     private RepresentativeAssociationDb repDb;
 
     public NotificationController() {
-    }
-
-    public NotificationController(RepresentativeAssociationController repControll, SubscriberController subscriberController, SystemAdministratorController saController, TeamOwnerController teamOwnerController) {
-        this.repControll = repControll;
-        this.subscriberController = subscriberController;
-        this.saController = saController;
-        this.teamOwnerController = teamOwnerController;
-        //this.teamDb = TeamDbInMemory.getInstance();
-//        alertDb = AlertDbInMemory.getInstance();
         alertDb = AlertDbInServer.getInstance();
         repDb = RepresentativeAssociationDbInServer.getInstance();
+        subscriberDb = SubscriberDbInServer.getInstance();
     }
+
+//    public NotificationController(RepresentativeAssociationController repControll, SubscriberController subscriberController, SystemAdministratorController saController, TeamOwnerController teamOwnerController) {
+//        this.repControll = repControll;
+////        this.subscriberController = subscriberController;
+//        this.saController = saController;
+//        this.teamOwnerController = teamOwnerController;
+//        //this.teamDb = TeamDbInMemory.getInstance();
+////        alertDb = AlertDbInMemory.getInstance();
+//        alertDb = AlertDbInServer.getInstance();
+//        repDb = RepresentativeAssociationDbInServer.getInstance();
+//    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -272,7 +279,20 @@ public class NotificationController implements Observer {
             return false;
         }
     }
-//    public List<Alert> getAlert(String userMail) throws Exception {
+    // setters
+    public void setRepControll(RepresentativeAssociationController repControll) {
+        this.repControll = repControll;
+    }
+
+    public void setSaController(SystemAdministratorController saController) {
+        this.saController = saController;
+    }
+
+    public void setTeamOwnerController(TeamOwnerController teamOwnerController) {
+        this.teamOwnerController = teamOwnerController;
+    }
+
+    //    public List<Alert> getAlert(String userMail) throws Exception {
 //        if(userMail.isEmpty()){
 //            throw new Exception("bad input");
 //        }

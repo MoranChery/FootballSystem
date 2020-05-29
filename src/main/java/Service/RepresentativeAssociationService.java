@@ -1,5 +1,6 @@
 package Service;
 
+import Controller.NotificationController;
 import Controller.RepresentativeAssociationController;
 import Model.Enums.CalculateLeaguePoints;
 import Model.Enums.InlayGames;
@@ -33,9 +34,11 @@ public class RepresentativeAssociationService {
     private LoggerHandler loggerHandler;
     private ITaxSystem proxyTaxSystem;
     private IAssociationAccountingSystem proxyAssociationAccountingSystem;
+    private NotificationController notificationController = NotificationController.getInstance();
 
     public RepresentativeAssociationService() {
         this.representativeAssociationController = new RepresentativeAssociationController();
+        notificationController.setRepControll(this.representativeAssociationController);
 //        this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
         logger.addHandler(LoggerHandler.loggerErrorFileHandler);
         logger.addHandler(LoggerHandler.loggerEventFileHandler);
