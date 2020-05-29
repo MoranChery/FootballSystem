@@ -1312,6 +1312,10 @@ public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL
 
         Assert.assertEquals("loc", gameToChange.getCourt());
     }
+    @Test
+    public void changeGameDateEmptyInput() throws Exception{
+
+    }
 
 
 }

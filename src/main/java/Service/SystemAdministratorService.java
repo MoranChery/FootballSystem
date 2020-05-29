@@ -1,12 +1,15 @@
 package Service;
 
+import Controller.NotificationController;
 import Controller.SystemAdministratorController;
 
 public class SystemAdministratorService {
     private SystemAdministratorController systemAdministratorController;
+    private NotificationController notificationController = NotificationController.getInstance();
 
     public SystemAdministratorService() {
         this.systemAdministratorController = new SystemAdministratorController();
+        notificationController.setSaController(this.systemAdministratorController);
     }
 
     public void closeTeamForEver(String teamName) throws Exception {

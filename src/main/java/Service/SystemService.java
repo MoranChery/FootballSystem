@@ -1,5 +1,6 @@
 package Service;
 
+import Controller.NotificationController;
 import Controller.SystemController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -9,11 +10,13 @@ import org.springframework.web.server.ResponseStatusException;
 public class SystemService{
 
     private static SystemController systemController;
+//    NotificationController notificationController;
 
     public SystemService(){
         systemController = SystemController.getInstance();
         systemController.connectToAssociationAccountingSystem("AssociationAccountingSystemPort");
         systemController.connectToTaxSystem("TaxSystemPort");
+//        notificationController = new NotificationController();
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
