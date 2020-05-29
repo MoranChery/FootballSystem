@@ -7,11 +7,13 @@ import Model.UsersTypes.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import sun.rmi.server.InactiveGroupException;
 
 import java.sql.SQLException;
 import java.util.*;
 
 public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
+//public class SystemAdministratorControllerTest {
     private SystemAdministratorController systemAdministratorController = new SystemAdministratorController();
     private GuestController guestController = new GuestController();
     private TeamDb teamDb = TeamDbInServer.getInstance();
@@ -77,9 +79,9 @@ public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
         systemAdministratorController.closeTeamForEver("team");
 
         Team teamFromDb = teamDb.getTeam("team");
-        Assert.assertEquals(teamFromDb.getTeamStatus(),TeamStatus.CLOSE );
+        Assert.assertNotNull(teamFromDb.getTeamClose());
+        Assert.assertEquals(TeamStatus.INACTIVE,teamFromDb.getTeamStatus());
     }
-    @Test
     public void closeTeamForEverListNull() throws Exception{
         try {
 

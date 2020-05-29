@@ -304,12 +304,11 @@ public class RepresentativeAssociationController extends Observable
 
 
     public void changeGameLocation(String repMail, String newLocation, String gameID) throws Exception {
-
-        if(repMail.isEmpty() || newLocation.isEmpty() || gameID.isEmpty()){
-            throw new Exception("The value is empty");
-        }
         if(repMail == null || newLocation == null || gameID == null){
             throw new NullPointerException("bad input");
+        }
+        if(repMail.isEmpty() || newLocation.isEmpty() || gameID.isEmpty()){
+            throw new Exception("The value is empty");
         }
         Game game = gameDb.getGame(gameID);
         if(game == null){

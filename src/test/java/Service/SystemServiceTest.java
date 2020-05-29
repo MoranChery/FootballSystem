@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SystemServiceTest
+public class SystemServiceTest extends BaseEmbeddedSQL
 {
 
     private SystemController systemController;
@@ -18,9 +18,6 @@ public class SystemServiceTest
     private static SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();
     private static RoleDb roleDb = RoleDbInMemory.getInstance();
     private static SystemAdministratorDb systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
-
-    public SystemServiceTest() throws Exception {
-    }
 
 
     @Before

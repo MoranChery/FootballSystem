@@ -32,9 +32,9 @@ public class SystemController {
     }
 
     private SystemController() {
-        systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
-        subscriberDb = SubscriberDbInMemory.getInstance();
-        roleDb = RoleDbInMemory.getInstance();
+        systemAdministratorDb = SystemAdministratorDbInServer.getInstance();
+        subscriberDb = SubscriberDbInServer.getInstance();
+        roleDb = RoleDbInServer.getInstance();
         this.proxyTaxSystem = ProxyTaxSystem.getInstance();
         this.proxyAssociationAccountingSystem = ProxyAssociationAccountingSystem.getInstance();
     }

@@ -24,7 +24,7 @@ public class SystemAdministratorServiceTest
         dbs.add(SubscriberDbInMemory.getInstance());
         dbs.add(FanDbInMemory.getInstance());
         dbs.add(PageDbInMemory.getInstance());
-        dbs.add( TeamDbInMemory.getInstance());
+        dbs.add(TeamDbInMemory.getInstance());
         dbs.add(CoachDbInMemory.getInstance());
         dbs.add(CourtDbInMemory.getInstance());
         dbs.add(JudgeDbInMemory.getInstance());

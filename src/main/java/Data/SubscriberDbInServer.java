@@ -81,22 +81,48 @@ public class SubscriberDbInServer implements SubscriberDb{
 
     @Override
     public void wantToEditPassword(String subscriberMail, String newPassword) throws Exception {
-
+        Connection conn = DbConnector.getConnection();
+        try{
+            String query = "UPDATE football_system_db.subscriber SET football_system_db.subscriber.password = \'" + newPassword + "\' WHERE email_address = \'"+ subscriberMail + "\'" ;
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.executeUpdate();
+        } finally {
+            conn.close();
+        }
     }
 
     @Override
     public void wantToEditFirstName(String subscriberMail, String newFirstName) throws Exception {
-
+        Connection conn = DbConnector.getConnection();
+        try{
+            String query = "UPDATE football_system_db.subscriber SET football_system_db.subscriber.first_name = \'" + newFirstName + "\' WHERE email_address = \'"+ subscriberMail + "\'" ;
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.executeUpdate();
+        } finally {
+            conn.close();
+        }
     }
 
     @Override
     public void wantToEditLastName(String subscriberMail, String newLastName) throws Exception {
-
+        Connection conn = DbConnector.getConnection();
+        try{
+            String query = "UPDATE football_system_db.subscriber SET football_system_db.subscriber.last_name = \'" + newLastName + "\' WHERE email_address = \'"+ subscriberMail + "\'" ;
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.executeUpdate();
+        } finally {
+            conn.close();
+        }
     }
 
     @Override
     public void logOut(String subscriberMail) throws Exception {
+        Connection conn = DbConnector.getConnection();
 
+        String query = "UPDATE football_system_db.subscriber  SET football_system_db.subscriber.status = \'" + Status.OFFLINE.name() +  "\'  WHERE email_address =  \'"+ subscriberMail + "\'" ;
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.executeUpdate();
+        conn.close();
     }
 
     @Override

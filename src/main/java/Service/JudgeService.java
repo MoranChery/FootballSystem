@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-public class JudgeService {
+public class JudgeService{
     private Logger logger = Logger.getLogger(JudgeService.class.getName());
     private JudgeController judgeController;
     private LoggerHandler loggerHandler;
