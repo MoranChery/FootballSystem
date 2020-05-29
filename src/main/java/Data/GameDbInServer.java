@@ -352,10 +352,10 @@ public class GameDbInServer implements GameDb
     public static void main(String[] args) throws Exception {
         SeasonDbInServer seasonDbInServer = new SeasonDbInServer();
         GameDbInServer gameDbInServer = new GameDbInServer();
-        Game game1  = new Game("game1",new Date(),"sl1", "team1", "team2","court");
-        Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","court");
+        Game game1  = new Game("gameNoy",new Date(),"sl1", "team1", "team2","court");
+//        Game game2  = new Game("game2",new Date(),"sl1", "team1", "team2","court");
         gameDbInServer.insertGame(game1);
-        gameDbInServer.insertGame(game2);
+//        gameDbInServer.insertGame(game2);
 
         List<Game> allGames = gameDbInServer.getAllGames();
         System.out.println(allGames);
