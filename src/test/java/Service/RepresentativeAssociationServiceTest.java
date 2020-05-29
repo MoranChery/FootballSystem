@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepresentativeAssociationServiceTest
+public class RepresentativeAssociationServiceTest extends BaseEmbeddedSQL
 {
     private RepresentativeAssociationService representativeAssociationService = new RepresentativeAssociationService();
 

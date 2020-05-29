@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SystemAdministratorServiceTest
+public class SystemAdministratorServiceTest extends BaseEmbeddedSQL
 {
     private SystemAdministratorService systemAdministratorService=new SystemAdministratorService();
     GuestController guestController=new GuestController();

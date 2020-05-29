@@ -2,7 +2,7 @@ package Controller;
 
 import org.junit.Test;
 
-public class UserControllerTest {
+public class UserControllerTest extends BaseEmbeddedSQL {
 
     private UserController userController = new UserController();
 
