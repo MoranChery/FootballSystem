@@ -1,5 +1,6 @@
 package Service;
 
+import Controller.NotificationController;
 import Controller.TeamOwnerController;
 import Data.CourtDbInMemory;
 import Data.RoleDbInMemory;
@@ -34,11 +35,13 @@ import java.util.logging.Logger;
 public class TeamOwnerService {
     private Logger logger = Logger.getLogger(TeamOwnerService.class.getName());
     private TeamOwnerController teamOwnerController;
+    private NotificationController notificationController = NotificationController.getInstance();
 //    private LoggerHandler loggerHandler;
 
 
     public TeamOwnerService() {
         this.teamOwnerController = new TeamOwnerController();
+        notificationController.setTeamOwnerController(this.teamOwnerController);
 //        this.loggerHandler = new LoggerHandler(TeamOwnerService.class.getName());
         logger.addHandler(LoggerHandler.loggerErrorFileHandler);
         logger.addHandler(LoggerHandler.loggerEventFileHandler);

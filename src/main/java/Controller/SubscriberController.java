@@ -152,4 +152,22 @@ public class SubscriberController {
         }
         return userAlerts;
     }
+
+    public boolean wantedByMail(String userMail) throws Exception{
+        if(userMail.isEmpty() || userMail == null){
+            throw new Exception("bad input");
+        }
+        Subscriber subscriber = subscriberDb.getSubscriber(userMail);
+        if(subscriber.isWantAlertInMail()){
+            return true;
+        }
+        return false;
+    }
+
+    public void setSubscriberWantAlert(String userMail) throws Exception{
+        if(userMail.isEmpty() || userMail == null){
+            throw new Exception("bad input");
+        }
+        subscriberDb.setSubscriberWantAlert(userMail);
+    }
 }

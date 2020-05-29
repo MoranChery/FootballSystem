@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
-//public class SystemAdministratorControllerTest {
     private SystemAdministratorController systemAdministratorController = new SystemAdministratorController();
     private GuestController guestController = new GuestController();
     private TeamDb teamDb = TeamDbInServer.getInstance();
@@ -54,7 +53,7 @@ public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
         }
         catch (Exception e){
 
-            Assert.assertEquals("bad input", e.getMessage());
+            Assert.assertEquals("Team not found", e.getMessage());
         }
     }
 
@@ -82,6 +81,7 @@ public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
         Assert.assertNotNull(teamFromDb.getTeamClose());
         Assert.assertEquals(TeamStatus.INACTIVE,teamFromDb.getTeamStatus());
     }
+    @Test
     public void closeTeamForEverListNull() throws Exception{
         try {
 
@@ -102,7 +102,7 @@ public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
         try {
             systemAdministratorController.removeSubscriber("loy@gmail.com", "noy@gmail.com");
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "subscriber not found");
+            Assert.assertEquals("subscriber not found", e.getMessage());
         }
     }
 
@@ -134,61 +134,61 @@ public class SystemAdministratorControllerTest extends BaseEmbeddedSQL{
         }
     }
 
-    @Test
-    public void removeExistFanSubscriber() {
-        try {
-            //register fan to remove
-            guestController.registerFan("fan@gmail.com", "L1o8oy", 111111111, "Noy", "Harary");
-            //register player to connect it to page that the fan will follow it
-            guestController.registerPlayer("player@gmail.com", "L1o8oy", 111111111, "Noy", "Harary", new Date(12 / 9 / 1222), PlayerRole.GOALKEEPER);
-        } catch (Exception e) {
-            Assert.assertTrue(false);
-        }
-        Player player = null;
-        Fan fan = null;
-        try {
-            player = PlayerDbInMemory.getInstance().getPlayer("player@gmail.com");
-            //PageDbInMemory.getInstance().createPersonalPage("player@gmail.com",player);
-            fan = FanDbInMemory.getInstance().getFan("fan@gmail.com");
-            PageDbInMemory.getInstance().getPage("player@gmail.com").addFanFollowingThisPage(fan);
-            Set pageSet = new LinkedHashSet();
-            pageSet.add(PageDbInMemory.getInstance().getPage("player@gmail.com"));
-            fan.setMyPages(pageSet);
-        } catch (Exception e) {
-            Assert.assertTrue(false);
-        }
-        try {
-            systemAdministratorController.removeSubscriber("fan@gmail.com", "noy@gmail.com");
-        } catch (Exception e) {
-            Assert.assertTrue(false);
-        }
-        //check if the fan deleted properly
-        try {
-            SubscriberDbInMemory.getInstance().getSubscriber("fan@gmail.com");
-        } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "subscriber not found");
-        }
-        try {
-            FanDbInMemory.getInstance().getFan("fan@gmail.com");
-        } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "Fan not found");
-        }
-        try {
-            Page page = PageDbInMemory.getInstance().getPage("player@gmail.com");
-            for (String fan1 : page.getFansFollowingThisPage().keySet()) {
-                if (fan.equals("fan@gmail.com"))
-                    Assert.assertTrue(false);
-            }
-        } catch (Exception e) {
-            Assert.assertTrue(false);
-        }
-    }
+//    @Test
+//    public void removeExistFanSubscriber() {
+//        try {
+//            //register fan to remove
+//            guestController.registerFan("fan@gmail.com", "L1o8oy", 111111111, "Noy", "Harary");
+//            //register player to connect it to page that the fan will follow it
+//            guestController.registerPlayer("player@gmail.com", "L1o8oy", 111111111, "Noy", "Harary", new Date(12 / 9 / 1222), PlayerRole.GOALKEEPER);
+//        } catch (Exception e) {
+//            Assert.assertTrue(false);
+//        }
+//        Player player = null;
+//        Fan fan = null;
+//        try {
+//            player = PlayerDbInMemory.getInstance().getPlayer("player@gmail.com");
+//            //PageDbInMemory.getInstance().createPersonalPage("player@gmail.com",player);
+//            fan = FanDbInMemory.getInstance().getFan("fan@gmail.com");
+//            PageDbInMemory.getInstance().getPage("player@gmail.com").addFanFollowingThisPage(fan);
+//            Set pageSet = new LinkedHashSet();
+//            pageSet.add(PageDbInMemory.getInstance().getPage("player@gmail.com"));
+//            fan.setMyPages(pageSet);
+//        } catch (Exception e) {
+//            Assert.assertTrue(false);
+//        }
+//        try {
+//            systemAdministratorController.removeSubscriber("fan@gmail.com", "noy@gmail.com");
+//        } catch (Exception e) {
+//            Assert.assertTrue(false);
+//        }
+//        //check if the fan deleted properly
+//        try {
+//            SubscriberDbInMemory.getInstance().getSubscriber("fan@gmail.com");
+//        } catch (Exception e) {
+//            Assert.assertEquals(e.getMessage(), "subscriber not found");
+//        }
+//        try {
+//            FanDbInMemory.getInstance().getFan("fan@gmail.com");
+//        } catch (Exception e) {
+//            Assert.assertEquals(e.getMessage(), "Fan not found");
+//        }
+//        try {
+//            Page page = PageDbInMemory.getInstance().getPage("player@gmail.com");
+//            for (String fan1 : page.getFansFollowingThisPage().keySet()) {
+//                if (fan.equals("fan@gmail.com"))
+//                    Assert.assertTrue(false);
+//            }
+//        } catch (Exception e) {
+//            Assert.assertTrue(false);
+//        }
+//    }
 
     @Test
     public void removeCoach() throws Exception {
         guestController.registerCoach("coach@gmail.com", "23bkh", 123456789, "noy", "harary", CoachRole.MAJOR, QualificationCoach.UEFA_A);
         TeamDbInMemory.getInstance().insertTeam("team");
-        Team team = TeamDbInMemory.getInstance().getTeam("team");
+        Team team = TeamDbInServer.getInstance().getTeam("team");
         team.setTeamStatus(TeamStatus.ACTIVE);
         Coach coach = CoachDbInMemory.getInstance().getCoach("coach@gmail.com");
         //connect coach to team

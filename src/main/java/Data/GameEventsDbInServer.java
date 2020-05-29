@@ -50,10 +50,46 @@ public class GameEventsDbInServer implements GameEventsDb
 
             // execute the preparedStatement
             preparedStmt.execute();
+
+            updateGameEvent(gameEvent);
+
         }
         catch (Exception e)
         {
             throw new Exception("GameEvent already exist in system");
+        }
+        finally
+        {
+            conn.close();
+        }
+    }
+
+    private void updateGameEvent(GameEvent gameEvent) throws Exception
+    {
+        java.sql.Timestamp gameDate = new java.sql.Timestamp((gameEvent.getGameDate().getTime()));
+
+        java.sql.Timestamp time = new java.sql.Timestamp((gameEvent.getEventTime().getTime()));
+
+        Connection conn = DbConnector.getConnection();
+        try
+        {
+            getGameEvent(gameEvent.getEventId());
+
+            // the mysql update statement
+            String query = " update game_event "
+                    + "set game_date = \'" + gameDate + "\' "
+                    + ", event_time = \'" + time + "\' "
+                    + "where event_id = \'" + gameEvent.getEventId() + "\'";
+
+            // create the mysql insert preparedStatement
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+            // execute the preparedStatement
+            preparedStmt.execute();
+        }
+        catch (NotFoundException e)
+        {
+            throw new Exception("This event doesnt associated with game");
         }
         finally
         {

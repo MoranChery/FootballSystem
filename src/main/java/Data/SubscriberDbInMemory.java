@@ -129,5 +129,11 @@ public class SubscriberDbInMemory implements SubscriberDb {
         onlineSubscriber.setStatus(Status.ONLINE);
     }
 
+    @Override
+    public void setSubscriberWantAlert(String userMail)
+    {
+
+    }
+
 
 }

@@ -4,7 +4,6 @@ import Data.*;
 import Model.Enums.*;
 import Model.*;
 import Model.UsersTypes.*;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -1318,6 +1317,17 @@ catch (Exception e){
             Assert.assertEquals("same location", e.getMessage());
         }
     }
+
+    @Test
+    public void changeGameLocationLegal() throws Exception {
+        Game gameToChange = new Game("gameID1", new Date(), "seasonLeague", "hostTeam", "guestTeam", "court");
+        gameDb.insertGame(gameToChange);
+        representativeAssociationController.changeGameLocation("rep@gmail.com", "loc", "gameID1");
+
+        Assert.assertEquals("loc", gameToChange.getCourt());
+    }
+    @Test
+    public void changeGameDateEmptyInput() throws Exception{
 
 
 
