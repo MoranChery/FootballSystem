@@ -25,7 +25,7 @@ public class DbConnector
 //    public static final String PASSWORD = "roiL0210";
 
     public static final String USER = "root";
-    public static final String PASSWORD = "root";
+    public static final String PASSWORD = "roiL0210";
 
     private ArrayList<String> sqlCommandCreateTablesList = new ArrayList<>();
 

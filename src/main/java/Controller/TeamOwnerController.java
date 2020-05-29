@@ -262,7 +262,7 @@ public class TeamOwnerController extends Observable{
 //        for (PermissionType pt: permissions) {
 //            permissionDb.insertPermission(emailAddress,pt);
 //        }
-        permissionDb.insertSetPermission(emailAddress,permissions);
+//        permissionDb.insertSetPermission(emailAddress,permissions);
 
         roleDb.insertRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
     }
