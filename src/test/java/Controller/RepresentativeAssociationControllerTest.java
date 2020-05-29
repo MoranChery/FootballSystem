@@ -1327,8 +1327,8 @@ catch (Exception e){
         Assert.assertEquals("loc", gameToChange.getCourt());
     }
     @Test
-    public void changeGameDateEmptyInput() throws Exception{
-
+    public void changeGameDateEmptyInput() throws Exception {
+    }
 
 
 }

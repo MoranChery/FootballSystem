@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,12 +26,12 @@ public class FanControllerTest  {
 
 
     @Before
-    public void init() {
+    public void init() throws SQLException {
         final List<Db> dbs = new ArrayList<>();
         dbs.add(FanDbInMemory.getInstance());
         dbs.add(PageDbInMemory.getInstance());
         for (Db db : dbs) {
-//            db.deleteAll();
+            db.deleteAll();
         }
     }
 
