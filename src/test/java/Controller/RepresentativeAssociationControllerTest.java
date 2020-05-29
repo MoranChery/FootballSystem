@@ -1297,13 +1297,21 @@ public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL
         try{
             Game gameToChange = new Game("gameID1", new Date(), "seasonLeague", "hostTeam",  "guestTeam",  "court");
             gameDb.insertGame(gameToChange);
-            representativeAssociationController.changeGameLocation("rep@gmail.com","loc", "gameID1");
+            representativeAssociationController.changeGameLocation("rep@gmail.com","court", "gameID1");
         }
         catch (Exception e){
-            Assert.assertEquals("game not in DB", e.getMessage());
+            Assert.assertEquals("same location", e.getMessage());
         }
     }
 
+    @Test
+    public void changeGameLocationLegal() throws Exception {
+        Game gameToChange = new Game("gameID1", new Date(), "seasonLeague", "hostTeam", "guestTeam", "court");
+        gameDb.insertGame(gameToChange);
+        representativeAssociationController.changeGameLocation("rep@gmail.com", "loc", "gameID1");
+
+        Assert.assertEquals("loc", gameToChange.getCourt());
+    }
 
 
 }
