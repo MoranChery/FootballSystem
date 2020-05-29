@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class RepresentativeAssociationControllerTest
+public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL
 {
     private RepresentativeAssociationController representativeAssociationController = new RepresentativeAssociationController();
     private GameDb gameDb = GameDbInServer.getInstance();
@@ -44,7 +44,7 @@ public class RepresentativeAssociationControllerTest
         dbs.add(GameDbInServer.getInstance());
         dbs.add((TeamDbInServer.getInstance()));
         dbs.add((CourtDbInServer.getInstance()));
-        dbs.add((GameDbInServer.getInstance()));
+        dbs.add(gameDb);
         dbs.add((GameJudgesListDbInServer.getInstance()));
 
         for (Db db : dbs)
@@ -1295,15 +1295,23 @@ public class RepresentativeAssociationControllerTest
     @Test
     public void changeGameLocationSameLoc() throws Exception{
         try{
-            Game gameToChange = new Game("gameID", new Date(), "seasonLeague", "hostTeam",  "guestTeam",  "court");
+            Game gameToChange = new Game("gameID1", new Date(), "seasonLeague", "hostTeam",  "guestTeam",  "court");
             gameDb.insertGame(gameToChange);
-            representativeAssociationController.changeGameLocation("rep@gmail.com","loc", "gameid");
+            representativeAssociationController.changeGameLocation("rep@gmail.com","court", "gameID1");
         }
         catch (Exception e){
-            Assert.assertEquals("game not in DB", e.getMessage());
+            Assert.assertEquals("same location", e.getMessage());
         }
     }
 
+    @Test
+    public void changeGameLocationLegal() throws Exception {
+        Game gameToChange = new Game("gameID1", new Date(), "seasonLeague", "hostTeam", "guestTeam", "court");
+        gameDb.insertGame(gameToChange);
+        representativeAssociationController.changeGameLocation("rep@gmail.com", "loc", "gameID1");
+
+        Assert.assertEquals("loc", gameToChange.getCourt());
+    }
 
 
 }
