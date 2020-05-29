@@ -152,4 +152,23 @@ public class SubscriberDbInServerTest extends BaseEmbeddedSQL {
         subscriber = subscriberDb.getSubscriber(emailAddress);
         Assert.assertEquals(Status.ONLINE,subscriber.getStatus());
     }
+
+    @Test
+    public void testSetSubscriberWantAlert_legal() throws Exception
+    {
+        String emailAddress = "email@gmail.com";
+        String ownedBy = "ownedBy@gmail.com";
+        TeamOwner teamOwner = new TeamOwner(emailAddress, "Pass1234",222222222, "first", "last",null);
+        subscriberDb.insertSubscriber(teamOwner);
+        Subscriber subscriber = subscriberDb.getSubscriber(emailAddress);
+        Assert.assertEquals(emailAddress, subscriber.getEmailAddress());
+        Assert.assertEquals(222222222, subscriber.getId().intValue());
+        Assert.assertEquals("first", subscriber.getFirstName());
+        Assert.assertEquals("last", subscriber.getLastName());
+        Assert.assertEquals("Pass1234",subscriber.getPassword());
+        Assert.assertEquals(false,subscriber.isWantAlertInMail());
+        subscriberDb.setSubscriberWantAlert(emailAddress);
+        subscriber = subscriberDb.getSubscriber(emailAddress);
+        Assert.assertEquals(true,subscriber.isWantAlertInMail());
+    }
 }

@@ -1,11 +1,12 @@
 CREATE TABLE football_system_db.subscriber
 (
-    `email_address` VARCHAR(64) NOT NULL,
-    `password`      VARCHAR(64) NOT NULL,
-    `id`            int         NOT NULL,
-    `first_name`    VARCHAR(64) NOT NULL,
-    `last_name`     VARCHAR(64) NOT NULL,
-    `status`        VARCHAR(64) NOT NULL,
+    `email_address`      VARCHAR(64) NOT NULL,
+    `password`           VARCHAR(64) NOT NULL,
+    `id`                 int         NOT NULL,
+    `first_name`         VARCHAR(64) NOT NULL,
+    `last_name`          VARCHAR(64) NOT NULL,
+    `status`             VARCHAR(64) NOT NULL,
+    `want_alert_in_mail` BIT(1)      NOT NULL,
     PRIMARY KEY (`email_address`)
 );
 

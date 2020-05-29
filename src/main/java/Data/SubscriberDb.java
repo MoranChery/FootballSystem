@@ -2,6 +2,8 @@ package Data;
 
 import Model.UsersTypes.Subscriber;
 
+import java.sql.SQLException;
+
 public interface SubscriberDb extends Db{
         void insertSubscriber(Subscriber subscriber) throws Exception;
         Subscriber getSubscriber(String username) throws Exception;
@@ -12,4 +14,5 @@ public interface SubscriberDb extends Db{
         void logOut(String subscriberMail) throws Exception;
         void changeStatusToOnline(Subscriber subscriber) throws Exception;
 
+    void setSubscriberWantAlert(String userMail) throws Exception;
 }
