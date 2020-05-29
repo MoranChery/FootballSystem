@@ -4,6 +4,7 @@ import Controller.BaseEmbeddedSQL;
 import Data.Db;
 import Data.SubscriberDb;
 import Data.SubscriberDbInMemory;
+import Data.SubscriberDbInServer;
 import Model.Enums.Status;
 import Model.UsersTypes.Fan;
 import Model.UsersTypes.Subscriber;
@@ -11,20 +12,21 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubscriberServiceTest
+public class SubscriberServiceTest extends BaseEmbeddedSQL
 {
     private SubscriberService subscriberService = new SubscriberService();
-    private SubscriberDb subscriberDb = SubscriberDbInMemory.getInstance();
+    private SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
 
     @Before
-    public void init() {
+    public void init() throws SQLException {
         final List<Db> dbs = new ArrayList<>();
-        dbs.add(SubscriberDbInMemory.getInstance());
+        dbs.add(subscriberDb);
         for (Db db : dbs) {
-//            db.deleteAll();
+            db.deleteAll();
         }
     }
 
@@ -42,8 +44,9 @@ public class SubscriberServiceTest
     public void logOutLegal() throws Exception {
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
         subscriberDb.insertSubscriber(newSubscriber);
-        newSubscriber.setStatus(Status.ONLINE);
+        subscriberDb.changeStatusToOnline(newSubscriber);
         subscriberService.logOut(newSubscriber.getEmailAddress());
+        newSubscriber = subscriberDb.getSubscriber("email@gmail.com");
         Assert.assertEquals(newSubscriber.getStatus(), Status.OFFLINE);
     }
     @Test
@@ -61,6 +64,7 @@ public class SubscriberServiceTest
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
         subscriberDb.insertSubscriber(newSubscriber);
         subscriberService.wantToEditPassword(newSubscriber.getEmailAddress(), "newPsw");
+        newSubscriber = subscriberDb.getSubscriber("email@gmail.com");
         Assert.assertEquals("newPsw", newSubscriber.getPassword());
     }
     @Test
@@ -78,6 +82,7 @@ public class SubscriberServiceTest
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
         subscriberDb.insertSubscriber(newSubscriber);
         subscriberService.wantToEditFirstName(newSubscriber.getEmailAddress(), "newName");
+        newSubscriber = subscriberDb.getSubscriber("email@gmail.com");
         Assert.assertEquals("newName",newSubscriber.getFirstName());
     }
     @Test
@@ -95,6 +100,7 @@ public class SubscriberServiceTest
         Subscriber newSubscriber = new Fan("email@gmail.com", "fan1234", 1, "first", "last");
         subscriberDb.insertSubscriber(newSubscriber);
         subscriberService.wantToEditLastName(newSubscriber.getEmailAddress(), "newName");
+        newSubscriber = subscriberDb.getSubscriber("email@gmail.com");
         Assert.assertEquals("newName",newSubscriber.getLastName());
     }
 }

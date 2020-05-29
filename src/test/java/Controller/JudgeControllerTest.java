@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.sql.SQLException;
 import java.util.*;
 
+//public class JudgeControllerTest{
 public class JudgeControllerTest extends BaseEmbeddedSQL{
 
 //    private JudgeController judgeController = new JudgeController();
