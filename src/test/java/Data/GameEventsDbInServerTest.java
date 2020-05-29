@@ -12,6 +12,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.*;
 
 public class GameEventsDbInServerTest extends BaseEmbeddedSQL
@@ -55,6 +60,11 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
         }
     }
 
+    private Date convertToDateViaInstant(LocalDateTime dateToConvert)
+    {
+        return java.util.Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
     @Test
     public void insertGameEvent_legal() throws Exception
     {
@@ -90,19 +100,32 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
         dateEnd.setMinutes(15);
         dateEnd.setSeconds(00);
 
+        Date eventTime = new Date();
+        eventTime.setHours(11);
+        eventTime.setMinutes(10);
+        eventTime.setSeconds(00);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String time = sdf.format(eventTime);
+        LocalTime timePart = LocalTime.parse(time);
+        String startingDate = new SimpleDateFormat("yyyy-MM-dd").format(dateStart);
+        LocalDate datePart = LocalDate.parse(startingDate);
+        LocalDateTime dt = LocalDateTime.of(datePart, timePart);
+        eventTime = convertToDateViaInstant(dt);
+
         Game game = new Game("game1", dateStart, seasonLeague.getSeasonLeagueName(), teamHost.getTeamName(), teamGuest.getTeamName(), court1.getCourtName(), judgesOfTheGameList, majorJudge1.getEmailAddress(), dateEnd);
 
         int event_minute = 55;
         String description = "red card to number 7";
         GameEventType game_event_type = GameEventType.RED_CARD;
 
-        GameEvent gameEvent = new GameEvent(game.getGameID(), game.getGameDate(), game.getGameDate(), event_minute, game_event_type, description);
+        GameEvent gameEvent = new GameEvent(game.getGameID(), game.getGameDate(), eventTime, event_minute, game_event_type, description);
 
         int event_minute2 = 26;
         String description2 = "goal of number 3";
         GameEventType game_event_type2 = GameEventType.GOAL;
 
-        GameEvent gameEvent2 = new GameEvent(game.getGameID(), game.getGameDate(), game.getGameDate(), event_minute2, game_event_type2, description2);
+        GameEvent gameEvent2 = new GameEvent(game.getGameID(), game.getGameDate(), eventTime, event_minute2, game_event_type2, description2);
 
         try
         {

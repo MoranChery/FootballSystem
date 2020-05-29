@@ -209,7 +209,7 @@ public class InitDbRecords
     {
         final List<Db> dbs = new ArrayList<>();
 
-//        dbs.add(AlertDbInServer.getInstance());
+        dbs.add(AlertDbInServer.getInstance());
         dbs.add(CoachDbInServer.getInstance());
         dbs.add(CourtDbInServer.getInstance());
 //        dbs.add(FanDbInServer.getInstance());

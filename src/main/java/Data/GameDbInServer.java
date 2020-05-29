@@ -13,6 +13,10 @@ import Model.UsersTypes.TeamOwner;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import java.util.Date;
@@ -77,6 +81,7 @@ public class GameDbInServer implements GameDb
 
                 GameJudgesListDbInServer.getInstance().insertGameJudgeList(game.getGameID(), game.getJudgesOfTheGameList());
             }
+            updateGameDate(null, game.getGameDate(), game.getGameID());
         }
         catch (Exception e)
         {
@@ -257,11 +262,44 @@ public class GameDbInServer implements GameDb
         {
             getGame(gameID);
 
+            Date endGameTime = new Date();
+
+            int minute = newDate.getMinutes();
+            int hour = newDate.getHours();
+            if(minute > 30)
+            {
+                minute = minute - 30;
+                hour = hour + 2;
+            }
+            else
+            {
+                minute = minute + 30;
+                hour = hour + 1;
+            }
+
+            endGameTime = new Date();
+
+            endGameTime.setHours(hour);
+            endGameTime.setMinutes(minute);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            String time = sdf.format(endGameTime);
+            LocalTime timePart = LocalTime.parse(time);
+            String startingDate = new SimpleDateFormat("yyyy-MM-dd").format(newDate);
+            LocalDate datePart = LocalDate.parse(startingDate);
+            LocalDateTime dt = LocalDateTime.of(datePart, timePart);
+            endGameTime = convertToDateViaInstant(dt);
+
+
             java.sql.Timestamp timestampStart = new java.sql.Timestamp((newDate.getTime()));
+
+            java.sql.Timestamp timestampEnd = new java.sql.Timestamp((endGameTime.getTime()));
+
 
             // the mysql update statement
             String query = " update game "
                     + "set game_date = \'" + timestampStart + "\' "
+                    + ", end_game_time = \'" + timestampEnd + "\' "
                     + "where game_id = \'" + gameID + "\'";
 
             // create the mysql insert preparedStatement
@@ -282,6 +320,11 @@ public class GameDbInServer implements GameDb
         {
             conn.close();
         }
+    }
+
+    private Date convertToDateViaInstant(LocalDateTime dateToConvert)
+    {
+        return java.util.Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     @Override
