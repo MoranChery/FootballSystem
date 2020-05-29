@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,29 +19,50 @@ public class SystemAdministratorServiceTest
     GuestController guestController=new GuestController();
 
     @Before
-    public void init()
+    public void init() throws SQLException
     {
         final List<Db> dbs = new ArrayList<>();
-        dbs.add(SubscriberDbInMemory.getInstance());
-        dbs.add(FanDbInMemory.getInstance());
-        dbs.add(PageDbInMemory.getInstance());
-        dbs.add( TeamDbInMemory.getInstance());
-        dbs.add(CoachDbInMemory.getInstance());
-        dbs.add(CourtDbInMemory.getInstance());
-        dbs.add(JudgeDbInMemory.getInstance());
-        dbs.add(PlayerDbInMemory.getInstance());
-        dbs.add(TeamManagerDbInMemory.getInstance());
-        dbs.add(TeamOwnerDbInMemory.getInstance());
-        dbs.add(SeasonLeagueDbInMemory.getInstance());
-        dbs.add(JudgeSeasonLeagueDbInMemory.getInstance());
-        dbs.add(RoleDbInMemory.getInstance());
-        dbs.add(SystemAdministratorDbInMemory.getInstance());
-        dbs.add(RepresentativeAssociationDbInMemory.getInstance());
-        dbs.add(TeamDbInMemory.getInstance());
-        dbs.add(RoleDbInMemory.getInstance());
+//        dbs.add(SubscriberDbInMemory.getInstance());
+//        dbs.add(FanDbInMemory.getInstance());
+//        dbs.add(PageDbInMemory.getInstance());
+//        dbs.add( TeamDbInMemory.getInstance());
+//        dbs.add(CoachDbInMemory.getInstance());
+//        dbs.add(CourtDbInMemory.getInstance());
+//        dbs.add(JudgeDbInMemory.getInstance());
+//        dbs.add(PlayerDbInMemory.getInstance());
+//        dbs.add(TeamManagerDbInMemory.getInstance());
+//        dbs.add(TeamOwnerDbInMemory.getInstance());
+//        dbs.add(SeasonLeagueDbInMemory.getInstance());
+//        dbs.add(JudgeSeasonLeagueDbInMemory.getInstance());
+//        dbs.add(RoleDbInMemory.getInstance());
+//        dbs.add(SystemAdministratorDbInMemory.getInstance());
+//        dbs.add(RepresentativeAssociationDbInMemory.getInstance());
+//        dbs.add(TeamDbInMemory.getInstance());
+//        dbs.add(RoleDbInMemory.getInstance());
+//        dbs.add(AlertDbInMemory.getInstance());
+
+        dbs.add(SubscriberDbInServer.getInstance());
+//        dbs.add(FanDbInServer.getInstance());
+        dbs.add(PageDbInServer.getInstance());
+        dbs.add( TeamDbInServer.getInstance());
+        dbs.add(CoachDbInServer.getInstance());
+        dbs.add(CourtDbInServer.getInstance());
+        dbs.add(JudgeDbInServer.getInstance());
+        dbs.add(PlayerDbInServer.getInstance());
+        dbs.add(TeamManagerDbInServer.getInstance());
+        dbs.add(TeamOwnerDbInServer.getInstance());
+        dbs.add(SeasonLeagueDbInServer.getInstance());
+        dbs.add(JudgeSeasonLeagueDbInServer.getInstance());
+        dbs.add(RoleDbInServer.getInstance());
+        dbs.add(SystemAdministratorDbInServer.getInstance());
+        dbs.add(RepresentativeAssociationDbInServer.getInstance());
+        dbs.add(TeamDbInServer.getInstance());
+        dbs.add(RoleDbInServer.getInstance());
+        dbs.add(AlertDbInServer.getInstance());
+
         for (Db db : dbs)
         {
-//            db.deleteAll();
+            db.deleteAll();
         }
         try {
             guestController.registerSystemAdministrator("noy@gmail.com","ae646",123456789,"noy","harary");
@@ -70,7 +92,8 @@ public class SystemAdministratorServiceTest
     @Test
     public void closeExistTeam(){
         try {
-            TeamDbInMemory.getInstance().insertTeam("barca");
+//            TeamDbInMemory.getInstance().insertTeam("barca");
+            TeamDbInServer.getInstance().insertTeam("barca");
             systemAdministratorService.closeTeamForEver("barca");
         } catch (Exception e) {
             //not should enter here
@@ -78,6 +101,7 @@ public class SystemAdministratorServiceTest
         }
     }
 
+    /*
     @Test
     public void removeNullSubscriberAndNullAdmin(){
         try {
@@ -86,6 +110,7 @@ public class SystemAdministratorServiceTest
             Assert.assertTrue(true);
         }
     }
+
     @Test
     public void removeSubscriberWithNullAdmin(){
         try {
@@ -94,6 +119,7 @@ public class SystemAdministratorServiceTest
             Assert.assertTrue(true);
         }
     }
+
     @Test
     public void removeNullSubscriber(){
         try {
@@ -107,9 +133,14 @@ public class SystemAdministratorServiceTest
     public void removeExistSubscriber(){
         Fan fan=new Fan("noa@gmail.com", "L1o8oy", 111111111, "Noy", "Harary");
         try {
-            SubscriberDbInMemory.getInstance().insertSubscriber(fan);
-            FanDbInMemory.getInstance().createFan(fan);
-            RoleDbInMemory.getInstance().createRoleInSystem(fan.getEmailAddress(), RoleType.FAN);
+//            SubscriberDbInMemory.getInstance().insertSubscriber(fan);
+//            FanDbInMemory.getInstance().createFan(fan);
+//            RoleDbInMemory.getInstance().createRoleInSystem(fan.getEmailAddress(), RoleType.FAN);
+
+            SubscriberDbInServer.getInstance().insertSubscriber(fan);
+//            FanDbInServer.getInstance().createFan(fan);
+            RoleDbInServer.getInstance().createRoleInSystem(fan.getEmailAddress(), RoleType.FAN);
+
         } catch (Exception e) {
             Assert.assertEquals(e.getMessage(),null);
         }
@@ -120,17 +151,18 @@ public class SystemAdministratorServiceTest
         }
         //check if the fan deleted properly
         try {
-            SubscriberDbInMemory.getInstance().getSubscriber("noa@gmail.com");
+//            SubscriberDbInMemory.getInstance().getSubscriber("noa@gmail.com");
+            SubscriberDbInServer.getInstance().getSubscriber("noa@gmail.com");
         } catch (Exception e) {
             Assert.assertEquals(e.getMessage(),"subscriber not found");
         }
         try {
-            FanDbInMemory.getInstance().getFan("noa@gmail.com");
+//            FanDbInMemory.getInstance().getFan("noa@gmail.com");
+
+//            FanDbInServer.getInstance().getFan("noa@gmail.com");
         } catch (Exception e) {
             Assert.assertEquals(e.getMessage(),"Fan not found");
         }
     }
-
-
-
+    */
 }

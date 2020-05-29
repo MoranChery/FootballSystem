@@ -46,7 +46,7 @@ public class GuestController {
         teamOwnerDb = TeamOwnerDbInServer.getInstance();
         fanDb = FanDbInMemory.getInstance();
         roleDb = RoleDbInServer.getInstance();
-        systemAdministratorDb = SystemAdministratorDbInMemory.getInstance();
+        systemAdministratorDb = SystemAdministratorDbInServer.getInstance();
         representativeAssociationDb = RepresentativeAssociationDbInServer.getInstance();
         pageDb = PageDbInServer.getInstance();
         teamDb = TeamDbInServer.getInstance();

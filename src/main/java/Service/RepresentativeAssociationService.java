@@ -192,7 +192,7 @@ public class RepresentativeAssociationService {
             representativeAssociationController.createJudgeSeasonLeague(representativeAssociationEmailAddress, seasonLeagueName, judgeEmailAddress);
             logger.log(Level.INFO, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" was associated with SeasonLeague \"" + seasonLeagueName + "\"");
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" was associated with SeasonLeague \"" + seasonLeagueName + "\" because: " + e.getMessage());
+            logger.log(Level.WARNING, "Created by: " + representativeAssociationEmailAddress + " Description: Judge \"" + judgeEmailAddress + "\" was not associated with SeasonLeague \"" + seasonLeagueName + "\" because: " + e.getMessage());
             throw e;
         }
     }
