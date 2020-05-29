@@ -354,5 +354,8 @@ public class GuestController {
     public List<Role> getRules(String email) throws Exception {
         return roleDb.getRoles(email);
     }
-
+    public static void main(String[] args) throws Exception {
+        GuestController representativeAssociationDbInServer = new GuestController();
+        representativeAssociationDbInServer.registerRepresentativeAssociation("representativeAssociation1@gmail.com","Pass1234", 123456789, "FirstName", "LastName");
+    }
 }

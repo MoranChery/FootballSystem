@@ -40,8 +40,6 @@ public class GameJudgesListDbInServer implements GameJudgesListDb
         {
             conn.close();
         }
-
-
     }
 
     @Override

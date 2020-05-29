@@ -167,6 +167,8 @@ public class GameDbInServerTest extends BaseEmbeddedSQL
             Assert.assertEquals(3, judgesList.size());
             Assert.assertEquals(true, judgesList.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
+
+            gameDbInServer.updateGameDate(null, dateStart, "game1");
         }
         catch (Exception e)
         {

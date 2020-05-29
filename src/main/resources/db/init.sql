@@ -100,7 +100,7 @@ CREATE TABLE football_system_db.game_event
     `event_minute`    INT         NOT NULL,
     `game_event_type` VARCHAR(64) NOT NULL,
     `description`     VARCHAR(64) NOT NULL,
-    PRIMARY KEY (`game_id`)
+    PRIMARY KEY (`event_id`)
 );
 
 CREATE TABLE football_system_db.judge
@@ -243,9 +243,11 @@ CREATE TABLE football_system_db.team_owner
 
 CREATE TABLE football_system_db.alert
 (
-    `msg_header` VARCHAR(64) NOT NULL,
-    `msg_body`   VARCHAR(64) NOT NULL,
-    PRIMARY KEY (`msg_header`, `msg_body`)
+    `email_address` VARCHAR(64) NOT NULL,
+    `alert_id`      VARCHAR(64) NOT NULL,
+    `msg_header`    VARCHAR(64) NOT NULL,
+    `msg_body`      VARCHAR(64) NOT NULL,
+    PRIMARY KEY (`email_address`, `alert_id`)
 );
 
 CREATE TABLE football_system_db.search
@@ -490,7 +492,7 @@ ALTER TABLE football_system_db.team_manager
 ;
 
 ALTER TABLE football_system_db.team_owner
---     ADD CONSTRAINT FK_team_owner_team
+    --     ADD CONSTRAINT FK_team_owner_team
 --         FOREIGN KEY (`team`)
 --             REFERENCES football_system_db.team (`team_name`)
 --             ON DELETE CASCADE
@@ -498,6 +500,14 @@ ALTER TABLE football_system_db.team_owner
     ADD CONSTRAINT FK_team_owner_owned_by_email
         FOREIGN KEY (`owned_by_email_address`)
             REFERENCES football_system_db.team_owner (`email_address`)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+;
+
+ALTER TABLE football_system_db.alert
+    ADD CONSTRAINT FK_alert_email_address
+        FOREIGN KEY (`email_address`)
+            REFERENCES football_system_db.subscriber (`email_address`)
             ON DELETE CASCADE
             ON UPDATE CASCADE
 ;

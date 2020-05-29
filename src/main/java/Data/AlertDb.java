@@ -5,9 +5,9 @@ import Model.Game;
 
 import java.util.List;
 
-public interface AlertDb {
+public interface AlertDb extends Db {
 
-    void createAlertInDb(String email, Alert alert) throws Exception;
+    void insertAlertInDb(String email, Alert alert) throws Exception;
     Alert getAlert(String email, String alertID) throws Exception;
     List<Alert> getAlertsForUser(String emailAddress) throws Exception;
     boolean haveAlertInDB(String email) throws Exception;

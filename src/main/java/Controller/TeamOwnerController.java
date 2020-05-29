@@ -259,9 +259,11 @@ public class TeamOwnerController extends Observable{
         }
         /*add to DB the teamManager to the team*/
         teamDb.addTeamManager(teamName, teamManager,permissions,ownedByEmail);
-        for (PermissionType pt: permissions) {
-            permissionDb.insertPermission(emailAddress,pt);
-        }
+//        for (PermissionType pt: permissions) {
+//            permissionDb.insertPermission(emailAddress,pt);
+//        }
+//        permissionDb.insertSetPermission(emailAddress,permissions);
+
         roleDb.insertRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
     }
 

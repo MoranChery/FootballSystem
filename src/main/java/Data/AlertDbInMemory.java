@@ -2,6 +2,7 @@ package Data;
 
 import Model.Alert;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,7 @@ public class AlertDbInMemory implements AlertDb{
     }
 
     @Override
-    public void createAlertInDb(String email, Alert alert) throws Exception {
+    public void insertAlertInDb(String email, Alert alert) throws Exception {
         if(alert == null){
             throw new Exception("cant add to db");
         }
@@ -141,4 +142,9 @@ public class AlertDbInMemory implements AlertDb{
         }
     }
 
+    @Override
+    public void deleteAll() throws SQLException
+    {
+
+    }
 }

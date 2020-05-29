@@ -47,8 +47,8 @@ public class GuestService {
 
         try {
             guestController.login(emailAddress, password);
-          //  SubscriberController subscriberController = new SubscriberController();
-            //Subscriber subscriber = subscriberController.getSubscriber(emailAddress);
+//            SubscriberController subscriberController = new SubscriberController();
+//            Subscriber subscriber = subscriberController.getSubscriber(emailAddress);
 //            String type = "";
 //            if (subscriber instanceof TeamOwner) {
 //                type = "teamOwner";
@@ -62,7 +62,7 @@ public class GuestService {
 //            Map<String, String> stringStringMap = new HashMap<>();
 //            stringStringMap.put("UserType", type);
             logger.log(Level.INFO, "Created by: " + emailAddress + " Description: Subscriber \"" + emailAddress + "\" was login");
-            return  new HashMap<>();
+            return new HashMap<>();
         } catch (Exception e) {
             logger.log(Level.WARNING, "Created by: " + emailAddress + " Description: Subscriber \"" + emailAddress + "\" wasn't login because: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Try again");

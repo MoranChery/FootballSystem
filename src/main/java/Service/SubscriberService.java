@@ -36,21 +36,41 @@ public class SubscriberService {
     @GetMapping(value = "/getAlerts/{userEmail}")
     public Map<String, Alert> getAlerts(@PathVariable String userEmail){
         try{
-            Map<String, Alert>  messageAndValue = new HashMap<>();
-            List<Alert> alertList = subscriberController.getAlerts(userEmail);
-            if(alertList != null && alertList.size()>0){
-                for (int i= 0 ; i<alertList.size() ; i++){
-                    String message =  String.valueOf(i);
-                    messageAndValue.put(message, alertList.get(i));
+            //if(!subscriberController.wantedByMail(userEmail)) {
+                Map<String, Alert> messageAndValue = new HashMap<>();
+                List<Alert> alertList = subscriberController.getAlerts(userEmail);
+                if (alertList != null && alertList.size() > 0) {
+                    for (int i = 0; i < alertList.size(); i++) {
+                        String message = String.valueOf(i);
+                        messageAndValue.put(message, alertList.get(i));
+                    }
+                    return messageAndValue;
+                } else {
+                    throw new ResponseStatusException(HttpStatus.OK);
                 }
-                return messageAndValue;
-            }
-            else {
-                throw new ResponseStatusException(HttpStatus.OK);
-            }
+            //}
+            //else {
+             //   throw new ResponseStatusException(HttpStatus.OK);
+            //}
         }
+
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.OK);
         }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @CrossOrigin(origins = "http://localhost:63342")
+    @GetMapping(value = "/setSubscriberWantAlertInMail/{userEmail}/{isWantAlertInMail}")
+    public void setSubscriberWantAlertInMail(@PathVariable String userEmail, @PathVariable Boolean isWantAlertInMail){
+        try{
+
+  //      subscriberController.setSubscriberWantAlertInMail(userEmail, isWantAlertInMail);
+
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
     }
 }

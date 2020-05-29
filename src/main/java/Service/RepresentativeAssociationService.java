@@ -245,7 +245,8 @@ public class RepresentativeAssociationService {
         try {
             Date newDate;
             try {
-                newDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").parse(changeGameDate);
+//                newDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").parse(changeGameDate);
+                newDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(changeGameDate);
             }
             catch (Exception e){
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "put valid input date");

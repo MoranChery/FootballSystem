@@ -17,7 +17,7 @@ public class SystemService{
     }
 
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "isConnectionToExternalSystems")
+    @GetMapping(value = "/isConnectionToExternalSystems")
     @ResponseStatus(HttpStatus.OK)
     public void isConnectionToExternalSystems(){
         try {

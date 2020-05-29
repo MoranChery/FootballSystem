@@ -38,7 +38,12 @@ public class PermissionDbInServer implements PermissionDb{
 
             // execute the preparedstatement
             preparedStmt.execute();
-        } finally {
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+            finally {
             conn.close();
         }
     }
@@ -62,6 +67,37 @@ public class PermissionDbInServer implements PermissionDb{
     } finally {
         conn.close();
     }
+    }
+
+    @Override
+    public void insertSetPermission(String emailAddress, List<PermissionType> permissions) throws Exception {
+        Connection conn = DbConnector.getConnection();
+        try
+        {
+            for (PermissionType perType : permissions)
+            {
+
+                // the mysql insert statement
+                String query = " insert into permission (email_address,permission_type)"
+                        + " values (?,?)";
+
+                // create the mysql insert preparedstatement
+                PreparedStatement preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setString (1, emailAddress);
+                preparedStmt.setString (2, perType.name());
+
+                // execute the preparedStatement
+                preparedStmt.execute();
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception("TeamManager & PermissionsType already exist in system");
+        }
+        finally
+        {
+            conn.close();
+        }
     }
 
     @Override
