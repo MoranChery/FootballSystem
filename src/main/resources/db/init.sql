@@ -100,7 +100,7 @@ CREATE TABLE football_system_db.game_event
     `event_minute`    INT         NOT NULL,
     `game_event_type` VARCHAR(64) NOT NULL,
     `description`     VARCHAR(64) NOT NULL,
-    PRIMARY KEY (`game_id`)
+    PRIMARY KEY (`event_id`)
 );
 
 CREATE TABLE football_system_db.judge

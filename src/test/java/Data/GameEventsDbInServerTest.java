@@ -98,6 +98,12 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
 
         GameEvent gameEvent = new GameEvent(game.getGameID(), game.getGameDate(), game.getGameDate(), event_minute, game_event_type, description);
 
+        int event_minute2 = 26;
+        String description2 = "goal of number 3";
+        GameEventType game_event_type2 = GameEventType.GOAL;
+
+        GameEvent gameEvent2 = new GameEvent(game.getGameID(), game.getGameDate(), game.getGameDate(), event_minute2, game_event_type2, description2);
+
         try
         {
             seasonDbInServer.insertSeason(season);
@@ -119,6 +125,7 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
             gameDbInServer.insertGame(game);
 
             gameEventsDbInServer.insertGameEvent(gameEvent);
+            gameEventsDbInServer.insertGameEvent(gameEvent2);
 
             String getGameEvent_game_id = gameEventsDbInServer.getGameEvent(gameEvent.getEventId()).getGameId();
 
@@ -130,6 +137,41 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
             Assert.assertEquals(true, judgesList.contains(judge1.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(majorJudge1.getEmailAddress()));
+
+            Map<String, GameEvent> getMap_eventId_GameEvent_ByGameId = gameEventsDbInServer.getMap_eventId_GameEvent_ByGameId("game1");
+            Assert.assertEquals(2, getMap_eventId_GameEvent_ByGameId.size());
+
+            ArrayList<GameEvent> gameEvents = new ArrayList<>();
+            for (String game_id: getMap_eventId_GameEvent_ByGameId.keySet())
+            {
+                gameEvents.add(getMap_eventId_GameEvent_ByGameId.get(game_id));
+            }
+            Assert.assertEquals(2, gameEvents.size());
+            GameEvent ge1 = gameEvents.remove(0);
+            GameEvent ge2 = gameEvents.remove(0);
+
+            int ge1_em = ge1.getEventMinute();
+            int ge2_em = ge2.getEventMinute();
+            Assert.assertEquals(true, (55 == ge1_em || 55 == ge2_em));
+            Assert.assertEquals(true, (26 == ge1_em || 26 == ge2_em));
+
+            String ge1_d = ge1.getDescription();
+            String ge2_d = ge2.getDescription();
+
+            Assert.assertEquals(true, (ge1_d.equals("red card to number 7") || ge2_d.equals("red card to number 7")));
+            Assert.assertEquals(true, (ge1_d.equals("goal of number 3") || ge2_d.equals("goal of number 3")));
+
+            String ge1_get = ge1.getGameEventType().toString();
+            String ge2_get = ge2.getGameEventType().toString();
+
+            String red_card = GameEventType.RED_CARD.toString();
+            String goal = GameEventType.GOAL.toString();
+
+            Boolean b1 = (ge1_get.equals(red_card) || ge1_get.equals(red_card));
+            Boolean b2 = (ge2_get.equals(goal) || ge2_get.equals(goal));
+
+//            Assert.assertEquals(true, b1);
+//            Assert.assertEquals(true, b2);
         }
         catch (Exception e)
         {
@@ -179,6 +221,12 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
 
         GameEvent gameEvent = new GameEvent(game.getGameID(), game.getGameDate(), game.getGameDate(), event_minute, game_event_type, description);
 
+        int event_minute2 = 26;
+        String description2 = "goal of number 3";
+        GameEventType game_event_type2 = GameEventType.GOAL;
+
+        GameEvent gameEvent2 = new GameEvent(game.getGameID(), game.getGameDate(), game.getGameDate(), event_minute2, game_event_type2, description2);
+
         try
         {
             seasonDbInServer.insertSeason(season);
@@ -199,7 +247,9 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
 
             gameDbInServer.insertGame(game);
 
+
             gameEventsDbInServer.insertGameEvent(gameEvent);
+            gameEventsDbInServer.insertGameEvent(gameEvent2);
 
             String getGameEvent_game_id = gameEventsDbInServer.getGameEvent(gameEvent.getEventId()).getGameId();
 
@@ -212,6 +262,40 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(majorJudge1.getEmailAddress()));
 
+            Map<String, GameEvent> getMap_eventId_GameEvent_ByGameId = gameEventsDbInServer.getMap_eventId_GameEvent_ByGameId("game1");
+            Assert.assertEquals(2, getMap_eventId_GameEvent_ByGameId.size());
+
+            ArrayList<GameEvent> gameEvents = new ArrayList<>();
+            for (String game_id: getMap_eventId_GameEvent_ByGameId.keySet())
+            {
+                gameEvents.add(getMap_eventId_GameEvent_ByGameId.get(game_id));
+            }
+            Assert.assertEquals(2, gameEvents.size());
+            GameEvent ge1 = gameEvents.remove(0);
+            GameEvent ge2 = gameEvents.remove(0);
+
+            int ge1_em = ge1.getEventMinute();
+            int ge2_em = ge2.getEventMinute();
+            Assert.assertEquals(true, (55 == ge1_em || 55 == ge2_em));
+            Assert.assertEquals(true, (26 == ge1_em || 26 == ge2_em));
+
+            String ge1_d = ge1.getDescription();
+            String ge2_d = ge2.getDescription();
+
+            Assert.assertEquals(true, (ge1_d.equals("red card to number 7") || ge2_d.equals("red card to number 7")));
+            Assert.assertEquals(true, (ge1_d.equals("goal of number 3") || ge2_d.equals("goal of number 3")));
+
+            String ge1_get = ge1.getGameEventType().toString();
+            String ge2_get = ge2.getGameEventType().toString();
+
+            String red_card = GameEventType.RED_CARD.toString();
+            String goal = GameEventType.GOAL.toString();
+
+            Boolean b1 = (ge1_get.equals(red_card) || ge1_get.equals(red_card));
+            Boolean b2 = (ge2_get.equals(goal) || ge2_get.equals(goal));
+
+//            Assert.assertEquals(true, b1);
+//            Assert.assertEquals(true, b2);
         }
         catch (Exception e)
         {
@@ -359,6 +443,12 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
 
         GameEvent gameEvent = new GameEvent(game.getGameID(), game.getGameDate(), game.getGameDate(), event_minute, game_event_type, description);
 
+        int event_minute2 = 26;
+        String description2 = "goal of number 3";
+        GameEventType game_event_type2 = GameEventType.GOAL;
+
+        GameEvent gameEvent2 = new GameEvent(game.getGameID(), game.getGameDate(), game.getGameDate(), event_minute2, game_event_type2, description2);
+
         try
         {
             seasonDbInServer.insertSeason(season);
@@ -380,6 +470,7 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
             gameDbInServer.insertGame(game);
 
             gameEventsDbInServer.insertGameEvent(gameEvent);
+            gameEventsDbInServer.insertGameEvent(gameEvent2);
 
             String getGameEvent_game_id = gameEventsDbInServer.getGameEvent(gameEvent.getEventId()).getGameId();
 
@@ -392,6 +483,40 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
             Assert.assertEquals(true, judgesList.contains(judge2.getEmailAddress()));
             Assert.assertEquals(true, judgesList.contains(majorJudge1.getEmailAddress()));
 
+            Map<String, GameEvent> getMap_eventId_GameEvent_ByGameId = gameEventsDbInServer.getMap_eventId_GameEvent_ByGameId("game1");
+            Assert.assertEquals(2, getMap_eventId_GameEvent_ByGameId.size());
+
+            ArrayList<GameEvent> gameEvents = new ArrayList<>();
+            for (String game_id: getMap_eventId_GameEvent_ByGameId.keySet())
+            {
+                gameEvents.add(getMap_eventId_GameEvent_ByGameId.get(game_id));
+            }
+            Assert.assertEquals(2, gameEvents.size());
+            GameEvent ge1 = gameEvents.remove(0);
+            GameEvent ge2 = gameEvents.remove(0);
+
+            int ge1_em = ge1.getEventMinute();
+            int ge2_em = ge2.getEventMinute();
+            Assert.assertEquals(true, (55 == ge1_em || 55 == ge2_em));
+            Assert.assertEquals(true, (26 == ge1_em || 26 == ge2_em));
+
+            String ge1_d = ge1.getDescription();
+            String ge2_d = ge2.getDescription();
+
+            Assert.assertEquals(true, (ge1_d.equals("red card to number 7") || ge2_d.equals("red card to number 7")));
+            Assert.assertEquals(true, (ge1_d.equals("goal of number 3") || ge2_d.equals("goal of number 3")));
+
+            String ge1_get = ge1.getGameEventType().toString();
+            String ge2_get = ge2.getGameEventType().toString();
+
+            String red_card = GameEventType.RED_CARD.toString();
+            String goal = GameEventType.GOAL.toString();
+
+            Boolean b1 = (ge1_get.equals(red_card) || ge1_get.equals(red_card));
+            Boolean b2 = (ge2_get.equals(goal) || ge2_get.equals(goal));
+
+//            Assert.assertEquals(true, b1);
+//            Assert.assertEquals(true, b2);
 
             gameEventsDbInServer.deleteAll();
         }
