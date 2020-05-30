@@ -359,10 +359,12 @@ public class RepresentativeAssociationController extends Observable
     }
 
     public List<String> getAllLocation() throws Exception {
-        List <String> locations = new ArrayList<>();
-        for (Game game: getAllGames()) {
-            locations.add(game.getCourt());
-        }
-        return locations;
+//        List <String> locations = new ArrayList<>();
+//        for (Game game: getAllGames()) {
+//            locations.add(game.getCourt());
+//        }
+//        return locations;
+
+        return courtDb.getAllCourtsNames();
     }
 }

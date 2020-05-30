@@ -123,6 +123,7 @@ public class CourtDbInServer implements CourtDb {
         }
     }
 
+    @Override
     public List<String> getAllCourtsNames() throws SQLException {
         Connection conn = DbConnector.getConnection();
         try{

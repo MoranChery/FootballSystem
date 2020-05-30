@@ -70,6 +70,11 @@ public class CourtDbInMemory implements CourtDb {
         return null;
     }
 
+    @Override
+    public List<String> getAllCourtsNames() throws SQLException {
+        return null;
+    }
+
 
     @Override
     public void deleteAll() {

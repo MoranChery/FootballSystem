@@ -21,6 +21,8 @@ public class SubscriberController {
 //    private SystemAdministratorDb systemAdministratorDb;
 //    private RepresentativeAssociationDb representativeAssociationDb;
 
+    private NotificationController notificationController = NotificationController.getInstance();
+
     public SubscriberController() {
 //        subscriberDb = SubscriberDbInMemory.getInstance();
 //        alertDb = AlertDbInMemory.getInstance();
@@ -154,6 +156,14 @@ public class SubscriberController {
         List<Alert> userAlerts = null;
         if(alertDb.haveAlertInDB(subscriberMail)){
             userAlerts = alertDb.getAlertsForUser(subscriberMail);
+            if (wantedByMail(subscriberMail))
+            {
+                for (Alert alert: userAlerts)
+                {
+                    notificationController.sendMessageInMail(subscriberMail, alert);
+                }
+                userAlerts = null;
+            }
             alertDb.removeAllTheAlertTheUserHave(subscriberMail);
         }
         return userAlerts;

@@ -246,8 +246,8 @@ CREATE TABLE football_system_db.alert
 (
     `email_address` VARCHAR(64) NOT NULL,
     `alert_id`      VARCHAR(64) NOT NULL,
-    `msg_header`    VARCHAR(64) NOT NULL,
-    `msg_body`      VARCHAR(64) NOT NULL,
+    `msg_header`    VARCHAR(200) NOT NULL,
+    `msg_body`      VARCHAR(400) NOT NULL,
     PRIMARY KEY (`email_address`, `alert_id`)
 );
 

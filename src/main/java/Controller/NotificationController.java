@@ -285,14 +285,17 @@ public class NotificationController implements Observer {
     // setters
     public void setRepControll(RepresentativeAssociationController repControll) {
         this.repControll = repControll;
+        this.repControll.addObserver(this);
     }
 
     public void setSaController(SystemAdministratorController saController) {
         this.saController = saController;
+        this.saController.addObserver(this);
     }
 
     public void setTeamOwnerController(TeamOwnerController teamOwnerController) {
         this.teamOwnerController = teamOwnerController;
+        this.teamOwnerController.addObserver(this);
     }
 
     //    public List<Alert> getAlert(String userMail) throws Exception {
@@ -305,6 +308,11 @@ public class NotificationController implements Observer {
 //            alertDb.removeAllTheAlertTheUserHave(subscriberMail);
 //        }
 //        return userAlerts;
+//    }
+
+//    public static void main(String[] args) {
+//        NotificationController notificationController = NotificationController.getInstance();
+//        notificationController.repControll.addObserver(notificationController);
 //    }
 }
 
