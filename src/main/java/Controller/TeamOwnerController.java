@@ -167,8 +167,8 @@ public class TeamOwnerController extends Observable{
             player = currPlayer;
         }
         /*add to DB the player to the team*/
-        teamDb.addPlayer(teamName, player);
         roleDb.insertRole(emailAddress,teamName, RoleType.PLAYER);
+        teamDb.addPlayer(teamName, player);
     }
 
     /**
@@ -257,6 +257,7 @@ public class TeamOwnerController extends Observable{
             teamManagerDb.insertTeamManager(currTeamManager);
             teamManager = currTeamManager;
         }
+        roleDb.insertRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
         /*add to DB the teamManager to the team*/
         teamDb.addTeamManager(teamName, teamManager,permissions,ownedByEmail);
 //        for (PermissionType pt: permissions) {
@@ -264,7 +265,6 @@ public class TeamOwnerController extends Observable{
 //        }
 //        permissionDb.insertSetPermission(emailAddress,permissions);
 
-        roleDb.insertRole(emailAddress,teamName, RoleType.TEAM_MANAGER);
     }
 
     private boolean equalsDetailsTeamManager(TeamManager teamManagerInDb, TeamManager teamManagerToAdd){
@@ -338,8 +338,8 @@ public class TeamOwnerController extends Observable{
             coach = currCoach;
         }
         /* add to DB the player to the team*/
-        teamDb.addCoach(teamName, coach);
         roleDb.insertRole(emailAddress,teamName, RoleType.COACH);
+        teamDb.addCoach(teamName, coach);
     }
 
     private boolean equalsDetailsCoach(Coach coachInDb, Coach coachToAdd){
