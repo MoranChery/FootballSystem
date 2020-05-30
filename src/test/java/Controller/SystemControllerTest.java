@@ -21,7 +21,7 @@ public class SystemControllerTest extends BaseEmbeddedSQL  {
     private static RoleDb roleDb = RoleDbInServer.getInstance();
     private static SystemAdministratorDb systemAdministratorDb = SystemAdministratorDbInServer.getInstance();
 
-//    @Before
+    //    @Before
 //    public void init() throws SQLException {
 //        final List<Db> dbs = new ArrayList<>();
 //        dbs.add(subscriberDb);

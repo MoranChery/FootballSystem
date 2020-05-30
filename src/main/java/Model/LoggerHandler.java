@@ -4,11 +4,11 @@ import java.util.logging.*;
 public class LoggerHandler {
     //todo need to change the path in server
 
-//    public static FileHandler loggerEventFileHandler = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheEventsLog_%g.log",Level.INFO);;
-//    public static FileHandler loggerErrorFileHandler = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheErrorsLog_%g.log",Level.WARNING);
+    public static FileHandler loggerEventFileHandler = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheEventsLog_%g.log",Level.INFO);;
+    public static FileHandler loggerErrorFileHandler = createLogFile("C:\\Users\\noyha\\IdeaProjects\\TheErrorsLog_%g.log",Level.WARNING);
 
-    public static FileHandler loggerEventFileHandler = createLogFile("C:\\Users\\avira\\Desktop\\loglog\\TheEventsLog_%g.log",Level.INFO);;
-    public static FileHandler loggerErrorFileHandler = createLogFile("C:\\Users\\avira\\Desktop\\loglog\\TheErrorsLog_%g.log",Level.WARNING);
+//    public static FileHandler loggerEventFileHandler = createLogFile("C:\\Users\\avira\\Desktop\\loglog\\TheEventsLog_%g.log",Level.INFO);;
+//    public static FileHandler loggerErrorFileHandler = createLogFile("C:\\Users\\avira\\Desktop\\loglog\\TheErrorsLog_%g.log",Level.WARNING);
 
     public static FileHandler createLogFile(String path, Level level){
         try {

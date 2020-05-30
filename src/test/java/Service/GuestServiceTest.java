@@ -18,7 +18,7 @@ import java.util.List;
 public class GuestServiceTest extends BaseEmbeddedSQL
 {
     private GuestService guestService = new GuestService();
-    private GuestController guestController=new GuestController();
+    private GuestController guestController = guestService.getGuestController();
 
     public void init() throws SQLException {
         final List<Db> dbs = new ArrayList<>();

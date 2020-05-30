@@ -1320,11 +1320,21 @@ catch (Exception e){
 
     @Test
     public void changeGameLocationLegal() throws Exception {
-        Game gameToChange = new Game("gameID1", new Date(), "seasonLeague", "hostTeam", "guestTeam", "court");
+        Season season = new Season("season");
+        seasonDb.insertSeason(season);
+        League league = new League("League");
+        leagueDb.insertLeague(league);
+        SeasonLeague seasonLeague = new SeasonLeague("season", "League", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+        seasonLeagueDb.insertSeasonLeague(seasonLeague);
+        Court court = new Court("court","courtCity");
+        courtDb.insertCourt(court);
+        teamDb.insertTeam("hostTeam");
+        teamDb.insertTeam("guestTeam");
+        Game gameToChange = new Game("gameID1", new Date(), "season_League", "hostTeam", "guestTeam", "court");
         gameDb.insertGame(gameToChange);
         representativeAssociationController.changeGameLocation("rep@gmail.com", "loc", "gameID1");
-
-        Assert.assertEquals("loc", gameToChange.getCourt());
+        Game gameID1 = gameDb.getGame("gameID1");
+        Assert.assertEquals("loc", gameID1.getCourt());
     }
     @Test
     public void changeGameDateEmptyInput() throws Exception {

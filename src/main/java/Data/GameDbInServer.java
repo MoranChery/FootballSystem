@@ -227,7 +227,6 @@ public class GameDbInServer implements GameDb
         Connection conn = DbConnector.getConnection();
         try
         {
-            getGame(gameID);
 
             // the mysql update statement
             String query = " update game "
@@ -240,10 +239,10 @@ public class GameDbInServer implements GameDb
             // execute the preparedStatement
             preparedStmt.execute();
         }
-        catch (NotFoundException e)
-        {
-            throw new Exception("Game not found");
-        }
+//        catch (NotFoundException e)
+//        {
+//            throw new Exception("Game not found");
+//        }
 //        catch (Exception e)
 //        {
 //            throw new Exception("SeasonLeague not found455546486551");
