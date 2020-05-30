@@ -1115,7 +1115,7 @@ public class RepresentativeAssociationControllerTest extends BaseEmbeddedSQL {
         representativeAssociationController.changeGameDate("rep@gmail.com", newDate, "gameID1");
         gameToChange = gameDb.getGame("gameID1");
         Date changedDate = gameToChange.getGameDate();
-        //Assert.assertEquals(newDate.toString(), changedDate.toString());
+        //Assert.assertEquals(newDate, changedDate);
     }
 
 
