@@ -102,6 +102,13 @@ public class NotificationControllerTest extends BaseEmbeddedSQL {
         System.out.println(removedAlert.toString());
     }
     @Test
+    public void createAlertBudget() throws Exception {
+        Team statusTeam = new Team();
+        statusTeam.setTeamName("teamName");
+        Alert budgetAlert = notificationController.createAlert("budget", statusTeam, 10000);
+        System.out.println(budgetAlert.toString());
+    }
+    @Test
     public void createAlertClosed() throws Exception {
         Alert closeAlert = notificationController.createAlert("close", "closedTeam", null);
         System.out.println(closeAlert.toString());

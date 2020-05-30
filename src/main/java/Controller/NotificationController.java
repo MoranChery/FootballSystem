@@ -225,6 +225,14 @@ public class NotificationController implements Observer {
             alertToSend = new Alert(head, body);
 
         }
+        if (typeOfMessage.equals("budget")) {
+            Team team = (Team) theObject;
+            String head = "Found deviation from the budget of team";
+            String body = "Dear representative association, \n The team " + team.getTeamName() + "  made a financial activity amount of: " + theChange.toString() +
+                    ". This financial activity larger then her current capital.";
+            alertToSend = new Alert(head, body);
+
+        }
         if (typeOfMessage.equals("close")) {
             String header = "You'r team have been closed";
             String body = "We are sorry to inform you that your team " + theObject.toString() + " has been closed permanently in this system by the system administrator and you can't reopen it again";
