@@ -106,6 +106,25 @@ public class NotificationControllerTest extends BaseEmbeddedSQL {
         Alert closeAlert = notificationController.createAlert("close", "closedTeam", null);
         System.out.println(closeAlert.toString());
     }
+//    @Test
+//    public void updateRepLocation() throws Exception {
+//        Object[] theValues = new Object[3];
+//        theValues[0] = "location";
+//        Season season = new Season("season");
+//        seasonDb.insertSeason(season);
+//        League league = new League("League");
+//        leagueDb.insertLeague(league);
+//        SeasonLeague seasonLeague = new SeasonLeague("season", "League", CalculateLeaguePoints.WIN_IS_2_TIE_IS_1_LOSE_IS_0, InlayGames.EACH_TWO_TEAMS_PLAY_ONE_TIME);
+//        seasonLeagueDb.insertSeasonLeague(seasonLeague);
+//        Court court = new Court("court", "courtCity");
+//        courtDb.insertCourt(court);
+//        teamDb.insertTeam("hostTeam");
+//        teamDb.insertTeam("guestTeam");
+//        Game gameToChange = new Game("gameId", new Date(), "season_League", "hostTeam", "guestTeam", "court");
+//        gameDb.insertGame(gameToChange);
+//        theValues[1] = gameToChange;
+//
+//    }
 
 
 
