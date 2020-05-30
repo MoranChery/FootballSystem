@@ -34,9 +34,9 @@ public class SubscriberService{
     @ResponseStatus(HttpStatus.OK)
     @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping(value = "/getAlerts/{userEmail}")
-    public Map<String, Alert> getAlerts(@PathVariable String userEmail){
-        try{
-            //if(!subscriberController.wantedByMail(userEmail)) {
+    public Map<String, Alert> getAlerts(@PathVariable String userEmail) {
+        try {
+            if (!subscriberController.wantedByMail(userEmail)) {
                 Map<String, Alert> messageAndValue = new HashMap<>();
                 List<Alert> alertList = subscriberController.getAlerts(userEmail);
                 if (alertList != null && alertList.size() > 0) {
@@ -48,24 +48,23 @@ public class SubscriberService{
                 } else {
                     throw new ResponseStatusException(HttpStatus.OK);
                 }
-            //}
-            //else {
-             //   throw new ResponseStatusException(HttpStatus.OK);
-            //}
-        }
-
-        catch (Exception e){
+            } else {
+                throw new ResponseStatusException(HttpStatus.OK);
+            }
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.OK);
         }
     }
 
+
+
     @ResponseStatus(HttpStatus.OK)
     @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping(value = "/setSubscriberWantAlertInMail/{userEmail}/{isWantAlertInMail}")
-    public void setSubscriberWantAlertInMail(@PathVariable String userEmail, @PathVariable Boolean isWantAlertInMail){
+    @GetMapping(value = "/setSubscriberWantAlertInMail/{userEmail}")
+    public void setSubscriberWantAlertInMail(@PathVariable String userEmail){
         try{
 
-  //      subscriberController.setSubscriberWantAlertInMail(userEmail, isWantAlertInMail);
+         subscriberController.setSubscriberWantAlert(userEmail);
 
         }
         catch (Exception e){

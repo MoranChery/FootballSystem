@@ -107,9 +107,9 @@ public class InitDbRecords
         judgesOfTheGameList45_6.add(judge4.getEmailAddress());
         judgesOfTheGameList45_6.add(judge5.getEmailAddress());
 
-        Date dateStart1 = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
+        Date dateStart1 = new GregorianCalendar(2020, Calendar.MAY, 30).getTime();
         dateStart1.setHours(18);
-        dateStart1.setMinutes(30);
+        dateStart1.setMinutes(28);
         dateStart1.setSeconds(00);
 
         Date dateStart2 = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
