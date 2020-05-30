@@ -1,6 +1,7 @@
 package Controller;
 
 import Data.*;
+import Model.Alert;
 import Model.Enums.Status;
 import Model.UsersTypes.Fan;
 import Model.UsersTypes.Subscriber;
@@ -16,14 +17,14 @@ public class SubscriberControllerTest extends BaseEmbeddedSQL {
 
     private SubscriberController subscriberController = new SubscriberController();
     private SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
-    private JudgeDb judgeDb = JudgeDbInMemory.getInstance();
+    private AlertDb alertDb = AlertDbInServer.getInstance();
 
 
     @Before
     public void init() throws SQLException {
         final List<Db> dbs = new ArrayList<>();
         dbs.add(subscriberDb);
-//        dbs.add(JudgeDbInMemory.getInstance());
+        dbs.add(alertDb);
         for (Db db : dbs) {
             db.deleteAll();
         }
@@ -256,6 +257,105 @@ public class SubscriberControllerTest extends BaseEmbeddedSQL {
         subscriberController.wantToEditLastName(newSubscriber.getEmailAddress(), "newName");
         newSubscriber = subscriberDb.getSubscriber("email@gmail.com");
         Assert.assertEquals("newName",newSubscriber.getLastName());
+    }
+
+    @Test
+    public void getAlertsEmptyInput() throws Exception{
+        try {
+            subscriberController.getAlerts("");
+        }
+        catch (Exception e){
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+
+    @Test
+    public void getAlertsNoAlerts() throws Exception{
+        try {
+            Subscriber subscriber = new Subscriber("sub@gmail.com", "password", 5555555, "first_name", "last_name", Status.ONLINE);
+            subscriberDb.insertSubscriber(subscriber);
+            subscriberController.getAlerts("sub@gmail.com");
+        }
+        catch (Exception e){
+            Assert.assertEquals(null, e.getMessage());
+        }
+    }
+
+    @Test
+    public void getAlertsLegal() throws Exception {
+        Subscriber subscriber = new Subscriber("sub@gmail.com", "password", 5555555, "first_name", "last_name", Status.ONLINE);
+        subscriberDb.insertSubscriber(subscriber);
+        List<Alert> alerts = new ArrayList<>();
+        Alert firstAlert = new Alert("subject1", "body1");
+        Alert secAlert = new Alert("subject2", "body2");
+        alerts.add(firstAlert);
+        alerts.add(secAlert);
+        alertDb.insertAlertInDb(subscriber.getEmailAddress(), firstAlert);
+        alertDb.insertAlertInDb(subscriber.getEmailAddress(), secAlert);
+        List<Alert> subAlerts = subscriberController.getAlerts("sub@gmail.com");
+        Assert.assertEquals(alerts.size(), subAlerts.size());
+    }
+    @Test
+    public void wantedByMailEmptyInput() throws Exception{
+        try {
+            subscriberController.wantedByMail("");
+        }
+        catch (Exception e){
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void wantedByMailNotFound() throws Exception{
+        try {
+            subscriberController.wantedByMail("sub@gmail.com");
+        }
+        catch (Exception e){
+            Assert.assertEquals("subscriber not found", e.getMessage());
+        }
+    }
+    @Test
+    public void wantedByMail_LegalNotWant() throws Exception{
+            Subscriber subscriber = new Subscriber("sub@gmail.com", "password", 5555555, "first_name", "last_name", Status.ONLINE);
+            subscriberDb.insertSubscriber(subscriber);
+            boolean notWant = subscriberController.wantedByMail("sub@gmail.com");
+            Assert.assertFalse(notWant);
+    }
+    @Test
+    public void wantedByMail_LegalWant() throws Exception{
+        Subscriber subscriber = new Subscriber("sub@gmail.com", "password", 5555555, "first_name", "last_name", Status.ONLINE);
+        subscriber.setWantAlertInMail(true);
+        subscriberDb.insertSubscriber(subscriber);
+        boolean wantMail = subscriberController.wantedByMail("sub@gmail.com");
+        Assert.assertTrue(wantMail);
+    }
+    @Test
+    public void setSubscriberWantAlertEmptyInput() throws Exception{
+        try {
+            subscriberController.setSubscriberWantAlert("");
+        }
+        catch (Exception e){
+            Assert.assertEquals("bad input", e.getMessage());
+        }
+    }
+    @Test
+    public void setSubscriberWantAlertNotFound() throws Exception{
+        try {
+            subscriberController.setSubscriberWantAlert("sub@gmail.com");
+        }
+        catch (Exception e){
+            Assert.assertEquals("Subscriber not found", e.getMessage());
+        }
+    }
+    @Test
+    public void setSubscriberWantAlertLegal() throws Exception{
+        Subscriber subscriber = new Subscriber("sub@gmail.com", "password", 5555555, "first_name", "last_name", Status.ONLINE);
+        subscriberDb.insertSubscriber(subscriber);
+        subscriberController.setSubscriberWantAlert("sub@gmail.com");
+
+        boolean want = subscriberController.wantedByMail(subscriber.getEmailAddress());
+        Assert.assertEquals(true, want);
+
+
     }
 
 

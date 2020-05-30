@@ -19,17 +19,17 @@ public class NotificationController implements Observer {
         return ourInstance;
     }
 
-    private SubscriberDb subscriberDb;
+    private SubscriberDb subscriberDb = SubscriberDbInServer.getInstance();
     private RepresentativeAssociationController repControll;
     private SystemAdministratorController saController;
     private TeamOwnerController teamOwnerController;
-    private AlertDb alertDb;
-    private RepresentativeAssociationDb repDb;
+    private AlertDb alertDb = AlertDbInServer.getInstance();;
+    private RepresentativeAssociationDb repDb = RepresentativeAssociationDbInServer.getInstance();
 
     public NotificationController() {
-        alertDb = AlertDbInServer.getInstance();
-        repDb = RepresentativeAssociationDbInServer.getInstance();
-        subscriberDb = SubscriberDbInServer.getInstance();
+//        alertDb = AlertDbInServer.getInstance();
+//        repDb = RepresentativeAssociationDbInServer.getInstance();
+//        subscriberDb = SubscriberDbInServer.getInstance();
     }
 
 //    public NotificationController(RepresentativeAssociationController repControll, SubscriberController subscriberController, SystemAdministratorController saController, TeamOwnerController teamOwnerController) {
@@ -197,43 +197,46 @@ public class NotificationController implements Observer {
         if (typeOfMessage.equals("location")) {
             String header = "There was change in the location of a game you assigned to";
             Game game = (Game) theObject;
-            String body = "Dear judge, \n The Game " + game.getGameID() + " between " + game.getHostTeam() + " And"
-                    + game.getGuestTeam() + " have new location. The new court is" + theChange.toString();
+            String body = "Dear judge, \n The Game " + game.getGameID() + " between " + game.getHostTeam() + " And "
+                    + game.getGuestTeam() + " have new location. The new court is: " + theChange.toString();
             alertToSend = new Alert(header, body);
         }
         if (typeOfMessage.equals("date")) {
             String header = "There was change in the date of a game you assigned to";
             Game game = (Game) theObject;
             Date gameDate = (Date) theChange;
-            String body = "Dear judge, \n The Game " + game.getGameID() + " between " + game.getHostTeam() + " And"
-                    + game.getGuestTeam() + " have new date. The new date is" + gameDate.getTime();
-            alertToSend.setMsgHeader(header);
-            alertToSend.setMsgBody(body);
+            String body = "Dear judge, \n The Game " + game.getGameID() + " between " + game.getHostTeam() + " And "
+                    + game.getGuestTeam() + " have new date. The new date is: " + gameDate;
+            alertToSend = new Alert(header, body);
         }
         if (typeOfMessage.equals("status")) {
             Team team = (Team) theObject;
             String header = "The status of your team have been changed";
             TeamStatus teamStatus = (TeamStatus) theChange;
             String body = "The Team " + team.getTeamName() + " new status is " + teamStatus;
-            alertToSend.setMsgHeader(header);
-            alertToSend.setMsgBody(body);
+            alertToSend = new Alert(header, body);
         }
         if (typeOfMessage.equals("removed")) {
             TeamOwner teamOwner = (TeamOwner) theChange;
             String head = "You'r account have changed";
-            String body = "Dear " + teamOwner.getFirstName() + "  " + teamOwner.getLastName() + "\n" +
+            String body = "Dear " + teamOwner.getFirstName() + "  " + teamOwner.getLastName() + ":\n" +
                     "We are sorry to inform you that your subscription have been removed. \n You are now no longer " +
                     teamOwner.getTeam() + " owner.";
-            alertToSend.setMsgHeader(head);
-            alertToSend.setMsgBody(body);
+            alertToSend = new Alert(head, body);
+
+        }
+        if (typeOfMessage.equals("budget")) {
+            Team team = (Team) theObject;
+            String head = "Found deviation from the budget of team";
+            String body = "Dear representative association, \n The team " + team.getTeamName() + "  made a financial activity amount of: " + theChange.toString() +
+                    ". This financial activity larger then her current capital.";
+            alertToSend = new Alert(head, body);
 
         }
         if (typeOfMessage.equals("close")) {
             String header = "You'r team have been closed";
             String body = "We are sorry to inform you that your team " + theObject.toString() + " has been closed permanently in this system by the system administrator and you can't reopen it again";
-            alertToSend.setMsgHeader(header);
-            alertToSend.setMsgBody(body);
-
+            alertToSend = new Alert(header, body);
         }
         return alertToSend;
     }

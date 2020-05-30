@@ -15,6 +15,11 @@ public class Alert {
         this.msgHeader = msgHeader;
         this.msgBody = msgBody;
     }
+    @Override
+    public String toString() {
+        return "header:\n" + msgHeader + "\n"+
+                "body: \n" + msgBody;
+    }
 
 
     //getter and setters

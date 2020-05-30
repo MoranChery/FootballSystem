@@ -125,8 +125,10 @@ public class GameDbInServer implements GameDb
         }
 
         String game_id = rs.getString("game_id");
-
-        Date game_date = rs.getTimestamp("game_date");
+        String gameDate = rs.getString("game_date");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date time = sdf.parse(gameDate);
+        Date game_date = time;
 //        Date game_date = rs.getDate("game_date");
         String season_league = rs.getString("season_league");
         String host_team = rs.getString("host_team");
@@ -227,7 +229,6 @@ public class GameDbInServer implements GameDb
         Connection conn = DbConnector.getConnection();
         try
         {
-            getGame(gameID);
 
             // the mysql update statement
             String query = " update game "
@@ -240,10 +241,10 @@ public class GameDbInServer implements GameDb
             // execute the preparedStatement
             preparedStmt.execute();
         }
-        catch (NotFoundException e)
-        {
-            throw new Exception("Game not found");
-        }
+//        catch (NotFoundException e)
+//        {
+//            throw new Exception("Game not found");
+//        }
 //        catch (Exception e)
 //        {
 //            throw new Exception("SeasonLeague not found455546486551");

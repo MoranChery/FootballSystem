@@ -87,4 +87,8 @@ public class GuestService {
         }
 
     }
+
+    public GuestController getGuestController() {
+        return guestController;
+    }
 }

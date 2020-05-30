@@ -191,7 +191,7 @@ public class SubscriberDbInServer implements SubscriberDb{
         }
         catch (NotFoundException e)
         {
-            throw new Exception("Subsciber not found");
+            throw new Exception("Subscriber not found");
         }
         finally
         {

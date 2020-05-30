@@ -141,6 +141,12 @@ public class SubscriberController {
         subscriberDb.wantToEditLastName(subscriberMail, newLastName);
     }
 
+    /**
+     * this function return all the alerts the user have if there are alerts
+     * @param subscriberMail - the id of the user
+     * @return List<Alert> - all the alerts as list
+     * @throws Exception
+     */
     public List<Alert> getAlerts(String subscriberMail) throws Exception {
         if(subscriberMail.isEmpty()){
             throw new Exception("bad input");
@@ -153,6 +159,12 @@ public class SubscriberController {
         return userAlerts;
     }
 
+    /**
+     * this function checks if the user want to get alerts by mail instead of by the system
+     * @param userMail - the id of the user
+     * @return booleab - true if he want
+     * @throws Exception if the input is null or empty
+     */
     public boolean wantedByMail(String userMail) throws Exception{
         if(userMail.isEmpty() || userMail == null){
             throw new Exception("bad input");
@@ -164,6 +176,12 @@ public class SubscriberController {
         return false;
     }
 
+    /**
+     * this function change the way the user get the alerts to get by mail
+     * other then by system
+     * @param userMail the id of the user
+     * @throws Exception if the input string is empty or null
+     */
     public void setSubscriberWantAlert(String userMail) throws Exception{
         if(userMail.isEmpty() || userMail == null){
             throw new Exception("bad input");
