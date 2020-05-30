@@ -131,18 +131,27 @@ public class GameEventsDbInServer implements GameEventsDb
         String event_id = rs.getString("event_id");
 //        Date game_date =  new java.sql.Date(rs.getDate("game_date").getTime());
 
-        Date event_time =  new java.sql.Date(rs.getDate("event_time").getTime());
+//        Date event_time =  new java.sql.Date(rs.getDate("event_time").getTime());
 
-        Date game_date = rs.getTimestamp("game_date");
+//        Date game_date = rs.getTimestamp("game_date");
 
+        String gameDate = rs.getString("game_date");
+        SimpleDateFormat sdfGameDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date timeGameDate = sdfGameDate.parse(gameDate);
+        Date game_date = timeGameDate;
 
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        String time = sdf.format(event_time);
-        LocalTime timePart = LocalTime.parse(time);
-        String startingDate = new SimpleDateFormat("yyyy-MM-dd").format(game_date);
-        LocalDate datePart = LocalDate.parse(startingDate);
-        LocalDateTime dt = LocalDateTime.of(datePart, timePart);
-        Date event = convertToDateViaInstant(dt);
+        String eventTime = rs.getString("event_time");
+        SimpleDateFormat sdfEventTime = new SimpleDateFormat("HH:mm:ss");
+        Date timeEvent = sdfEventTime.parse(eventTime);
+        Date event_time = timeEvent;
+
+//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+//        String time = sdf.format(event_time);
+//        LocalTime timePart = LocalTime.parse(time);
+//        String startingDate = new SimpleDateFormat("yyyy-MM-dd").format(game_date);
+//        LocalDate datePart = LocalDate.parse(startingDate);
+//        LocalDateTime dt = LocalDateTime.of(datePart, timePart);
+//        Date event = convertToDateViaInstant(dt);
 
         Integer event_minute = rs.getInt("event_minute");
         GameEventType game_event_type = GameEventType.valueOf(rs.getString("game_event_type"));
@@ -150,7 +159,7 @@ public class GameEventsDbInServer implements GameEventsDb
 
         conn.close();
 
-        GameEvent gameEvent = new GameEvent(game_id, game_date, event, event_minute, game_event_type, description);
+        GameEvent gameEvent = new GameEvent(game_id, game_date, event_time, event_minute, game_event_type, description);
         gameEvent.setEventId(eventId);
 
         return gameEvent;

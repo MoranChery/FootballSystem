@@ -19,7 +19,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
 
-public class GameEventsDbInServerTest extends BaseEmbeddedSQL
+public class GameEventsDbInServerTest /*extends BaseEmbeddedSQL*/
 {
     private GameEventsDbInServer gameEventsDbInServer = GameEventsDbInServer.getInstance();
 
@@ -150,6 +150,7 @@ public class GameEventsDbInServerTest extends BaseEmbeddedSQL
             gameEventsDbInServer.insertGameEvent(gameEvent);
             gameEventsDbInServer.insertGameEvent(gameEvent2);
 
+            GameEvent gameEventReturn1 = gameEventsDbInServer.getGameEvent(gameEvent.getEventId());
             String getGameEvent_game_id = gameEventsDbInServer.getGameEvent(gameEvent.getEventId()).getGameId();
 
             Assert.assertEquals("game1", getGameEvent_game_id);
