@@ -21,12 +21,12 @@ public class DbConnector
     public static final String URL = API + ":" + DATABASE + "://" + SERVER_NAME_DB_RUNNING_ON + ":" + PORT + "/" + DB_NAME;
 
     public static final String URL1 = "jdbc:mysql://localhost:3306/";
-//    public static final String USER = "noy";
-//    public static final String PASSWORD = "roiL0210";
-
-    public static final String USER = "root";
-//    public static final String USER = "root";
+    public static final String USER = "noy";
     public static final String PASSWORD = "roiL0210";
+
+    //public static final String USER = "root";
+//    public static final String USER = "root";
+//    public static final String PASSWORD = "roiL0210";
 //    public static final String PASSWORD = "root";
 
     private ArrayList<String> sqlCommandCreateTablesList = new ArrayList<>();
